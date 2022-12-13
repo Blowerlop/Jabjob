@@ -1,18 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class InputManager : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+    public Vector2 move;
 
-    // Update is called once per frame
-    void Update()
+    public void OnMove(InputValue inputValue)
     {
-        
+        move = inputValue.Get<Vector2>();
     }
 }
