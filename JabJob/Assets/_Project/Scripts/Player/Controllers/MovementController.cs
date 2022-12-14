@@ -22,7 +22,7 @@ public class MovementController : MonoBehaviour
     private bool _isGrounded;
     private int _jumpCount = 0;
     private bool canJump = true;
-    private float _jumpThreshold = 0.2f;
+    [SerializeField] private float _jumpThreshold = 0.2f;
 
     [Header("References")]
     private CharacterController _characterController;
@@ -196,7 +196,7 @@ public class MovementController : MonoBehaviour
         Gizmos.DrawSphere(new Vector3(playerPosition.x - _characterController.radius, playerPosition.y, playerPosition.z), 0.5f);
 
         // Draw Jump state
-        Gizmos.color = _jumpCount == 0 ? Color.green : _jumpCount == 1 ? Color.HSVToRGB(39, 81, 97) : Color.red;
+        Gizmos.color = _jumpCount == 0 ? Color.green : _jumpCount == 1 ? Color.yellow : Color.red;
         Gizmos.DrawSphere(new Vector3(playerPosition.x + _characterController.radius, playerPosition.y, playerPosition.z), 0.5f);
     }
     #endregion
