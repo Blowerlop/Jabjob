@@ -16,7 +16,6 @@ public class MovementController : MonoBehaviour
     private float _verticalVelocity;
 
     [Header("References")]
-    private Rigidbody _rigidbody;
     private CharacterController _characterController;
     #endregion
 
@@ -24,7 +23,6 @@ public class MovementController : MonoBehaviour
     #region Updates
     private void Awake()
     {
-        //_rigidbody = GetComponent<Rigidbody>();
         _characterController = GetComponent<CharacterController>();
     }
 
@@ -33,6 +31,16 @@ public class MovementController : MonoBehaviour
         CheckGrounded();
         PerformJumpAndGravity();
         PerfomMovement();
+
+        if (InputManager.instance.isDashing)
+        {
+            AddForce(transform.forward * 2.0f);
+
+
+
+
+            InputManager.instance.isDashing = false;
+        }
     }
     #endregion
 
@@ -108,8 +116,47 @@ public class MovementController : MonoBehaviour
             * Time.deltaTime
             ));
 
-        
 
+        /*
+
+        float targetVelocity;
+        if (InputManager.instance.move == Vector2.zero)
+        {
+            targetVelocity = 0.0f;
+        }
+        else
+        {
+            targetVelocity = _moveSpeed;
+        }
+
+        float currentVelocity = new Vector3(_rigidbody.velocity.x, 0.0f, _rigidbody.velocity.z).magnitude;
+        float velocityToApply;
+
+        if (currentVelocity < targetVelocity - 0.1f || currentVelocity > targetVelocity + 0.1f)
+        {
+            velocityToApply = Mathf.Lerp(currentVelocity, targetVelocity, Time.deltaTime * 10.0f);
+        }
+        else
+        {
+            velocityToApply = targetVelocity;
+        }
+
+        Vector2 moveHorizontalVelocity = InputManager.instance.move * velocityToApply * _rigidbody.mass;
+        Vector3 moveVerticalVelocity = Vector3.up * _verticalVelocity;
+        CharacterController characterController;
+
+        Debug.Log(moveHorizontalVelocity);
+
+        //_rigidbody.velocity = (moveHorizontalVelocity.x * transform.right + moveHorizontalVelocity.y * transform.forward) + moveVerticalVelocity;
+        _rigidbody.AddRelativeForce((moveHorizontalVelocity.x * transform.right + moveHorizontalVelocity.y * transform.forward), ForceMode.Force);
+
+        */
+    }
+
+
+    private void AddForce(Vector3 force)
+    {
+        _characterController.Move(force);
     }
     #endregion
 }

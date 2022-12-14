@@ -20,6 +20,7 @@ public class InputManager : MonoBehaviour
     public Vector2 move;
     public Vector2 look;
     public bool isJumping;
+    public bool isDashing;
     #endregion
 
 
@@ -39,6 +40,11 @@ public class InputManager : MonoBehaviour
     {
         //isJumping = inputValue.Get<CallbackContext>().started;
         isJumping = true;
+    }
+
+    public void OnDash()
+    {
+        isDashing = true;
     }
     #endregion
 }
