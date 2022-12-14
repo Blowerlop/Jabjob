@@ -66,6 +66,8 @@ public class MovementController : MonoBehaviour
                 _verticalVelocity += _gravityForce * Time.deltaTime;
             }
         }
+
+        InputManager.instance.isJumping = false;
     }
 
     private void PerfomMovement()
