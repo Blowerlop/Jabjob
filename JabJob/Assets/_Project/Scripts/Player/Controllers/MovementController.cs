@@ -7,13 +7,22 @@ public class MovementController : MonoBehaviour
     #region Variables
     [Header("Movements")]
     [SerializeField] private float _moveSpeed = 6.0f;
-    [SerializeField] private float _jumpHeight = 2.0f;
-    [SerializeField] private float _gravityForce = -9.81f;
+    private float _speedOffset = 0.1f;
+    private float _horizontalVelocity;
+
+    [Header("Gravity")]
     [SerializeField] private bool _gravityEnabled = true;
-    [SerializeField] private float _maximumVerticalVelocity = -40.0f;
+    [SerializeField] private float _gravityForce = -9.81f;
     [SerializeField] private float _groundedVerticalVelocity = -2.0f;
-    private bool _isGrounded;
+    [SerializeField] private float _maximumVerticalVelocity = -40.0f;
     private float _verticalVelocity;
+
+    [Header("Jump")]
+    [SerializeField] private float _jumpHeight = 2.0f;
+    private bool _isGrounded;
+    private int _jumpCount = 0;
+    private bool canJump = true;
+    private float _jumpThreshold = 0.2f;
 
     [Header("References")]
     private CharacterController _characterController;
@@ -35,9 +44,6 @@ public class MovementController : MonoBehaviour
         if (InputManager.instance.isDashing)
         {
             AddForce(transform.forward * 2.0f);
-
-
-
 
             InputManager.instance.isDashing = false;
         }
@@ -62,10 +68,7 @@ public class MovementController : MonoBehaviour
                 _verticalVelocity = _groundedVerticalVelocity;
             }
 
-            if (InputManager.instance.isJumping)
-            {
-                _verticalVelocity = Mathf.Sqrt(-2.0f * _gravityForce * _jumpHeight);
-            }
+            ResetJump();
         }
         else
         {
@@ -75,6 +78,10 @@ public class MovementController : MonoBehaviour
             }
         }
 
+        if (InputManager.instance.isJumping && canJump)
+        {
+             StartCoroutine(Jump());
+        }
         InputManager.instance.isJumping = false;
     }
 
@@ -93,7 +100,7 @@ public class MovementController : MonoBehaviour
         float currentVelocity = new Vector3(_characterController.velocity.x, 0.0f, _characterController.velocity.z).magnitude;
         float velocityToApply;
 
-        if (currentVelocity < targetVelocity - 0.1f || currentVelocity > targetVelocity + 0.1f)
+        if (currentVelocity < targetVelocity - _speedOffset || currentVelocity > targetVelocity + _speedOffset)
         {
             velocityToApply = Mathf.Lerp(currentVelocity, targetVelocity, Time.deltaTime * 10.0f);
         }
@@ -157,6 +164,40 @@ public class MovementController : MonoBehaviour
     private void AddForce(Vector3 force)
     {
         _characterController.Move(force);
+    }
+
+    private IEnumerator Jump()
+    {
+        canJump = false;
+        if (_jumpCount < 2) 
+        { 
+            _verticalVelocity = Mathf.Sqrt(-2.0f * _gravityForce * _jumpHeight);
+            _jumpCount++;
+        }
+
+        yield return new WaitForSeconds(_jumpThreshold);
+        canJump = true;
+    }
+
+    private void ResetJump()
+    {
+        _jumpCount = 0;
+        StopCoroutine(Jump());
+        canJump = true;
+    }
+
+    private void OnDrawGizmos()
+    {
+        if (Application.isPlaying == false) return;
+        Vector3 playerPosition = transform.position;
+
+        // Draw grounded
+        Gizmos.color = _isGrounded ? Color.green : Color.red;
+        Gizmos.DrawSphere(new Vector3(playerPosition.x - _characterController.radius, playerPosition.y, playerPosition.z), 0.5f);
+
+        // Draw Jump state
+        Gizmos.color = _jumpCount == 0 ? Color.green : _jumpCount == 1 ? Color.HSVToRGB(39, 81, 97) : Color.red;
+        Gizmos.DrawSphere(new Vector3(playerPosition.x + _characterController.radius, playerPosition.y, playerPosition.z), 0.5f);
     }
     #endregion
 }
