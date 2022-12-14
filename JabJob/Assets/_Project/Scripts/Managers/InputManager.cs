@@ -17,6 +17,7 @@ public class InputManager : MonoBehaviour
 
     #region Variables
     public Vector2 move;
+    public Vector2 look;
     #endregion
 
 
@@ -24,6 +25,12 @@ public class InputManager : MonoBehaviour
     public void OnMove(InputValue inputValue)
     {
         move = inputValue.Get<Vector2>();
+    }
+
+    public void OnLook(InputValue inputValue)
+    {
+        look = inputValue.Get<Vector2>();
+        look.y *= -1;
     }
     #endregion
 }
