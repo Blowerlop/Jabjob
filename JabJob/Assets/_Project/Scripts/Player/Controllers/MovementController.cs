@@ -1,8 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
 
-public class MovementController : MonoBehaviour
+
+public class MovementController : NetworkBehaviour
 {
     #region Variables
     [Header("Movements")]
@@ -35,8 +37,14 @@ public class MovementController : MonoBehaviour
         _characterController = GetComponent<CharacterController>();
     }
 
+    private void Start()
+    {
+        if (IsOwner == false) enabled = false;
+    }
+
     private void Update()
     {
+        
         CheckGrounded();
         PerformJumpAndGravity();
         PerfomMovement();
@@ -159,7 +167,6 @@ public class MovementController : MonoBehaviour
 
         */
     }
-
 
     private void AddForce(Vector3 force)
     {
