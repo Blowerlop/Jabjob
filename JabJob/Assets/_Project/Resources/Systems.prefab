@@ -45,6 +45,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8fa9232b4efdff1498653a4ba2002870, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  move: {x: 0, y: 0}
+  look: {x: 0, y: 0}
+  isJumping: 0
+  isDashing: 0
 --- !u!114 &1114292191266661292
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -70,7 +74,67 @@ MonoBehaviour:
   m_ControlsChangedEvent:
     m_PersistentCalls:
       m_Calls: []
-  m_ActionEvents: []
+  m_ActionEvents:
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 02ce8f47-1ad3-4288-bd16-29bb6a594eea
+    m_ActionName: Player/Move[/Keyboard/w,/Keyboard/upArrow,/Keyboard/s,/Keyboard/downArrow,/Keyboard/a,/Keyboard/leftArrow,/Keyboard/d,/Keyboard/rightArrow]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: a62eab7d-5ecb-467a-9f51-0b517f4b14e4
+    m_ActionName: Player/Look[/Mouse/delta]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 2b4eb86b-5e6f-456c-ba48-04db9c3a606f
+    m_ActionName: Player/Fire[/Mouse/leftButton]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 8b64c118-b6fe-43e5-9352-81e10a6e30fe
+    m_ActionName: Player/Jump[/Keyboard/space]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: f4ab7e14-6683-44b5-95b8-2d0c408eb5c9
+    m_ActionName: Player/Dash[/Keyboard/shift]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 5d3b0c18-f31b-4324-9f3d-4e8ebf43efda
+    m_ActionName: UI/Navigate[/Keyboard/w,/Keyboard/upArrow,/Keyboard/s,/Keyboard/downArrow,/Keyboard/a,/Keyboard/leftArrow,/Keyboard/d,/Keyboard/rightArrow]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: f81a3fe6-419a-469c-88c4-b7001439a9ed
+    m_ActionName: UI/Submit[/Keyboard/enter]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 35ad35eb-8f45-40e5-9f3c-66324dd9e54f
+    m_ActionName: UI/Cancel[/Keyboard/escape]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 672f3fd9-33d0-4286-9152-4475f9882a96
+    m_ActionName: UI/Point[/Mouse/position]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: f93b5e13-b7e2-4c70-9bbb-3add639abeaf
+    m_ActionName: UI/Click[/Mouse/leftButton]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 88967ea9-7de8-4438-ace1-9ae3a1852d9f
+    m_ActionName: UI/ScrollWheel[/Mouse/scroll]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: ac747187-1d4b-4314-859b-fa60baef6810
+    m_ActionName: UI/MiddleClick[/Mouse/middleButton]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 1aba204a-262a-446b-be42-2f2f8faeda15
+    m_ActionName: UI/RightClick[/Mouse/rightButton]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 20ca5de4-a294-4d97-aff5-bf0733f8481d
+    m_ActionName: UI/TrackedDevicePosition
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 41cfab5c-3bb3-4e48-88ed-1b62a1f61e75
+    m_ActionName: UI/TrackedDeviceOrientation
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
   m_DefaultActionMap: Player
@@ -85,7 +149,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8418912308833563418}
-  - component: {fileID: 1105277331005746878}
   m_Layer: 0
   m_Name: Systems
   m_TagString: Untagged
@@ -109,15 +172,3 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1105277331005746878
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7247468679693057073}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3a7566d34c8929c4da98fc43f507131b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
