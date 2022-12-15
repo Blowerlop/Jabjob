@@ -160,7 +160,6 @@ public class MovementController : MonoBehaviour
         */
     }
 
-
     private void AddForce(Vector3 force)
     {
         _characterController.Move(force);
