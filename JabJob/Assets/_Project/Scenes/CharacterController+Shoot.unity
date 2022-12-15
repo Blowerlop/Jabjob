@@ -322,6 +322,17 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 159128956728302430, guid: 5e8467d98c340fe479fc5904151d1f6c,
         type: 3}
+    - target: {fileID: 5023224235561468657, guid: 99215986e22bf2448a7f24f98dbe488d,
+        type: 3}
+      propertyPath: NetworkConfig.NetworkPrefabs.Array.data[1].Override
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5023224235561468657, guid: 99215986e22bf2448a7f24f98dbe488d,
+        type: 3}
+      propertyPath: NetworkConfig.NetworkPrefabs.Array.data[1].SourcePrefabToOverride
+      value: 
+      objectReference: {fileID: 159128956728302430, guid: 5e8467d98c340fe479fc5904151d1f6c,
+        type: 3}
     - target: {fileID: 6419593513315344337, guid: 99215986e22bf2448a7f24f98dbe488d,
         type: 3}
       propertyPath: m_Name
@@ -468,6 +479,7 @@ MonoBehaviour:
   layerToAim:
     serializedVersion: 2
     m_Bits: 2147483647
+  _camera: {fileID: 0}
 --- !u!114 &171841125
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -980,7 +992,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 961739749}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -6.64, y: 1.7, z: -7.97}
+  m_LocalPosition: {x: 0, y: 1.7, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1567,6 +1579,46 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 4414595874896966523, guid: c91080b2aeed9cf4182c9369bc25aca7,
+        type: 3}
+      propertyPath: m_Color.b
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4414595874896966523, guid: c91080b2aeed9cf4182c9369bc25aca7,
+        type: 3}
+      propertyPath: m_Color.g
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4414595874896966523, guid: c91080b2aeed9cf4182c9369bc25aca7,
+        type: 3}
+      propertyPath: m_Color.r
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4414595874896966523, guid: c91080b2aeed9cf4182c9369bc25aca7,
+        type: 3}
+      propertyPath: m_FontData.m_MaxSize
+      value: 91
+      objectReference: {fileID: 0}
+    - target: {fileID: 4414595874896966523, guid: c91080b2aeed9cf4182c9369bc25aca7,
+        type: 3}
+      propertyPath: m_FontData.m_FontSize
+      value: 91
+      objectReference: {fileID: 0}
+    - target: {fileID: 4414595874896966523, guid: c91080b2aeed9cf4182c9369bc25aca7,
+        type: 3}
+      propertyPath: m_FontData.m_FontStyle
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4414595874896966523, guid: c91080b2aeed9cf4182c9369bc25aca7,
+        type: 3}
+      propertyPath: m_FontData.m_VerticalOverflow
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4414595874896966523, guid: c91080b2aeed9cf4182c9369bc25aca7,
+        type: 3}
+      propertyPath: m_FontData.m_HorizontalOverflow
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4414595874928455465, guid: c91080b2aeed9cf4182c9369bc25aca7,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
