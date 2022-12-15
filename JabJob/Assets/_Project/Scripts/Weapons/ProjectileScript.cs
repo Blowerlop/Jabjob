@@ -11,11 +11,17 @@ public class ProjectileScript : MonoBehaviour
     /// <summary>
     /// Initialize se bullet
     /// </summary>
-    public void Init(Vector3 _target,float disp)
+    public void Init(Vector3 _target, float disp)
     {
         target = _target;
         transform.LookAt(target);
         RandomizeRotation(disp);
+        StartCoroutine(DestroyCD());
+    }
+    public void Init(float disp)
+    {
+        RandomizeRotation(disp);
+        StartCoroutine(DestroyCD());
     }
 
     // Update is called once per frame
@@ -29,6 +35,15 @@ public class ProjectileScript : MonoBehaviour
     /// </summary>
     public void RandomizeRotation(float disp)
     {
-        transform.Rotate(new Vector3(Random.Range(-disp,disp), Random.Range(-disp, disp), 0),Space.Self);
+        transform.Rotate(new Vector3(Random.Range(-disp, disp), Random.Range(-disp, disp), 0), Space.Self);
+    }
+
+    /// <summary>
+    /// Destroy the GameObject after 10sec
+    /// </summary>
+    public IEnumerator DestroyCD()
+    {
+        yield return new WaitForSeconds(10);
+        Destroy(gameObject);
     }
 }

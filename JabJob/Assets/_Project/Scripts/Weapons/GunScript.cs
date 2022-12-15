@@ -22,12 +22,11 @@ public class GunScript : MonoBehaviour
 
     void Start()
     {
-        gun = Instantiate(actualWeapon.model,playerCamera.transform).GetComponent<WeaponScript>().origin;
-        maxAmmo = actualWeapon.maxAmmo;
-        ammo = maxAmmo;
-        shootRate = actualWeapon.shootRate;
+        //Init values
+        ChangeWeapon(actualWeapon);
         InputManager.instance.reload.AddListener(Reload);
         
+        //Set Cursor
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
     }
@@ -76,6 +75,22 @@ public class GunScript : MonoBehaviour
                 go.GetComponent<ProjectileScript>().Init(hit.point, actualWeapon.dispertion);
             }
         }
+        else 
+        {
+            if (actualWeapon.spray)
+            {
+                for (int i = 0; i < actualWeapon.bulletNumber; i++)
+                {
+                    GameObject go = Instantiate(projectilePrefab, gun.transform.position, gun.transform.rotation);
+                    go.GetComponent<ProjectileScript>().Init(actualWeapon.dispertion);
+                }
+            }
+            else
+            {
+                GameObject go = Instantiate(projectilePrefab, gun.transform.position, gun.transform.rotation);
+                go.GetComponent<ProjectileScript>().Init(actualWeapon.dispertion);
+            }
+        }
     }
 
     /// <summary>
@@ -83,9 +98,21 @@ public class GunScript : MonoBehaviour
     /// </summary>
     public void Reload()
     {
-        if(ammo < maxAmmo)
+        if (ammo < maxAmmo)
         {
             ammo = maxAmmo;
         }
+    }
+
+    /// <summary>
+    /// Change the actual weapon with <paramref name="newWeapon" />
+    /// </summary>
+    public void ChangeWeapon(WeaponSO newWeapon)
+    {
+        actualWeapon = newWeapon;
+        gun = Instantiate(actualWeapon.model, playerCamera.transform).GetComponent<WeaponScript>().origin;
+        maxAmmo = actualWeapon.maxAmmo;
+        ammo = maxAmmo;
+        shootRate = actualWeapon.shootRate;
     }
 }

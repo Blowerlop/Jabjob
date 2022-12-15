@@ -24,7 +24,7 @@ MonoBehaviour:
   m_MinSize: {x: 300, y: 200}
   m_MaxSize: {x: 24288, y: 16192}
   vertical: 0
-  controlID: 47986
+  controlID: 738
 --- !u!114 &2
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -145,7 +145,7 @@ MonoBehaviour:
   m_MinSize: {x: 200, y: 200}
   m_MaxSize: {x: 16192, y: 16192}
   vertical: 1
-  controlID: 47987
+  controlID: 739
 --- !u!114 &4
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -170,7 +170,7 @@ MonoBehaviour:
   m_MinSize: {x: 200, y: 100}
   m_MaxSize: {x: 16192, y: 8096}
   vertical: 0
-  controlID: 47988
+  controlID: 740
 --- !u!114 &5
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -229,9 +229,9 @@ MonoBehaviour:
   m_SceneHierarchy:
     m_TreeViewState:
       scrollPos: {x: 0, y: 0}
-      m_SelectedIDs: 88160100
-      m_LastClickedID: 71304
-      m_ExpandedIDs: ae36f6ffae3bf6ff9c5df7ffba4ef8ff2ca3f8ff4ea3f8ff9eadf8ff4cb6f8ff38b7f8fff8b9f8ffaebbf8ff0abff8ffbcc3f8ff7665f9ffc266f9ff9077fcffe280fcff82c5fcffd80ffdff063cfeffd644feffc877feff5891feffb29efeff660cffff7c19ffff5c24fffff834ffffae3effff3642ffff5043ffffe657ffffc47cffff6c85ffffcc8affff088cffff4e8effffd0dbffff30fbfffff4ffffff767e0000ea880000508b00001a8d0000d693000036960000149b0000749d00002e9f000004b60000a0c5000074d50000f8d70000d21301000616010088160100
+      m_SelectedIDs: 6e6c0000
+      m_LastClickedID: 27758
+      m_ExpandedIDs: 14fbffff
       m_RenameOverlay:
         m_UserAcceptedRename: 0
         m_Name: 
@@ -511,9 +511,9 @@ MonoBehaviour:
   m_PlayAudio: 0
   m_AudioPlay: 0
   m_Position:
-    m_Target: {x: -18.354626, y: 2.2482204, z: 5.7186427}
+    m_Target: {x: -15.183407, y: -6.896305, z: 2.3090744}
     speed: 2
-    m_Value: {x: -18.354626, y: 2.2482204, z: 5.7186427}
+    m_Value: {x: -15.183407, y: -6.896305, z: 2.3090744}
   m_RenderMode: 0
   m_CameraMode:
     drawMode: 0
@@ -560,13 +560,13 @@ MonoBehaviour:
     m_GridAxis: 1
     m_gridOpacity: 0.5
   m_Rotation:
-    m_Target: {x: 0.09531015, y: -0.5554826, z: 0.06427603, w: 0.8235764}
+    m_Target: {x: 0.21000934, y: -0.5662016, z: 0.15196264, w: 0.78248}
     speed: 2
-    m_Value: {x: -0.09531015, y: 0.5554826, z: -0.064276025, w: -0.82357633}
+    m_Value: {x: -0.21000934, y: 0.5662016, z: -0.15196264, w: -0.78248}
   m_Size:
-    m_Target: 9.7546625
+    m_Target: 12.265728
     speed: 2
-    m_Value: 9.7546625
+    m_Value: 12.265728
   m_Ortho:
     m_Target: 0
     speed: 2
@@ -3385,22 +3385,22 @@ MonoBehaviour:
     m_SkipHidden: 0
     m_SearchArea: 1
     m_Folders:
-    - Assets/_Project/Data/Weapons
+    - Assets/_Project/Scripts/Weapons
     m_Globs: []
     m_OriginalText: 
   m_ViewMode: 1
   m_StartGridSize: 53
   m_LastFolders:
-  - Assets/_Project/Data/Weapons
+  - Assets/_Project/Scripts/Weapons
   m_LastFoldersGridSize: 53
   m_LastProjectPath: C:\Jabjob\JabJob
   m_LockTracker:
     m_IsLocked: 1
   m_FolderTreeState:
-    scrollPos: {x: 0, y: 187}
-    m_SelectedIDs: 681c0100
-    m_LastClickedID: 72808
-    m_ExpandedIDs: 00000000d06a0000d66a00009e6c0000a06c0000aa6c0000de6c00004a72000040730000480c0100740c0100200f010000ca9a3b
+    scrollPos: {x: 0, y: 280.49792}
+    m_SelectedIDs: 226d0000
+    m_LastClickedID: 27938
+    m_ExpandedIDs: 000000000e6d0000106d0000126d0000146d0000166d0000186d00001a6d00001c6d00001e6d0000206d0000226d000000ca9a3b
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -3428,7 +3428,7 @@ MonoBehaviour:
     scrollPos: {x: 0, y: 0}
     m_SelectedIDs: 
     m_LastClickedID: 0
-    m_ExpandedIDs: 00000000d06a0000d66a00009e6c0000a06c0000aa6c0000de6c00004a72000040730000480c0100740c0100200f010000ca9a3b
+    m_ExpandedIDs: 000000000e6d0000106d0000126d0000146d0000166d0000186d00001a6d00001c6d00001e6d0000206d0000226d000000ca9a3b
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -3453,9 +3453,9 @@ MonoBehaviour:
       m_Icon: {fileID: 0}
       m_ResourceFile: 
   m_ListAreaState:
-    m_SelectedInstanceIDs: 88160100
-    m_LastClickedInstanceID: 71304
-    m_HadKeyboardFocusLastEvent: 1
+    m_SelectedInstanceIDs: 6e6c0000
+    m_LastClickedInstanceID: 27758
+    m_HadKeyboardFocusLastEvent: 0
     m_ExpandedInstanceIDs: c62300001c0c0100
     m_RenameOverlay:
       m_UserAcceptedRename: 0
@@ -3607,7 +3607,7 @@ MonoBehaviour:
   m_MinSize: {x: 100, y: 200}
   m_MaxSize: {x: 8096, y: 16192}
   vertical: 1
-  controlID: 47929
+  controlID: 710
 --- !u!114 &19
 MonoBehaviour:
   m_ObjectHideFlags: 52
