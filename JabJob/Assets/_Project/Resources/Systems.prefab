@@ -45,13 +45,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8fa9232b4efdff1498653a4ba2002870, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-<<<<<<< HEAD
   move: {x: 0, y: 0}
   look: {x: 0, y: 0}
   isJumping: 0
   isDashing: 0
-=======
->>>>>>> main
 --- !u!114 &1114292191266661292
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -77,7 +74,6 @@ MonoBehaviour:
   m_ControlsChangedEvent:
     m_PersistentCalls:
       m_Calls: []
-<<<<<<< HEAD
   m_ActionEvents:
   - m_PersistentCalls:
       m_Calls: []
@@ -139,9 +135,6 @@ MonoBehaviour:
       m_Calls: []
     m_ActionId: 41cfab5c-3bb3-4e48-88ed-1b62a1f61e75
     m_ActionName: UI/TrackedDeviceOrientation
-=======
-  m_ActionEvents: []
->>>>>>> main
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
   m_DefaultActionMap: Player
@@ -156,7 +149,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8418912308833563418}
-  - component: {fileID: 1105277331005746878}
   m_Layer: 0
   m_Name: Systems
   m_TagString: Untagged
@@ -180,15 +172,3 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1105277331005746878
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7247468679693057073}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3a7566d34c8929c4da98fc43f507131b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
