@@ -2,7 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+<<<<<<< HEAD
 using static UnityEngine.InputSystem.InputAction;
+=======
+>>>>>>> main
 
 public class InputManager : MonoBehaviour
 {
@@ -18,9 +21,12 @@ public class InputManager : MonoBehaviour
 
     #region Variables
     public Vector2 move;
+<<<<<<< HEAD
     public Vector2 look;
     public bool isJumping;
     public bool isDashing;
+=======
+>>>>>>> main
     #endregion
 
 
@@ -29,6 +35,7 @@ public class InputManager : MonoBehaviour
     {
         move = inputValue.Get<Vector2>();
     }
+<<<<<<< HEAD
 
     public void OnLook(InputValue inputValue)
     {
@@ -46,5 +53,7 @@ public class InputManager : MonoBehaviour
     {
         isDashing = true;
     }
+=======
+>>>>>>> main
     #endregion
 }
