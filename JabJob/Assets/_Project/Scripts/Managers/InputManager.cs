@@ -1,8 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.InputSystem;
-using static UnityEngine.InputSystem.InputAction;
 
 public class InputManager : MonoBehaviour
 {
@@ -13,14 +13,14 @@ public class InputManager : MonoBehaviour
     {
         instance = this;
     }
-
     #endregion
 
 
     #region Variables
     public Vector2 move;
     public Vector2 look;
-    public bool isJumping;
+    public bool isJumping, shoot;
+    public UnityEvent reload;
     public bool isDashing;
     #endregion
 
@@ -37,10 +37,23 @@ public class InputManager : MonoBehaviour
         look.y *= -1;
     }
 
-    public void OnJump(InputValue inputValue)
+    public void OnJump()
     {
-        //isJumping = inputValue.Get<CallbackContext>().started;
         isJumping = true;
+    }
+
+    public void OnFire()
+    {
+        shoot = true;
+    }
+    public void OnUnFire()
+    {
+        shoot = false;
+    }
+
+    public void OnReload()
+    {
+        reload.Invoke();
     }
 
     public void OnDash()
