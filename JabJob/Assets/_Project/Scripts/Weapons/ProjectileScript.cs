@@ -9,7 +9,7 @@ public class ProjectileScript : MonoBehaviour
     float speed;
 
     /// <summary>
-    /// Initialize se bullet
+    /// Initialize bullet
     /// </summary>
     public void Init(Vector3 _target, float disp)
     {
@@ -44,6 +44,6 @@ public class ProjectileScript : MonoBehaviour
     public IEnumerator DestroyCD()
     {
         yield return new WaitForSeconds(10);
-        Destroy(gameObject);
+        ObjectPoolingManager.instance.ReturnGameObject(gameObject);
     }
 }

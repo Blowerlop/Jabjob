@@ -65,13 +65,17 @@ public class GunScript : MonoBehaviour
             {
                 for (int i = 0; i < actualWeapon.bulletNumber; i++)
                 {
-                    GameObject go = Instantiate(projectilePrefab, gun.transform.position, Quaternion.identity);
+                    GameObject go = ObjectPoolingManager.instance.GetObject();
+                    go.transform.position = gun.transform.position;
+                    go.transform.rotation = Quaternion.identity;
                     go.GetComponent<ProjectileScript>().Init(hit.point, actualWeapon.dispertion);
                 }
             }
             else
             {
-                GameObject go = Instantiate(projectilePrefab, gun.transform.position, Quaternion.identity);
+                GameObject go = ObjectPoolingManager.instance.GetObject();
+                go.transform.position = gun.transform.position;
+                go.transform.rotation = Quaternion.identity;
                 go.GetComponent<ProjectileScript>().Init(hit.point, actualWeapon.dispertion);
             }
         }
@@ -81,13 +85,17 @@ public class GunScript : MonoBehaviour
             {
                 for (int i = 0; i < actualWeapon.bulletNumber; i++)
                 {
-                    GameObject go = Instantiate(projectilePrefab, gun.transform.position, gun.transform.rotation);
+                    GameObject go = ObjectPoolingManager.instance.GetObject();
+                    go.transform.position = gun.transform.position;
+                    go.transform.rotation = gun.transform.rotation;
                     go.GetComponent<ProjectileScript>().Init(actualWeapon.dispertion);
                 }
             }
             else
             {
-                GameObject go = Instantiate(projectilePrefab, gun.transform.position, gun.transform.rotation);
+                GameObject go = ObjectPoolingManager.instance.GetObject();
+                go.transform.position = gun.transform.position;
+                go.transform.rotation = gun.transform.rotation;
                 go.GetComponent<ProjectileScript>().Init(actualWeapon.dispertion);
             }
         }
