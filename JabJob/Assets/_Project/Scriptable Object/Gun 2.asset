@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: add0563176c33a543a516645daac6c35, type: 3}
+  m_Name: Gun 2
+  m_EditorClassIdentifier: 
+  ID: 1
+  weaponName: AK
+  maxAmmo: 40
+  shootRate: 1
+  dispertion: 10
+  riffle: 1
+  model: {fileID: 4396829007452461331, guid: c929dc1e0dce0f4419b1981105caa629, type: 3}
+  spray: 0
+  bulletNumber: 0
