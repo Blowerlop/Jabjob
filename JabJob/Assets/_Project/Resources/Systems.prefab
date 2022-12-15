@@ -48,6 +48,10 @@ MonoBehaviour:
   move: {x: 0, y: 0}
   look: {x: 0, y: 0}
   isJumping: 0
+  shoot: 0
+  reload:
+    m_PersistentCalls:
+      m_Calls: []
   isDashing: 0
 --- !u!114 &1114292191266661292
 MonoBehaviour:

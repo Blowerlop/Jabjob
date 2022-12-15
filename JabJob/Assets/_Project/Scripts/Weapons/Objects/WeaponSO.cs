@@ -28,13 +28,15 @@ public class WeaponSO : ScriptableObject
     [Tooltip(@"Weapon 3D model")]
     public GameObject model;
 
-    [HideInInspector, Tooltip(@"If weapons shoot multiple bullets")]
+    //[HideInInspector, Tooltip(@"If weapons shoot multiple bullets")]
     public bool spray;
-    [HideInInspector, Tooltip(@"If weapons shoot multiple bullets")]
+    //[HideInInspector, Tooltip(@"If weapons shoot multiple bullets")]
     public int bulletNumber;
 
     public GunScript gun;
 }
+
+/*
 [CustomEditor(typeof(WeaponSO))]
 public class MyScriptEditor : Editor
 {
@@ -49,4 +51,4 @@ public class MyScriptEditor : Editor
             myScript.bulletNumber = EditorGUILayout.IntSlider("Bullet Number",myScript.bulletNumber,1,30);
 
     }
-}
+}*/

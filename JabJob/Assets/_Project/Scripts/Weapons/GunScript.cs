@@ -20,6 +20,8 @@ public class GunScript : MonoBehaviour
 
     bool canShoot = true;
 
+    [SerializeField] private Camera _camera;
+
     void Start()
     {
         //Init values
@@ -58,7 +60,7 @@ public class GunScript : MonoBehaviour
     public void Shoot()
     {
         RaycastHit hit;
-        Ray ray = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0.5f));
+        Ray ray = _camera.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0.5f));
         if (Physics.Raycast(ray, out hit, range, layerToAim))
         {
             if (actualWeapon.spray)
