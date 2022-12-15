@@ -2,40 +2,90 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+
 public class GunScript : MonoBehaviour
 {
-    [SerializeField]
-    GameObject gun, projectilePrefab;
+    public WeaponSO actualWeapon;
 
     [SerializeField]
-    int range, ammo;
+    GameObject gun, projectilePrefab, playerCamera;
+
+    [SerializeField]
+    int range, ammo, maxAmmo;
+
+    float nextShoot, shootRate;
 
     [SerializeField]
     LayerMask layerToAim;
 
-    // Start is called before the first frame update
+    bool canShoot = true;
+
     void Start()
     {
+        gun = Instantiate(actualWeapon.model,playerCamera.transform).GetComponent<WeaponScript>().origin;
+        maxAmmo = actualWeapon.maxAmmo;
+        ammo = maxAmmo;
+        shootRate = actualWeapon.shootRate;
+        InputManager.instance.reload.AddListener(Reload);
         
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
     }
 
-    // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.A))
+        if (InputManager.instance.shoot && (actualWeapon.riffle || canShoot))
         {
-            Shoot();
+            if(Time.time >= nextShoot && ammo >0)
+            {
+                if (!actualWeapon.riffle)
+                {
+                    canShoot = false;
+                }
+                nextShoot = Time.time + shootRate;
+                ammo--;
+                Shoot();
+            }
         }
+        if (!InputManager.instance.shoot)
+        {
+            canShoot = true;
+        }    
     }
 
+    /// <summary>
+    /// Shoot and instanciate the projectile in term of the actual weapon 
+    /// </summary>
     public void Shoot()
     {
         RaycastHit hit;
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        if (Physics.Raycast(ray,out hit, range, layerToAim))
+        Ray ray = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0.5f));
+        if (Physics.Raycast(ray, out hit, range, layerToAim))
         {
-            GameObject go = Instantiate(projectilePrefab, gun.transform.position, Quaternion.identity);
-            go.GetComponent<ProjectileScript>().Init(hit.point);
+            if (actualWeapon.spray)
+            {
+                for (int i = 0; i < actualWeapon.bulletNumber; i++)
+                {
+                    GameObject go = Instantiate(projectilePrefab, gun.transform.position, Quaternion.identity);
+                    go.GetComponent<ProjectileScript>().Init(hit.point, actualWeapon.dispertion);
+                }
+            }
+            else
+            {
+                GameObject go = Instantiate(projectilePrefab, gun.transform.position, Quaternion.identity);
+                go.GetComponent<ProjectileScript>().Init(hit.point, actualWeapon.dispertion);
+            }
+        }
+    }
+
+    /// <summary>
+    /// Reload the weapon 
+    /// </summary>
+    public void Reload()
+    {
+        if(ammo < maxAmmo)
+        {
+            ammo = maxAmmo;
         }
     }
 }

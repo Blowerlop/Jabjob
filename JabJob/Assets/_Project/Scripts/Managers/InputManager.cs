@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.InputSystem;
 
 public class InputManager : MonoBehaviour
@@ -18,7 +19,8 @@ public class InputManager : MonoBehaviour
     #region Variables
     public Vector2 move;
     public Vector2 look;
-    public bool isJumping;
+    public bool isJumping, shoot;
+    public UnityEvent reload;
     #endregion
 
 
@@ -37,6 +39,22 @@ public class InputManager : MonoBehaviour
     public void OnJump()
     {
         isJumping = true;
+    }
+
+    public void OnFire()
+    {
+        shoot = true;
+        Debug.Log(shoot);
+    }
+    public void OnUnFire()
+    {
+        shoot = false;
+        Debug.Log(shoot);
+    }
+
+    public void OnReload()
+    {
+        reload.Invoke();
     }
     #endregion
 }
