@@ -16,7 +16,7 @@ namespace _Project.Scripts.Managers
             GameScene
         }
 
-        public static Text loadText;
+        public static Slider loadSlider;
         
         #endregion
 
@@ -74,9 +74,7 @@ namespace _Project.Scripts.Managers
                 {
                     await Task.Delay(100);
                     float loadingPercentage = newScene.progress / 0.9f * 100.0f;
-                    loadText.text = loadingPercentage + "%";
-            
-            
+                    loadSlider.value = loadingPercentage / 100f;
             
                 } while (newScene.progress < 0.9f);
         
