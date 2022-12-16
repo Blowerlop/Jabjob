@@ -45,6 +45,7 @@ public class PlayerCameraController : NetworkBehaviour
     }
     #endregion
 
+
     #region Methods
     private void PerfomCameraRotation()
     {
