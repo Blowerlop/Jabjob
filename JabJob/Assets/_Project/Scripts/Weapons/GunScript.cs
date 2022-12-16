@@ -48,8 +48,8 @@ public class GunScript : NetworkBehaviour
                 }
                 nextShoot = Time.time + shootRate;
                 ammo--;
-                LocalShoot();
-                ShootServerRpc();
+                LocalShoot(gun.transform.position, gun.transform.rotation);
+                ShootServerRpc(gun.transform.position, gun.transform.rotation);
             }
         }
         if (!InputManager.instance.shoot)
@@ -59,22 +59,22 @@ public class GunScript : NetworkBehaviour
     }
 
     [ServerRpc]
-    private void ShootServerRpc()
+    private void ShootServerRpc(Vector3 position, Quaternion rotation)
     {
-        ShootClientRpc();
+        ShootClientRpc(position, rotation);
     }
 
 
     [ClientRpc]
-    private void ShootClientRpc()
+    private void ShootClientRpc(Vector3 position, Quaternion rotation)
     {
-        if (IsOwner == false) LocalShoot();
+        if (IsOwner == false) LocalShoot(position, rotation);
     }
 
     /// <summary>
     /// Shoot and instanciate the projectile in term of the actual weapon 
     /// </summary>
-    public void LocalShoot()
+    public void LocalShoot(Vector3 position, Quaternion rotation)
     {
         RaycastHit hit;
         Ray ray = _camera.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0.5f));
@@ -85,16 +85,16 @@ public class GunScript : NetworkBehaviour
                 for (int i = 0; i < actualWeapon.bulletNumber; i++)
                 {
                     GameObject go = ObjectPoolingManager.instance.GetObject();
-                    go.transform.position = gun.transform.position;
-                    go.transform.rotation = Quaternion.identity;
+                    go.transform.position = position;
+                    go.transform.rotation = rotation;
                     go.GetComponent<ProjectileScript>().Init(hit.point, actualWeapon.dispertion);
                 }
             }
             else
             {
                 GameObject go = ObjectPoolingManager.instance.GetObject();
-                go.transform.position = gun.transform.position;
-                go.transform.rotation = Quaternion.identity;
+                go.transform.position = position;
+                go.transform.rotation = rotation;
                 go.GetComponent<ProjectileScript>().Init(hit.point, actualWeapon.dispertion);
             }
         }
@@ -105,16 +105,16 @@ public class GunScript : NetworkBehaviour
                 for (int i = 0; i < actualWeapon.bulletNumber; i++)
                 {
                     GameObject go = ObjectPoolingManager.instance.GetObject();
-                    go.transform.position = gun.transform.position;
-                    go.transform.rotation = gun.transform.rotation;
+                    go.transform.position = position;
+                    go.transform.rotation = rotation;
                     go.GetComponent<ProjectileScript>().Init(actualWeapon.dispertion);
                 }
             }
             else
             {
                 GameObject go = ObjectPoolingManager.instance.GetObject();
-                go.transform.position = gun.transform.position;
-                go.transform.rotation = gun.transform.rotation;
+                go.transform.position = position;
+                go.transform.rotation = rotation;
                 go.GetComponent<ProjectileScript>().Init(actualWeapon.dispertion);
             }
         }

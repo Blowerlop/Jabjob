@@ -1,18 +1,36 @@
+using Cinemachine;
 using System.Collections;
 using System.Collections.Generic;
+using System.Globalization;
 using UnityEngine;
 
 public class WeaponManager : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+    #region Variables
+    [SerializeField] private WeaponSO _defaultWeapon;
+    private WeaponSO _currentWeapon;
+    [SerializeField] private Transform _weaponHandler;
+    #endregion
+
+
+    #region Updates
+    private void Start()
     {
-        
+        EquipWeapon(_defaultWeapon);
+    }
+    #endregion
+
+    #region Methods
+    private void EquipWeapon(WeaponSO weapon)
+    {
+        UnequipWeapon();
+        _currentWeapon = Instantiate(weapon, _weaponHandler);
+        Debug.Log("Equipping Weapon !");
     }
 
-    // Update is called once per frame
-    void Update()
+    private void UnequipWeapon()
     {
-        
+        Destroy(_currentWeapon);
     }
+    #endregion
 }
