@@ -21,6 +21,10 @@ public class InputManager : MonoBehaviour
     public Vector2 look;
     public bool isJumping, shoot;
     public UnityEvent reload;
+<<<<<<< HEAD
+=======
+    public bool isDashing;
+>>>>>>> main
     #endregion
 
 
@@ -44,17 +48,31 @@ public class InputManager : MonoBehaviour
     public void OnFire()
     {
         shoot = true;
+<<<<<<< HEAD
         Debug.Log(shoot);
+=======
+>>>>>>> main
     }
     public void OnUnFire()
     {
         shoot = false;
+<<<<<<< HEAD
         Debug.Log(shoot);
+=======
+>>>>>>> main
     }
 
     public void OnReload()
     {
         reload.Invoke();
     }
+<<<<<<< HEAD
+=======
+
+    public void OnDash()
+    {
+        isDashing = true;
+    }
+>>>>>>> main
     #endregion
 }

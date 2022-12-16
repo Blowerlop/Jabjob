@@ -1,9 +1,17 @@
 using System.Collections;
 using System.Collections.Generic;
+<<<<<<< HEAD
 using UnityEngine;
 
 
 public class GunScript : MonoBehaviour
+=======
+using Unity.Netcode;
+using UnityEngine;
+
+
+public class GunScript : NetworkBehaviour
+>>>>>>> main
 {
     public WeaponSO actualWeapon;
 
@@ -20,6 +28,11 @@ public class GunScript : MonoBehaviour
 
     bool canShoot = true;
 
+<<<<<<< HEAD
+=======
+    [SerializeField] private Camera _camera;
+
+>>>>>>> main
     void Start()
     {
         //Init values
@@ -33,6 +46,11 @@ public class GunScript : MonoBehaviour
 
     void Update()
     {
+<<<<<<< HEAD
+=======
+        if (IsOwner == false) return;
+
+>>>>>>> main
         if (InputManager.instance.shoot && (actualWeapon.riffle || canShoot))
         {
             if(Time.time >= nextShoot && ammo >0)
@@ -43,7 +61,12 @@ public class GunScript : MonoBehaviour
                 }
                 nextShoot = Time.time + shootRate;
                 ammo--;
+<<<<<<< HEAD
                 Shoot();
+=======
+                LocalShoot();
+                ShootServerRpc();
+>>>>>>> main
             }
         }
         if (!InputManager.instance.shoot)
@@ -52,6 +75,7 @@ public class GunScript : MonoBehaviour
         }    
     }
 
+<<<<<<< HEAD
     /// <summary>
     /// Shoot and instanciate the projectile in term of the actual weapon 
     /// </summary>
@@ -59,6 +83,28 @@ public class GunScript : MonoBehaviour
     {
         RaycastHit hit;
         Ray ray = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0.5f));
+=======
+    [ServerRpc]
+    private void ShootServerRpc()
+    {
+        ShootClientRpc();
+    }
+
+
+    [ClientRpc]
+    private void ShootClientRpc()
+    {
+        if (IsOwner == false) LocalShoot();
+    }
+
+    /// <summary>
+    /// Shoot and instanciate the projectile in term of the actual weapon 
+    /// </summary>
+    public void LocalShoot()
+    {
+        RaycastHit hit;
+        Ray ray = _camera.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0.5f));
+>>>>>>> main
         if (Physics.Raycast(ray, out hit, range, layerToAim))
         {
             if (actualWeapon.spray)
