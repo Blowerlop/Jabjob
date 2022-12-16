@@ -4,7 +4,7 @@ using Unity.Netcode;
 using UnityEngine;
 
 
-public class MovementController : NetworkBehaviour
+public class PlayerMovementController : NetworkBehaviour
 {
     #region Variables
     [Header("Movements")]
