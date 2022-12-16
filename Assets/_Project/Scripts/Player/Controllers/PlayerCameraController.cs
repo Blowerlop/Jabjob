@@ -9,12 +9,17 @@ public class PlayerCameraController : NetworkBehaviour
 {
     #region Variables
     [Header("Camera")]
-    [SerializeField] private GameObject mainCamera;
-    private CinemachineVirtualCamera _cinemachineCamera;
-    [SerializeField] private Transform _cameraTarget;
     [SerializeField] private float _sensitivity = 0.2f;
     [SerializeField] private float _threshold = 0.001f;
     float _cinemachineTargetPitch;
+
+    [Header("References")]
+    [SerializeField] private GameObject mainCamera;
+    private CinemachineVirtualCamera _cinemachineCamera;
+    [SerializeField] private Transform _cameraTarget;
+
+    [Header("Multiplayer")]
+    [SerializeField] private bool isMultiplayer = true;
 
     #endregion
 
@@ -27,6 +32,8 @@ public class PlayerCameraController : NetworkBehaviour
 
     private void Start()
     {
+        if (isMultiplayer == false) return;
+
         if (IsOwner == false)
         {
             _cinemachineCamera.Priority = 0;

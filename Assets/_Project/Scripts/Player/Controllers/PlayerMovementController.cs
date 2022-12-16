@@ -28,6 +28,9 @@ public class PlayerMovementController : NetworkBehaviour
 
     [Header("References")]
     private CharacterController _characterController;
+
+    [Header("Multiplayer")]
+    [SerializeField] private bool isMultiplayer = true;
     #endregion
 
 
@@ -39,6 +42,7 @@ public class PlayerMovementController : NetworkBehaviour
 
     private void Start()
     {
+        if (isMultiplayer == false) return;
         if (IsOwner == false) enabled = false;
     }
 
