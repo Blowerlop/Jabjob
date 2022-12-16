@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c882b4aaa4089bf4aa28b25d333fb47d, type: 3}
+  m_Name: Riffle
+  m_EditorClassIdentifier: 
+  ID: 3
+  weaponName: Riffle
+  maxAmmo: 25
+  shootRate: 0.11
+  dispertion: 1.4
+  riffle: 1
+  model: {fileID: 8253399543442144797, guid: 977ebded5db176d41abf209c430690fe, type: 3}
+  spray: 0
+  bulletNumber: 0
+  gun: {fileID: 0}
