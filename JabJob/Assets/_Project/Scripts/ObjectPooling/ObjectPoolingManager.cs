@@ -21,10 +21,6 @@ public class ObjectPoolingManager : MonoBehaviour
             objects.Add(go);
             go.SetActive(false);
         }
-        GetObject();
-        GetObject();
-        ReturnGameObject(GetObject());
-        GetObject();
     }
 
     /// <summary>

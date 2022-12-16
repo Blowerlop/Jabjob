@@ -1,9 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
 
 
-public class GunScript : MonoBehaviour
+public class GunScript : NetworkBehaviour
 {
     public WeaponSO actualWeapon;
 
@@ -20,6 +21,8 @@ public class GunScript : MonoBehaviour
 
     bool canShoot = true;
 
+    [SerializeField] private Camera _camera;
+
     void Start()
     {
         //Init values
@@ -33,6 +36,8 @@ public class GunScript : MonoBehaviour
 
     void Update()
     {
+        if (IsOwner == false) return;
+
         if (InputManager.instance.shoot && (actualWeapon.riffle || canShoot))
         {
             if(Time.time >= nextShoot && ammo >0)
@@ -43,7 +48,8 @@ public class GunScript : MonoBehaviour
                 }
                 nextShoot = Time.time + shootRate;
                 ammo--;
-                Shoot();
+                LocalShoot();
+                ShootServerRpc();
             }
         }
         if (!InputManager.instance.shoot)
@@ -52,13 +58,26 @@ public class GunScript : MonoBehaviour
         }    
     }
 
+    [ServerRpc]
+    private void ShootServerRpc()
+    {
+        ShootClientRpc();
+    }
+
+
+    [ClientRpc]
+    private void ShootClientRpc()
+    {
+        if (IsOwner == false) LocalShoot();
+    }
+
     /// <summary>
     /// Shoot and instanciate the projectile in term of the actual weapon 
     /// </summary>
-    public void Shoot()
+    public void LocalShoot()
     {
         RaycastHit hit;
-        Ray ray = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0.5f));
+        Ray ray = _camera.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0.5f));
         if (Physics.Raycast(ray, out hit, range, layerToAim))
         {
             if (actualWeapon.spray)

@@ -167,3 +167,149 @@ Received Import Request.
   path: Assets/_Project/Arts/Model/Gun.fbx
   artifactKey: Guid(1f7dbf764b810d3498ac7af72eab7130) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
 Start importing Assets/_Project/Arts/Model/Gun.fbx using Guid(1f7dbf764b810d3498ac7af72eab7130) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '267bc6b1e0af8fe71e16b8a86a3a7533') in 0.697393 seconds 
+========================================================================
+Received Prepare
+Registering precompiled user dll's ...
+Registered in 0.007267 seconds.
+ArgumentException: An item with the same key has already been added. Key: 00000000000000000000000000000000
+  at System.Collections.Generic.Dictionary`2[TKey,TValue].TryInsert (TKey key, TValue value, System.Collections.Generic.InsertionBehavior behavior) [0x0015a] in <d6232873609549b8a045fa15811a5bd3>:0 
+  at System.Collections.Generic.Dictionary`2[TKey,TValue].Add (TKey key, TValue value) [0x00000] in <d6232873609549b8a045fa15811a5bd3>:0 
+  at System.Linq.Enumerable.ToDictionary[TSource,TKey] (TSource[] source, System.Func`2[T,TResult] keySelector, System.Collections.Generic.IEqualityComparer`1[T] comparer) [0x0001c] in <109e781b32ec464d8737a667de805742>:0 
+  at System.Linq.Enumerable.ToDictionary[TSource,TKey] (System.Collections.Generic.IEnumerable`1[T] source, System.Func`2[T,TResult] keySelector, System.Collections.Generic.IEqualityComparer`1[T] comparer) [0x00043] in <109e781b32ec464d8737a667de805742>:0 
+  at System.Linq.Enumerable.ToDictionary[TSource,TKey] (System.Collections.Generic.IEnumerable`1[T] source, System.Func`2[T,TResult] keySelector) [0x00000] in <109e781b32ec464d8737a667de805742>:0 
+  at UnityEditor.Scripting.ScriptCompilation.LoadingAssemblyDefinition.SetAllCustomScriptAssemblyReferenceJsonsContents (System.String[] paths, System.String[] contents) [0x00172] in <63965ae56af7489797f355b7c1211ab2>:0 
+UnityEngine.DebugLogHandler:Internal_LogException(Exception, Object)
+UnityEngine.DebugLogHandler:LogException(Exception, Object)
+UnityEngine.Logger:LogException(Exception, Object)
+UnityEngine.Debug:LogException(Exception)
+UnityEditor.Scripting.ScriptCompilation.EditorCompilationInterface:LogException(Exception)
+UnityEditor.Scripting.ScriptCompilation.EditorCompilationInterface:EmitExceptionsAsErrors(Exception[])
+UnityEditor.Scripting.ScriptCompilation.EditorCompilationInterface:SetAllCustomScriptAssemblyReferenceJsons(String[], String[])
+
+ArgumentException: An item with the same key has already been added. Key: 00000000000000000000000000000000
+  at System.Collections.Generic.Dictionary`2[TKey,TValue].TryInsert (TKey key, TValue value, System.Collections.Generic.InsertionBehavior behavior) [0x0015a] in <d6232873609549b8a045fa15811a5bd3>:0 
+  at System.Collections.Generic.Dictionary`2[TKey,TValue].Add (TKey key, TValue value) [0x00000] in <d6232873609549b8a045fa15811a5bd3>:0 
+  at System.Linq.Enumerable.ToDictionary[TSource,TKey] (TSource[] source, System.Func`2[T,TResult] keySelector, System.Collections.Generic.IEqualityComparer`1[T] comparer) [0x0001c] in <109e781b32ec464d8737a667de805742>:0 
+  at System.Linq.Enumerable.ToDictionary[TSource,TKey] (System.Collections.Generic.IEnumerable`1[T] source, System.Func`2[T,TResult] keySelector, System.Collections.Generic.IEqualityComparer`1[T] comparer) [0x00043] in <109e781b32ec464d8737a667de805742>:0 
+  at System.Linq.Enumerable.ToDictionary[TSource,TKey] (System.Collections.Generic.IEnumerable`1[T] source, System.Func`2[T,TResult] keySelector) [0x00000] in <109e781b32ec464d8737a667de805742>:0 
+  at UnityEditor.Scripting.ScriptCompilation.LoadingAssemblyDefinition.SetAllCustomScriptAssemblyReferenceJsonsContents (System.String[] paths, System.String[] contents) [0x00172] in <63965ae56af7489797f355b7c1211ab2>:0 
+UnityEngine.DebugLogHandler:Internal_LogException(Exception, Object)
+UnityEngine.DebugLogHandler:LogException(Exception, Object)
+UnityEngine.Logger:LogException(Exception, Object)
+UnityEngine.Debug:LogException(Exception)
+UnityEditor.Scripting.ScriptCompilation.EditorCompilationInterface:LogException(Exception)
+UnityEditor.Scripting.ScriptCompilation.EditorCompilationInterface:EmitExceptionsAsErrors(Exception[])
+UnityEditor.Scripting.ScriptCompilation.EditorCompilationInterface:SetAllCustomScriptAssemblyReferenceJsons(String[], String[])
+
+ArgumentException: An item with the same key has already been added. Key: 00000000000000000000000000000000
+  at System.Collections.Generic.Dictionary`2[TKey,TValue].TryInsert (TKey key, TValue value, System.Collections.Generic.InsertionBehavior behavior) [0x0015a] in <d6232873609549b8a045fa15811a5bd3>:0 
+  at System.Collections.Generic.Dictionary`2[TKey,TValue].Add (TKey key, TValue value) [0x00000] in <d6232873609549b8a045fa15811a5bd3>:0 
+  at System.Linq.Enumerable.ToDictionary[TSource,TKey] (TSource[] source, System.Func`2[T,TResult] keySelector, System.Collections.Generic.IEqualityComparer`1[T] comparer) [0x0001c] in <109e781b32ec464d8737a667de805742>:0 
+  at System.Linq.Enumerable.ToDictionary[TSource,TKey] (System.Collections.Generic.IEnumerable`1[T] source, System.Func`2[T,TResult] keySelector, System.Collections.Generic.IEqualityComparer`1[T] comparer) [0x00043] in <109e781b32ec464d8737a667de805742>:0 
+  at System.Linq.Enumerable.ToDictionary[TSource,TKey] (System.Collections.Generic.IEnumerable`1[T] source, System.Func`2[T,TResult] keySelector) [0x00000] in <109e781b32ec464d8737a667de805742>:0 
+  at UnityEditor.Scripting.ScriptCompilation.LoadingAssemblyDefinition.SetAllCustomScriptAssemblyReferenceJsonsContents (System.String[] paths, System.String[] contents) [0x00172] in <63965ae56af7489797f355b7c1211ab2>:0 
+UnityEngine.DebugLogHandler:Internal_LogException(Exception, Object)
+UnityEngine.DebugLogHandler:LogException(Exception, Object)
+UnityEngine.Logger:LogException(Exception, Object)
+UnityEngine.Debug:LogException(Exception)
+UnityEditor.Scripting.ScriptCompilation.EditorCompilationInterface:LogException(Exception)
+UnityEditor.Scripting.ScriptCompilation.EditorCompilationInterface:EmitExceptionsAsErrors(Exception[])
+UnityEditor.Scripting.ScriptCompilation.EditorCompilationInterface:SetAllCustomScriptAssemblyReferenceJsons(String[], String[])
+
+ArgumentException: An item with the same key has already been added. Key: 00000000000000000000000000000000
+  at System.Collections.Generic.Dictionary`2[TKey,TValue].TryInsert (TKey key, TValue value, System.Collections.Generic.InsertionBehavior behavior) [0x0015a] in <d6232873609549b8a045fa15811a5bd3>:0 
+  at System.Collections.Generic.Dictionary`2[TKey,TValue].Add (TKey key, TValue value) [0x00000] in <d6232873609549b8a045fa15811a5bd3>:0 
+  at System.Linq.Enumerable.ToDictionary[TSource,TKey] (TSource[] source, System.Func`2[T,TResult] keySelector, System.Collections.Generic.IEqualityComparer`1[T] comparer) [0x0001c] in <109e781b32ec464d8737a667de805742>:0 
+  at System.Linq.Enumerable.ToDictionary[TSource,TKey] (System.Collections.Generic.IEnumerable`1[T] source, System.Func`2[T,TResult] keySelector, System.Collections.Generic.IEqualityComparer`1[T] comparer) [0x00043] in <109e781b32ec464d8737a667de805742>:0 
+  at System.Linq.Enumerable.ToDictionary[TSource,TKey] (System.Collections.Generic.IEnumerable`1[T] source, System.Func`2[T,TResult] keySelector) [0x00000] in <109e781b32ec464d8737a667de805742>:0 
+  at UnityEditor.Scripting.ScriptCompilation.LoadingAssemblyDefinition.SetAllCustomScriptAssemblyReferenceJsonsContents (System.String[] paths, System.String[] contents) [0x00172] in <63965ae56af7489797f355b7c1211ab2>:0 
+UnityEngine.DebugLogHandler:Internal_LogException(Exception, Object)
+UnityEngine.DebugLogHandler:LogException(Exception, Object)
+UnityEngine.Logger:LogException(Exception, Object)
+UnityEngine.Debug:LogException(Exception)
+UnityEditor.Scripting.ScriptCompilation.EditorCompilationInterface:LogException(Exception)
+UnityEditor.Scripting.ScriptCompilation.EditorCompilationInterface:EmitExceptionsAsErrors(Exception[])
+UnityEditor.Scripting.ScriptCompilation.EditorCompilationInterface:SetAllCustomScriptAssemblyReferenceJsons(String[], String[])
+
+Begin MonoManager ReloadAssembly
+Symbol file LoadedFromMemory doesn't match image C:\Users\Girod Nathan\Desktop\Jabjob\Jabjob\JabJob\Library\PackageCache\com.unity.visualscripting@1.7.8\Editor\VisualScripting.Core\Dependencies\YamlDotNet\Unity.VisualScripting.YamlDotNet.dll
+Symbol file LoadedFromMemory doesn't match image C:\Users\Girod Nathan\Desktop\Jabjob\Jabjob\JabJob\Library\PackageCache\com.unity.visualscripting@1.7.8\Editor\VisualScripting.Core\Dependencies\DotNetZip\Unity.VisualScripting.IonicZip.dll
+Native extension for WindowsStandalone target not found
+Refreshing native plugins compatible for Editor in 0.91 ms, found 3 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+ArgumentException: An item with the same key has already been added. Key: 00000000000000000000000000000000
+  at System.Collections.Generic.Dictionary`2[TKey,TValue].TryInsert (TKey key, TValue value, System.Collections.Generic.InsertionBehavior behavior) [0x0015a] in <d6232873609549b8a045fa15811a5bd3>:0 
+  at System.Collections.Generic.Dictionary`2[TKey,TValue].Add (TKey key, TValue value) [0x00000] in <d6232873609549b8a045fa15811a5bd3>:0 
+  at System.Linq.Enumerable.ToDictionary[TSource,TKey] (TSource[] source, System.Func`2[T,TResult] keySelector, System.Collections.Generic.IEqualityComparer`1[T] comparer) [0x0001c] in <109e781b32ec464d8737a667de805742>:0 
+  at System.Linq.Enumerable.ToDictionary[TSource,TKey] (System.Collections.Generic.IEnumerable`1[T] source, System.Func`2[T,TResult] keySelector, System.Collections.Generic.IEqualityComparer`1[T] comparer) [0x00043] in <109e781b32ec464d8737a667de805742>:0 
+  at System.Linq.Enumerable.ToDictionary[TSource,TKey] (System.Collections.Generic.IEnumerable`1[T] source, System.Func`2[T,TResult] keySelector) [0x00000] in <109e781b32ec464d8737a667de805742>:0 
+  at UnityEditor.Scripting.ScriptCompilation.LoadingAssemblyDefinition.SetAllCustomScriptAssemblyReferenceJsonsContents (System.String[] paths, System.String[] contents) [0x00172] in <63965ae56af7489797f355b7c1211ab2>:0 
+UnityEngine.DebugLogHandler:Internal_LogException(Exception, Object)
+UnityEngine.DebugLogHandler:LogException(Exception, Object)
+UnityEngine.Logger:LogException(Exception, Object)
+UnityEngine.Debug:LogException(Exception)
+UnityEditor.Scripting.ScriptCompilation.EditorCompilationInterface:LogException(Exception)
+UnityEditor.Scripting.ScriptCompilation.EditorCompilationInterface:EmitExceptionsAsErrors(Exception[])
+UnityEditor.Scripting.ScriptCompilation.EditorCompilationInterface:SetAllCustomScriptAssemblyReferenceJsons(String[], String[])
+
+ArgumentException: An item with the same key has already been added. Key: 00000000000000000000000000000000
+  at System.Collections.Generic.Dictionary`2[TKey,TValue].TryInsert (TKey key, TValue value, System.Collections.Generic.InsertionBehavior behavior) [0x0015a] in <d6232873609549b8a045fa15811a5bd3>:0 
+  at System.Collections.Generic.Dictionary`2[TKey,TValue].Add (TKey key, TValue value) [0x00000] in <d6232873609549b8a045fa15811a5bd3>:0 
+  at System.Linq.Enumerable.ToDictionary[TSource,TKey] (TSource[] source, System.Func`2[T,TResult] keySelector, System.Collections.Generic.IEqualityComparer`1[T] comparer) [0x0001c] in <109e781b32ec464d8737a667de805742>:0 
+  at System.Linq.Enumerable.ToDictionary[TSource,TKey] (System.Collections.Generic.IEnumerable`1[T] source, System.Func`2[T,TResult] keySelector, System.Collections.Generic.IEqualityComparer`1[T] comparer) [0x00043] in <109e781b32ec464d8737a667de805742>:0 
+  at System.Linq.Enumerable.ToDictionary[TSource,TKey] (System.Collections.Generic.IEnumerable`1[T] source, System.Func`2[T,TResult] keySelector) [0x00000] in <109e781b32ec464d8737a667de805742>:0 
+  at UnityEditor.Scripting.ScriptCompilation.LoadingAssemblyDefinition.SetAllCustomScriptAssemblyReferenceJsonsContents (System.String[] paths, System.String[] contents) [0x00172] in <63965ae56af7489797f355b7c1211ab2>:0 
+UnityEngine.DebugLogHandler:Internal_LogException(Exception, Object)
+UnityEngine.DebugLogHandler:LogException(Exception, Object)
+UnityEngine.Logger:LogException(Exception, Object)
+UnityEngine.Debug:LogException(Exception)
+UnityEditor.Scripting.ScriptCompilation.EditorCompilationInterface:LogException(Exception)
+UnityEditor.Scripting.ScriptCompilation.EditorCompilationInterface:EmitExceptionsAsErrors(Exception[])
+UnityEditor.Scripting.ScriptCompilation.EditorCompilationInterface:SetAllCustomScriptAssemblyReferenceJsons(String[], String[])
+
+Mono: successfully reloaded assembly
+- Completed reload, in  1.076 seconds
+Domain Reload Profiling:
+	ReloadAssembly (1076ms)
+		BeginReloadAssembly (132ms)
+			ExecutionOrderSort (0ms)
+			DisableScriptedObjects (6ms)
+			BackupInstance (0ms)
+			ReleaseScriptingObjects (0ms)
+			CreateAndSetChildDomain (44ms)
+		EndReloadAssembly (865ms)
+			LoadAssemblies (87ms)
+			RebuildTransferFunctionScriptingTraits (0ms)
+			SetupTypeCache (199ms)
+			ReleaseScriptCaches (2ms)
+			RebuildScriptCaches (35ms)
+			SetupLoadedEditorAssemblies (448ms)
+				LogAssemblyErrors (0ms)
+				InitializePlatformSupportModulesInManaged (10ms)
+				SetLoadedEditorAssemblies (0ms)
+				RefreshPlugins (1ms)
+				BeforeProcessingInitializeOnLoad (107ms)
+				ProcessInitializeOnLoadAttributes (257ms)
+				ProcessInitializeOnLoadMethodAttributes (65ms)
+				AfterProcessingInitializeOnLoad (7ms)
+				EditorAssembliesLoaded (0ms)
+			ExecutionOrderSort2 (0ms)
+			AwakeInstancesAfterBackupRestoration (18ms)
+Platform modules already initialized, skipping
+Refreshing native plugins compatible for Editor in 2.62 ms, found 3 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Unloading 5409 Unused Serialized files (Serialized files now loaded: 0)
+Unloading 899 unused Assets / (0.8 MB). Loaded Objects now: 6574.
+Memory consumption went from 233.9 MB to 233.1 MB.
+Total: 4.426800 ms (FindLiveObjects: 0.570200 ms CreateObjectMapping: 0.184300 ms MarkObjects: 3.144400 ms  DeleteObjects: 0.526500 ms)
+
+AssetImportParameters requested are different than current active one (requested -> active):
+  custom:video-decoder-ogg-theora: a1e56fd34408186e4bbccfd4996cb3dc -> 
+  custom:container-muxer-webm: aa71ff27fc2769a1b78a27578f13a17b -> 
+  custom:container-demuxer-webm: 4f35f7cbe854078d1ac9338744f61a02 -> 
+  custom:video-encoder-webm-vp8: eb34c28f22e8b96e1ab97ce403110664 -> 
+  custom:audio-encoder-webm-vorbis: bf7c407c2cedff20999df2af8eb42d56 -> 
+  custom:framework-win-MediaFoundation: 216162199b28c13a410421893ffa2e32 -> 
+  custom:container-demuxer-ogg: 62fdf1f143b41e24485cea50d1cbac27 -> 
+  custom:video-decoder-webm-vp8: 9c59270c3fd7afecdb556c50c9e8de78 -> 
+  custom:audio-decoder-ogg-vorbis: bf7c407c2cedff20999df2af8eb42d56 -> 
