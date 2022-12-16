@@ -24,7 +24,8 @@ public class WeaponManager : MonoBehaviour
     private void EquipWeapon(WeaponSO weapon)
     {
         UnequipWeapon();
-        _currentWeapon = Instantiate(weapon, _weaponHandler);
+        Instantiate(weapon.model, _weaponHandler);
+        _currentWeapon = weapon;
         Debug.Log("Equipping Weapon !");
     }
 
