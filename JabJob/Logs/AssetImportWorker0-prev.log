@@ -16,11 +16,7 @@ C:/Jabjob/JabJob
 Logs/AssetImportWorker0.log
 -srvPort
 <<<<<<< HEAD
-<<<<<<< HEAD
 54419
-=======
-56697
->>>>>>> Weapons-Guillaume
 Successfully changed project path to: C:/Users/Girod Nathan/Desktop/Jabjob/Jabjob/JabJob
 C:/Users/Girod Nathan/Desktop/Jabjob/Jabjob/JabJob
 =======
@@ -58,7 +54,6 @@ C:/Jabjob/JabJob
     "memorysetup-temp-allocator-size-gi-baking-worker=262144"
     "memorysetup-temp-allocator-size-gfx=262144"
 <<<<<<< HEAD
-<<<<<<< HEAD
 Player connection [13572] Host "[IP] 10.1.20.22 [Port] 0 [Flags] 2 [Guid] 3967368796 [EditorId] 3967368796 [Version] 1048832 [Id] WindowsEditor(7,DESKTOP-4G08DBL) [Debug] 1 [PackageName] WindowsEditor [ProjectName] Editor" joined multi-casting on [225.0.0.222:54997]...
 
 Player connection [13572] Host "[IP] 10.1.20.22 [Port] 0 [Flags] 2 [Guid] 3967368796 [EditorId] 3967368796 [Version] 1048832 [Id] WindowsEditor(7,DESKTOP-4G08DBL) [Debug] 1 [PackageName] WindowsEditor [ProjectName] Editor" joined alternative multi-casting on [225.0.0.222:34997]...
@@ -72,13 +67,6 @@ Player connection [15364] Host "[IP] 10.1.20.184 [Port] 0 [Flags] 2 [Guid] 12580
 
 Refreshing native plugins compatible for Editor in 85.97 ms, found 3 plugins.
 >>>>>>> origin/Weapons-Guillaume
-=======
-Player connection [26392] Host "[IP] 10.1.20.22 [Port] 0 [Flags] 2 [Guid] 1822738260 [EditorId] 1822738260 [Version] 1048832 [Id] WindowsEditor(7,DESKTOP-4G08DBL) [Debug] 1 [PackageName] WindowsEditor [ProjectName] Editor" joined multi-casting on [225.0.0.222:54997]...
-
-Player connection [26392] Host "[IP] 10.1.20.22 [Port] 0 [Flags] 2 [Guid] 1822738260 [EditorId] 1822738260 [Version] 1048832 [Id] WindowsEditor(7,DESKTOP-4G08DBL) [Debug] 1 [PackageName] WindowsEditor [ProjectName] Editor" joined alternative multi-casting on [225.0.0.222:34997]...
-
-Refreshing native plugins compatible for Editor in 112.12 ms, found 3 plugins.
->>>>>>> Weapons-Guillaume
 Preloading 0 native plugins for Editor in 0.00 ms.
 Initialize engine version: 2021.3.15f1 (e8e88683f834)
 [Subsystems] Discovering subsystems at path C:/Program Files/Unity/Hub/Editor/2021.3.15f1/Editor/Data/Resources/UnitySubsystems
@@ -94,7 +82,6 @@ Initialize mono
 Mono path[0] = 'C:/Program Files/Unity/Hub/Editor/2021.3.15f1/Editor/Data/Managed'
 Mono path[1] = 'C:/Program Files/Unity/Hub/Editor/2021.3.15f1/Editor/Data/MonoBleedingEdge/lib/mono/unityjit-win32'
 Mono config path = 'C:/Program Files/Unity/Hub/Editor/2021.3.15f1/Editor/Data/MonoBleedingEdge/etc'
-<<<<<<< HEAD
 <<<<<<< HEAD
 Using monoOptions --debugger-agent=transport=dt_socket,embedding=1,server=y,suspend=n,address=127.0.0.1:56600
 Begin MonoManager ReloadAssembly
@@ -124,27 +111,11 @@ Domain Reload Profiling:
 	ReloadAssembly (544ms)
 		BeginReloadAssembly (58ms)
 >>>>>>> origin/Weapons-Guillaume
-=======
-Using monoOptions --debugger-agent=transport=dt_socket,embedding=1,server=y,suspend=n,address=127.0.0.1:56416
-Begin MonoManager ReloadAssembly
-Registering precompiled unity dll's ...
-Register platform support module: C:/Program Files/Unity/Hub/Editor/2021.3.15f1/Editor/Data/PlaybackEngines/WindowsStandaloneSupport/UnityEditor.WindowsStandalone.Extensions.dll
-Registered in 0.005138 seconds.
-Native extension for WindowsStandalone target not found
-Refreshing native plugins compatible for Editor in 122.62 ms, found 3 plugins.
-Preloading 0 native plugins for Editor in 0.00 ms.
-Mono: successfully reloaded assembly
-- Completed reload, in  0.610 seconds
-Domain Reload Profiling:
-	ReloadAssembly (611ms)
-		BeginReloadAssembly (62ms)
->>>>>>> Weapons-Guillaume
 			ExecutionOrderSort (0ms)
 			DisableScriptedObjects (0ms)
 			BackupInstance (0ms)
 			ReleaseScriptingObjects (0ms)
 			CreateAndSetChildDomain (1ms)
-<<<<<<< HEAD
 <<<<<<< HEAD
 		EndReloadAssembly (459ms)
 			LoadAssemblies (166ms)
@@ -153,19 +124,9 @@ Domain Reload Profiling:
 			ReleaseScriptCaches (0ms)
 			RebuildScriptCaches (20ms)
 			SetupLoadedEditorAssemblies (263ms)
-=======
-		EndReloadAssembly (452ms)
-			LoadAssemblies (60ms)
-			RebuildTransferFunctionScriptingTraits (0ms)
-			SetupTypeCache (88ms)
-			ReleaseScriptCaches (0ms)
-			RebuildScriptCaches (33ms)
-			SetupLoadedEditorAssemblies (287ms)
->>>>>>> Weapons-Guillaume
 				LogAssemblyErrors (0ms)
-				InitializePlatformSupportModulesInManaged (7ms)
+				InitializePlatformSupportModulesInManaged (6ms)
 				SetLoadedEditorAssemblies (0ms)
-<<<<<<< HEAD
 				RefreshPlugins (95ms)
 				BeforeProcessingInitializeOnLoad (1ms)
 				ProcessInitializeOnLoadAttributes (117ms)
@@ -186,12 +147,6 @@ Domain Reload Profiling:
 				ProcessInitializeOnLoadAttributes (95ms)
 				ProcessInitializeOnLoadMethodAttributes (37ms)
 >>>>>>> origin/Weapons-Guillaume
-=======
-				RefreshPlugins (123ms)
-				BeforeProcessingInitializeOnLoad (1ms)
-				ProcessInitializeOnLoadAttributes (118ms)
-				ProcessInitializeOnLoadMethodAttributes (38ms)
->>>>>>> Weapons-Guillaume
 				AfterProcessingInitializeOnLoad (0ms)
 				EditorAssembliesLoaded (0ms)
 			ExecutionOrderSort2 (0ms)
@@ -199,19 +154,14 @@ Domain Reload Profiling:
 Platform modules already initialized, skipping
 Registering precompiled user dll's ...
 <<<<<<< HEAD
-<<<<<<< HEAD
 Registered in 0.028334 seconds.
 =======
 Registered in 0.012187 seconds.
 >>>>>>> origin/Weapons-Guillaume
-=======
-Registered in 0.007755 seconds.
->>>>>>> Weapons-Guillaume
 Begin MonoManager ReloadAssembly
 Symbol file LoadedFromMemory doesn't match image C:\Jabjob\JabJob\Library\PackageCache\com.unity.visualscripting@1.7.8\Editor\VisualScripting.Core\Dependencies\YamlDotNet\Unity.VisualScripting.YamlDotNet.dll
 Symbol file LoadedFromMemory doesn't match image C:\Jabjob\JabJob\Library\PackageCache\com.unity.visualscripting@1.7.8\Editor\VisualScripting.Core\Dependencies\DotNetZip\Unity.VisualScripting.IonicZip.dll
 Native extension for WindowsStandalone target not found
-<<<<<<< HEAD
 <<<<<<< HEAD
 Refreshing native plugins compatible for Editor in 113.22 ms, found 3 plugins.
 Preloading 0 native plugins for Editor in 0.00 ms.
@@ -228,20 +178,10 @@ Mono: successfully reloaded assembly
 Domain Reload Profiling:
 	ReloadAssembly (1144ms)
 		BeginReloadAssembly (103ms)
-=======
-Refreshing native plugins compatible for Editor in 139.93 ms, found 3 plugins.
-Preloading 0 native plugins for Editor in 0.00 ms.
-Mono: successfully reloaded assembly
-- Completed reload, in  1.303 seconds
-Domain Reload Profiling:
-	ReloadAssembly (1303ms)
-		BeginReloadAssembly (95ms)
->>>>>>> Weapons-Guillaume
 			ExecutionOrderSort (0ms)
 			DisableScriptedObjects (5ms)
 			BackupInstance (0ms)
 			ReleaseScriptingObjects (0ms)
-<<<<<<< HEAD
 			CreateAndSetChildDomain (21ms)
 		EndReloadAssembly (938ms)
 			LoadAssemblies (85ms)
@@ -331,31 +271,12 @@ Domain Reload Profiling:
 				ProcessInitializeOnLoadAttributes (345ms)
 				ProcessInitializeOnLoadMethodAttributes (77ms)
 				AfterProcessingInitializeOnLoad (6ms)
-=======
-			CreateAndSetChildDomain (20ms)
-		EndReloadAssembly (1113ms)
-			LoadAssemblies (87ms)
-			RebuildTransferFunctionScriptingTraits (0ms)
-			SetupTypeCache (278ms)
-			ReleaseScriptCaches (1ms)
-			RebuildScriptCaches (60ms)
-			SetupLoadedEditorAssemblies (650ms)
-				LogAssemblyErrors (0ms)
-				InitializePlatformSupportModulesInManaged (4ms)
-				SetLoadedEditorAssemblies (0ms)
-				RefreshPlugins (140ms)
-				BeforeProcessingInitializeOnLoad (124ms)
-				ProcessInitializeOnLoadAttributes (304ms)
-				ProcessInitializeOnLoadMethodAttributes (71ms)
-				AfterProcessingInitializeOnLoad (7ms)
->>>>>>> Weapons-Guillaume
 				EditorAssembliesLoaded (0ms)
 			ExecutionOrderSort2 (0ms)
 			AwakeInstancesAfterBackupRestoration (5ms)
 Platform modules already initialized, skipping
 ========================================================================
 Worker process is ready to serve import requests
-<<<<<<< HEAD
 Launched and connected shader compiler UnityShaderCompiler.exe after 0.05 seconds
 Refreshing native plugins compatible for Editor in 1.51 ms, found 3 plugins.
 Preloading 0 native plugins for Editor in 0.00 ms.
@@ -363,15 +284,6 @@ Unloading 6540 Unused Serialized files (Serialized files now loaded: 0)
 Unloading 56 unused Assets / (0.8 MB). Loaded Objects now: 6986.
 Memory consumption went from 247.9 MB to 247.1 MB.
 Total: 8.017300 ms (FindLiveObjects: 0.619100 ms CreateObjectMapping: 0.218500 ms MarkObjects: 6.700500 ms  DeleteObjects: 0.472900 ms)
-=======
-Launched and connected shader compiler UnityShaderCompiler.exe after 0.04 seconds
-Refreshing native plugins compatible for Editor in 1.15 ms, found 3 plugins.
-Preloading 0 native plugins for Editor in 0.00 ms.
-Unloading 6830 Unused Serialized files (Serialized files now loaded: 0)
-Unloading 56 unused Assets / (0.8 MB). Loaded Objects now: 7278.
-Memory consumption went from 256.8 MB to 256.0 MB.
-Total: 5.524000 ms (FindLiveObjects: 0.611900 ms CreateObjectMapping: 0.489300 ms MarkObjects: 3.834500 ms  DeleteObjects: 0.586700 ms)
->>>>>>> Weapons-Guillaume
 
 AssetImportParameters requested are different than current active one (requested -> active):
   custom:video-decoder-ogg-theora: a1e56fd34408186e4bbccfd4996cb3dc -> 
@@ -385,7 +297,6 @@ AssetImportParameters requested are different than current active one (requested
   custom:audio-decoder-ogg-vorbis: bf7c407c2cedff20999df2af8eb42d56 -> 
 ========================================================================
 Received Import Request.
-<<<<<<< HEAD
   Time since last request: 58260.794874 seconds.
   path: Assets/_Project/PlayerInputAction.inputactions
   artifactKey: Guid(3f2679e558f96db42b5646c6794de6d1) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
@@ -2920,32 +2831,6 @@ Unloading 6702 Unused Serialized files (Serialized files now loaded: 0)
 Unloading 35 unused Assets / (0.8 MB). Loaded Objects now: 8002.
 Memory consumption went from 258.5 MB to 257.7 MB.
 Total: 6.788500 ms (FindLiveObjects: 0.700600 ms CreateObjectMapping: 0.277200 ms MarkObjects: 5.145100 ms  DeleteObjects: 0.664100 ms)
-=======
-  Time since last request: 84818.943054 seconds.
-  path: Assets/_Project/Prefabs/Projectile.prefab
-  artifactKey: Guid(5e8467d98c340fe479fc5904151d1f6c) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
-Start importing Assets/_Project/Prefabs/Projectile.prefab using Guid(5e8467d98c340fe479fc5904151d1f6c) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'e1237cce777c7e146ba1c5238ca30e84') in 0.257564 seconds 
-========================================================================
-Received Import Request.
-  Time since last request: 15.036844 seconds.
-  path: Assets/_Project/Prefabs/Projectile.prefab
-  artifactKey: Guid(5e8467d98c340fe479fc5904151d1f6c) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
-Start importing Assets/_Project/Prefabs/Projectile.prefab using Guid(5e8467d98c340fe479fc5904151d1f6c) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '801c0ed0d93f458f5d58d39cea8a11cc') in 0.010313 seconds 
-========================================================================
-Received Import Request.
-  Time since last request: 2.783418 seconds.
-  path: Assets/_Project/Prefabs/Projectile.prefab
-  artifactKey: Guid(5e8467d98c340fe479fc5904151d1f6c) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
-Start importing Assets/_Project/Prefabs/Projectile.prefab using Guid(5e8467d98c340fe479fc5904151d1f6c) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '36cb6f7cd24f494f77d690f2bcf52b07') in 0.012758 seconds 
-========================================================================
-Received Prepare
-Refreshing native plugins compatible for Editor in 16.07 ms, found 3 plugins.
-Preloading 0 native plugins for Editor in 0.00 ms.
-Unloading 34 Unused Serialized files (Serialized files now loaded: 0)
-Unloading 35 unused Assets / (0.8 MB). Loaded Objects now: 7374.
-Memory consumption went from 120.6 MB to 119.9 MB.
-Total: 8.981000 ms (FindLiveObjects: 0.878500 ms CreateObjectMapping: 0.809400 ms MarkObjects: 6.830000 ms  DeleteObjects: 0.462100 ms)
->>>>>>> Weapons-Guillaume
 
 AssetImportParameters requested are different than current active one (requested -> active):
   custom:video-decoder-ogg-theora: a1e56fd34408186e4bbccfd4996cb3dc -> 

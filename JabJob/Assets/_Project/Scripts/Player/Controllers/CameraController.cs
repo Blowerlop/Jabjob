@@ -5,7 +5,7 @@ using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.Windows;
 
-public class PlayerCameraController : NetworkBehaviour
+public class CameraController : NetworkBehaviour
 {
     #region Variables
     [Header("Camera")]
