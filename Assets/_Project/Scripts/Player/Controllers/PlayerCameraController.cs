@@ -14,7 +14,7 @@ public class PlayerCameraController : NetworkBehaviour
     float _cinemachineTargetPitch;
 
     [Header("References")]
-    [SerializeField] private GameObject mainCamera;
+    [SerializeField] private GameObject _playerCamera;
     private CinemachineVirtualCamera _cinemachineCamera;
     [SerializeField] private Transform _cameraTarget;
 
@@ -42,7 +42,7 @@ public class PlayerCameraController : NetworkBehaviour
         else
         {
             Camera.main.gameObject.SetActive(false);
-            mainCamera.SetActive(true);
+            _playerCamera.SetActive(true);
         }
     }
 

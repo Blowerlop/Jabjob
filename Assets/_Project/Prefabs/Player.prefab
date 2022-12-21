@@ -398,6 +398,7 @@ MonoBehaviour:
   _maximumVerticalVelocity: -40
   _jumpHeight: 2
   _jumpThreshold: 0.2
+  isMultiplayer: 1
 --- !u!114 &2755970706688381933
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -410,10 +411,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fc2d91c00fb936947a14330a0a85a7a5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mainCamera: {fileID: 1886374946421191380}
-  _cameraTarget: {fileID: 8130439777759429579}
   _sensitivity: 0.2
   _threshold: 0.001
+  _playerCamera: {fileID: 1886374946421191380}
+  _cameraTarget: {fileID: 8130439777759429579}
+  isMultiplayer: 1
 --- !u!114 &693733510563446535
 MonoBehaviour:
   m_ObjectHideFlags: 0
