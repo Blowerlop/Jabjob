@@ -11,7 +11,7 @@ public class PlayerCameraController : NetworkBehaviour
     [Header("Camera")]
     [SerializeField] private float _sensitivity = 0.2f;
     [SerializeField] private float _threshold = 0.001f;
-    float _cinemachineTargetPitch;
+    float _rotateVerticalVelocity;
 
     [Header("References")]
     [SerializeField] private GameObject _playerCamera;
@@ -59,13 +59,11 @@ public class PlayerCameraController : NetworkBehaviour
         if (InputManager.instance.look.sqrMagnitude >= _threshold)
         {
             float rotateHorizontalVelocity = InputManager.instance.look.x * _sensitivity;
-            float rotateVerticalVelocity = InputManager.instance.look.y * _sensitivity;
-
-            _cinemachineTargetPitch += InputManager.instance.look.y * _sensitivity;
-            _cinemachineTargetPitch = ClampAngle(_cinemachineTargetPitch, -60.0f, 60.0f);
+            _rotateVerticalVelocity += InputManager.instance.look.y * _sensitivity; 
+            _rotateVerticalVelocity = ClampAngle(this._rotateVerticalVelocity, -60.0f, 60.0f);
 
             transform.Rotate(rotateHorizontalVelocity * Vector3.up);
-            _cameraTarget.transform.localRotation = Quaternion.Euler(_cinemachineTargetPitch, 0.0f, 0.0f);
+            _cameraTarget.transform.localRotation = Quaternion.Euler(this._rotateVerticalVelocity, 0.0f, 0.0f);
         }
     }
 
