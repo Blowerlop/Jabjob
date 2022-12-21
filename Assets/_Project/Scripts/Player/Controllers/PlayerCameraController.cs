@@ -9,12 +9,17 @@ public class PlayerCameraController : NetworkBehaviour
 {
     #region Variables
     [Header("Camera")]
-    [SerializeField] private GameObject mainCamera;
-    private CinemachineVirtualCamera _cinemachineCamera;
-    [SerializeField] private Transform _cameraTarget;
     [SerializeField] private float _sensitivity = 0.2f;
     [SerializeField] private float _threshold = 0.001f;
-    float _cinemachineTargetPitch;
+    float _rotateVerticalVelocity;
+
+    [Header("References")]
+    [SerializeField] private GameObject _playerCamera;
+    private CinemachineVirtualCamera _cinemachineCamera;
+    [SerializeField] private Transform _cameraTarget;
+
+    [Header("Multiplayer")]
+    [SerializeField] private bool isMultiplayer = true;
 
     #endregion
 
@@ -27,6 +32,8 @@ public class PlayerCameraController : NetworkBehaviour
 
     private void Start()
     {
+        if (isMultiplayer == false) return;
+
         if (IsOwner == false)
         {
             _cinemachineCamera.Priority = 0;
@@ -35,6 +42,7 @@ public class PlayerCameraController : NetworkBehaviour
         else
         {
             Camera.main.gameObject.SetActive(false);
+            _playerCamera.SetActive(true);
         }
     }
 
@@ -44,22 +52,18 @@ public class PlayerCameraController : NetworkBehaviour
     }
     #endregion
 
-    #region Methods
 
-    /// <summary>
-    /// Locally rotate the Camera (Owner side) and send a ServerRPC
-    /// </summary>
+    #region Methods
     private void PerfomCameraRotation()
     {
         if (InputManager.instance.look.sqrMagnitude >= _threshold)
         {
             float rotateHorizontalVelocity = InputManager.instance.look.x * _sensitivity;
-            float rotateVerticalVelocity = InputManager.instance.look.y * _sensitivity;
+            _rotateVerticalVelocity += InputManager.instance.look.y * _sensitivity; 
+            _rotateVerticalVelocity = ClampAngle(this._rotateVerticalVelocity, -60.0f, 60.0f);
 
-            _cinemachineTargetPitch += InputManager.instance.look.y * _sensitivity;
-            _cinemachineTargetPitch = ClampAngle(_cinemachineTargetPitch, -60.0f, 60.0f);
             transform.Rotate(rotateHorizontalVelocity * Vector3.up);
-            _cameraTarget.transform.localRotation = Quaternion.Euler(_cinemachineTargetPitch, 0.0f, 0.0f);
+            _cameraTarget.transform.localRotation = Quaternion.Euler(this._rotateVerticalVelocity, 0.0f, 0.0f);
         }
     }
 

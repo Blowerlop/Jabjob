@@ -164,7 +164,7 @@ MonoBehaviour:
   - m_Script
   m_LockStageInInspector: 
   m_StreamingVersion: 20170927
-  m_Priority: 10
+  m_Priority: 1
   m_StandbyUpdate: 2
   m_LookAt: {fileID: 0}
   m_Follow: {fileID: 8130439777759429579}
@@ -205,7 +205,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &7272876714690560750
 Transform:
   m_ObjectHideFlags: 0
@@ -271,7 +271,7 @@ AudioListener:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1886374946421191380}
-  m_Enabled: 0
+  m_Enabled: 1
 --- !u!114 &2723208836083416384
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -355,7 +355,6 @@ GameObject:
   - component: {fileID: 2755970706688381936}
   - component: {fileID: 2755970706688381937}
   - component: {fileID: 3019988241386821674}
-  - component: {fileID: 7320457360716771023}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -399,7 +398,7 @@ MonoBehaviour:
   _maximumVerticalVelocity: -40
   _jumpHeight: 2
   _jumpThreshold: 0.2
-  _characterController: {fileID: 2755970706688381936}
+  isMultiplayer: 1
 --- !u!114 &2755970706688381933
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -412,10 +411,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fc2d91c00fb936947a14330a0a85a7a5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mainCamera: {fileID: 1886374946421191380}
-  _cameraTarget: {fileID: 8130439777759429579}
   _sensitivity: 0.2
   _threshold: 0.001
+  _playerCamera: {fileID: 1886374946421191380}
+  _cameraTarget: {fileID: 8130439777759429579}
+  isMultiplayer: 1
 --- !u!114 &693733510563446535
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -499,7 +499,6 @@ MonoBehaviour:
   layerToAim:
     serializedVersion: 2
     m_Bits: 123
-  ShowDebug: 1
   _camera: {fileID: 5084169532613243991}
 --- !u!114 &3019988241386821674
 MonoBehaviour:
@@ -515,20 +514,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _defaultWeapon: {fileID: 11400000, guid: 1ea22fd84f28c08468bfab6db53f67fe, type: 2}
   _weaponHandler: {fileID: 7934576129649711553}
---- !u!114 &7320457360716771023
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4408861272393954034}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 69b4235bab7c37443864eaf14bb556f9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_TextStat: {fileID: 0}
-  m_IsServer: 0
 --- !u!1 &4780292437179542832
 GameObject:
   m_ObjectHideFlags: 0
@@ -673,7 +658,7 @@ MonoBehaviour:
   SyncPositionY: 0
   SyncPositionZ: 0
   SyncRotAngleX: 1
-  SyncRotAngleY: 1
+  SyncRotAngleY: 0
   SyncRotAngleZ: 1
   SyncScaleX: 0
   SyncScaleY: 0
