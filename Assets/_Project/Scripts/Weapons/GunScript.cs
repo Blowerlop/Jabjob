@@ -21,10 +21,14 @@ public class GunScript : NetworkBehaviour
 
     bool canShoot = true;
 
+    public bool ShowDebug = true;
+    Vector3 hitpointClient;
     [SerializeField] private Camera _camera;
 
     void Start()
     {
+        if (IsOwner == false) this.enabled = false;
+
         //Init values
         ChangeWeapon(actualWeapon);
         InputManager.instance.reload.AddListener(Reload);
@@ -36,8 +40,6 @@ public class GunScript : NetworkBehaviour
 
     void Update()
     {
-        if (IsOwner == false) return;
-
         if (InputManager.instance.shoot && (actualWeapon.riffle || canShoot))
         {
             if(Time.time >= nextShoot && ammo >0)
@@ -49,7 +51,7 @@ public class GunScript : NetworkBehaviour
                 nextShoot = Time.time + shootRate;
                 ammo--;
                 LocalShoot(gun.transform.position, gun.transform.rotation);
-                ShootServerRpc(gun.transform.position, gun.transform.rotation);
+                ShootServerRpc(gun.transform.position, gun.transform.rotation, hitpointClient);
             }
         }
         if (!InputManager.instance.shoot)
@@ -59,16 +61,16 @@ public class GunScript : NetworkBehaviour
     }
 
     [ServerRpc]
-    private void ShootServerRpc(Vector3 position, Quaternion rotation)
+    private void ShootServerRpc(Vector3 position, Quaternion rotation, Vector3 hitpoint)
     {
-        ShootClientRpc(position, rotation);
+        ShootClientRpc(position, rotation,hitpoint);
     }
 
 
     [ClientRpc]
-    private void ShootClientRpc(Vector3 position, Quaternion rotation)
+    private void ShootClientRpc(Vector3 position, Quaternion rotation,Vector3 hitpoint)
     {
-        if (IsOwner == false) LocalShoot(position, rotation);
+        if (IsOwner == false) LocalShoot(position, rotation,hitpoint);
     }
 
     /// <summary>
@@ -80,6 +82,7 @@ public class GunScript : NetworkBehaviour
         Ray ray = _camera.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0.5f));
         if (Physics.Raycast(ray, out hit, range, layerToAim))
         {
+            hitpointClient = hit.point;
             if (actualWeapon.spray)
             {
                 for (int i = 0; i < actualWeapon.bulletNumber; i++)
@@ -97,8 +100,53 @@ public class GunScript : NetworkBehaviour
                 go.transform.rotation = rotation;
                 go.GetComponent<ProjectileScript>().Init(hit.point, actualWeapon.dispertion);
             }
+            Debug.Log(GetComponent<NetworkObject>().OwnerClientId + " : shoot at " + hit.point);
         }
-        else 
+        else  
+        {
+            hitpointClient = Vector3.zero;
+            if (actualWeapon.spray)
+            {
+                for (int i = 0; i < actualWeapon.bulletNumber; i++)
+                {
+                    GameObject go = ObjectPoolingManager.instance.GetObject();
+                    go.transform.position = position;
+                    go.transform.rotation = rotation;
+                    go.GetComponent<ProjectileScript>().Init(actualWeapon.dispertion);
+                }
+            }
+            else
+            {
+                GameObject go = ObjectPoolingManager.instance.GetObject();
+                go.transform.position = position;
+                go.transform.rotation = rotation;
+                go.GetComponent<ProjectileScript>().Init(actualWeapon.dispertion);
+            }
+        }
+    }
+    public void LocalShoot(Vector3 position, Quaternion rotation, Vector3 hitpoint)
+    {
+        if (hitpoint != Vector3.zero)
+        {
+            if (actualWeapon.spray)
+            {
+                for (int i = 0; i < actualWeapon.bulletNumber; i++)
+                {
+                    GameObject go = ObjectPoolingManager.instance.GetObject();
+                    go.transform.position = position;
+                    go.transform.rotation = rotation;
+                    go.GetComponent<ProjectileScript>().Init(hitpoint, actualWeapon.dispertion);
+                }
+            }
+            else
+            {
+                GameObject go = ObjectPoolingManager.instance.GetObject();
+                go.transform.position = position;
+                go.transform.rotation = rotation;
+                go.GetComponent<ProjectileScript>().Init(hitpoint, actualWeapon.dispertion);
+            }
+        }
+        else
         {
             if (actualWeapon.spray)
             {
@@ -141,5 +189,15 @@ public class GunScript : NetworkBehaviour
         maxAmmo = actualWeapon.maxAmmo;
         ammo = maxAmmo;
         shootRate = actualWeapon.shootRate;
+    }
+
+
+    void OnDrawGizmos()
+    {
+        if(ShowDebug)
+        {
+            Gizmos.color = Color.red;
+            Gizmos.DrawRay(gun.transform.position, _camera.transform.forward * 100);
+        }
     }
 }

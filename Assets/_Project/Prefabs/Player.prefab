@@ -164,7 +164,7 @@ MonoBehaviour:
   - m_Script
   m_LockStageInInspector: 
   m_StreamingVersion: 20170927
-  m_Priority: 1
+  m_Priority: 10
   m_StandbyUpdate: 2
   m_LookAt: {fileID: 0}
   m_Follow: {fileID: 8130439777759429579}
@@ -205,7 +205,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &7272876714690560750
 Transform:
   m_ObjectHideFlags: 0
@@ -271,7 +271,7 @@ AudioListener:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1886374946421191380}
-  m_Enabled: 1
+  m_Enabled: 0
 --- !u!114 &2723208836083416384
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -399,6 +399,7 @@ MonoBehaviour:
   _maximumVerticalVelocity: -40
   _jumpHeight: 2
   _jumpThreshold: 0.2
+  _characterController: {fileID: 2755970706688381936}
 --- !u!114 &2755970706688381933
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -498,6 +499,7 @@ MonoBehaviour:
   layerToAim:
     serializedVersion: 2
     m_Bits: 123
+  ShowDebug: 1
   _camera: {fileID: 5084169532613243991}
 --- !u!114 &3019988241386821674
 MonoBehaviour:
@@ -671,7 +673,7 @@ MonoBehaviour:
   SyncPositionY: 0
   SyncPositionZ: 0
   SyncRotAngleX: 1
-  SyncRotAngleY: 0
+  SyncRotAngleY: 1
   SyncRotAngleZ: 1
   SyncScaleX: 0
   SyncScaleY: 0

@@ -1,12 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
 
-public class ProjectileScript : MonoBehaviour
+public class ProjectileScript : NetworkBehaviour
 {
     Vector3 target;
     [SerializeField]
     float speed;
+
 
     /// <summary>
     /// Initialize bullet
@@ -31,7 +33,7 @@ public class ProjectileScript : MonoBehaviour
     }
 
     /// <summary>
-    /// Randomize de bullet rotation in term of the <paramref name="disp" />
+    /// Randomize the bullet rotation in term of the <paramref name="disp" />
     /// </summary>
     public void RandomizeRotation(float disp)
     {

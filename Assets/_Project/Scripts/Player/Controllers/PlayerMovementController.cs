@@ -27,18 +27,19 @@ public class PlayerMovementController : NetworkBehaviour
     [SerializeField] private float _jumpThreshold = 0.2f;
 
     [Header("References")]
-    private CharacterController _characterController;
+    [SerializeField] private CharacterController _characterController;
     #endregion
 
 
     #region Updates
     private void Awake()
     {
-        _characterController = GetComponent<CharacterController>();
+       
     }
 
     private void Start()
     {
+        _characterController = GetComponent<CharacterController>();
         if (IsOwner == false) enabled = false;
     }
 

@@ -35,7 +35,6 @@ public class PlayerCameraController : NetworkBehaviour
         else
         {
             Camera.main.gameObject.SetActive(false);
-            mainCamera.SetActive(true);
         }
     }
 
@@ -46,6 +45,10 @@ public class PlayerCameraController : NetworkBehaviour
     #endregion
 
     #region Methods
+
+    /// <summary>
+    /// Locally rotate the Camera (Owner side) and send a ServerRPC
+    /// </summary>
     private void PerfomCameraRotation()
     {
         if (InputManager.instance.look.sqrMagnitude >= _threshold)
@@ -55,7 +58,6 @@ public class PlayerCameraController : NetworkBehaviour
 
             _cinemachineTargetPitch += InputManager.instance.look.y * _sensitivity;
             _cinemachineTargetPitch = ClampAngle(_cinemachineTargetPitch, -60.0f, 60.0f);
-
             transform.Rotate(rotateHorizontalVelocity * Vector3.up);
             _cameraTarget.transform.localRotation = Quaternion.Euler(_cinemachineTargetPitch, 0.0f, 0.0f);
         }
