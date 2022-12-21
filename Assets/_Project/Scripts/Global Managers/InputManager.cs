@@ -13,6 +13,7 @@ public class InputManager : MonoBehaviour
     {
         instance = this;
     }
+
     #endregion
 
 
