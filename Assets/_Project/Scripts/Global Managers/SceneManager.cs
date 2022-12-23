@@ -8,7 +8,7 @@ namespace _Project.Scripts.Managers
     public class SceneManager : MonoBehaviour
     {
         #region Variables
-        
+
         public enum EScene
         {
             MenuScene,
@@ -16,8 +16,8 @@ namespace _Project.Scripts.Managers
             GameScene
         }
 
-        public static Text loadText;
-        
+        public static Slider loadSlider;
+
         #endregion
 
         #region Methods
@@ -65,21 +65,19 @@ namespace _Project.Scripts.Managers
             else
             {
                 UnityEngine.SceneManagement.SceneManager.LoadSceneAsync(EScene.LoadingScene.ToString());
-                
+
                 AsyncOperation newScene =
                     UnityEngine.SceneManagement.SceneManager.LoadSceneAsync(sceneName.ToString(), loadSceneMode);
-        
+
                 newScene.allowSceneActivation = false;
                 do
                 {
                     await Task.Delay(100);
                     float loadingPercentage = newScene.progress / 0.9f * 100.0f;
-                    loadText.text = loadingPercentage + "%";
-            
-            
-            
+                    loadSlider.value = loadingPercentage / 100f;
+
                 } while (newScene.progress < 0.9f);
-        
+
                 await Task.Delay(100);
                 newScene.allowSceneActivation = true;
             }

@@ -5,10 +5,10 @@ using UnityEngine.UI;
 
 public class OnSceneStartBehaviour : MonoBehaviour
 {
-    [SerializeField] private Text _loadingText;
+    [SerializeField] private Slider _loadingSlider;
 
     private void Awake()
     {
-        SceneManager.loadText = _loadingText;
+        SceneManager.loadSlider = _loadingSlider;
     }
 }

@@ -11,7 +11,7 @@ public class GunScript : NetworkBehaviour
     [SerializeField]
     GameObject gun, projectilePrefab, playerCamera;
 
-    [SerializeField]
+    public
     int range, ammo, maxAmmo;
 
     float nextShoot, shootRate;
