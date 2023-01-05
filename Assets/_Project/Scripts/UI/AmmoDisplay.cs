@@ -1,23 +1,20 @@
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class AmmoDisplay : MonoBehaviour
 {
-    [SerializeField] TextMeshProUGUI ammoDisplay;
+    [SerializeField] private TextMeshProUGUI ammoDisplay;
 
-    [SerializeField] GameObject player;
-    [SerializeField] GunScript ammo;
+    [SerializeField] private GameObject player;
+    [SerializeField] private GunScript ammo;
 
-    private void FixedUpdate()
+    private void Start()
     {
-        if (ammo == null)
-        {
-            player = GameObject.FindGameObjectWithTag("Player");
-
-            ammo = player.GetComponent<GunScript>();
-        }
+        player = GameObject.FindGameObjectWithTag("Player");
+        ammo = player.GetComponent<GunScript>();
     }
 
     private void Update()
