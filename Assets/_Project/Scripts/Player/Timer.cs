@@ -1,12 +1,22 @@
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
+using Unity.Services.Lobbies.Models;
 using UnityEngine;
 
 public class Timer : MonoBehaviour
 {
-    [SerializeField] TextMeshProUGUI timerText;
+    private GameObject UI;
+    [SerializeField] private TextMeshProUGUI timerText;
+
+
     public float partyDuration = 300; //Durée de la partie en seconde
+
+    private void Start()
+    {
+        UI = GameObject.FindGameObjectWithTag("UI Player");
+        timerText = UI.FindComponentInChildWithTag<TextMeshProUGUI>("Timer");
+    }
 
     private void Update()
     {
@@ -21,5 +31,21 @@ public class Timer : MonoBehaviour
         else { seconds = Mathf.Abs((t % 60)).ToString("f0"); }
 
         timerText.text = minutes + ":" + seconds;
+    }
+}
+
+public static class Helper
+{
+    public static T FindComponentInChildWithTag<T>(this GameObject parent, string tag) where T : Component
+    {
+        Transform t = parent.transform;
+        foreach (Transform tr in t)
+        {
+            if (tr.tag == tag)
+            {
+                return tr.GetComponent<T>();
+            }
+        }
+        return null;
     }
 }

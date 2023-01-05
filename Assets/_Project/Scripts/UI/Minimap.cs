@@ -4,9 +4,9 @@ using UnityEngine;
 
 public class Minimap : MonoBehaviour
 {
-    [SerializeField] GameObject player;
+    [SerializeField] private GameObject player;
 
-    private void FixedUpdate()
+    private void Start()
     {
         player = GameObject.FindGameObjectWithTag("Player");
     }
