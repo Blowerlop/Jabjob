@@ -311,59 +311,15 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 5023224235561468657, guid: 99215986e22bf2448a7f24f98dbe488d,
-        type: 3}
-      propertyPath: NetworkConfig.ForceSamePrefabs
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 5023224235561468657, guid: 99215986e22bf2448a7f24f98dbe488d,
-        type: 3}
-      propertyPath: NetworkConfig.RecycleNetworkIds
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 5023224235561468657, guid: 99215986e22bf2448a7f24f98dbe488d,
-        type: 3}
-      propertyPath: NetworkConfig.NetworkPrefabs.Array.size
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 5023224235561468657, guid: 99215986e22bf2448a7f24f98dbe488d,
-        type: 3}
-      propertyPath: NetworkConfig.NetworkPrefabs.Array.data[1].Prefab
-      value: 
-      objectReference: {fileID: 159128956728302430, guid: 5e8467d98c340fe479fc5904151d1f6c,
-        type: 3}
-    - target: {fileID: 5023224235561468657, guid: 99215986e22bf2448a7f24f98dbe488d,
-        type: 3}
-      propertyPath: NetworkConfig.NetworkPrefabs.Array.data[2].Prefab
-      value: 
-      objectReference: {fileID: 8253399543442144797, guid: 977ebded5db176d41abf209c430690fe,
-        type: 3}
-    - target: {fileID: 5023224235561468657, guid: 99215986e22bf2448a7f24f98dbe488d,
-        type: 3}
-      propertyPath: NetworkConfig.NetworkPrefabs.Array.data[1].Override
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5023224235561468657, guid: 99215986e22bf2448a7f24f98dbe488d,
-        type: 3}
-      propertyPath: NetworkConfig.NetworkPrefabs.Array.data[2].Override
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5023224235561468657, guid: 99215986e22bf2448a7f24f98dbe488d,
-        type: 3}
-      propertyPath: NetworkConfig.NetworkPrefabs.Array.data[1].SourcePrefabToOverride
-      value: 
-      objectReference: {fileID: 159128956728302430, guid: 5e8467d98c340fe479fc5904151d1f6c,
-        type: 3}
-    - target: {fileID: 5023224235561468657, guid: 99215986e22bf2448a7f24f98dbe488d,
-        type: 3}
-      propertyPath: NetworkConfig.NetworkPrefabs.Array.data[2].SourcePrefabToOverride
-      value: 
-      objectReference: {fileID: 159128956728302430, guid: 5e8467d98c340fe479fc5904151d1f6c,
-        type: 3}
     - target: {fileID: 6419593513315344337, guid: 99215986e22bf2448a7f24f98dbe488d,
         type: 3}
       propertyPath: m_Name
       value: NetworkManager
+      objectReference: {fileID: 0}
+    - target: {fileID: 6419593513315344337, guid: 99215986e22bf2448a7f24f98dbe488d,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 99215986e22bf2448a7f24f98dbe488d, type: 3}
@@ -604,6 +560,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Relay Manager
+      objectReference: {fileID: 0}
+    - target: {fileID: 2997947689389480372, guid: d84ccb3cba6c23c4aa5474032da46f6c,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2997947689389480373, guid: d84ccb3cba6c23c4aa5474032da46f6c,
         type: 3}
@@ -1741,7 +1702,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &4414595876035925919
 MonoBehaviour:
   m_ObjectHideFlags: 0

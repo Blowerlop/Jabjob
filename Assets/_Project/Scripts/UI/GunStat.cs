@@ -33,20 +33,23 @@ public class GunStat : ScriptableObject
     public bool spray;
     [HideInInspector, Tooltip(@"If weapons shoot multiple bullets")]
     public int bulletNumber;
-}
 
-[CustomEditor(typeof(GunStat))]
-public class MyScriptEditor : Editor
-{
-    public override void OnInspectorGUI()
-    {
-        base.OnInspectorGUI();
-        var myScript = target as GunStat;
+    //Je met en commentaire car erreur quand je build - Bao
 
-        myScript.spray = GUILayout.Toggle(myScript.spray, "Spray");
 
-        if (myScript.spray)
-            myScript.bulletNumber = EditorGUILayout.IntSlider("Bullet Number", myScript.bulletNumber, 1, 30);
+    //[CustomEditor(typeof(GunStat))]
+    //public class MyScriptEditor : Editor
+    //{
+    //    public override void OnInspectorGUI()
+    //    {
+    //        base.OnInspectorGUI();
+    //        var myScript = target as GunStat;
 
-    }
+    //        myScript.spray = GUILayout.Toggle(myScript.spray, "Spray");
+
+    //        if (myScript.spray)
+    //            myScript.bulletNumber = EditorGUILayout.IntSlider("Bullet Number", myScript.bulletNumber, 1, 30);
+
+    //    }
+    //}
 }

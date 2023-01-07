@@ -8,7 +8,7 @@ public class ScoreBoard : MonoBehaviour
     GameObject player;
     PlayerStats playerStats;
 
-    TextMeshProUGUI name;
+    TextMeshProUGUI Name;
     TextMeshProUGUI kill;
     TextMeshProUGUI death;
     TextMeshProUGUI score;
@@ -21,14 +21,14 @@ public class ScoreBoard : MonoBehaviour
         player = GameObject.FindGameObjectWithTag("Player");
         playerStats = player.GetComponent<PlayerStats>();
 
-        name = gameObject.transform.GetChild(0).GetComponent<TextMeshProUGUI>();
+        Name = gameObject.transform.GetChild(0).GetComponent<TextMeshProUGUI>();
         kill = gameObject.transform.GetChild(1).GetComponent<TextMeshProUGUI>();
         death = gameObject.transform.GetChild(2).GetComponent<TextMeshProUGUI>();
         score = gameObject.transform.GetChild(3).GetComponent<TextMeshProUGUI>();
         health = gameObject.transform.GetChild(4).GetComponent<TextMeshProUGUI>();
         ping = gameObject.transform.GetChild(5).GetComponent<TextMeshProUGUI>();
 
-        name.text = playerStats.name;
+        Name.text = playerStats.name;
         kill.text = playerStats.kill.ToString();
         death.text = playerStats.death.ToString();
         score.text = playerStats.score.ToString();
