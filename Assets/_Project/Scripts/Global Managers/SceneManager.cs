@@ -13,7 +13,8 @@ namespace _Project.Scripts.Managers
         {
             MenuScene,
             LoadingScene,
-            GameScene
+            GameScene,
+            CharacterControllerShoot
         }
 
         public static Slider loadSlider;
