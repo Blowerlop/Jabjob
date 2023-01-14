@@ -12,7 +12,6 @@ public class LobbyCreateUI : MonoBehaviour {
 
 
     [SerializeField] private Button createButton;
-    [SerializeField] private Button lobbyNameButton;
     [SerializeField] private Button publicPrivateButton;
     [SerializeField] private Button gameModeButton;
     [SerializeField] private TextMeshProUGUI lobbyNameText;
@@ -29,24 +28,11 @@ public class LobbyCreateUI : MonoBehaviour {
 
         createButton.onClick.AddListener(() => {
             LobbyManager.Instance.CreateLobby(
-                lobbyName,
                 isPrivate,
                 gameMode
             );
             Hide();
         });
-
-        lobbyNameButton.onClick.AddListener(() => {
-            UI_InputWindow.Show_Static("Lobby Name", lobbyName, "abcdefghijklmnopqrstuvxywzABCDEFGHIJKLMNOPQRSTUVXYWZ .,-", 20,
-            () => {
-                // Cancel
-            },
-            (string lobbyName) => {
-                this.lobbyName = lobbyName;
-                UpdateText();
-            });
-        });
-
         publicPrivateButton.onClick.AddListener(() => {
             isPrivate = !isPrivate;
             UpdateText();
@@ -74,7 +60,7 @@ public class LobbyCreateUI : MonoBehaviour {
 
     public void Show() {
         gameObject.SetActive(true);
-        lobbyName = "MyLobby";
+        lobbyName = "Lobby" ;
         isPrivate = false;
         gameMode = LobbyManager.GameMode.GameMode1;
 

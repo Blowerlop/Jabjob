@@ -5,34 +5,32 @@ using UnityEngine;
 
 public class ScoreBoard : MonoBehaviour
 {
-    GameObject player;
-    PlayerStats playerStats;
+    PlayerStats _playerStats;
 
-    TextMeshProUGUI Name;
-    TextMeshProUGUI kill;
-    TextMeshProUGUI death;
-    TextMeshProUGUI score;
-    TextMeshProUGUI health;
-    TextMeshProUGUI ping;
+    TextMeshProUGUI _name;
+    TextMeshProUGUI _kill;
+    TextMeshProUGUI _death;
+    TextMeshProUGUI _score;
+    TextMeshProUGUI _health;
+    TextMeshProUGUI _ping;
 
     private void OnEnable()
     {
         //Instantiation
-        player = GameObject.FindGameObjectWithTag("Player");
-        playerStats = player.GetComponent<PlayerStats>();
+        _playerStats = transform.root.GetComponent<PlayerStats>();
 
-        Name = gameObject.transform.GetChild(0).GetComponent<TextMeshProUGUI>();
-        kill = gameObject.transform.GetChild(1).GetComponent<TextMeshProUGUI>();
-        death = gameObject.transform.GetChild(2).GetComponent<TextMeshProUGUI>();
-        score = gameObject.transform.GetChild(3).GetComponent<TextMeshProUGUI>();
-        health = gameObject.transform.GetChild(4).GetComponent<TextMeshProUGUI>();
-        ping = gameObject.transform.GetChild(5).GetComponent<TextMeshProUGUI>();
+        _name = gameObject.transform.GetChild(0).GetComponent<TextMeshProUGUI>();
+        _kill = gameObject.transform.GetChild(1).GetComponent<TextMeshProUGUI>();
+        _death = gameObject.transform.GetChild(2).GetComponent<TextMeshProUGUI>();
+        _score = gameObject.transform.GetChild(3).GetComponent<TextMeshProUGUI>();
+        _health = gameObject.transform.GetChild(4).GetComponent<TextMeshProUGUI>();
+        _ping = gameObject.transform.GetChild(5).GetComponent<TextMeshProUGUI>();
 
-        Name.text = playerStats.name;
-        kill.text = playerStats.kill.ToString();
-        death.text = playerStats.death.ToString();
-        score.text = playerStats.score.ToString();
-        health.text = playerStats.health.ToString();
-        ping.text = playerStats.ping.ToString();
+        _name.text = _playerStats.name;
+        _kill.text = _playerStats.kill.ToString();
+        _death.text = _playerStats.death.ToString();
+        _score.text = _playerStats.score.ToString();
+        _health.text = _playerStats.health.ToString();
+        _ping.text = _playerStats.ping.ToString();
     }
 }

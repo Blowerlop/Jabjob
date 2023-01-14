@@ -24,11 +24,11 @@ public class GunScript : NetworkBehaviour
     public bool ShowDebug = true;
     Vector3 hitpointClient;
     [SerializeField] private Camera _camera;
-
+    [Header("Multiplayer")]
+    [SerializeField] private bool isMultiplayer = true;
     void Start()
     {
-        if (IsOwner == false) this.enabled = false;
-
+        if (isMultiplayer && IsOwner == false) this.enabled = false;
         //Init values
         ChangeWeapon(actualWeapon);
         InputManager.instance.reload.AddListener(Reload);

@@ -66,9 +66,7 @@ public class LobbyManager : MonoBehaviour {
         await UnityServices.InitializeAsync(initializationOptions);
 
         AuthenticationService.Instance.SignedIn += () => {
-            // do nothing
-            Debug.Log("Signed in! " + AuthenticationService.Instance.PlayerId);
-
+            Debug.Log(playerName + " signed in. ID :  " + AuthenticationService.Instance.PlayerId);
             RefreshLobbyList();
         };
 
@@ -160,10 +158,27 @@ public class LobbyManager : MonoBehaviour {
         }
     }
 
+    public async void CreateLobby(bool isPrivate, GameMode gameMode)
+    {
+        Player player = GetPlayer();
+        CreateLobbyOptions options = new CreateLobbyOptions
+        {
+            Player = player,
+            IsPrivate = isPrivate,
+            Data = new Dictionary<string, DataObject> {
+                { KEY_GAME_MODE, new DataObject(DataObject.VisibilityOptions.Public, gameMode.ToString()) }
+            }
+        };
+        Lobby lobby = await LobbyService.Instance.CreateLobbyAsync(string.Concat(playerName, "'s Lobby"), maxPlayerLobby, options);
+        Debug.Log("Created " + lobby.Name);
+        joinedLobby = lobby;
+        OnJoinedLobby?.Invoke(this, new LobbyEventArgs { lobby = lobby });
+    }
     public async void CreateLobby(string lobbyName, bool isPrivate, GameMode gameMode) {
         Player player = GetPlayer();
 
-        CreateLobbyOptions options = new CreateLobbyOptions {
+        CreateLobbyOptions options = new CreateLobbyOptions
+        {
             Player = player,
             IsPrivate = isPrivate,
             Data = new Dictionary<string, DataObject> {
@@ -172,12 +187,9 @@ public class LobbyManager : MonoBehaviour {
         };
 
         Lobby lobby = await LobbyService.Instance.CreateLobbyAsync(lobbyName, maxPlayerLobby, options);
-
-        joinedLobby = lobby;
-
-        OnJoinedLobby?.Invoke(this, new LobbyEventArgs { lobby = lobby });
-
         Debug.Log("Created Lobby " + lobby.Name);
+        joinedLobby = lobby;
+        OnJoinedLobby?.Invoke(this, new LobbyEventArgs { lobby = lobby });
     }
 
     public async void RefreshLobbyList() {
