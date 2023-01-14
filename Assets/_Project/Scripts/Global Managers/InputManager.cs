@@ -1,8 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
+using Project;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.InputSystem;
+
 
 public class InputManager : MonoBehaviour
 {
@@ -15,8 +17,7 @@ public class InputManager : MonoBehaviour
     }
 
     #endregion
-
-
+    
     #region Variables
     public Vector2 move;
     public Vector2 look;
