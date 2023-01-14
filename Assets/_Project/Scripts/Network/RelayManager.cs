@@ -38,7 +38,7 @@ public class RelayManager : MonoBehaviour
             Allocation allocation = await RelayService.Instance.CreateAllocationAsync(3); //Nombre de client en + de l'host
             string joinCode = await RelayService.Instance.GetJoinCodeAsync(allocation.AllocationId);
             Debug.Log(joinCode);
-            //codeRelay.text = string.Concat("Code : ", joinCode);
+            codeRelay.text = string.Concat("Code : ", joinCode);
             RelayServerData relayServerData = new RelayServerData(allocation, "dtls");
             NetworkManager.Singleton.GetComponent<UnityTransport>().SetRelayServerData(relayServerData);
 
