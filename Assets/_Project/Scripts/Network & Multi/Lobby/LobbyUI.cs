@@ -19,6 +19,7 @@ public class LobbyUI : MonoBehaviour {
     [SerializeField] private TextMeshProUGUI gameModeText;
     [SerializeField] private Button leaveLobbyButton;
     //[SerializeField] private Button changeGameModeButton;
+    [SerializeField] private Button startGameButton;
 
 
     private void Awake() {
@@ -30,6 +31,10 @@ public class LobbyUI : MonoBehaviour {
             LobbyManager.Instance.LeaveLobby();
         });
 
+        startGameButton.onClick.AddListener(() =>
+        {
+            LobbyManager.Instance.StartGame();
+        });
         //Un bouton pour changer de gameMode si on en a besoin
         /*
         changeGameModeButton.onClick.AddListener(() => {
@@ -41,13 +46,18 @@ public class LobbyUI : MonoBehaviour {
     private void Start() {
         LobbyManager.Instance.OnJoinedLobby += UpdateLobby_Event;
         LobbyManager.Instance.OnJoinedLobbyUpdate += UpdateLobby_Event;
-        LobbyManager.Instance.OnLobbyGameModeChanged += UpdateLobby_Event;
+        //LobbyManager.Instance.OnLobbyGameModeChanged += UpdateLobby_Event;
         LobbyManager.Instance.OnLeftLobby += LobbyManager_OnLeftLobby;
         LobbyManager.Instance.OnKickedFromLobby += LobbyManager_OnLeftLobby;
-
+        LobbyManager.Instance.OnStartGame += LobbyManager_OnStartGame;
         Hide();
     }
 
+    private void LobbyManager_OnStartGame(object sender, System.EventArgs e)
+    {
+        ClearLobby();
+        transform.root.gameObject.SetActive(false);
+    }
     private void LobbyManager_OnLeftLobby(object sender, System.EventArgs e) {
         ClearLobby();
         Hide();
@@ -73,9 +83,9 @@ public class LobbyUI : MonoBehaviour {
                 LobbyManager.Instance.IsLobbyHost() &&
                 player.Id != AuthenticationService.Instance.PlayerId // Pas d'auto kick
             );
-
             lobbyPlayerSingleUI.UpdatePlayer(player);
         }
+        SetStartButtonVisible(LobbyManager.Instance.IsLobbyHost()); // Seul l'host peut lancer la game
 
         //changeGameModeButton.gameObject.SetActive(LobbyManager.Instance.IsLobbyHost());
 
@@ -96,9 +106,12 @@ public class LobbyUI : MonoBehaviour {
     private void Hide() {
         gameObject.SetActive(false);
     }
-
     private void Show() {
         gameObject.SetActive(true);
     }
 
+    private void SetStartButtonVisible(bool visible)
+    {
+        startGameButton.gameObject.SetActive(visible);
+    }
 }

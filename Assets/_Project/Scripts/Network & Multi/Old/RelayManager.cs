@@ -29,7 +29,7 @@ public class RelayManager : MonoBehaviour
         };
         await AuthenticationService.Instance.SignInAnonymouslyAsync();
 
-        
+
     }
     private void AddPlayer(ulong playerId)
     {
@@ -45,7 +45,7 @@ public class RelayManager : MonoBehaviour
     {
         try
         {
-            Allocation allocation = await RelayService.Instance.CreateAllocationAsync(_maximumPlayer-1); //Nombre de client en + de l'host
+            Allocation allocation = await RelayService.Instance.CreateAllocationAsync(_maximumPlayer - 1); //Nombre de client en + de l'host
             string joinCode = await RelayService.Instance.GetJoinCodeAsync(allocation.AllocationId);
             Debug.Log(joinCode);
             _codeRelay.text = string.Concat("Code : ", joinCode);

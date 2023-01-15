@@ -15,10 +15,12 @@ public class LobbyManager : MonoBehaviour {
 
     public const string KEY_PLAYER_NAME = "PlayerName";
     public const string KEY_GAME_MODE = "GameMode";
+    public const string KEY_RELAY_GAME = "RelayGameCode";
     public int maxPlayerLobby = 4;
 
 
     public event EventHandler OnLeftLobby;
+    public event EventHandler OnStartGame;
 
     public event EventHandler<LobbyEventArgs> OnJoinedLobby;
     public event EventHandler<LobbyEventArgs> OnJoinedLobbyUpdate;
@@ -116,6 +118,17 @@ public class LobbyManager : MonoBehaviour {
 
                     joinedLobby = null;
                 }
+
+                if(joinedLobby.Data[KEY_RELAY_GAME].Value != "0")
+                {
+                    if (!IsLobbyHost())
+                    {
+                        RelayWithLobby.Instance.JoinRelay(joinedLobby.Data[KEY_RELAY_GAME].Value);
+                        OnStartGame?.Invoke(this, EventArgs.Empty);
+                    }
+                    joinedLobby = null;
+
+                }
             }
         }
     }
@@ -166,7 +179,8 @@ public class LobbyManager : MonoBehaviour {
             Player = player,
             IsPrivate = isPrivate,
             Data = new Dictionary<string, DataObject> {
-                { KEY_GAME_MODE, new DataObject(DataObject.VisibilityOptions.Public, gameMode.ToString()) }
+                { KEY_GAME_MODE, new DataObject(DataObject.VisibilityOptions.Public, gameMode.ToString()) },
+                { KEY_RELAY_GAME, new DataObject(DataObject.VisibilityOptions.Member, "0") }
             }
         };
         Lobby lobby = await LobbyService.Instance.CreateLobbyAsync(string.Concat(playerName, "'s Lobby"), maxPlayerLobby, options);
@@ -182,7 +196,8 @@ public class LobbyManager : MonoBehaviour {
             Player = player,
             IsPrivate = isPrivate,
             Data = new Dictionary<string, DataObject> {
-                { KEY_GAME_MODE, new DataObject(DataObject.VisibilityOptions.Public, gameMode.ToString()) }
+                { KEY_GAME_MODE, new DataObject(DataObject.VisibilityOptions.Public, gameMode.ToString()) },
+                { KEY_RELAY_GAME, new DataObject(DataObject.VisibilityOptions.Member, "0") }
             }
         };
 
@@ -296,6 +311,30 @@ public class LobbyManager : MonoBehaviour {
         }
     }
 
+    public async void StartGame()
+    {
+        if (IsLobbyHost())
+        {
+            try
+            {
+                Debug.Log("Start Game");
+                string relayCode = await RelayWithLobby.Instance.CreateRelay();
+                Lobby lobby = await Lobbies.Instance.UpdateLobbyAsync(joinedLobby.Id, new UpdateLobbyOptions
+                {
+                    Data = new Dictionary<string, DataObject>
+                    {
+                        { KEY_RELAY_GAME, new DataObject(DataObject.VisibilityOptions.Member, relayCode) }
+                    }
+                });
+                joinedLobby = lobby;
+                OnStartGame?.Invoke(this, EventArgs.Empty);
+            }
+            catch (LobbyServiceException e)
+            {
+                Debug.Log(e);
+            }
+        }
+    }
     public async void KickPlayer(string playerId) {
         if (IsLobbyHost()) {
             try {
