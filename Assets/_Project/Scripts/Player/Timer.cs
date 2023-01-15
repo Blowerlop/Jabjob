@@ -6,6 +6,9 @@ using UnityEngine;
 
 public class Timer : MonoBehaviour
 {
+
+    // A MODIFIER POUR PRENDRE LE TIMER DIRECTEMENT DU SERVEUR PLUTÔT
+
     private GameObject UI;
     [SerializeField] private TextMeshProUGUI timerText;
 

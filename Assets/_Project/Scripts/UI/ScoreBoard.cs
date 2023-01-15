@@ -1,23 +1,23 @@
+using System.Collections;
+using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
 public class ScoreBoard : MonoBehaviour
 {
-    private GameObject _player;
-    private PlayerStats _playerStats;
-     
-    private TextMeshProUGUI _name;
-    private TextMeshProUGUI _kill;
-    private TextMeshProUGUI _death;
-    private TextMeshProUGUI _score;
-    private TextMeshProUGUI _health;
-    private TextMeshProUGUI _ping;
+    PlayerStats _playerStats;
 
-    private void Awake()
+    TextMeshProUGUI _name;
+    TextMeshProUGUI _kill;
+    TextMeshProUGUI _death;
+    TextMeshProUGUI _score;
+    TextMeshProUGUI _health;
+    TextMeshProUGUI _ping;
+
+    private void OnEnable()
     {
         //Instantiation
-        _player = GameObject.FindGameObjectWithTag("Player");
-        _playerStats = _player.GetComponent<PlayerStats>();
+        _playerStats = transform.root.GetComponent<PlayerStats>();
 
         _name = gameObject.transform.GetChild(0).GetComponent<TextMeshProUGUI>();
         _kill = gameObject.transform.GetChild(1).GetComponent<TextMeshProUGUI>();
@@ -25,10 +25,7 @@ public class ScoreBoard : MonoBehaviour
         _score = gameObject.transform.GetChild(3).GetComponent<TextMeshProUGUI>();
         _health = gameObject.transform.GetChild(4).GetComponent<TextMeshProUGUI>();
         _ping = gameObject.transform.GetChild(5).GetComponent<TextMeshProUGUI>();
-    }
 
-    private void OnEnable()
-    {
         _name.text = _playerStats.name;
         _kill.text = _playerStats.kill.ToString();
         _death.text = _playerStats.death.ToString();
