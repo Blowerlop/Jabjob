@@ -1,5 +1,6 @@
 using TMPro;
 using UnityEngine;
+using Unity.Netcode;
 
 public class ScoreBoard : MonoBehaviour
 {
@@ -23,8 +24,6 @@ public class ScoreBoard : MonoBehaviour
         _ping.text = _playerStats.ping.ToString();
     
     }
-    
-
     private void Awake()
     {
         //Instantiation
@@ -35,6 +34,8 @@ public class ScoreBoard : MonoBehaviour
         _death = gameObject.transform.GetChild(2).GetComponent<TextMeshProUGUI>();
         _score = gameObject.transform.GetChild(3).GetComponent<TextMeshProUGUI>();
         _health = gameObject.transform.GetChild(4).GetComponent<TextMeshProUGUI>();
-        _ping = gameObject.transform.GetChild(5).GetComponent<TextMeshProUGUI>();      
+        _ping = gameObject.transform.GetChild(5).GetComponent<TextMeshProUGUI>();   
     }   
+
+
 }

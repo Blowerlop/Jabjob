@@ -74,10 +74,10 @@ public class RelayWithLobby : MonoBehaviour
 
 
     }
-
     public void ReadStringInput(string s)
     {
         _inputText = s;
     }
+
     #endregion
 }
