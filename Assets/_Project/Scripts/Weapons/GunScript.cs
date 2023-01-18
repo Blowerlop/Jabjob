@@ -34,8 +34,8 @@ public class GunScript : NetworkBehaviour
         InputManager.instance.reload.AddListener(Reload);
         
         //Set Cursor
-        Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false;
+        //Cursor.lockState = CursorLockMode.Locked;
+        //Cursor.visible = false;
     }
 
     void Update()
