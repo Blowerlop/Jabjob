@@ -36,8 +36,10 @@ public class WeaponSO : ScriptableObject
     public GunScript gun;
 }
 
-/*
+
+#if UNITY_EDITOR
 [CustomEditor(typeof(WeaponSO))]
+
 public class MyScriptEditor : Editor
 {
     public override void OnInspectorGUI()
@@ -51,4 +53,5 @@ public class MyScriptEditor : Editor
             myScript.bulletNumber = EditorGUILayout.IntSlider("Bullet Number",myScript.bulletNumber,1,30);
 
     }
-}*/
+}
+#endif
