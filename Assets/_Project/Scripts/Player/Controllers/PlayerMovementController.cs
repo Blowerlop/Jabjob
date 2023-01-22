@@ -19,24 +19,18 @@ public class PlayerMovementController : NetworkBehaviour
     [SerializeField] private float _maximumVerticalVelocity = -40.0f;
     private float _verticalVelocity;
 
-    [Header("Jump")] [SerializeField] private int _maxJumpNumber = 2;
+    [Header("Jump")]
     [SerializeField] private float _jumpHeight = 2.0f;
-    [SerializeField] [ReadOnlyField] private int _jumpCount = 0;
-    [SerializeField] [ReadOnlyField] private bool _canJump = true;
+    private bool _isGrounded;
+    private int _jumpCount = 0;
+    private bool canJump = true;
     [SerializeField] private float _jumpThreshold = 0.2f;
-
-    [Header("Player Grounded")] 
-    [SerializeField] [ReadOnlyField] private bool _isGrounded;
-    [SerializeField] private float _groundedOffset = -0.14f;
-    [SerializeField] private float _groundedRadius = 0.28f;
-    [SerializeField] private LayerMask _groundLayerMask;
-    
 
     [Header("References")]
     private CharacterController _characterController;
 
     [Header("Multiplayer")]
-    [SerializeField] private bool _isMultiplayer = true;
+    [SerializeField] private bool isMultiplayer = true;
     #endregion
 
 
@@ -48,7 +42,7 @@ public class PlayerMovementController : NetworkBehaviour
 
     private void Start()
     {
-        if (_isMultiplayer == false) return;
+        if (isMultiplayer == false) return;
         if (IsOwner == false) enabled = false;
     }
 
@@ -72,9 +66,7 @@ public class PlayerMovementController : NetworkBehaviour
     #region Methods
     private void CheckGrounded()
     {
-        Vector3 position = transform.position;
-        Vector3 spherePosition = new Vector3(position.x, position.y - _groundedOffset, position.z);
-        _isGrounded = Physics.CheckSphere(spherePosition, _groundedRadius, _groundLayerMask, QueryTriggerInteraction.Ignore);
+        _isGrounded = _characterController.isGrounded;
     }
 
     private void PerformJumpAndGravity()
@@ -88,11 +80,7 @@ public class PlayerMovementController : NetworkBehaviour
                 _verticalVelocity = _groundedVerticalVelocity;
             }
 
-            if (_jumpCount != 0)
-            {
-                ResetJump();
-            }
-            
+            ResetJump();
         }
         else
         {
@@ -102,7 +90,7 @@ public class PlayerMovementController : NetworkBehaviour
             }
         }
 
-        if (InputManager.instance.isJumping && _canJump)
+        if (InputManager.instance.isJumping && canJump)
         {
              StartCoroutine(Jump());
         }
@@ -191,22 +179,22 @@ public class PlayerMovementController : NetworkBehaviour
 
     private IEnumerator Jump()
     {
-        _canJump = false;
-        if (_jumpCount < _maxJumpNumber) 
+        canJump = false;
+        if (_jumpCount < 2) 
         { 
             _verticalVelocity = Mathf.Sqrt(-2.0f * _gravityForce * _jumpHeight);
             _jumpCount++;
         }
 
         yield return new WaitForSeconds(_jumpThreshold);
-        _canJump = true;
+        canJump = true;
     }
 
     private void ResetJump()
     {
         _jumpCount = 0;
         StopCoroutine(Jump());
-        _canJump = true;
+        canJump = true;
     }
 
     private void OnDrawGizmos()
@@ -216,7 +204,7 @@ public class PlayerMovementController : NetworkBehaviour
 
         // Draw grounded
         Gizmos.color = _isGrounded ? Color.green : Color.red;
-        Gizmos.DrawSphere(new Vector3(playerPosition.x - _characterController.radius, playerPosition.y - _groundedOffset, playerPosition.z), _groundedRadius);
+        Gizmos.DrawSphere(new Vector3(playerPosition.x - _characterController.radius, playerPosition.y, playerPosition.z), 0.5f);
 
         // Draw Jump state
         Gizmos.color = _jumpCount == 0 ? Color.green : _jumpCount == 1 ? Color.yellow : Color.red;
