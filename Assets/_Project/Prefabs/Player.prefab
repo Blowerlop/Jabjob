@@ -399,9 +399,18 @@ MonoBehaviour:
   _gravityForce: -9.81
   _groundedVerticalVelocity: -2
   _maximumVerticalVelocity: -40
+  _maxJumpNumber: 2
   _jumpHeight: 2
+  _jumpCount: 0
+  _canJump: 1
   _jumpThreshold: 0.2
-  isMultiplayer: 1
+  _isGrounded: 0
+  _groundedOffset: -0.14
+  _groundedRadius: 0.28
+  _groundLayerMask:
+    serializedVersion: 2
+    m_Bits: 64
+  _isMultiplayer: 1
 --- !u!114 &2755970706688381933
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -472,7 +481,7 @@ CharacterController:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Height: 2
+  m_Height: 1.8
   m_Radius: 0.5
   m_SlopeLimit: 45
   m_StepOffset: 0.3
