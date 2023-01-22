@@ -39,7 +39,6 @@ public class WeaponSO : ScriptableObject
 
 #if UNITY_EDITOR
 [CustomEditor(typeof(WeaponSO))]
-
 public class MyScriptEditor : Editor
 {
     public override void OnInspectorGUI()
