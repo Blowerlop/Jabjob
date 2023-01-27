@@ -6245,6 +6245,30 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
+      - m_Target: {fileID: 1337794093}
+        m_TargetAssemblyTypeName: SettingsMenu, Assembly-CSharp
+        m_MethodName: SavePlayerPref
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 1744326087}
+        m_TargetAssemblyTypeName: CrosshairManager, Assembly-CSharp
+        m_MethodName: SavePlayerCrosshairPrefs
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
       - m_Target: {fileID: 1690895615}
         m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
         m_MethodName: SetActive
@@ -6618,6 +6642,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   audioMixer: {fileID: 24100000, guid: 1f2645f52c4cb03489b78032895c1598, type: 2}
   resolutionDropdown: {fileID: 2037738970}
+  graphicsDropdown: {fileID: 618907128}
+  fullscreenToggle: {fileID: 2007913964}
+  volumeSlider: {fileID: 2017927995}
 --- !u!114 &1337794094
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8535,6 +8562,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5e87b189f85627d4e9e50c4c71704ab4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  lenghtSlider: {fileID: 627186183}
+  thickSlider: {fileID: 1790188341}
+  gapSlider: {fileID: 710830375}
+  redColorSlider: {fileID: 1775485058}
+  greenColorSlider: {fileID: 1016986905}
+  blueColorSlider: {fileID: 667883397}
   CrossLeft: {fileID: 216045763}
   CrossUp: {fileID: 1232550435}
   CrossRight: {fileID: 1484017278}

@@ -1,3 +1,4 @@
+using Project;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -5,6 +6,13 @@ using UnityEngine.UI;
 
 public class CrosshairManager : MonoBehaviour
 {
+    [SerializeField] private Slider lenghtSlider;
+    [SerializeField] private Slider thickSlider;
+    [SerializeField] private Slider gapSlider;
+    [SerializeField] private Slider redColorSlider;
+    [SerializeField] private Slider greenColorSlider;
+    [SerializeField] private Slider blueColorSlider;
+
     [SerializeField] private GameObject CrossLeft;
     [SerializeField] private GameObject CrossUp;
     [SerializeField] private GameObject CrossRight;
@@ -34,6 +42,9 @@ public class CrosshairManager : MonoBehaviour
         CrossRightImage = CrossRight.GetComponent<Image>();
         CrossDownImage= CrossDown.GetComponent<Image>();
         CrossPointImage = CrossPoint.GetComponent<Image>();
+
+        ReloadPlayerCrosshairPrefs();
+        ReloadPlayerCrosshairPrefsView();
     }
 
     public void SetLenght(float lenght)
@@ -85,5 +96,43 @@ public class CrosshairManager : MonoBehaviour
         CrossRightImage.color = new Color(CrossRightImage.color.r, CrossRightImage.color.g, blue);
         CrossDownImage.color = new Color(CrossDownImage.color.r, CrossDownImage.color.g, blue);
         CrossPointImage.color = new Color(CrossPointImage.color.r, CrossPointImage.color.g, blue);
+    }
+
+    public void SavePlayerCrosshairPrefs()
+    {
+        PlayerPrefs.SetFloat("lenght", lenghtSlider.value);
+        PlayerPrefs.SetFloat("thick", thickSlider.value);
+        PlayerPrefs.SetFloat("gap", gapSlider.value);
+        PlayerPrefs.SetFloat("red", redColorSlider.value);
+        PlayerPrefs.SetFloat("green", greenColorSlider.value);
+        PlayerPrefs.SetFloat("blue", blueColorSlider.value);
+
+        PlayerPrefs.Save();
+
+        Debug.Log("Crosshair prefs have been save");
+    }
+
+    private void ReloadPlayerCrosshairPrefs()
+    {
+        SetLenght(PlayerPrefs.GetFloat("lenght", 30));
+        SetThick(PlayerPrefs.GetFloat("thick", 5));
+        SetGap(PlayerPrefs.GetFloat("gap", 20));
+        SetRedColor(PlayerPrefs.GetFloat("red", 0));
+        SetGreenColor(PlayerPrefs.GetFloat("green", 0));
+        SetBlueColor(PlayerPrefs.GetFloat("blue", 0));
+
+        Debug.Log("Crosshair prefs have been load");
+    }
+
+    private void ReloadPlayerCrosshairPrefsView()
+    {
+        lenghtSlider.value = PlayerPrefs.GetFloat("lenght", 30);
+        thickSlider.value = PlayerPrefs.GetFloat("thick", 5);
+        gapSlider.value = PlayerPrefs.GetFloat("gap", 20);
+        redColorSlider.value = PlayerPrefs.GetFloat("red", 0);
+        greenColorSlider.value = PlayerPrefs.GetFloat("green", 0);
+        blueColorSlider.value = PlayerPrefs.GetFloat("blue", 0);
+
+        Debug.Log("Crosshair prefs have been load visualy");
     }
 }
