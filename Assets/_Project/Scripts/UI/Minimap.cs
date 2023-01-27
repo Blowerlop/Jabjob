@@ -4,16 +4,16 @@ using UnityEngine;
 
 public class Minimap : MonoBehaviour
 {
-    [SerializeField] private GameObject player;
+    [SerializeField] private Transform player;
 
     private void Start()
     {
-        player = GameObject.FindGameObjectWithTag("Player");
+        player = transform.root;
     }
 
     private void LateUpdate()
     {
-        Vector3 newPosition = player.transform.position;
+        Vector3 newPosition = player.position;
         newPosition.y = transform.position.y;
         transform.position = newPosition;
     }
