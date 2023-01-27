@@ -17,7 +17,7 @@ public class GunStat : ScriptableObject
     [Header("Properties"), Tooltip(@"Weapon max ammo in a loader"), Range(0, 50)]
     public int maxAmmo;
 
-    [Tooltip(@"Weapon shotting rate (bullets per sec)"), Range(0, 2)]
+    [Tooltip(@"Weapon shooting rate (bullets per sec)"), Range(0, 2)]
     public float shootRate;
 
     [Tooltip(@"Weapon bullet max dispertion"), Range(0, 15)]
@@ -35,6 +35,7 @@ public class GunStat : ScriptableObject
     public int bulletNumber;
 }
 
+/*
 [CustomEditor(typeof(GunStat))]
 public class MyScriptEditor : Editor
 {
@@ -50,3 +51,4 @@ public class MyScriptEditor : Editor
 
     }
 }
+*/

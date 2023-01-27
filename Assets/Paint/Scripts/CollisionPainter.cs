@@ -7,10 +7,10 @@ public class CollisionPainter : MonoBehaviour{
     public float strength = 1;
     public float hardness = 1;
 
-    private void OnCollisionStay(Collision other) {
-        Paintable p = other.collider.GetComponent<Paintable>();
+    private void OnTriggerEnter(Collider other) {
+        Paintable p = other.GetComponent<Paintable>();
         if(p != null){
-            Vector3 pos = other.contacts[0].point;
+            Vector3 pos = transform.position;
             PaintManager.instance.paint(p, pos, radius, hardness, strength, paintColor);
             Destroy(gameObject);    
         }

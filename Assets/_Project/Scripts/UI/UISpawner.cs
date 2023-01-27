@@ -1,23 +1,21 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Unity.Netcode;
 
-public class UISpawner : MonoBehaviour
+
+public class UISpawner : NetworkBehaviour
 {
-    [SerializeField] private List<GameObject> uiToSpawn = new List<GameObject>();
-
+    [SerializeField] private List<GameObject> _hudList = new List<GameObject>();
+    [SerializeField] private Transform _hudTransform;
     // Start is called before the first frame update
     void Start()
     {
-        foreach (GameObject go in uiToSpawn)
+        if (!IsOwner) return;
+        foreach (GameObject go in _hudList)
         {
-            Instantiate(go);
+            Instantiate(go, _hudTransform);
         }
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 }
