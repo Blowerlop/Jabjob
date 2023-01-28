@@ -8,11 +8,11 @@ namespace Project
     {
         public void OnEnable()
         {
-            GameEvent.onGlobalEventSample.Subscribe(SpawnObjectLocal);
+            GameEvent.onGlobalEventSample.Subscribe(SpawnObjectLocal, this);
             //GameEvent.onGlobal.Subscribe(() => {SpawnObjectServerRpc();});
-            GameEvent.onGlobalEventSample.Subscribe(SpawnObjectServerRpcV2);
+            GameEvent.onGlobalEventSample.Subscribe(SpawnObjectServerRpcV2, this);
             
-            GameEvent.onLocalEventSample.Subscribe(SpawnObjectLocal);
+            GameEvent.onLocalEventSample.Subscribe(SpawnObjectLocal, this);
         }
 
         public void OnDisable()
