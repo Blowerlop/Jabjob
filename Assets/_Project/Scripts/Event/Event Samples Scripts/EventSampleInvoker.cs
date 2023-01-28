@@ -6,12 +6,12 @@ namespace Project
     {
         public void Local()
         {
-            GameEvent.onLocalEventSample.Invoke();
+            GameEvent.onLocalEventSample.Invoke(this);
         }
 
         public void Server()
         {
-            GameEvent.onGlobalEventSample.Invoke();
+            GameEvent.onGlobalEventSample.Invoke(this);
         }
     }
 }
