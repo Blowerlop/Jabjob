@@ -5,8 +5,8 @@ namespace Project
         #region  Samples
         
         // Samples
-        public static readonly Event onGlobalEventSample = new Event();
-        public static readonly Event onLocalEventSample = new Event();
+        public static readonly Event onGlobalEventSample = new Event(nameof(onGlobalEventSample));
+        public static readonly Event onLocalEventSample = new Event(nameof(onLocalEventSample));
         
         #endregion
         

@@ -11,10 +11,17 @@ namespace Project
         private Action _action;
         private List<Action> _actionsTrackList = new List<Action>();
 
+        private string _eventName;
         
-        public void Invoke() 
+        public void Invoke(object sender) 
         {
+            Debug.Log($"<color=#00FF00>{sender} invoked {_eventName}</color>");
             _action?.Invoke();
+        }
+
+        public Event(string eventName)
+        {
+            _eventName = eventName;
         }
 
         public void Subscribe(Action action)
