@@ -1,0 +1,16 @@
+using UnityEngine;
+
+    #ROOTNAMESPACEBEGIN#
+public class #SCRIPTNAME# : MonoBehaviour, IGameEventListener
+{
+    public void OnEnable()
+    {
+        #NOTRIM#
+    }
+
+    public void OnDisable()
+    {
+        #NOTRIM#
+    }
+}
+#ROOTNAMESPACEEND#
