@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using Project;
 using Unity.Netcode;
@@ -10,7 +11,7 @@ public class PlayerMovementController : NetworkBehaviour
     [Header("Movements")]
     [SerializeField] private float _moveSpeed = 6.0f;
     private float _speedOffset = 0.1f;
-    private float _horizontalVelocity;
+    private Vector3 characterControllerLastVelocity;
 
     [Header("Gravity")]
     [SerializeField] private bool _gravityEnabled = true;
@@ -57,7 +58,7 @@ public class PlayerMovementController : NetworkBehaviour
         
         CheckGrounded();
         PerformJumpAndGravity();
-        PerfomMovement();
+        PerformMovement();
 
         if (InputManager.instance.isDashing)
         {
@@ -108,7 +109,7 @@ public class PlayerMovementController : NetworkBehaviour
         InputManager.instance.isJumping = false;
     }
 
-    private void PerfomMovement()
+    private void PerformMovement()
     {
         float targetVelocity;
         if (InputManager.instance.move == Vector2.zero)
@@ -119,8 +120,16 @@ public class PlayerMovementController : NetworkBehaviour
         {
             targetVelocity = _moveSpeed;
         }
-
-        float currentVelocity = new Vector3(_characterController.velocity.x, 0.0f, _characterController.velocity.z).magnitude;
+        
+        Vector3 characterControllerVelocity = _characterController.velocity;
+        GameEvent.onPlayerVelocityChange.Invoke(this, characterControllerVelocity);
+        // if (characterControllerLastVelocity != characterControllerVelocity) // MARCHE PAS CAR FLOAT ISSUE --> JE CHERCHERAI UN TRUC PLUS TARD
+        // {
+        //     GameEvent.onPlayerVelocityChange.Invoke(this, characterControllerVelocity);
+        // }
+        //characterControllerLastVelocity = characterControllerVelocity;
+        
+        float currentVelocity = new Vector3(characterControllerVelocity.x, 0.0f, characterControllerVelocity.z).magnitude;
         float velocityToApply;
 
         if (currentVelocity < targetVelocity - _speedOffset || currentVelocity > targetVelocity + _speedOffset)
@@ -131,9 +140,10 @@ public class PlayerMovementController : NetworkBehaviour
         {
             velocityToApply = targetVelocity;
         }
+        GameEvent.onPlayerSpeedChange.Invoke(this, Mathf.Round(velocityToApply * 100.0f) / 100.0f); // ON VERRA PLUS TARD SI CA IMPACTE LES PERFORMANCES, SI CA LE FAIT JE CHERCHERaIS UNE BONNE CONDITIOn
 
         
-
+        
         Vector2 moveHorizontalVelocity = InputManager.instance.move * velocityToApply;
         Vector3 moveVerticalVelocity = Vector3.up * _verticalVelocity;
 
