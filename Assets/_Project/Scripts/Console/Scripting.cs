@@ -11,6 +11,14 @@ namespace Utils
         public static Scripting instance;
         Dictionary<string, Action<string[]>> commands = new();
 
+        public enum SceneType
+        {
+            UI,
+            GamePlay
+        }
+
+        public static SceneType actualSceneType = SceneType.GamePlay;
+
         void Awake()
         {
             if(instance != null)
