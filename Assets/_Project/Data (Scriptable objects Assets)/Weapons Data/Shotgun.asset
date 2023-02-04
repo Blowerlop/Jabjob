@@ -10,15 +10,15 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c882b4aaa4089bf4aa28b25d333fb47d, type: 3}
-  m_Name: Pistol
+  m_Name: Shotgun
   m_EditorClassIdentifier: 
-  ID: 2
-  weaponName: Pistol
-  maxAmmo: 11
-  shootRate: 0.11
-  dispertion: 0.8
+  ID: 4
+  weaponName: ShotGun
+  maxAmmo: 7
+  shootRate: 0.17
+  dispertion: 6
   riffle: 0
-  model: {fileID: 8253399543442144797, guid: 977ebded5db176d41abf209c430690fe, type: 3}
-  spray: 0
-  bulletNumber: 0
+  model: {fileID: 919132149155446097, guid: 02a0fb548f71fbd4793e99c8e0a7667d, type: 3}
+  spray: 1
+  bulletNumber: 11
   gun: {fileID: 0}

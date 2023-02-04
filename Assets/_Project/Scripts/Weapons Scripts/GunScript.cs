@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class GunScript : NetworkBehaviour
 {
-    public WeaponSO actualWeapon;
+    public SOWeapon _actualSoWeapon;
 
     [SerializeField]
     GameObject gun, projectilePrefab, playerCamera;
@@ -30,7 +30,7 @@ public class GunScript : NetworkBehaviour
     {
         if (isMultiplayer && IsOwner == false) this.enabled = false;
         //Init values
-        ChangeWeapon(actualWeapon);
+        ChangeWeapon(_actualSoWeapon);
         InputManager.instance.reload.AddListener(Reload);
         
         //Set Cursor
@@ -40,11 +40,11 @@ public class GunScript : NetworkBehaviour
 
     void Update()
     {
-        if (InputManager.instance.shoot && (actualWeapon.riffle || canShoot))
+        if (InputManager.instance.shoot && (_actualSoWeapon.riffle || canShoot))
         {
             if(Time.time >= nextShoot && ammo >0)
             {
-                if (!actualWeapon.riffle)
+                if (!_actualSoWeapon.riffle)
                 {
                     canShoot = false;
                 }
@@ -83,14 +83,14 @@ public class GunScript : NetworkBehaviour
         if (Physics.Raycast(ray, out hit, range, layerToAim))
         {
             hitpointClient = hit.point;
-            if (actualWeapon.spray)
+            if (_actualSoWeapon.spray)
             {
-                for (int i = 0; i < actualWeapon.bulletNumber; i++)
+                for (int i = 0; i < _actualSoWeapon.bulletNumber; i++)
                 {
                     GameObject go = ObjectPoolingManager.instance.GetObject();
                     go.transform.position = position;
                     go.transform.rotation = rotation;
-                    go.GetComponent<ProjectileScript>().Init(hit.point, actualWeapon.dispertion);
+                    go.GetComponent<WeaponProjectile>().Init(hit.point, _actualSoWeapon.dispertion);
                 }
             }
             else
@@ -98,21 +98,21 @@ public class GunScript : NetworkBehaviour
                 GameObject go = ObjectPoolingManager.instance.GetObject();
                 go.transform.position = position;
                 go.transform.rotation = rotation;
-                go.GetComponent<ProjectileScript>().Init(hit.point, actualWeapon.dispertion);
+                go.GetComponent<WeaponProjectile>().Init(hit.point, _actualSoWeapon.dispertion);
             }
             Debug.Log(GetComponent<NetworkObject>().OwnerClientId + " : shoot at " + hit.point);
         }
         else  
         {
             hitpointClient = Vector3.zero;
-            if (actualWeapon.spray)
+            if (_actualSoWeapon.spray)
             {
-                for (int i = 0; i < actualWeapon.bulletNumber; i++)
+                for (int i = 0; i < _actualSoWeapon.bulletNumber; i++)
                 {
                     GameObject go = ObjectPoolingManager.instance.GetObject();
                     go.transform.position = position;
                     go.transform.rotation = rotation;
-                    go.GetComponent<ProjectileScript>().Init(actualWeapon.dispertion);
+                    go.GetComponent<WeaponProjectile>().Init(_actualSoWeapon.dispertion);
                 }
             }
             else
@@ -120,7 +120,7 @@ public class GunScript : NetworkBehaviour
                 GameObject go = ObjectPoolingManager.instance.GetObject();
                 go.transform.position = position;
                 go.transform.rotation = rotation;
-                go.GetComponent<ProjectileScript>().Init(actualWeapon.dispertion);
+                go.GetComponent<WeaponProjectile>().Init(_actualSoWeapon.dispertion);
             }
         }
     }
@@ -128,14 +128,14 @@ public class GunScript : NetworkBehaviour
     {
         if (hitpoint != Vector3.zero)
         {
-            if (actualWeapon.spray)
+            if (_actualSoWeapon.spray)
             {
-                for (int i = 0; i < actualWeapon.bulletNumber; i++)
+                for (int i = 0; i < _actualSoWeapon.bulletNumber; i++)
                 {
                     GameObject go = ObjectPoolingManager.instance.GetObject();
                     go.transform.position = position;
                     go.transform.rotation = rotation;
-                    go.GetComponent<ProjectileScript>().Init(hitpoint, actualWeapon.dispertion);
+                    go.GetComponent<WeaponProjectile>().Init(hitpoint, _actualSoWeapon.dispertion);
                 }
             }
             else
@@ -143,19 +143,19 @@ public class GunScript : NetworkBehaviour
                 GameObject go = ObjectPoolingManager.instance.GetObject();
                 go.transform.position = position;
                 go.transform.rotation = rotation;
-                go.GetComponent<ProjectileScript>().Init(hitpoint, actualWeapon.dispertion);
+                go.GetComponent<WeaponProjectile>().Init(hitpoint, _actualSoWeapon.dispertion);
             }
         }
         else
         {
-            if (actualWeapon.spray)
+            if (_actualSoWeapon.spray)
             {
-                for (int i = 0; i < actualWeapon.bulletNumber; i++)
+                for (int i = 0; i < _actualSoWeapon.bulletNumber; i++)
                 {
                     GameObject go = ObjectPoolingManager.instance.GetObject();
                     go.transform.position = position;
                     go.transform.rotation = rotation;
-                    go.GetComponent<ProjectileScript>().Init(actualWeapon.dispertion);
+                    go.GetComponent<WeaponProjectile>().Init(_actualSoWeapon.dispertion);
                 }
             }
             else
@@ -163,7 +163,7 @@ public class GunScript : NetworkBehaviour
                 GameObject go = ObjectPoolingManager.instance.GetObject();
                 go.transform.position = position;
                 go.transform.rotation = rotation;
-                go.GetComponent<ProjectileScript>().Init(actualWeapon.dispertion);
+                go.GetComponent<WeaponProjectile>().Init(_actualSoWeapon.dispertion);
             }
         }
     }
@@ -180,15 +180,15 @@ public class GunScript : NetworkBehaviour
     }
 
     /// <summary>
-    /// Change the actual weapon with <paramref name="newWeapon" />
+    /// Change the actual weapon with <paramref name="newSoWeapon" />
     /// </summary>
-    public void ChangeWeapon(WeaponSO newWeapon)
-    {
-        actualWeapon = newWeapon;
-        gun = Instantiate(actualWeapon.model, playerCamera.transform).GetComponent<WeaponScript>().origin;
-        maxAmmo = actualWeapon.maxAmmo;
+    public void ChangeWeapon(SOWeapon newSoWeapon)
+    {/*
+        _actualSoWeapon = newSoWeapon;
+        gun = Instantiate(_actualSoWeapon.model, playerCamera.transform).GetComponent<Weapon>().origin;
+        maxAmmo = _actualSoWeapon.maxAmmo;
         ammo = maxAmmo;
-        shootRate = actualWeapon.shootRate;
+        shootRate = _actualSoWeapon.shootRate;*/
     }
 
 

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
 
-public class ProjectileScript : NetworkBehaviour
+public class WeaponProjectile : NetworkBehaviour
 {
     Vector3 target;
     [SerializeField]

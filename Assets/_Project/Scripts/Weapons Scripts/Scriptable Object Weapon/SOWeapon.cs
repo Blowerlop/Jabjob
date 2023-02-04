@@ -4,14 +4,19 @@ using UnityEditor;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "NewWeapon", menuName = "Assets/SO/Weapon", order =0)]
-public class WeaponSO : ScriptableObject
+public class SOWeapon : ScriptableObject
 {
     [Header("Identity")]
     [Tooltip(@"Current Weapon ID /!\ unique")]
     public int ID;
 
+    [Header("Name")]
     [Tooltip(@"Weapon name to display")]
     public string weaponName;
+
+    [Header("Model")]
+    [Tooltip(@"Weapon 3D model")]
+    public GameObject model;
 
     [Header("Properties"),Tooltip(@"Weapon max ammo in a loader"), Range(0, 50)]
     public int maxAmmo;
@@ -25,26 +30,22 @@ public class WeaponSO : ScriptableObject
     [Tooltip(@"If user can hold click")]
     public bool riffle;
 
-    [Tooltip(@"Weapon 3D model")]
-    public GameObject model;
-
-    //[HideInInspector, Tooltip(@"If weapons shoot multiple bullets")]
+    [HideInInspector, Tooltip(@"If weapons shoot multiple bullets")]
     public bool spray;
-    //[HideInInspector, Tooltip(@"If weapons shoot multiple bullets")]
-    public int bulletNumber;
 
-    public GunScript gun;
+    [HideInInspector, Tooltip(@"If weapons shoot multiple bullets")]
+    public int bulletNumber;
 }
 
 
 #if UNITY_EDITOR
-[CustomEditor(typeof(WeaponSO))]
+[CustomEditor(typeof(SOWeapon))]
 public class MyScriptEditor : Editor
 {
     public override void OnInspectorGUI()
     {
         base.OnInspectorGUI();
-        var myScript = target as WeaponSO;
+        var myScript = target as SOWeapon;
 
         myScript.spray = GUILayout.Toggle(myScript.spray, "Spray");
 
