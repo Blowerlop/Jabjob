@@ -12,13 +12,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c882b4aaa4089bf4aa28b25d333fb47d, type: 3}
   m_Name: Shotgun
   m_EditorClassIdentifier: 
-  ID: 4
+  ID: 1
   weaponName: ShotGun
+  model: {fileID: 919132149155446097, guid: 02a0fb548f71fbd4793e99c8e0a7667d, type: 3}
+  prefab: {fileID: 0}
   maxAmmo: 7
   shootRate: 0.17
   dispertion: 6
   riffle: 0
-  model: {fileID: 919132149155446097, guid: 02a0fb548f71fbd4793e99c8e0a7667d, type: 3}
   spray: 1
   bulletNumber: 11
-  gun: {fileID: 0}

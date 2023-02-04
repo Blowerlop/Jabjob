@@ -122,7 +122,7 @@ public class PlayerMovementController : NetworkBehaviour
         }
         
         Vector3 characterControllerVelocity = _characterController.velocity;
-        GameEvent.onPlayerVelocityChange.Invoke(this, characterControllerVelocity);
+        //GameEvent.onPlayerVelocityChange.Invoke(this, false, characterControllerVelocity);
         // if (characterControllerLastVelocity != characterControllerVelocity) // MARCHE PAS CAR FLOAT ISSUE --> JE CHERCHERAI UN TRUC PLUS TARD
         // {
         //     GameEvent.onPlayerVelocityChange.Invoke(this, characterControllerVelocity);
@@ -140,7 +140,7 @@ public class PlayerMovementController : NetworkBehaviour
         {
             velocityToApply = targetVelocity;
         }
-        GameEvent.onPlayerSpeedChange.Invoke(this, Mathf.Round(velocityToApply * 100.0f) / 100.0f); // ON VERRA PLUS TARD SI CA IMPACTE LES PERFORMANCES, SI CA LE FAIT JE CHERCHERaIS UNE BONNE CONDITIOn
+        //GameEvent.onPlayerSpeedChange.Invoke(this, false, Mathf.Round(velocityToApply * 100.0f) / 100.0f); // ON VERRA PLUS TARD SI CA IMPACTE LES PERFORMANCES, SI CA LE FAIT JE CHERCHERaIS UNE BONNE CONDITIOn
 
         
         

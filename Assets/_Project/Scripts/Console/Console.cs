@@ -63,7 +63,7 @@ namespace Utils
                     break;
             }
             consoleText.text += balise + logString.Split("\n")[0] + (stackTrace.Split("\n").Length >= 2? "\n" + stackTrace.Split("\n")[1] + "\n" : "")+ "</color>";
-            content.sizeDelta = new Vector2(content.sizeDelta.x, content.sizeDelta.y + 29 * (stackTrace.Split("\n").Length >= 2? 2: 1));
+            if(content != null) content.sizeDelta = new Vector2(content.sizeDelta.x, content.sizeDelta.y + 29 * (stackTrace.Split("\n").Length >= 2? 2: 1));
             if(stackTrace.Split("\n").Length == 1)
             {
                 consoleText.text += "\n";
@@ -80,7 +80,7 @@ namespace Utils
             if (follow)
             {
                 Canvas.ForceUpdateCanvases();
-                scroll.verticalNormalizedPosition = 0;
+                if (scroll != null) scroll.verticalNormalizedPosition = 0;
             }
         }
 

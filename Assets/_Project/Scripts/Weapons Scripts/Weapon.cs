@@ -1,38 +1,25 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Collections.LowLevel.Unsafe;
 using Unity.Netcode;
+using Unity.VisualScripting;
 using UnityEngine;
 
 namespace Project
 {
     public class Weapon : MonoBehaviour
     {
-        
+        [field: SerializeField] public SOWeapon weaponData { get; private set; }
+        public WeaponStruct @struct = new WeaponStruct();
+
     }
-    
-    /*
-    public struct WeaponStruct : INetworkSerializable
+
+
+    public struct WeaponStruct : INetworkSerializeByMemcpy
     {
-        public SOWeapon weaponData;
-        public GameObject origin;
-        
-        public void NetworkSerialize<T>(BufferSerializer<T> serializer) where T : IReaderWriter
-        {
-            serializer.SerializeValue(ref weaponData);
-        }
+        public Weapon azeaz;
     }
-    
-    public struct SOWeaponStruct : INetworkSerializable
-    {
-        public int ID;
-        public string name;
-        
-        public void NetworkSerialize<T>(BufferSerializer<T> serializer) where T : IReaderWriter
-        {
-            serializer.SerializeValue(ref ID);
-        }
-    }*/
 }
 
 

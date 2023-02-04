@@ -1,5 +1,7 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using Project;
 using UnityEditor;
 using UnityEngine;
 
@@ -8,7 +10,7 @@ public class SOWeapon : ScriptableObject
 {
     [Header("Identity")]
     [Tooltip(@"Current Weapon ID /!\ unique")]
-    public int ID;
+    public byte ID;
 
     [Header("Name")]
     [Tooltip(@"Weapon name to display")]
@@ -17,6 +19,10 @@ public class SOWeapon : ScriptableObject
     [Header("Model")]
     [Tooltip(@"Weapon 3D model")]
     public GameObject model;
+    
+    [Header("Prefab")]
+    [Tooltip(@"Weapon prefab")]
+    public Weapon prefab;
 
     [Header("Properties"),Tooltip(@"Weapon max ammo in a loader"), Range(0, 50)]
     public int maxAmmo;
@@ -35,6 +41,35 @@ public class SOWeapon : ScriptableObject
 
     [HideInInspector, Tooltip(@"If weapons shoot multiple bullets")]
     public int bulletNumber;
+
+ 
+
+    private void OnEnable()
+    {
+        if (AllSOWeapons.ContainsKey(ID))
+        {
+            Debug.LogError(ID + " ID is already used !");
+        }
+        else
+        {
+            AllSOWeapons.Add(ID, this);
+        }
+        
+        Debug.Log("Initializing SOWeapons...");
+    }
+
+    private void OnDisable()
+    {
+        AllSOWeapons.Remove(ID);
+        Debug.Log("Refreshing SOWeapons...");
+    }
+
+    private static Dictionary<byte, SOWeapon> AllSOWeapons = new Dictionary<byte, SOWeapon>();
+
+    public static Weapon GetWeaponPrefab(byte id)
+    {
+        return AllSOWeapons[id].prefab;
+    }
 }
 
 

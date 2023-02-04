@@ -1,67 +1,84 @@
-using System.Collections.Generic;
+using System;
+using System.Runtime.InteropServices;
 using Project;
 using Unity.Netcode;
 using UnityEditor;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
-public class WeaponManager : NetworkBehaviour, IGameEventListener
+public class WeaponManager : NetworkBehaviour
 {
+    
     #region Variables
     [SerializeField] private Weapon _defaultWeapon;
     [SerializeField] [ReadOnlyField] private Weapon _currentWeapon;
+    [SerializeField] [ReadOnlyField] private NetworkVariable<byte> _weaponID = new NetworkVariable<byte>(writePerm: NetworkVariableWritePermission.Owner);
     [SerializeField] private Transform _weaponHandler;
     #endregion
 
 
     #region Updates
-    private void Start()
+
+    private void Awake()
     {
-        EquipWeaponLocal(_defaultWeapon);
-    }
-    
-    
-    public void OnEnable()
-    {
-        
+        _weaponID.OnValueChanged += EquipCurrentWeaponNetwork;
     }
 
-    public void OnDisable()
+    private void Start()
     {
-        
+        EquipWeaponLocal(_defaultWeapon); 
     }
     
+    public override void OnNetworkSpawn()
+    {
+        if (IsOwner == false)
+        {
+            EquipWeaponLocal(_weaponID.Value);
+            enabled = false;
+        }
+
+    }
+
+    public override void OnDestroy()
+    {
+        _weaponID.OnValueChanged -= EquipCurrentWeaponNetwork;
+
+    }
+    
+
     #endregion
 
     #region Methods
 
+    private void EquipCurrentWeaponNetwork(byte currentValue, byte newValue)
+    {
+        EquipWeaponLocal(newValue);
+    }
 
-    /*
-    public void EquipWeapon(Weapon weapon)
-    {
-        EquipWeaponLocal(weapon);
-        EquipWeaponServerRpc(weapon);
-    }
-    
-    [ServerRpc]
-    private void EquipWeaponServerRpc(Weapon weapon)
-    {
-        EquipWeaponClientRpc(weapon);
-    }
-    
-    [ClientRpc]
-    private void EquipWeaponClientRpc(Weapon weapon)
-    {
-        if (IsOwner == false) EquipWeaponLocal(weapon);
-    }*/
-    
     public void EquipWeaponLocal(Weapon weapon)
     {
-        UnequipWeapon();
+        UnEquipWeapon();
         _currentWeapon = Instantiate(weapon, _weaponHandler);
+        _weaponID.Value = _currentWeapon.weaponData.ID;
+        
         Debug.Log("Equipping Weapon !");
+        
+        // SI on trouve comment serialize un gameobject ou un intptr alors on pourra se passer de l'instancier par le réseau (network object inutile vu que zero communication réseau)
+        // NetworkObjectReference --> struct pour référencier un networkgameobject 
+    }
+    
+    private void EquipWeaponLocal(byte weaponID)
+    {
+        UnEquipWeapon();
+        _currentWeapon = Instantiate(SOWeapon.GetWeaponPrefab(weaponID), _weaponHandler);
+        
+        Debug.Log("Equipping Weapon !");
+        
+        // SI on trouve comment serialize un gameobject ou un intptr alors on pourra se passer de l'instancier par le réseau (network object inutile vu que zero communication réseau)
+        // NetworkObjectReference --> struct pour référencier un networkgameobject 
     }
 
-    private void UnequipWeapon()
+    private void UnEquipWeapon()
     {
         if (_currentWeapon == null) return;
         
@@ -90,10 +107,65 @@ public class WeaponManagerEditor : Editor
         weapon = EditorGUILayout.ObjectField(weapon, typeof(Weapon), true);
 
 
-        if (GUILayout.Button("EquipWeapon")) 
+        if (GUILayout.Button("EquipWeapon"))
         {
-            t.EquipWeaponLocal(weapon as Weapon);
+            if (t != null) t.EquipWeaponLocal(weapon as Weapon);
         }
     }
 }
 #endif
+
+
+
+public static class AddressHelper
+{
+    private static object mutualObject;
+    private static ObjectReinterpreter reinterpreter;
+
+    static AddressHelper()
+    {
+        AddressHelper.mutualObject = new object();
+        AddressHelper.reinterpreter = new ObjectReinterpreter();
+        AddressHelper.reinterpreter.AsObject = new ObjectWrapper();
+    }
+
+    public static IntPtr GetAddress(object obj)
+    {
+        lock (AddressHelper.mutualObject)
+        {
+            AddressHelper.reinterpreter.AsObject.Object = obj;
+            IntPtr address = AddressHelper.reinterpreter.AsIntPtr.Value;
+            AddressHelper.reinterpreter.AsObject.Object = null;
+            return address;
+        }
+    }
+
+    public static T GetInstance<T>(IntPtr address)
+    {
+        lock (AddressHelper.mutualObject)
+        {
+            AddressHelper.reinterpreter.AsIntPtr.Value = address;
+            T obj = (T)AddressHelper.reinterpreter.AsObject.Object;
+            AddressHelper.reinterpreter.AsObject.Object = null;
+            return obj;
+        }
+    }
+
+    // I bet you thought C# was type-safe.
+    [StructLayout(LayoutKind.Explicit)]
+    private struct ObjectReinterpreter
+    {
+        [FieldOffset(0)] public ObjectWrapper AsObject;
+        [FieldOffset(0)] public IntPtrWrapper AsIntPtr;
+    }
+
+    private class ObjectWrapper
+    {
+        public object Object;
+    }
+
+    private class IntPtrWrapper
+    {
+        public IntPtr Value;
+    }
+}
