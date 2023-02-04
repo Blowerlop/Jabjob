@@ -23,8 +23,9 @@ public class InputManager : MonoBehaviour
     public Vector2 move;
     public Vector2 look;
     public bool isJumping, shoot;
-    public UnityEvent reload;
+    public UnityEvent reload, openCommand;
     public bool isDashing;
+    public bool isConsoleOpened;
     #endregion
 
 
@@ -62,6 +63,12 @@ public class InputManager : MonoBehaviour
     public void OnDash()
     {
         isDashing = true;
+    }
+
+    public void OnConsole()
+    {
+        isConsoleOpened = !isConsoleOpened;
+        openCommand.Invoke();
     }
     #endregion
 }
