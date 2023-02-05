@@ -13,7 +13,7 @@ namespace Project
         [field: SerializeField] public SOWeapon weaponData;
         public int ammo;
 
-        private void Start()
+        private void Awake()
         {
             ammo = weaponData.maxAmmo;
         }

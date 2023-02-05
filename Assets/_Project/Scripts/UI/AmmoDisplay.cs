@@ -1,21 +1,28 @@
 using System.Collections;
 using System.Collections.Generic;
+using Project;
 using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
 
-public class AmmoDisplay : MonoBehaviour
+public class AmmoDisplay : MonoBehaviour, IGameEventListener
 {
     [SerializeField] private TextMeshProUGUI _ammoDisplay;
-    [SerializeField] private GunScript _playerGun;
 
-    private void Start()
+    public void OnEnable()
     {
-        _playerGun = transform.root.GetComponent<GunScript>();
+        GameEvent.onPlayerWeaponAmmoChange.Subscribe(UpdateAmmoDisplayText, this);
     }
 
-    private void Update()
+    public void OnDisable()
     {
-        _ammoDisplay.text = _playerGun.ammo.ToString();
+        GameEvent.onPlayerWeaponAmmoChange.Unsubscribe(UpdateAmmoDisplayText);
+
+    }
+
+
+    private void UpdateAmmoDisplayText(int ammo)
+    {
+        _ammoDisplay.text = ammo.ToString();
     }
 }

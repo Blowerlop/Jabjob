@@ -13,7 +13,7 @@ public class WeaponManager : NetworkBehaviour
     [SerializeField] private Weapon _defaultWeapon;
     [SerializeField] [ReadOnlyField] private Weapon _currentWeapon;
     private readonly NetworkVariable<byte> _weaponID = new NetworkVariable<byte>(writePerm: NetworkVariableWritePermission.Owner);
-    [this: SerializeField] public Transform weaponHandler { get; private set; }
+    [field: SerializeField] public Transform weaponHandler { get; private set; }
     #endregion
 
 

@@ -43,7 +43,7 @@ public class PlayerMovementController : NetworkBehaviour
 
     #region Updates
     private void Awake()
-    {
+    { 
         _characterController = GetComponent<CharacterController>();
     }
 

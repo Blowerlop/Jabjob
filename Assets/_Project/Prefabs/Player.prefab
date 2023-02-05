@@ -353,10 +353,10 @@ GameObject:
   - component: {fileID: 693733510563446535}
   - component: {fileID: 2755970706688381934}
   - component: {fileID: 2755970706688381933}
-  - component: {fileID: 2755970706688381937}
   - component: {fileID: 3202390217754404730}
   - component: {fileID: 6666433080101311672}
   - component: {fileID: 7926455562032434284}
+  - component: {fileID: -2871981651348838108}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -488,32 +488,6 @@ MonoBehaviour:
   _playerCamera: {fileID: 1886374946421191380}
   _cameraTarget: {fileID: 8130439777759429579}
   isMultiplayer: 1
---- !u!114 &2755970706688381937
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4408861272393954034}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 06c40a65737472d4bb66520bf1c2660b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _actualSoWeapon: {fileID: 0}
-  gun: {fileID: 2755970708432783075}
-  projectilePrefab: {fileID: 159128956728302430, guid: 5e8467d98c340fe479fc5904151d1f6c,
-    type: 3}
-  playerCamera: {fileID: 6929261091939556871}
-  range: 1000
-  ammo: 10
-  maxAmmo: 0
-  layerToAim:
-    serializedVersion: 2
-    m_Bits: 123
-  ShowDebug: 1
-  _camera: {fileID: 5084169532613243991}
-  isMultiplayer: 1
 --- !u!114 &3202390217754404730
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -564,7 +538,26 @@ MonoBehaviour:
   _defaultWeapon: {fileID: 2131882323308702708, guid: c929dc1e0dce0f4419b1981105caa629,
     type: 3}
   _currentWeapon: {fileID: 0}
-  _weaponHandler: {fileID: 7934576129649711553}
+  <weaponHandler>k__BackingField: {fileID: 7934576129649711553}
+--- !u!114 &-2871981651348838108
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4408861272393954034}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b9cf145c96197f141b1534c7761acf35, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _layerToAim:
+    serializedVersion: 2
+    m_Bits: 2147483647
+  _projectilePrefab: {fileID: 159128956728302426, guid: 5e8467d98c340fe479fc5904151d1f6c,
+    type: 3}
+  _camera: {fileID: 5084169532613243991}
+  _showDebug: 0
 --- !u!1 &4780292437179542832
 GameObject:
   m_ObjectHideFlags: 0
@@ -897,12 +890,6 @@ PrefabInstance:
 --- !u!4 &211684960236686967 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6610324257272068690, guid: 977ebded5db176d41abf209c430690fe,
-    type: 3}
-  m_PrefabInstance: {fileID: 6434685892772377637}
-  m_PrefabAsset: {fileID: 0}
---- !u!1 &2755970708432783075 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 9183882509546336966, guid: 977ebded5db176d41abf209c430690fe,
     type: 3}
   m_PrefabInstance: {fileID: 6434685892772377637}
   m_PrefabAsset: {fileID: 0}

@@ -53,6 +53,11 @@ namespace Project
             GameEvent.onPlayerWeaponChange.Unsubscribe(UpdateCurrentWeapon);
         }
 
+        public override void OnNetworkSpawn()
+        {
+            if (IsOwner == false) enabled = false; 
+        }
+
         #endregion
 
 
@@ -62,6 +67,8 @@ namespace Project
         {
             _weapon = weapon;
             _weaponData = weapon.weaponData;
+            
+            GameEvent.onPlayerWeaponAmmoChange.Invoke(this, true, _weapon.ammo);
         }
 
         #endregion
@@ -88,6 +95,7 @@ namespace Project
                 }
                 _nextShoot = Time.time + _shootRate;
                 _weapon.ammo--;
+                GameEvent.onPlayerWeaponAmmoChange.Invoke(this, true, _weapon.ammo);
                 
                 Transform weaponHandlerTransform = _weaponManager.weaponHandler.transform;
                 Vector3 weaponHandlerPosition = weaponHandlerTransform.position;
@@ -167,6 +175,7 @@ namespace Project
             }
         }
     }
+    
     public void LocalShoot(Vector3 position, Quaternion rotation, Vector3 hitpoint)
     {
         if (hitpoint != Vector3.zero)
@@ -227,6 +236,7 @@ namespace Project
         // Start animation
         yield return new WaitForSeconds(_weaponData.reloadDuration);
         _weapon.ammo = _weaponData.maxAmmo;
+        GameEvent.onPlayerWeaponAmmoChange.Invoke(this, true, _weapon.ammo);
         _canShoot = true;
     }
     
