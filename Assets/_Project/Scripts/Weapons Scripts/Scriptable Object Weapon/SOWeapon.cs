@@ -1,5 +1,3 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
 using Project;
 using UnityEditor;
@@ -27,7 +25,7 @@ public class SOWeapon : ScriptableObject
     [Header("Properties"),Tooltip(@"Weapon max ammo in a loader"), Range(0, 50)]
     public int maxAmmo;
 
-    [Tooltip(@"Weapon shotting rate (bullets per sec)"), Range(0, 2)]
+    [Tooltip(@"Weapon shooting rate (bullets per sec)"), Range(0, 2)]
     public float shootRate;
 
     [Tooltip(@"Weapon bullet max dispertion"), Range(0, 15)]
@@ -42,17 +40,19 @@ public class SOWeapon : ScriptableObject
     [HideInInspector, Tooltip(@"If weapons shoot multiple bullets")]
     public int bulletNumber;
 
+    public float reloadDuration;
+
  
 
     private void OnEnable()
     {
-        if (AllSOWeapons.ContainsKey(ID))
+        if (_allSOWeapons.ContainsKey(ID))
         {
             Debug.LogError(ID + " ID is already used !");
         }
         else
         {
-            AllSOWeapons.Add(ID, this);
+            _allSOWeapons.Add(ID, this);
         }
         
         Debug.Log("Initializing SOWeapons...");
@@ -60,15 +60,23 @@ public class SOWeapon : ScriptableObject
 
     private void OnDisable()
     {
-        AllSOWeapons.Remove(ID);
+        _allSOWeapons.Remove(ID);
         Debug.Log("Refreshing SOWeapons...");
     }
+    
+    private void OnValidate()
+    {
+        if (prefab != null && prefab.weaponData != this)
+        {
+            prefab.weaponData = this;
+        }
+    }
 
-    private static Dictionary<byte, SOWeapon> AllSOWeapons = new Dictionary<byte, SOWeapon>();
+    private static Dictionary<byte, SOWeapon> _allSOWeapons = new Dictionary<byte, SOWeapon>();
 
     public static Weapon GetWeaponPrefab(byte id)
     {
-        return AllSOWeapons[id].prefab;
+        return _allSOWeapons[id].prefab;
     }
 }
 

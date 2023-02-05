@@ -22,7 +22,7 @@ public class InputManager : MonoBehaviour
     #region Variables
     public Vector2 move;
     public Vector2 look;
-    public bool isJumping, shoot;
+    public bool isJumping, isShooting;
     public UnityEvent reload, openCommand;
     public bool isDashing;
     public bool isConsoleOpened;
@@ -48,11 +48,11 @@ public class InputManager : MonoBehaviour
 
     public void OnFire()
     {
-        shoot = true;
+        isShooting = true;
     }
     public void OnUnFire()
     {
-        shoot = false;
+        isShooting = false;
     }
 
     public void OnReload()

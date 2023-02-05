@@ -9,7 +9,7 @@ public class GunScript : NetworkBehaviour
     public SOWeapon _actualSoWeapon;
 
     [SerializeField]
-    GameObject gun, projectilePrefab, playerCamera;
+    Transform gun, projectilePrefab, playerCamera;
 
     public
     int range, ammo, maxAmmo;
@@ -40,7 +40,7 @@ public class GunScript : NetworkBehaviour
 
     void Update()
     {
-        if (InputManager.instance.shoot && (_actualSoWeapon.riffle || canShoot))
+        if (InputManager.instance.isShooting && (_actualSoWeapon.riffle || canShoot))
         {
             if(Time.time >= nextShoot && ammo >0)
             {
@@ -54,7 +54,7 @@ public class GunScript : NetworkBehaviour
                 ShootServerRpc(gun.transform.position, gun.transform.rotation, hitpointClient);
             }
         }
-        if (!InputManager.instance.shoot)
+        if (!InputManager.instance.isShooting)
         {
             canShoot = true;
         }    

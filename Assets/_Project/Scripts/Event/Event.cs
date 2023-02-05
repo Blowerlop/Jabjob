@@ -42,7 +42,7 @@ namespace Project
             _eventName = eventName;
         }
 
-        public void Subscribe(Action action, object subcriber)
+        public void Subscribe(Action action, object subscriber)
         {
             if (IsListenerAlreadySubscribe(action))
             {
@@ -52,7 +52,7 @@ namespace Project
             {
                 #if UNITY_EDITOR || DEVELOPMENT_BUILD
                 _action += action;
-                _actionTrackListExpend.Add(action, subcriber);
+                _actionTrackListExpend.Add(action, subscriber);
                 _actionsTrackList.Add(action);
                 Debug.Log($"Method - {action.Method.Name} - has subscribed");
                 #else

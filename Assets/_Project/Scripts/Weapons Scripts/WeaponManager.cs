@@ -12,8 +12,8 @@ public class WeaponManager : NetworkBehaviour
     #region Variables
     [SerializeField] private Weapon _defaultWeapon;
     [SerializeField] [ReadOnlyField] private Weapon _currentWeapon;
-    [SerializeField] [ReadOnlyField] private NetworkVariable<byte> _weaponID = new NetworkVariable<byte>(writePerm: NetworkVariableWritePermission.Owner);
-    [SerializeField] private Transform _weaponHandler;
+    private readonly NetworkVariable<byte> _weaponID = new NetworkVariable<byte>(writePerm: NetworkVariableWritePermission.Owner);
+    [this: SerializeField] public Transform weaponHandler { get; private set; }
     #endregion
 
 
@@ -58,8 +58,9 @@ public class WeaponManager : NetworkBehaviour
     public void EquipWeaponLocal(Weapon weapon)
     {
         UnEquipWeapon();
-        _currentWeapon = Instantiate(weapon, _weaponHandler);
+        _currentWeapon = Instantiate(weapon, weaponHandler);
         _weaponID.Value = _currentWeapon.weaponData.ID;
+        GameEvent.onPlayerWeaponChange.Invoke(this, true, _currentWeapon);
         
         Debug.Log("Equipping Weapon !");
         
@@ -70,7 +71,7 @@ public class WeaponManager : NetworkBehaviour
     private void EquipWeaponLocal(byte weaponID)
     {
         UnEquipWeapon();
-        _currentWeapon = Instantiate(SOWeapon.GetWeaponPrefab(weaponID), _weaponHandler);
+        _currentWeapon = Instantiate(SOWeapon.GetWeaponPrefab(weaponID), weaponHandler);
         
         Debug.Log("Equipping Weapon !");
         

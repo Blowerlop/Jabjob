@@ -10,15 +10,21 @@ namespace Project
 {
     public class Weapon : MonoBehaviour
     {
-        [field: SerializeField] public SOWeapon weaponData { get; private set; }
-        public WeaponStruct @struct = new WeaponStruct();
+        [field: SerializeField] public SOWeapon weaponData;
+        public int ammo;
 
-    }
+        private void Start()
+        {
+            ammo = weaponData.maxAmmo;
+        }
 
-
-    public struct WeaponStruct : INetworkSerializeByMemcpy
-    {
-        public Weapon azeaz;
+        private void OnValidate()
+        {
+            if (weaponData != null && weaponData.prefab != this)
+            {
+                weaponData.prefab = this;
+            }
+        }
     }
 }
 

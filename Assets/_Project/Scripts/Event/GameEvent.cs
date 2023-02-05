@@ -17,6 +17,10 @@ namespace Project
         public static readonly Event<Vector3> onPlayerVelocityChange = new Event<Vector3>(nameof(onPlayerVelocityChange));
         public static readonly Event<float> onPlayerSpeedChange = new Event<float>(nameof(onPlayerSpeedChange));
 
+        
+        // Weapon relative
+        public static readonly Event<Weapon> onPlayerWeaponChange = new Event<Weapon>(nameof(onPlayerWeaponChange));
+
         #endregion
 
 
