@@ -16,7 +16,6 @@ namespace Project
         private Vector3 _hitPointClient;
         private bool _canShoot = true;
         [SerializeField] private LayerMask _layerToAim;
-        [SerializeField] private Transform _projectilePrefab;
 
         [Header("Other References")]
         private Weapon _weapon;
@@ -63,6 +62,34 @@ namespace Project
 
         #region Methods
 
+        private void Update()
+        {
+            if (InputManager.instance.isShooting && (_weaponData.riffle || _canShoot))
+            {
+                if(Time.time >= _nextShoot && _weapon.ammo >0)
+                {
+                    if (!_weaponData.riffle)
+                    {
+                        _canShoot = false;
+                    }
+                    _nextShoot = Time.time + _shootRate;
+                    _weapon.ammo--;
+                    //GameEvent.onPlayerWeaponAmmoChange.Invoke(this, true, _weapon.ammo);
+                
+                    Transform weaponHandlerTransform = _weaponManager.weaponHandler.transform;
+                    Vector3 weaponHandlerPosition = weaponHandlerTransform.position;
+                    Quaternion weaponHandlerRotation = weaponHandlerTransform.rotation;
+                
+                    LocalShoot(Vector3.zero, Quaternion.identity);
+                    ShootServerRpc(Vector3.zero, Quaternion.identity, _hitPointClient);
+                }
+            }
+            if (!InputManager.instance.isShooting)
+            {
+                _canShoot = true;
+            }    
+        }
+        
         private void UpdateCurrentWeapon(Weapon weapon)
         {
             _weapon = weapon;
@@ -83,33 +110,7 @@ namespace Project
     
     
 
-    void Update()
-    {
-        if (InputManager.instance.isShooting && (_weaponData.riffle || _canShoot))
-        {
-            if(Time.time >= _nextShoot && _weapon.ammo >0)
-            {
-                if (!_weaponData.riffle)
-                {
-                    _canShoot = false;
-                }
-                _nextShoot = Time.time + _shootRate;
-                _weapon.ammo--;
-                GameEvent.onPlayerWeaponAmmoChange.Invoke(this, true, _weapon.ammo);
-                
-                Transform weaponHandlerTransform = _weaponManager.weaponHandler.transform;
-                Vector3 weaponHandlerPosition = weaponHandlerTransform.position;
-                Quaternion weaponHandlerRotation = weaponHandlerTransform.rotation;
-                
-                LocalShoot(weaponHandlerPosition, weaponHandlerRotation);
-                ShootServerRpc(weaponHandlerPosition, weaponHandlerRotation, _hitPointClient);
-            }
-        }
-        if (!InputManager.instance.isShooting)
-        {
-            _canShoot = true;
-        }    
-    }
+    
 
     [ServerRpc]
     private void ShootServerRpc(Vector3 position, Quaternion rotation, Vector3 hitPoint)

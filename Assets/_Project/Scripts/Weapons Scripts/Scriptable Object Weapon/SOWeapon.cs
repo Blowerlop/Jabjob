@@ -41,28 +41,6 @@ public class SOWeapon : ScriptableObject
     public int bulletNumber;
 
     public float reloadDuration;
-
- 
-
-    private void OnEnable()
-    {
-        if (_allSOWeapons.ContainsKey(ID))
-        {
-            Debug.LogError(ID + " ID is already used !");
-        }
-        else
-        {
-            _allSOWeapons.Add(ID, this);
-        }
-        
-        Debug.Log("Initializing SOWeapons...");
-    }
-
-    private void OnDisable()
-    {
-        _allSOWeapons.Remove(ID);
-        Debug.Log("Refreshing SOWeapons...");
-    }
     
     private void OnValidate()
     {
@@ -72,7 +50,7 @@ public class SOWeapon : ScriptableObject
         }
     }
 
-    private static Dictionary<byte, SOWeapon> _allSOWeapons = new Dictionary<byte, SOWeapon>();
+    public static Dictionary<byte, SOWeapon> _allSOWeapons = new Dictionary<byte, SOWeapon>();
 
     public static Weapon GetWeaponPrefab(byte id)
     {
