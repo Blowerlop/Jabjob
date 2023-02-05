@@ -10,6 +10,8 @@ namespace Project
 
         private void Start()
         {
+            SOWeapon._allSOWeapons.Clear(); 
+            
             for (int i = 0; i < _soWeaponsDatabase.Count; i++)
             {
                 SOWeapon._allSOWeapons.Add(_soWeaponsDatabase[i].ID, _soWeaponsDatabase[i]);

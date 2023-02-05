@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 369718092}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Visual
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -43,7 +43,7 @@ GameObject:
   - component: {fileID: 398836427}
   - component: {fileID: 398836430}
   - component: {fileID: 398836429}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Capsule
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -125,7 +125,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2072704992535866959}
   - component: {fileID: 1736586212553184951}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: PlayerCinemachineCamera
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -199,7 +199,7 @@ GameObject:
   - component: {fileID: 3326217749933424242}
   - component: {fileID: 2723208836083416384}
   - component: {fileID: 6613037679337128404}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Camera
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -357,7 +357,7 @@ GameObject:
   - component: {fileID: 6666433080101311672}
   - component: {fileID: 7926455562032434284}
   - component: {fileID: -2871981651348838108}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Player
   m_TagString: Player
   m_Icon: {fileID: 0}
@@ -554,8 +554,6 @@ MonoBehaviour:
   _layerToAim:
     serializedVersion: 2
     m_Bits: 2147483647
-  _projectilePrefab: {fileID: 159128956728302426, guid: 5e8467d98c340fe479fc5904151d1f6c,
-    type: 3}
   _camera: {fileID: 5084169532613243991}
   _showDebug: 0
 --- !u!1 &4780292437179542832
@@ -570,7 +568,7 @@ GameObject:
   - component: {fileID: 1821868004102002296}
   - component: {fileID: 1867573106}
   - component: {fileID: 9164190923226445812}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: cm
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -662,7 +660,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8130439777759429579}
   - component: {fileID: 5904459058702996455}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: RootCamera
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -721,7 +719,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3450679141593973464}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Camera Infos
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -755,7 +753,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8356216054934893066}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: HUD
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -786,7 +784,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7934576129649711553}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: WeaponHandler
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -815,6 +813,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 8130439777759429579}
     m_Modifications:
+    - target: {fileID: 5734462387168320624, guid: 977ebded5db176d41abf209c430690fe,
+        type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 6610324257272068690, guid: 977ebded5db176d41abf209c430690fe,
         type: 3}
       propertyPath: m_RootOrder
@@ -882,8 +885,18 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8253399543442144797, guid: 977ebded5db176d41abf209c430690fe,
         type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 8253399543442144797, guid: 977ebded5db176d41abf209c430690fe,
+        type: 3}
       propertyPath: m_IsActive
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9183882509546336966, guid: 977ebded5db176d41abf209c430690fe,
+        type: 3}
+      propertyPath: m_Layer
+      value: 3
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 977ebded5db176d41abf209c430690fe, type: 3}

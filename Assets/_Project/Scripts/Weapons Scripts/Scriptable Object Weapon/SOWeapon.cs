@@ -54,7 +54,12 @@ public class SOWeapon : ScriptableObject
 
     public static Weapon GetWeaponPrefab(byte id)
     {
-        return _allSOWeapons[id].prefab;
+        if (_allSOWeapons.TryGetValue(id, out SOWeapon soWeapon))
+        {
+            return soWeapon.prefab;
+        }
+
+        throw new KeyNotFoundException($"The SOWeapon {id} ID has not been added to the database. \n 'Project/Resources/Systems/Database/SOWeaponsDatabase'");
     }
 }
 
@@ -76,3 +81,16 @@ public class MyScriptEditor : Editor
     }
 }
 #endif
+
+public class a : IGameEventListener
+{
+    public void OnEnable()
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public void OnDisable()
+    {
+        throw new System.NotImplementedException();
+    }
+}
