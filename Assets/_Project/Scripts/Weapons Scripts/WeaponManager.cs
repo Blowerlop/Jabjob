@@ -62,7 +62,7 @@ public class WeaponManager : NetworkBehaviour
         UnEquipWeapon();
         _currentWeapon = Instantiate(weapon, weaponHandler);
         _weaponID.Value = _currentWeapon.weaponData.ID;
-        GameEvent.onPlayerWeaponChange.Invoke(this, true, _currentWeapon);
+        GameEvent.onPlayerWeaponChangeLocal.Invoke(this, true, _currentWeapon);
         
         Debug.Log("Equipping Weapon !");
         
@@ -74,7 +74,8 @@ public class WeaponManager : NetworkBehaviour
     {
         UnEquipWeapon();
         _currentWeapon = Instantiate(SOWeapon.GetWeaponPrefab(weaponID), weaponHandler);
-        
+        GameEvent.onPlayerWeaponChangeServer.Invoke(this, true, weaponID);
+
         Debug.Log("Equipping Weapon !");
         
         // SI on trouve comment serialize un gameobject ou un intptr alors on pourra se passer de l'instancier par le réseau (network object inutile vu que zero communication réseau)
