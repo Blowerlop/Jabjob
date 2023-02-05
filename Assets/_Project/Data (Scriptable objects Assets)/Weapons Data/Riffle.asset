@@ -18,8 +18,9 @@ MonoBehaviour:
   prefab: {fileID: 2131882323308702708, guid: c929dc1e0dce0f4419b1981105caa629, type: 3}
   maxAmmo: 25
   shootRate: 0.11
-  dispertion: 1.4
-  riffle: 1
-  spray: 0
-  bulletNumber: 0
+  dispersion: 0
+  automatic: 0
   reloadDuration: 0
+  raycast: 1
+  spray: 1
+  bulletNumber: 1

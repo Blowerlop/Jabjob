@@ -9,6 +9,7 @@ public class AmmoDisplay : MonoBehaviour, IGameEventListener
 {
     [SerializeField] private TextMeshProUGUI _ammoDisplay;
 
+    
     public void OnEnable()
     {
         GameEvent.onPlayerWeaponAmmoChange.Subscribe(UpdateAmmoDisplayText, this);
@@ -19,7 +20,6 @@ public class AmmoDisplay : MonoBehaviour, IGameEventListener
         GameEvent.onPlayerWeaponAmmoChange.Unsubscribe(UpdateAmmoDisplayText);
 
     }
-
 
     private void UpdateAmmoDisplayText(int ammo)
     {

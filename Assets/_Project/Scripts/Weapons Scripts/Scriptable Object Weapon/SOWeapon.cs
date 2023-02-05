@@ -28,19 +28,37 @@ public class SOWeapon : ScriptableObject
     [Tooltip(@"Weapon shooting rate (bullets per sec)"), Range(0, 2)]
     public float shootRate;
 
-    [Tooltip(@"Weapon bullet max dispertion"), Range(0, 15)]
-    public float dispertion;
+    [Tooltip(@"Weapon bullet max dispersion"), Range(0, 15)]
+    public float dispersion;
 
     [Tooltip(@"If user can hold click")]
-    public bool riffle;
+    public bool automatic;
+    
+    [Tooltip(@"The time it takes to reload the weapon")]
+    public float reloadDuration;
 
+    [HideInInspector]
+    [Tooltip(@"If weapon use raycast instead of real projectiles")]
+    public bool raycast;
+    
     [HideInInspector, Tooltip(@"If weapons shoot multiple bullets")]
     public bool spray;
 
     [HideInInspector, Tooltip(@"If weapons shoot multiple bullets")]
     public int bulletNumber;
-
-    public float reloadDuration;
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    public static Dictionary<byte, SOWeapon> _allSOWeapons = new Dictionary<byte, SOWeapon>();
+    
+    
     
     private void OnValidate()
     {
@@ -50,7 +68,6 @@ public class SOWeapon : ScriptableObject
         }
     }
 
-    public static Dictionary<byte, SOWeapon> _allSOWeapons = new Dictionary<byte, SOWeapon>();
 
     public static Weapon GetWeaponPrefab(byte id)
     {
@@ -73,9 +90,14 @@ public class MyScriptEditor : Editor
         base.OnInspectorGUI();
         var myScript = target as SOWeapon;
 
-        myScript.spray = GUILayout.Toggle(myScript.spray, "Spray");
+        myScript.raycast = GUILayout.Toggle(myScript.raycast, "Raycast");
 
-        if (myScript.spray)
+        if (myScript.raycast)
+        {
+            myScript.spray = GUILayout.Toggle(myScript.spray, "Spray");
+        }
+
+        if (myScript.raycast && myScript.spray)
             myScript.bulletNumber = EditorGUILayout.IntSlider("Bullet Number",myScript.bulletNumber,1,30);
 
     }

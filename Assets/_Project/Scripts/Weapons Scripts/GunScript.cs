@@ -40,11 +40,11 @@ public class GunScript : NetworkBehaviour
 
     void Update()
     {
-        if (InputManager.instance.isShooting && (_actualSoWeapon.riffle || canShoot))
+        if (InputManager.instance.isShooting && (_actualSoWeapon.automatic || canShoot))
         {
             if(Time.time >= nextShoot && ammo >0)
             {
-                if (!_actualSoWeapon.riffle)
+                if (!_actualSoWeapon.automatic)
                 {
                     canShoot = false;
                 }
@@ -90,7 +90,7 @@ public class GunScript : NetworkBehaviour
                     GameObject go = ObjectPoolingManager.instance.GetObject();
                     go.transform.position = position;
                     go.transform.rotation = rotation;
-                    go.GetComponent<WeaponProjectile>().Init(hit.point, _actualSoWeapon.dispertion);
+                    go.GetComponent<WeaponProjectile>().Init(hit.point, _actualSoWeapon.dispersion);
                 }
             }
             else
@@ -98,7 +98,7 @@ public class GunScript : NetworkBehaviour
                 GameObject go = ObjectPoolingManager.instance.GetObject();
                 go.transform.position = position;
                 go.transform.rotation = rotation;
-                go.GetComponent<WeaponProjectile>().Init(hit.point, _actualSoWeapon.dispertion);
+                go.GetComponent<WeaponProjectile>().Init(hit.point, _actualSoWeapon.dispersion);
             }
             Debug.Log(GetComponent<NetworkObject>().OwnerClientId + " : shoot at " + hit.point);
         }
@@ -112,7 +112,7 @@ public class GunScript : NetworkBehaviour
                     GameObject go = ObjectPoolingManager.instance.GetObject();
                     go.transform.position = position;
                     go.transform.rotation = rotation;
-                    go.GetComponent<WeaponProjectile>().Init(_actualSoWeapon.dispertion);
+                    go.GetComponent<WeaponProjectile>().Init(_actualSoWeapon.dispersion);
                 }
             }
             else
@@ -120,7 +120,7 @@ public class GunScript : NetworkBehaviour
                 GameObject go = ObjectPoolingManager.instance.GetObject();
                 go.transform.position = position;
                 go.transform.rotation = rotation;
-                go.GetComponent<WeaponProjectile>().Init(_actualSoWeapon.dispertion);
+                go.GetComponent<WeaponProjectile>().Init(_actualSoWeapon.dispersion);
             }
         }
     }
@@ -135,7 +135,7 @@ public class GunScript : NetworkBehaviour
                     GameObject go = ObjectPoolingManager.instance.GetObject();
                     go.transform.position = position;
                     go.transform.rotation = rotation;
-                    go.GetComponent<WeaponProjectile>().Init(hitpoint, _actualSoWeapon.dispertion);
+                    go.GetComponent<WeaponProjectile>().Init(hitpoint, _actualSoWeapon.dispersion);
                 }
             }
             else
@@ -143,7 +143,7 @@ public class GunScript : NetworkBehaviour
                 GameObject go = ObjectPoolingManager.instance.GetObject();
                 go.transform.position = position;
                 go.transform.rotation = rotation;
-                go.GetComponent<WeaponProjectile>().Init(hitpoint, _actualSoWeapon.dispertion);
+                go.GetComponent<WeaponProjectile>().Init(hitpoint, _actualSoWeapon.dispersion);
             }
         }
         else
@@ -155,7 +155,7 @@ public class GunScript : NetworkBehaviour
                     GameObject go = ObjectPoolingManager.instance.GetObject();
                     go.transform.position = position;
                     go.transform.rotation = rotation;
-                    go.GetComponent<WeaponProjectile>().Init(_actualSoWeapon.dispertion);
+                    go.GetComponent<WeaponProjectile>().Init(_actualSoWeapon.dispersion);
                 }
             }
             else
@@ -163,7 +163,7 @@ public class GunScript : NetworkBehaviour
                 GameObject go = ObjectPoolingManager.instance.GetObject();
                 go.transform.position = position;
                 go.transform.rotation = rotation;
-                go.GetComponent<WeaponProjectile>().Init(_actualSoWeapon.dispertion);
+                go.GetComponent<WeaponProjectile>().Init(_actualSoWeapon.dispersion);
             }
         }
     }

@@ -22,7 +22,7 @@ public class GunDisplay : MonoBehaviour
         gunName.text = gun.weaponName;
         maxAmmo.text = gun.maxAmmo.ToString();
         shootRate.text = gun.shootRate.ToString();
-        dispertion.text = gun.dispertion.ToString();
+        dispertion.text = gun.dispersion.ToString();
 
         if (gunHolder.childCount > 0)
             Destroy(gunHolder.GetChild(0).gameObject);

@@ -57,11 +57,11 @@ namespace Project
 
         private void Update()
         {
-            if (InputManager.instance.isShooting && (_weaponData.riffle || _canShoot))
+            if (InputManager.instance.isShooting && (_weaponData.automatic || _canShoot))
             {
                 if(Time.time >= _nextShoot && _weapon.ammo >0)
                 {
-                    if (!_weaponData.riffle)
+                    if (!_weaponData.automatic)
                     {
                         _canShoot = false;
                     }
@@ -120,7 +120,7 @@ namespace Project
                         GameObject go = ObjectPoolingManager.instance.GetObject();
                         go.transform.position = position;
                         go.transform.rotation = rotation;
-                        go.GetComponent<WeaponProjectile>().Init(hit.point, _weaponData.dispertion);
+                        go.GetComponent<WeaponProjectile>().Init(hit.point, _weaponData.dispersion);
                     }
                 }
                 else
@@ -128,7 +128,7 @@ namespace Project
                     GameObject go = ObjectPoolingManager.instance.GetObject();
                     go.transform.position = position;
                     go.transform.rotation = rotation;
-                    go.GetComponent<WeaponProjectile>().Init(hit.point, _weaponData.dispertion);
+                    go.GetComponent<WeaponProjectile>().Init(hit.point, _weaponData.dispersion);
                 }
 
                 Debug.Log(GetComponent<NetworkObject>().OwnerClientId + " : shoot at " + hit.point);
@@ -143,7 +143,7 @@ namespace Project
                         GameObject go = ObjectPoolingManager.instance.GetObject();
                         go.transform.position = position;
                         go.transform.rotation = rotation;
-                        go.GetComponent<WeaponProjectile>().Init(_weaponData.dispertion);
+                        go.GetComponent<WeaponProjectile>().Init(_weaponData.dispersion);
                     }
                 }
                 else
@@ -151,7 +151,7 @@ namespace Project
                     GameObject go = ObjectPoolingManager.instance.GetObject();
                     go.transform.position = position;
                     go.transform.rotation = rotation;
-                    go.GetComponent<WeaponProjectile>().Init(_weaponData.dispertion);
+                    go.GetComponent<WeaponProjectile>().Init(_weaponData.dispersion);
                 }
             }
         }
@@ -167,7 +167,7 @@ namespace Project
                         GameObject go = ObjectPoolingManager.instance.GetObject();
                         go.transform.position = position;
                         go.transform.rotation = rotation;
-                        go.GetComponent<WeaponProjectile>().Init(hitpoint, _weaponData.dispertion);
+                        go.GetComponent<WeaponProjectile>().Init(hitpoint, _weaponData.dispersion);
                     }
                 }
                 else
@@ -175,7 +175,7 @@ namespace Project
                     GameObject go = ObjectPoolingManager.instance.GetObject();
                     go.transform.position = position;
                     go.transform.rotation = rotation;
-                    go.GetComponent<WeaponProjectile>().Init(hitpoint, _weaponData.dispertion);
+                    go.GetComponent<WeaponProjectile>().Init(hitpoint, _weaponData.dispersion);
                 }
             }
             else
@@ -187,7 +187,7 @@ namespace Project
                         GameObject go = ObjectPoolingManager.instance.GetObject();
                         go.transform.position = position;
                         go.transform.rotation = rotation;
-                        go.GetComponent<WeaponProjectile>().Init(_weaponData.dispertion);
+                        go.GetComponent<WeaponProjectile>().Init(_weaponData.dispersion);
                     }
                 }
                 else
@@ -195,7 +195,7 @@ namespace Project
                     GameObject go = ObjectPoolingManager.instance.GetObject();
                     go.transform.position = position;
                     go.transform.rotation = rotation;
-                    go.GetComponent<WeaponProjectile>().Init(_weaponData.dispertion);
+                    go.GetComponent<WeaponProjectile>().Init(_weaponData.dispersion);
                 }
             }
         }

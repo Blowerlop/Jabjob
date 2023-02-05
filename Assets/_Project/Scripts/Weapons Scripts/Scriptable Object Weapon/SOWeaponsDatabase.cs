@@ -16,6 +16,8 @@ namespace Project
             {
                 SOWeapon._allSOWeapons.Add(_soWeaponsDatabase[i].ID, _soWeaponsDatabase[i]);
             }
+            
+            Destroy(this);
         }
     }
 }
