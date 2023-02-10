@@ -26,6 +26,7 @@ public class InputManager : MonoBehaviour
     public UnityEvent reload, openCommand;
     public bool isDashing;
     public bool isConsoleOpened;
+    public bool isWeaponSelectionOpen;
     #endregion
 
 
@@ -69,6 +70,11 @@ public class InputManager : MonoBehaviour
     {
         isConsoleOpened = !isConsoleOpened;
         openCommand.Invoke();
+    }
+
+    public void OnOpenGunSelection()
+    {
+        isWeaponSelectionOpen = true;
     }
     #endregion
 }
