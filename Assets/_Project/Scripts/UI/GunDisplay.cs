@@ -16,12 +16,13 @@ public class GunDisplay : MonoBehaviour
     [Header("Gun Holder")]
     [SerializeField] private Transform gunHolder;
 
-    public void DisplayGun(GunStat gun)
+    
+    public void DisplayGun(SOWeapon gun)
     {
         gunName.text = gun.weaponName;
         maxAmmo.text = gun.maxAmmo.ToString();
         shootRate.text = gun.shootRate.ToString();
-        dispertion.text = gun.dispertion.ToString();
+        dispertion.text = gun.dispersion.ToString();
 
         if (gunHolder.childCount > 0)
             Destroy(gunHolder.GetChild(0).gameObject);

@@ -22,6 +22,6 @@ public class ScriptableObjectChanger : MonoBehaviour
             currentIndex = 0;
 
         if (gunDisplay != null)
-            gunDisplay.DisplayGun((GunStat)scriptableObjects[currentIndex]);
+            gunDisplay.DisplayGun((SOWeapon)scriptableObjects[currentIndex]);
     }
 }
