@@ -10,15 +10,16 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c882b4aaa4089bf4aa28b25d333fb47d, type: 3}
-  m_Name: Riffle
+  m_Name: Pistol
   m_EditorClassIdentifier: 
-  ID: 3
-  weaponName: Riffle
-  maxAmmo: 25
+  ID: 2
+  weaponName: Pistol
+  model: {fileID: 919132149155446097, guid: 1f7dbf764b810d3498ac7af72eab7130, type: 3}
+  prefab: {fileID: 2131882323308702708, guid: 7c0b14d6b649d294b80988bf4c4bcb09, type: 3}
+  maxAmmo: 11
   shootRate: 0.11
-  dispertion: 1.4
-  riffle: 1
-  model: {fileID: 8253399543442144797, guid: 977ebded5db176d41abf209c430690fe, type: 3}
-  spray: 0
-  bulletNumber: 0
-  gun: {fileID: 0}
+  dispertion: 0.8
+  riffle: 0
+  spray: 1
+  bulletNumber: 1
+  reloadDuration: 0

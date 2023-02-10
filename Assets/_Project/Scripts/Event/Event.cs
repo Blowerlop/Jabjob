@@ -16,12 +16,14 @@ namespace Project
         
         private readonly string _eventName;
         
-        public void Invoke(object sender) 
+        public void Invoke(object sender, bool debugCallback = true) 
         {
             Debug.Log($"<color=#00FF00>{sender} invoked {_eventName}</color>");
             _action.Invoke();
             
              #if UNITY_EDITOR || DEVELOPMENT_BUILD
+            if (debugCallback == false) return;
+            
             StringBuilder stringBuilder = new StringBuilder();
             stringBuilder.Append($"<color=#00FF00>Methods called by {_eventName}:</color> \n");
 
@@ -40,7 +42,7 @@ namespace Project
             _eventName = eventName;
         }
 
-        public void Subscribe(Action action, object subcriber)
+        public void Subscribe(Action action, object subscriber)
         {
             if (IsListenerAlreadySubscribe(action))
             {
@@ -50,7 +52,7 @@ namespace Project
             {
                 #if UNITY_EDITOR || DEVELOPMENT_BUILD
                 _action += action;
-                _actionTrackListExpend.Add(action, subcriber);
+                _actionTrackListExpend.Add(action, subscriber);
                 _actionsTrackList.Add(action);
                 Debug.Log($"Method - {action.Method.Name} - has subscribed");
                 #else
@@ -102,12 +104,13 @@ namespace Project
         
         private readonly string _eventName;
         
-        public void Invoke(object sender, T @object) 
+        public void Invoke(object sender, bool debugCallback, T arg ) 
         {
-            Debug.Log($"<color=#00FF00>{sender} invoked {_eventName}</color>");
-            _action.Invoke(@object);
+            Debug.Log($"<color=#00FF00>{sender} invoked {_eventName}</color>"); 
+            _action.Invoke(arg);
             
              #if UNITY_EDITOR || DEVELOPMENT_BUILD
+            if (debugCallback == false) return;
             StringBuilder stringBuilder = new StringBuilder();
             stringBuilder.Append($"<color=#00FF00>Methods called by {_eventName}:</color> \n");
 
@@ -188,12 +191,14 @@ namespace Project
         
         private readonly string _eventName;
         
-        public void Invoke(object sender, T1 object1, T2 object2) 
+        public void Invoke(object sender, bool debugCallback, T1 arg1, T2 arg2) 
         {
             Debug.Log($"<color=#00FF00>{sender} invoked {_eventName}</color>");
-            _action.Invoke(object1, object2);
+            _action.Invoke(arg1, arg2);
             
              #if UNITY_EDITOR || DEVELOPMENT_BUILD
+            if (debugCallback == false) return;
+            
             StringBuilder stringBuilder = new StringBuilder();
             stringBuilder.Append($"<color=#00FF00>Methods called by {_eventName}:</color> \n");
 

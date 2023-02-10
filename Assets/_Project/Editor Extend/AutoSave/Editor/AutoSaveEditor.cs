@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Threading.Tasks;
+using ParrelSync;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
@@ -19,6 +20,8 @@ namespace Project
 
         private static void OnEnteredEditMode(PlayModeStateChange state)
         {
+            if (ClonesManager.IsClone()) return;
+             
             if (state == PlayModeStateChange.EnteredEditMode)
             {
                 EditorSceneManager.SaveOpenScenes();

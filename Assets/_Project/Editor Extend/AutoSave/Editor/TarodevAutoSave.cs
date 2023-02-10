@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using ParrelSync;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
@@ -22,7 +23,10 @@ namespace Tarodev {
         private static Task _task;
 
         [InitializeOnLoadMethod]
-        private static void OnInitialize() {
+        private static void OnInitialize()
+        {
+            if (ClonesManager.IsClone()) return;
+            
             FetchConfig();
             CancelTask();
 
