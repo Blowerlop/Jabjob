@@ -4,16 +4,16 @@ using TMPro;
 using Unity.Services.Lobbies.Models;
 using UnityEngine;
 
-public class Timer : MonoBehaviour
+public class TimerUI : MonoBehaviour
 {
 
-    // A MODIFIER POUR PRENDRE LE TIMER DIRECTEMENT DU SERVEUR PLUTÔT
+    // A MODIFIER POUR PRENDRE LE TIMER DIRECTEMENT DU SERVEUR PLUTï¿½T
 
     private GameObject UI;
     [SerializeField] private TextMeshProUGUI timerText;
 
 
-    public float partyDuration = 300; //Durée de la partie en seconde
+    public float partyDuration = 300; //Durï¿½e de la partie en seconde
 
     private void Start()
     {
@@ -28,7 +28,7 @@ public class Timer : MonoBehaviour
         string minutes = Mathf.Abs(((int)t / 60)).ToString();
 
         string seconds;
-        //Permet un affichage 0 : 00 et non pas 0 : 5 si les secondes sont inferieur à 10
+        //Permet un affichage 0 : 00 et non pas 0 : 5 si les secondes sont inferieur ï¿½ 10
         if (Mathf.Abs(t % 60) <= 9.5) { seconds = "0" + Mathf.Abs((t % 60)).ToString("f0"); }
         else if (Mathf.Abs(t % 60) >= 59.3) { seconds = "59"; }
         else { seconds = Mathf.Abs((t % 60)).ToString("f0"); }
