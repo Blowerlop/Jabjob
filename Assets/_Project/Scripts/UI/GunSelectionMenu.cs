@@ -9,14 +9,19 @@ namespace Project
 {
     public class GunSelectionMenu : MonoBehaviour
     {
+        private GameObject player;
+
         private GameObject gunSelectionCamera;
         private CinemachineVirtualCamera gunSelectionVirtualCamera;
+
+        [SerializeField] ScriptableObjectChanger scriptableObjectChanger;
 
         private void Start()
         {
             gunSelectionCamera = GameObject.FindGameObjectWithTag("GunSelectionCamera");
-
             gunSelectionVirtualCamera = gunSelectionCamera.GetComponent<CinemachineVirtualCamera>();
+
+            player = transform.root.gameObject;
         }
 
         // Update is called once per frame
@@ -24,15 +29,28 @@ namespace Project
         {
             if (InputManager.instance.isWeaponSelectionOpen)
             {
+                InputManager.instance.isWeaponSelectionOpen = false;
+                scriptableObjectChanger.ActivateWeaponPreview();
                 gunSelectionVirtualCamera.Priority = 10;
+                player.GetComponent<PlayerUIManager>().HidePlayerUI();
                 gameObject.GetComponent<Canvas>().enabled = true;
             }
         }
 
-        public void closeSelection()
+        public void CloseSelection()
         {
             gunSelectionVirtualCamera.Priority = 0;
             gameObject.GetComponent<Canvas>().enabled = false;
+            player.GetComponent<PlayerUIManager>().ShowPlayerUI();
+        }
+
+        public void ChooseNewWeapon()
+        {
+            SOWeapon weaponChoose = scriptableObjectChanger.GetWeaponChoose();
+            Weapon weaponScript = weaponChoose.model.GetComponent<Weapon>();
+            WeaponManager weaponManagerScript = player.GetComponent<WeaponManager>();
+
+            weaponManagerScript.EquipWeaponLocal(weaponScript);
         }
     }
 }
