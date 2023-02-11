@@ -17,7 +17,7 @@ namespace Project
 
             private void Awake()
             {
-                instance = this;
+                instance = this; 
             }
 
             public void StartSimpleTimer(float timeInSeconds, bool forceStart = false)
