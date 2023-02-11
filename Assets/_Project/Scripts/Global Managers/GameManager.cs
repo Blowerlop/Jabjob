@@ -6,12 +6,13 @@ using UnityEngine;
 
 namespace Project
 {
-    public class GameManager : MonoBehaviour, IGameEventListener
+    public class GameManager : NetworkBehaviour, IGameEventListener
     {
         #region Variables
 
         public static GameManager instance;
-        
+
+        [SerializeField] private NetworkObject _networkObject;
         [SerializeField] private NetworkObject _playerPrefab;
         [SerializeField] private float _respawnDuration = 2.0f;
         
@@ -23,27 +24,35 @@ namespace Project
         private void Awake()
         {
             instance = this;
+            _networkObject = GetComponent<NetworkObject>();
         }
         
         public void OnEnable()
         {
-            GameEvent.onPlayerDied.Subscribe(StartRespawnTimerCoroutine, this);
+            GameEvent.onPlayerDied.Subscribe(StartRespawnTimerCoroutineServerRpc, this);
         }
 
         public void OnDisable()
         {
-            GameEvent.onPlayerDied.Unsubscribe(StartRespawnTimerCoroutine);
+            GameEvent.onPlayerDied.Unsubscribe(StartRespawnTimerCoroutineServerRpc);
         }
-        
+
+        public override void OnNetworkSpawn()
+        {
+            _networkObject.ChangeOwnership(NetworkManager.ServerClientId);
+        }
+
         #endregion
 
 
         #region Methods
 
-        private void StartRespawnTimerCoroutine(ulong clientId)
+        [ServerRpc(RequireOwnership = false)]
+        private void StartRespawnTimerCoroutineServerRpc(ulong clientId)
         {
             StartCoroutine(RespawnPlayerTimerCoroutine(clientId));
-        }
+        }  
+        
         
         private IEnumerator RespawnPlayerTimerCoroutine(ulong clientId)
         {

@@ -532,6 +532,7 @@ GameObject:
   m_Component:
   - component: {fileID: 124187951}
   - component: {fileID: 124187952}
+  - component: {fileID: 124187953}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -566,9 +567,26 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e2124440dc7a96c4085b4d2f5014b856, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _networkObject: {fileID: 0}
   _playerPrefab: {fileID: 693733510563446535, guid: a3a7faea929700b449c9423131c78557,
     type: 3}
   _respawnDuration: 2
+--- !u!114 &124187953
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 124187950}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  GlobalObjectIdHash: 1355676052
+  AlwaysReplicateAsRoot: 0
+  DontDestroyWithOwner: 0
+  AutoObjectParentSync: 1
 --- !u!1 &172513780
 GameObject:
   m_ObjectHideFlags: 0

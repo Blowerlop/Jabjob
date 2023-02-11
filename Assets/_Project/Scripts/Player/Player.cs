@@ -74,6 +74,12 @@ namespace Project
         {
             GameEvent.onPlayerDied.Invoke(this, true, OwnerClientId);
             Debug.Log("You're dead");
+            PlayerDespawnServerRpc(); 
+        }
+
+        [ServerRpc]
+        private void PlayerDespawnServerRpc()
+        {
             _networkObject.Despawn();
         }
         
