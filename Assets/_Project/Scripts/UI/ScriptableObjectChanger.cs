@@ -1,5 +1,7 @@
+using Project;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class ScriptableObjectChanger : MonoBehaviour
@@ -7,11 +9,6 @@ public class ScriptableObjectChanger : MonoBehaviour
     [SerializeField] private ScriptableObject[] scriptableObjects;
     [SerializeField] private GunDisplay gunDisplay;
     private int currentIndex = 0;
-
-    private void Awake()
-    {
-        ChangeScriptableObject(0);
-    }
 
     public void ChangeScriptableObject(int change)
     {
@@ -23,5 +20,15 @@ public class ScriptableObjectChanger : MonoBehaviour
 
         if (gunDisplay != null)
             gunDisplay.DisplayGun((SOWeapon)scriptableObjects[currentIndex]);
+    }
+
+    public void ActivateWeaponPreview()
+    {
+        ChangeScriptableObject(0);
+    }
+
+    public SOWeapon GetWeaponChoose()
+    {
+        return (SOWeapon)scriptableObjects[currentIndex];
     }
 }
