@@ -1,26 +1,35 @@
+using System;
 using System.Collections;
+using System.Collections.Generic;
+using Project;
 using Unity.Netcode;
+using Unity.VisualScripting;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public class WeaponProjectile : NetworkBehaviour
 {
     Vector3 target;
-    
+
+    [SerializeField] private int damage;
     [SerializeField] float speed;
+    private bool _isOwner = false;
 
 
     /// <summary>
     /// Initialize bullet
     /// </summary>
-    public void Init(Vector3 _target, float disp)
+    public void Init(Vector3 _target, float disp, bool isOwner)
     {
+        this._isOwner = isOwner;
         target = _target;
         transform.LookAt(target);
         RandomizeRotation(disp);
         StartCoroutine(DestroyCD());
     }
-    public void Init(float disp)
+    public void Init(float disp, bool isOwner)
     {
+        this._isOwner = isOwner;
         RandomizeRotation(disp);
         StartCoroutine(DestroyCD());
     }
@@ -29,6 +38,16 @@ public class WeaponProjectile : NetworkBehaviour
     void Update()
     {
         transform.Translate(Vector3.forward * Time.deltaTime * speed);
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (_isOwner == false) return;
+        
+        if (other.TryGetComponent(out IHealthManagement healthManagement))
+        {
+            healthManagement.Damage(damage);
+        }
     }
 
     /// <summary>

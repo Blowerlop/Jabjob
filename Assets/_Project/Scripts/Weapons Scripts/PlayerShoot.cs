@@ -39,15 +39,15 @@ namespace Project
         public void OnEnable()
         {
             InputManager.instance.reload.AddListener(Reload);
-            GameEvent.onPlayerWeaponChangeLocal.Subscribe(UpdateCurrentWeapon, this);
-            GameEvent.onPlayerWeaponChangeServer.Subscribe(UpdateCurrentWeapon, this);
+            GameEvent.onPlayerWeaponChangedLocal.Subscribe(UpdateCurrentWeapon, this);
+            GameEvent.onPlayerWeaponChangedServer.Subscribe(UpdateCurrentWeapon, this);
         }
 
         public void OnDisable()
         {
             InputManager.instance.reload.RemoveListener(Reload);
-            GameEvent.onPlayerWeaponChangeLocal.Unsubscribe(UpdateCurrentWeapon);
-            GameEvent.onPlayerWeaponChangeServer.Unsubscribe(UpdateCurrentWeapon);
+            GameEvent.onPlayerWeaponChangedLocal.Unsubscribe(UpdateCurrentWeapon);
+            GameEvent.onPlayerWeaponChangedServer.Unsubscribe(UpdateCurrentWeapon);
         }
 
         public override void OnNetworkSpawn()
@@ -67,13 +67,13 @@ namespace Project
                     }
                     _nextShoot = Time.time + _weaponData.shootRate;
                     _weapon.ammo--;
-                    GameEvent.onPlayerWeaponAmmoChange.Invoke(this, true, _weapon.ammo);
+                    GameEvent.onPlayerWeaponAmmoChanged.Invoke(this, true, _weapon.ammo);
                     
                     Transform weaponHandlerTransform = _weaponManager.weaponHandler.transform;
                     Vector3 weaponHandlerPosition = weaponHandlerTransform.position;
                     Quaternion weaponHandlerRotation = weaponHandlerTransform.rotation;
 
-                    LocalShoot(weaponHandlerPosition, weaponHandlerRotation);
+                    LocalShoot(weaponHandlerPosition, weaponHandlerRotation, true);
                     ShootServerRpc(weaponHandlerPosition, weaponHandlerRotation, _hitPointClient);
                 }
             }
@@ -100,13 +100,13 @@ namespace Project
         [ClientRpc]
         private void ShootClientRpc(Vector3 position, Quaternion rotation, Vector3 hitPoint)
         {
-            if (IsOwner == false) LocalShoot(position, rotation, hitPoint);
+            if (IsOwner == false) LocalShoot(position, rotation, hitPoint, false);
         }
 
         /// <summary>
         /// Shoot and instanciate the projectile in term of the actual weapon 
         /// </summary>
-        public void LocalShoot(Vector3 position, Quaternion rotation)
+        public void LocalShoot(Vector3 position, Quaternion rotation, bool isOwner)
         {
             RaycastHit hit;
             Ray ray = _camera.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0.5f));
@@ -120,7 +120,7 @@ namespace Project
                         GameObject go = ObjectPoolingManager.instance.GetObject();
                         go.transform.position = position;
                         go.transform.rotation = rotation;
-                        go.GetComponent<WeaponProjectile>().Init(hit.point, _weaponData.dispersion);
+                        go.GetComponent<WeaponProjectile>().Init(hit.point, _weaponData.dispersion, isOwner);
                     }
                 }
                 else
@@ -128,7 +128,7 @@ namespace Project
                     GameObject go = ObjectPoolingManager.instance.GetObject();
                     go.transform.position = position;
                     go.transform.rotation = rotation;
-                    go.GetComponent<WeaponProjectile>().Init(hit.point, _weaponData.dispersion);
+                    go.GetComponent<WeaponProjectile>().Init(hit.point, _weaponData.dispersion, isOwner);
                 }
 
                 Debug.Log(GetComponent<NetworkObject>().OwnerClientId + " : shoot at " + hit.point);
@@ -143,7 +143,7 @@ namespace Project
                         GameObject go = ObjectPoolingManager.instance.GetObject();
                         go.transform.position = position;
                         go.transform.rotation = rotation;
-                        go.GetComponent<WeaponProjectile>().Init(_weaponData.dispersion);
+                        go.GetComponent<WeaponProjectile>().Init(_weaponData.dispersion, isOwner);
                     }
                 }
                 else
@@ -151,12 +151,12 @@ namespace Project
                     GameObject go = ObjectPoolingManager.instance.GetObject();
                     go.transform.position = position;
                     go.transform.rotation = rotation;
-                    go.GetComponent<WeaponProjectile>().Init(_weaponData.dispersion);
+                    go.GetComponent<WeaponProjectile>().Init(_weaponData.dispersion, isOwner);
                 }
             }
         }
 
-        public void LocalShoot(Vector3 position, Quaternion rotation, Vector3 hitpoint)
+        public void LocalShoot(Vector3 position, Quaternion rotation, Vector3 hitpoint, bool isOwner)
         {
             if (hitpoint != Vector3.zero)
             {
@@ -167,7 +167,7 @@ namespace Project
                         GameObject go = ObjectPoolingManager.instance.GetObject();
                         go.transform.position = position;
                         go.transform.rotation = rotation;
-                        go.GetComponent<WeaponProjectile>().Init(hitpoint, _weaponData.dispersion);
+                        go.GetComponent<WeaponProjectile>().Init(hitpoint, _weaponData.dispersion, isOwner);
                     }
                 }
                 else
@@ -175,7 +175,7 @@ namespace Project
                     GameObject go = ObjectPoolingManager.instance.GetObject();
                     go.transform.position = position;
                     go.transform.rotation = rotation;
-                    go.GetComponent<WeaponProjectile>().Init(hitpoint, _weaponData.dispersion);
+                    go.GetComponent<WeaponProjectile>().Init(hitpoint, _weaponData.dispersion, isOwner);
                 }
             }
             else
@@ -187,7 +187,7 @@ namespace Project
                         GameObject go = ObjectPoolingManager.instance.GetObject();
                         go.transform.position = position;
                         go.transform.rotation = rotation;
-                        go.GetComponent<WeaponProjectile>().Init(_weaponData.dispersion);
+                        go.GetComponent<WeaponProjectile>().Init(_weaponData.dispersion, isOwner);
                     }
                 }
                 else
@@ -195,10 +195,13 @@ namespace Project
                     GameObject go = ObjectPoolingManager.instance.GetObject();
                     go.transform.position = position;
                     go.transform.rotation = rotation;
-                    go.GetComponent<WeaponProjectile>().Init(_weaponData.dispersion);
+                    go.GetComponent<WeaponProjectile>().Init(_weaponData.dispersion, isOwner);
                 }
             }
         }
+        
+        
+        
         
         public void Reload()
         {
@@ -213,7 +216,7 @@ namespace Project
             // Start animation
             yield return new WaitForSeconds(_weaponData.reloadDuration);
             _weapon.ammo = _weaponData.maxAmmo;
-            GameEvent.onPlayerWeaponAmmoChange.Invoke(this, true, _weapon.ammo);
+            GameEvent.onPlayerWeaponAmmoChanged.Invoke(this, true, _weapon.ammo);
             _canShoot = true;
         }
 
@@ -222,7 +225,7 @@ namespace Project
             _weapon = weapon;
             _weaponData = weapon.weaponData;
 
-            GameEvent.onPlayerWeaponAmmoChange.Invoke(this, true, _weapon.ammo);
+            GameEvent.onPlayerWeaponAmmoChanged.Invoke(this, true, _weapon.ammo);
         }
         
         private void UpdateCurrentWeapon(byte weaponID)
