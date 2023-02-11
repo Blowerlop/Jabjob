@@ -1,19 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
+using Project;
 using TMPro;
 using Unity.Services.Lobbies.Models;
 using UnityEngine;
 
 public class TimerUI : MonoBehaviour
 {
-
-    // A MODIFIER POUR PRENDRE LE TIMER DIRECTEMENT DU SERVEUR PLUT�T
-
     private GameObject UI;
     [SerializeField] private TextMeshProUGUI timerText;
-
-
-    public float partyDuration = 300; //Dur�e de la partie en seconde
 
     private void Start()
     {
@@ -23,7 +18,8 @@ public class TimerUI : MonoBehaviour
 
     private void Update()
     {
-        float t = Time.time - partyDuration;
+        float t = NetworkTimer.instance.GetElapsedTime();
+
 
         string minutes = Mathf.Abs(((int)t / 60)).ToString();
 

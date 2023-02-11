@@ -37,6 +37,13 @@ namespace Project
         // Health relative
         public static readonly Event<int> onPlayerHealthChanged = new Event<int>(nameof(onPlayerHealthChanged));
         public static readonly Event<ulong> onPlayerDied = new Event<ulong>(nameof(onPlayerDied));
+        
+        #endregion
+        
+        
+        #region GameManager
+
+        public static readonly Event onGameFinished = new Event(nameof(onGameFinished));
 
         #endregion
 

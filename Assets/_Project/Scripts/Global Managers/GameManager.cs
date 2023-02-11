@@ -1,7 +1,5 @@
 using System;
 using System.Collections;
-using System.Threading.Tasks;
-using Project;
 using Project.Utilities;
 using Unity.Netcode;
 using UnityEngine;
@@ -17,18 +15,41 @@ namespace Project
 
         [Header("Game Settings")]
         // [SerializeField] private SOGameSettings _gameSettings --> Preview changement futur
-        [SerializeField] private float _gameDuration; 
-        [SerializeField] private NetworkObject _playerPrefab;
         [SerializeField] private float _respawnDuration = 2.0f;
+        [field: SerializeField] public float _gameDuration { get; private set; } 
+        [SerializeField] private NetworkObject _playerPrefab;
+        [field: SerializeField] public NetworkTimer _networkTimer { get; private set; }
+        
         
         #endregion
 
 
         #region Updates
-
+ 
         private void Awake()
         {
             instance = this;
+        }
+
+        public override void OnNetworkSpawn()
+        {
+            if (IsServer)
+            {
+                SpawnNetworkTimerServerRpc();
+            }
+            else
+            {
+                
+            }
+        }
+        
+        [ServerRpc]
+        public void SpawnNetworkTimerServerRpc()
+        {
+            _networkTimer = Instantiate(_networkTimer);
+            _networkTimer.GetComponent<NetworkObject>().Spawn();
+            
+            _networkTimer.StartTimerWithCallback(_gameDuration, () => GameEvent.onGameFinished.Invoke(this, true), true);
         }
 
         public void OnEnable()
@@ -39,7 +60,7 @@ namespace Project
         public void OnDisable()
         {
             GameEvent.onPlayerDied.Unsubscribe(StartRespawnTimerCoroutineServerRpc);
-        }
+        } 
         
 
         #endregion
@@ -75,7 +96,5 @@ namespace Project
 
         #endregion
     }
-}
-
 }
 
