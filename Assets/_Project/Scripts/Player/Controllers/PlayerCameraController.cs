@@ -34,6 +34,11 @@ public class PlayerCameraController : NetworkBehaviour
     {
         if (isMultiplayer == false) return;
 
+        
+    }
+
+    public override void OnNetworkSpawn()
+    {
         if (IsOwner == false)
         {
             _cinemachineCamera.Priority = 0;
@@ -41,7 +46,7 @@ public class PlayerCameraController : NetworkBehaviour
         }
         else
         {
-            Camera.main.gameObject.SetActive(false);
+            if (Camera.main != null) Camera.main.gameObject.SetActive(false);
             _playerCamera.SetActive(true);
         }
     }

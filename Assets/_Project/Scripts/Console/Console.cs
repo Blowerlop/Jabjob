@@ -19,10 +19,10 @@ namespace Utils
         {
             Application.logMessageReceived += NewLog;
             content.sizeDelta = new Vector2(content.sizeDelta.x, 0);
-            NewLog("AAAA", "", LogType.Exception);
-            Debug.Log("eee");
-            Debug.Log("eee");
-            NewLog("AAAA", "", LogType.Exception);
+            // NewLog("AAAA", "", LogType.Exception);
+            // Debug.Log("eee");
+            // Debug.Log("eee");
+            // NewLog("AAAA", "", LogType.Exception);
         }
 
         // Update is called once per frame

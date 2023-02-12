@@ -16,7 +16,8 @@ GameObject:
   - component: {fileID: 159128956728302424}
   - component: {fileID: 159128956728302247}
   - component: {fileID: -761523631987619145}
-  - component: {fileID: 7188851609296677484}
+  - component: {fileID: 4114076721311760778}
+  - component: {fileID: -7641140238224627706}
   m_Layer: 2
   m_Name: Projectile
   m_TagString: Untagged
@@ -114,6 +115,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 06682f0d86a6ccb4888eb7992a13ed40, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  damage: 30
   speed: 18.02
 --- !u!114 &159128956728302424
 MonoBehaviour:
@@ -163,7 +165,7 @@ MonoBehaviour:
   AlwaysReplicateAsRoot: 0
   DontDestroyWithOwner: 0
   AutoObjectParentSync: 1
---- !u!114 &7188851609296677484
+--- !u!114 &4114076721311760778
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -172,7 +174,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 159128956728302430}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: df2868252ab5c4d1da357e8f11f1b524, type: 3}
+  m_Script: {fileID: 11500000, guid: e96cb6065543e43c4a752faaa1468eb1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   SyncPositionX: 1
@@ -189,3 +191,15 @@ MonoBehaviour:
   ScaleThreshold: 0.01
   InLocalSpace: 0
   Interpolate: 1
+--- !u!114 &-7641140238224627706
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 159128956728302430}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f6c0be61502bb534f922ebb746851216, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

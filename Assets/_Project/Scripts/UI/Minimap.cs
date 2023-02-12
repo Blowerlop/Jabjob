@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Minimap : MonoBehaviour
 {
-    [SerializeField] private Transform player;
+    private Transform player;
 
     private void Start()
     {

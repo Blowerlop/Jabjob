@@ -12,12 +12,12 @@ public class AmmoDisplay : MonoBehaviour, IGameEventListener
     
     public void OnEnable()
     {
-        GameEvent.onPlayerWeaponAmmoChange.Subscribe(UpdateAmmoDisplayText, this);
+        GameEvent.onPlayerWeaponAmmoChanged.Subscribe(UpdateAmmoDisplayText, this);
     }
 
     public void OnDisable()
     {
-        GameEvent.onPlayerWeaponAmmoChange.Unsubscribe(UpdateAmmoDisplayText);
+        GameEvent.onPlayerWeaponAmmoChanged.Unsubscribe(UpdateAmmoDisplayText);
 
     }
 

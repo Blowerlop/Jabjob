@@ -11,15 +11,15 @@ namespace Project
         {
             var clientId = serverRpcParams.Receive.SenderClientId;
             List<ulong> clientsIds = NetworkManager.Singleton.ConnectedClientsIds.ToList();
-            clientsIds.Remove(serverRpcParams.Receive.SenderClientId);
+            clientsIds.Remove(clientId);
             return clientsIds;
         }
 
-        public static ClientRpcParams GetNewClientRpcSenderParams(List<ulong> allConnectedNoneLocalClientsIds)
+        public static ClientRpcParams GetNewClientRpcSenderParams(List<ulong> targetClientIds)
         {
             return new ClientRpcParams
             {
-                Send = new ClientRpcSendParams { TargetClientIds = allConnectedNoneLocalClientsIds }
+                Send = new ClientRpcSendParams { TargetClientIds = targetClientIds }
             };
         }
     }
