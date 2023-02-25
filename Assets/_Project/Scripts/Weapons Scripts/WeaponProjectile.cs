@@ -9,13 +9,27 @@ using Random = UnityEngine.Random;
 
 public class WeaponProjectile : NetworkBehaviour
 {
+    #region Variables
+    [SerializeField] private float _despawnProjectileTimer = 10.0f;
+
+    
     Vector3 target;
 
-    [SerializeField] private int damage;
-    [SerializeField] float speed;
+    [SerializeField] [ReadOnlyField] private int damage;
+    [SerializeField] [ReadOnlyField] float speed;
     private bool _isOwner = false;
 
+    #endregion
+    
 
+    #region Updates
+
+    public override void OnNetworkSpawn()
+    {
+        StartCoroutine(DestroyProjectileCooldown());
+    }
+
+    #endregion
     /// <summary>
     /// Initialize bullet
     /// </summary>
@@ -25,14 +39,22 @@ public class WeaponProjectile : NetworkBehaviour
         target = _target;
         transform.LookAt(target);
         RandomizeRotation(disp);
-        StartCoroutine(DestroyCD());
+        //StartCoroutine(DestroyProjectileCooldown());
     }
     public void Init(float disp, bool isOwner)
     {
         this._isOwner = isOwner;
         RandomizeRotation(disp);
-        StartCoroutine(DestroyCD());
+        //StartCoroutine(DestroyProjectileCooldown());
     }
+
+    public void Init(bool isBulletOwner, float projectileDispertion)
+    {
+        _isOwner = isBulletOwner;
+        RandomizeRotation(projectileDispertion);
+    }
+    
+    
 
     // Update is called once per frame
     void Update()
@@ -61,9 +83,9 @@ public class WeaponProjectile : NetworkBehaviour
     /// <summary>
     /// Destroy the GameObject after 10sec
     /// </summary>
-    public IEnumerator DestroyCD()
+    public IEnumerator DestroyProjectileCooldown()
     {
-        yield return new WaitForSeconds(10);
+        yield return new WaitForSeconds(_despawnProjectileTimer);
         ObjectPoolingManager.instance.ReturnGameObject(gameObject);
     }
 }
