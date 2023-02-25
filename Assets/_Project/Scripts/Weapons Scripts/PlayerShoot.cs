@@ -23,6 +23,7 @@ namespace Project
         private SOWeapon _weaponData;
         private WeaponManager _weaponManager;
         [SerializeField] private Camera _camera;
+        private Collider _collider;
 
         [Header("Debug")] [SerializeField] private bool _showDebug;
 
@@ -35,6 +36,7 @@ namespace Project
         private void Awake()
         {
             _weaponManager = GetComponent<WeaponManager>();
+            _collider = GetComponent<Collider>();
         }
 
         public void OnEnable()
@@ -68,7 +70,7 @@ namespace Project
                     }
                     _nextShoot = Time.time + _weaponData.shootRate;
                     _weapon.ammo--;
-                    GameEvent.onPlayerWeaponAmmoChanged.Invoke(this, true, _weapon.ammo);
+                    GameEvent.onPlayerWeaponAmmoChanged.Invoke(this, false, _weapon.ammo);
                     
                     Transform weaponHandlerTransform = _weaponManager.weaponHandler.transform;
                     Vector3 weaponHandlerPosition = weaponHandlerTransform.position;
@@ -120,7 +122,7 @@ namespace Project
                 for (int i = 0; i < _weaponData.bulletNumber; i++)
                 {
                     GameObject go = ObjectPoolingManager.instance.GetObject();
-                    go.GetComponent<WeaponProjectile>().Init(isTheShooter, _weaponData.dispersion, _weaponData.bulletSpeed, _weaponData.damage, bulletPosition, bulletRotation);
+                    go.GetComponent<WeaponProjectile>().Init(isTheShooter, _weaponData.dispersion, _weaponData.bulletSpeed, _weaponData.damage, bulletPosition, bulletRotation, _collider);
                 }
             }
             else
@@ -128,7 +130,7 @@ namespace Project
                 GameObject go = ObjectPoolingManager.instance.GetObject();
                 go.transform.position = bulletPosition;
                 go.transform.rotation = bulletRotation;
-                go.GetComponent<WeaponProjectile>().Init(isTheShooter, _weaponData.dispersion, _weaponData.bulletSpeed, _weaponData.damage, bulletPosition, bulletRotation);
+                go.GetComponent<WeaponProjectile>().Init(isTheShooter, _weaponData.dispersion, _weaponData.bulletSpeed, _weaponData.damage, bulletPosition, bulletRotation, _collider);
             }
         }
 

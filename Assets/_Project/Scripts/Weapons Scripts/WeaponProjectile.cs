@@ -1,10 +1,5 @@
-using System;
 using System.Collections;
-using System.Collections.Generic;
 using Project;
-using Unity.Netcode;
-using Unity.Netcode.Components;
-using Unity.VisualScripting;
 using UnityEngine;
 using Random = UnityEngine.Random;
 using Timer = Project.Utilities.Timer;
@@ -19,7 +14,11 @@ public class WeaponProjectile : MonoBehaviour
     [SerializeField] [ReadOnlyField] private float _projectileSpeed;
     [SerializeField] [ReadOnlyField] private bool _isOwner = false;
     private Vector3 _projectileMovement;
+
     private bool _hasInit = false;
+    
+    // References
+    private Collider _colliderOfBulletOwner;
     
     
     #if UNITY_EDITOR
@@ -41,46 +40,6 @@ public class WeaponProjectile : MonoBehaviour
         _rigidbody = GetComponent<Rigidbody>();
     }
     
-
-    #endregion
-    /// <summary>
-    /// Initialize bullet
-    /// </summary>
-    // public void Init(Vector3 _target, float disp, bool isOwner)
-    // {
-    //     this._isOwner = isOwner;
-    //     target = _target;
-    //     transform.LookAt(target);
-    //     RandomizeRotation(disp);
-    //     //StartCoroutine(DestroyProjectileCooldown());
-    // }
-    
-    public void Init(bool isBulletOwner, float projectileDispersion, float projectileSpeed, int projectileDamage, Vector3 position, Quaternion rotation)
-    {
-        _isOwner = isBulletOwner;
-        RandomizeRotation(projectileDispersion);
-        _projectileSpeed = projectileSpeed;
-        _projectileDamage = projectileDamage;
-        
-        StartCoroutine(DestroyProjectileCooldown());
-        
-        #if UNITY_EDITOR
-        _initialPosition = transform.position;
-        #endif
-
-        transform.position = position;
-        transform.rotation = rotation;
-        
-        _projectileMovement = transform.forward * _projectileSpeed;
-        
-        _hasInit = true;
-    }
-    
-    
-    
-    
-
-    // Update is called once per frame
     void Update()
     {
         if (_hasInit)
@@ -89,10 +48,10 @@ public class WeaponProjectile : MonoBehaviour
             // _rigidbody.velocity = transform.forward * _projectileSpeed;
         }
     }
-
+    
     private void OnTriggerEnter(Collider other)
     {
-        if (_isOwner == false)
+        if (_isOwner == false || other == _colliderOfBulletOwner)
         {
             ObjectPoolingManager.instance.ReturnGameObject(gameObject);
             return;
@@ -106,6 +65,44 @@ public class WeaponProjectile : MonoBehaviour
         
         ObjectPoolingManager.instance.ReturnGameObject(gameObject);
     }
+    
+    #endregion
+    
+    
+    #region Methods
+    
+    /// <summary>
+    /// Initialize bullet
+    /// </summary>
+    // public void Init(Vector3 _target, float disp, bool isOwner)
+    // {
+    //     this._isOwner = isOwner;
+    //     target = _target;
+    //     transform.LookAt(target);
+    //     RandomizeRotation(disp);
+    //     //StartCoroutine(DestroyProjectileCooldown());
+    // }
+
+    public void Init(bool isBulletOwner, float projectileDispersion, float projectileSpeed, int projectileDamage,
+        Vector3 position, Quaternion rotation, Collider collider)
+    {
+        _isOwner = isBulletOwner;
+        RandomizeRotation(projectileDispersion);
+        _projectileSpeed = projectileSpeed;
+        _projectileDamage = projectileDamage;
+        _colliderOfBulletOwner = collider;
+        transform.position = position;
+        transform.rotation = rotation;
+        _projectileMovement = transform.forward * _projectileSpeed;
+
+#if UNITY_EDITOR
+        _initialPosition = transform.position;
+#endif
+
+        StartCoroutine(DestroyProjectileCooldown());
+
+        _hasInit = true;
+    }
 
     /// <summary>
     /// Randomize the bullet rotation in term of the <paramref name="projectileDispersion" />
@@ -118,7 +115,7 @@ public class WeaponProjectile : MonoBehaviour
     }
 
     /// <summary>
-    /// Destroy the GameObject after 10sec
+    /// Destroy the GameObject after x seconds
     /// </summary> 
     public IEnumerator DestroyProjectileCooldown()
     {
@@ -129,11 +126,12 @@ public class WeaponProjectile : MonoBehaviour
         ObjectPoolingManager.instance.ReturnGameObject(gameObject);
     }
 
-
     private void OnDrawGizmos()
     {
-        Gizmos.DrawLine(_initialPosition, transform.position);
+        // Gizmos.DrawLine(_initialPosition, transform.position);
     }
+    
+    #endregion
 }
 
 

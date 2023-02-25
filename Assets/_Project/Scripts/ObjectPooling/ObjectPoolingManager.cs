@@ -8,6 +8,7 @@ public class ObjectPoolingManager : MonoBehaviour
     List<GameObject> objects = new();
     public int baseNumber;
     public GameObject objectToInstanciate;
+    
 
     /// <summary>
     /// Initialize all bullets
