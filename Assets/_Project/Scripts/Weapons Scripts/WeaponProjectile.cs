@@ -3,89 +3,137 @@ using System.Collections;
 using System.Collections.Generic;
 using Project;
 using Unity.Netcode;
+using Unity.Netcode.Components;
 using Unity.VisualScripting;
 using UnityEngine;
 using Random = UnityEngine.Random;
+using Timer = Project.Utilities.Timer;
 
-public class WeaponProjectile : NetworkBehaviour
+public class WeaponProjectile : MonoBehaviour
 {
     #region Variables
-    [SerializeField] private float _despawnProjectileTimer = 10.0f;
-
     
-    Vector3 target;
+    [Header("Projectile Infos")]
+    [SerializeField] private float _despawnProjectileTimer = 10.0f;
+    [SerializeField] [ReadOnlyField] private int _projectileDamage;
+    [SerializeField] [ReadOnlyField] private float _projectileSpeed;
+    [SerializeField] [ReadOnlyField] private bool _isOwner = false;
+    private Vector3 _projectileMovement;
+    private bool _hasInit = false;
+    
+    
+    #if UNITY_EDITOR
+    private Vector3 _initialPosition;
+    [SerializeField] private Timer _timer;
+    #endif
 
-    [SerializeField] [ReadOnlyField] private int damage;
-    [SerializeField] [ReadOnlyField] float speed;
-    private bool _isOwner = false;
+    //Vector3 target;
+
+    private Rigidbody _rigidbody;
 
     #endregion
     
 
     #region Updates
 
-    public override void OnNetworkSpawn()
+    private void Awake()
     {
-        StartCoroutine(DestroyProjectileCooldown());
+        _rigidbody = GetComponent<Rigidbody>();
     }
+    
 
     #endregion
     /// <summary>
     /// Initialize bullet
     /// </summary>
-    public void Init(Vector3 _target, float disp, bool isOwner)
-    {
-        this._isOwner = isOwner;
-        target = _target;
-        transform.LookAt(target);
-        RandomizeRotation(disp);
-        //StartCoroutine(DestroyProjectileCooldown());
-    }
-    public void Init(float disp, bool isOwner)
-    {
-        this._isOwner = isOwner;
-        RandomizeRotation(disp);
-        //StartCoroutine(DestroyProjectileCooldown());
-    }
-
-    public void Init(bool isBulletOwner, float projectileDispertion)
+    // public void Init(Vector3 _target, float disp, bool isOwner)
+    // {
+    //     this._isOwner = isOwner;
+    //     target = _target;
+    //     transform.LookAt(target);
+    //     RandomizeRotation(disp);
+    //     //StartCoroutine(DestroyProjectileCooldown());
+    // }
+    
+    public void Init(bool isBulletOwner, float projectileDispersion, float projectileSpeed, int projectileDamage, Vector3 position, Quaternion rotation)
     {
         _isOwner = isBulletOwner;
-        RandomizeRotation(projectileDispertion);
+        RandomizeRotation(projectileDispersion);
+        _projectileSpeed = projectileSpeed;
+        _projectileDamage = projectileDamage;
+        
+        StartCoroutine(DestroyProjectileCooldown());
+        
+        #if UNITY_EDITOR
+        _initialPosition = transform.position;
+        #endif
+
+        transform.position = position;
+        transform.rotation = rotation;
+        
+        _projectileMovement = transform.forward * _projectileSpeed;
+        
+        _hasInit = true;
     }
+    
+    
     
     
 
     // Update is called once per frame
     void Update()
     {
-        transform.Translate(Vector3.forward * Time.deltaTime * speed);
+        if (_hasInit)
+        { 
+            _rigidbody.velocity = _projectileMovement;
+            // _rigidbody.velocity = transform.forward * _projectileSpeed;
+        }
     }
 
     private void OnTriggerEnter(Collider other)
     {
-        if (_isOwner == false) return;
-        
+        if (_isOwner == false)
+        {
+            ObjectPoolingManager.instance.ReturnGameObject(gameObject);
+            return;
+        }
+
         if (other.TryGetComponent(out IHealthManagement healthManagement))
         {
-            healthManagement.Damage(damage);
+            Debug.Log("Hit :" + other.name);
+            healthManagement.Damage(_projectileDamage);
         }
+        
+        ObjectPoolingManager.instance.ReturnGameObject(gameObject);
     }
 
     /// <summary>
-    /// Randomize the bullet rotation in term of the <paramref name="disp" />
+    /// Randomize the bullet rotation in term of the <paramref name="projectileDispersion" />
     /// </summary>
-    public void RandomizeRotation(float disp)
+    public void RandomizeRotation(float projectileDispersion)
     {
-        transform.Rotate(new Vector3(Random.Range(-disp, disp), Random.Range(-disp, disp), 0), Space.Self);
+        if (projectileDispersion == 0.0f) return;
+        
+        transform.Rotate(new Vector3(Random.Range(-projectileDispersion, projectileDispersion), Random.Range(-projectileDispersion, projectileDispersion), 0), Space.Self);
     }
 
     /// <summary>
     /// Destroy the GameObject after 10sec
-    /// </summary>
+    /// </summary> 
     public IEnumerator DestroyProjectileCooldown()
     {
+#if  UNITY_EDITOR
+        _timer.StartSimpleTimer(_despawnProjectileTimer);
+#endif
         yield return new WaitForSeconds(_despawnProjectileTimer);
         ObjectPoolingManager.instance.ReturnGameObject(gameObject);
     }
+
+
+    private void OnDrawGizmos()
+    {
+        Gizmos.DrawLine(_initialPosition, transform.position);
+    }
 }
+
+

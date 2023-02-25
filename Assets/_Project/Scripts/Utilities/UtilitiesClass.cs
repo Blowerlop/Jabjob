@@ -42,9 +42,10 @@ namespace Project
             #endregion
         }
         
+        [System.Serializable]
         public class Timer
         {
-            private float _timer;
+            [field: SerializeField] public float timer { get; set; }
             private bool _hasATimerStarted = false;
             private Coroutine _coroutine;
 
@@ -84,10 +85,10 @@ namespace Project
             private IEnumerator SimpleTimer(float timeInSeconds)
             {
                 _hasATimerStarted = true;
-                _timer = timeInSeconds;
-                while (_timer > 0.0f)
+                timer = timeInSeconds;
+                while (timer > 0.0f)
                 {
-                    _timer -= Time.deltaTime;
+                    timer -= Time.deltaTime;
                     yield return null;
                 }
 
@@ -97,10 +98,10 @@ namespace Project
             private IEnumerator TimerWithCallback(float timeInSeconds, Action callback)
             {
                 _hasATimerStarted = true;
-                _timer = timeInSeconds;
-                while (_timer > 0.0f)
+                timer = timeInSeconds;
+                while (timer > 0.0f)
                 {
-                    _timer -= Time.deltaTime;
+                    timer -= Time.deltaTime;
                     yield return null;
                 }
 
@@ -108,7 +109,7 @@ namespace Project
                 _hasATimerStarted = false;
             }
 
-            public float GetElapsedTime() => _timer;
+            public float GetElapsedTime() => timer;
             
 
             public static async void StartTimerWithCallback(float timeInSeconds, Action callback)

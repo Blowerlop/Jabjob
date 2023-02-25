@@ -120,9 +120,7 @@ namespace Project
                 for (int i = 0; i < _weaponData.bulletNumber; i++)
                 {
                     GameObject go = ObjectPoolingManager.instance.GetObject();
-                    go.transform.position = bulletPosition;
-                    go.transform.rotation = bulletRotation;
-                    go.GetComponent<WeaponProjectile>().Init(_weaponData.dispersion, isTheShooter);
+                    go.GetComponent<WeaponProjectile>().Init(isTheShooter, _weaponData.dispersion, _weaponData.bulletSpeed, _weaponData.damage, bulletPosition, bulletRotation);
                 }
             }
             else
@@ -130,7 +128,7 @@ namespace Project
                 GameObject go = ObjectPoolingManager.instance.GetObject();
                 go.transform.position = bulletPosition;
                 go.transform.rotation = bulletRotation;
-                go.GetComponent<WeaponProjectile>().Init(_weaponData.dispersion, isTheShooter);
+                go.GetComponent<WeaponProjectile>().Init(isTheShooter, _weaponData.dispersion, _weaponData.bulletSpeed, _weaponData.damage, bulletPosition, bulletRotation);
             }
         }
 
@@ -169,7 +167,7 @@ namespace Project
         
         private void UpdateCurrentWeapon(byte weaponID)
         {
-            _weaponData = SOWeapon.GetWeaponPrefab(weaponID).weaponData;
+            _weaponData = SOWeapon.GetWeaponPrefab(weaponID).weaponData;  
         }
 
         void OnDrawGizmos()

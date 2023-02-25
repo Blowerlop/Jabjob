@@ -29,7 +29,7 @@ public class ObjectPoolingManager : MonoBehaviour
     public void ReturnGameObject(GameObject go)
     {
         go.SetActive(false);
-        objects.Add(go);
+        objects.Add(go); 
     }
 
     /// <summary>

@@ -12,7 +12,6 @@ public class CollisionPainter : MonoBehaviour{
         if(p != null){
             Vector3 pos = transform.position;
             PaintManager.instance.paint(p, pos, radius, hardness, strength, paintColor);
-            Destroy(gameObject);    
         }
     }
 }

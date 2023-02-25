@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using Project;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 [CreateAssetMenu(fileName = "NewWeapon", menuName = "Assets/SO/Weapon", order =0)]
 public class SOWeapon : ScriptableObject
@@ -21,15 +22,21 @@ public class SOWeapon : ScriptableObject
     [Header("Prefab")]
     [Tooltip(@"Weapon prefab")]
     public Weapon prefab;
-
+    
+    
     [Header("Properties"),Tooltip(@"Weapon max ammo in a loader"), Range(0, 50)]
     public int maxAmmo;
+
+    [Min(1)] public int damage;
 
     [Tooltip(@"Weapon shooting rate (bullets per sec)"), Range(0, 2)]
     public float shootRate;
 
     [Tooltip(@"Weapon bullet max dispersion"), Range(0, 15)]
     public float dispersion;
+    
+    [FormerlySerializedAs("speed")] [HideInInspector]
+    public float bulletSpeed;
 
     [Tooltip(@"If user can hold click")]
     public bool automatic;
@@ -40,6 +47,8 @@ public class SOWeapon : ScriptableObject
     [HideInInspector]
     [Tooltip(@"If weapon use raycast instead of real projectiles")]
     public bool raycast;
+
+    
     
     [HideInInspector, Tooltip(@"If weapons shoot multiple bullets")]
     public bool spray;
@@ -92,27 +101,15 @@ public class MyScriptEditor : Editor
 
         myScript.raycast = GUILayout.Toggle(myScript.raycast, "Raycast");
 
-        if (myScript.raycast)
+        if (myScript.raycast == false)
         {
+            myScript.bulletSpeed = EditorGUILayout.FloatField("Bullet speed", myScript.bulletSpeed);
             myScript.spray = GUILayout.Toggle(myScript.spray, "Spray");
         }
 
-        if (myScript.raycast && myScript.spray)
+        if (myScript.raycast == false && myScript.spray)
             myScript.bulletNumber = EditorGUILayout.IntSlider("Bullet Number",myScript.bulletNumber,1,30);
 
     }
 }
 #endif
-
-public class a : IGameEventListener
-{
-    public void OnEnable()
-    {
-        throw new System.NotImplementedException();
-    }
-
-    public void OnDisable()
-    {
-        throw new System.NotImplementedException();
-    }
-}

@@ -5205,6 +5205,22 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5023224235561468657, guid: 99215986e22bf2448a7f24f98dbe488d,
+        type: 3}
+      propertyPath: NetworkConfig.NetworkPrefabs.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 5023224235561468657, guid: 99215986e22bf2448a7f24f98dbe488d,
+        type: 3}
+      propertyPath: NetworkConfig.NetworkPrefabs.Array.data[1].Prefab
+      value: 
+      objectReference: {fileID: 7443584599556248518, guid: 17861a2ad4990fe45860f8f2f3875c5f,
+        type: 3}
+    - target: {fileID: 5023224235561468657, guid: 99215986e22bf2448a7f24f98dbe488d,
+        type: 3}
+      propertyPath: NetworkConfig.NetworkPrefabs.Array.data[1].SourcePrefabToOverride
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 6419593513315344337, guid: 99215986e22bf2448a7f24f98dbe488d,
         type: 3}
       propertyPath: m_Name
