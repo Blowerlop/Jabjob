@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using Unity.Netcode;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace Project
 {
@@ -11,23 +12,23 @@ namespace Project
         #region Variables
 
         [Header("Shoot state")]
-        private Action _shootBehaviour;
         private float _nextShoot;
         private float _shootRate;
-        private Vector3 _hitPointClient = Vector3.zero;
+        //private Vector3 _hitPointClient = Vector3.zero;
         private bool _canShoot = true;
-        [SerializeField] private LayerMask _layerToAim;
+        //[SerializeField] private LayerMask _layerToAim;
 
         [Header("Other References")] 
         private Weapon _weapon;
         private SOWeapon _weaponData;
         private WeaponManager _weaponManager;
-        [SerializeField] private Camera _camera;
+        private Transform _weaponHandler;
+        [SerializeField] private Transform _rootCamera;
         private Collider _collider;
 
-        [Header("Debug")] [SerializeField] private bool _showDebug;
-
-
+        [Header("Debug")] 
+        [SerializeField] private bool _showDebug;
+        
         #endregion
 
 
@@ -37,6 +38,11 @@ namespace Project
         {
             _weaponManager = GetComponent<WeaponManager>();
             _collider = GetComponent<Collider>();
+        }
+
+        private void Start()
+        {
+            _weaponHandler = _weaponManager.weaponHandler.transform;
         }
 
         public void OnEnable()
@@ -71,15 +77,16 @@ namespace Project
                     _nextShoot = Time.time + _weaponData.shootRate;
                     _weapon.ammo--;
                     GameEvent.onPlayerWeaponAmmoChanged.Invoke(this, false, _weapon.ammo);
-                    
-                    Transform weaponHandlerTransform = _weaponManager.weaponHandler.transform;
-                    Vector3 weaponHandlerPosition = weaponHandlerTransform.position;
-                    Quaternion weaponHandlerRotation = weaponHandlerTransform.rotation;
 
                     // LocalShoot(true, weaponHandlerPosition, weaponHandlerRotation);
                     // ShootServerRpc(weaponHandlerPosition, weaponHandlerRotation, _hitPointClient);
-                    LocalShoot(true, weaponHandlerPosition, weaponHandlerRotation);
-                    ShootServerRpc(weaponHandlerPosition, weaponHandlerRotation);
+                    Vector3 position = _weaponHandler.position;
+                    float x = Screen.width * 0.5f;
+                    float y = Screen.height * 0.5f;
+                    Vector3 direction = Camera.main.ScreenPointToRay(new Vector3(x, y, 0)).direction;
+                    // Ou faire un raycast / a voir ce qui fonctionne le mieux 
+                    LocalShoot(true, position, direction);
+                    ShootServerRpc(position, direction);
                 }
             }
             if (!InputManager.instance.isShooting)
@@ -90,57 +97,45 @@ namespace Project
         }
 
         #endregion
-
-
+        
 
         #region Methods
 
         [ServerRpc]
-        private void ShootServerRpc(Vector3 bulletPosition, Quaternion bulletRotation)
+        private void ShootServerRpc(Vector3 position, Vector3 direction)
         {
-            ShootClientRpc(bulletPosition, bulletRotation);
+            ShootClientRpc(position, direction);
         }
 
 
         [ClientRpc]
-        private void ShootClientRpc(Vector3 bulletPosition, Quaternion bulletRotation)
+        private void ShootClientRpc(Vector3 position, Vector3 direction)
         {
-            if (IsOwner == false) LocalShoot(false, bulletPosition, bulletRotation);
+            if (IsOwner == false) LocalShoot(false, position, direction);
         }
 
-        private void LocalShoot(bool isTheShooter, Vector3 bulletPosition, Quaternion bulletRotation)
+        private void LocalShoot(bool isTheShooter, Vector3 position, Vector3 direction)
         {
+            Debug.Log("Shoot");
             if (_showDebug)
             {
-                Debug.Log("Bullet Position : "  + bulletPosition);
-                Debug.Log("Bullet Rotation : "  + bulletRotation);
             }
             
-            
+
             if (_weaponData.spray)
             {
                 for (int i = 0; i < _weaponData.bulletNumber; i++)
                 {
                     GameObject go = ObjectPoolingManager.instance.GetObject();
-                    go.GetComponent<WeaponProjectile>().Init(isTheShooter, _weaponData.dispersion, _weaponData.bulletSpeed, _weaponData.damage, bulletPosition, bulletRotation, _collider);
+                    go.GetComponent<WeaponProjectile>().Init(isTheShooter, _weaponData.dispersion, _weaponData.bulletSpeed, _weaponData.damage, position, _collider, _rootCamera, direction);
                 }
             }
             else
             {
                 GameObject go = ObjectPoolingManager.instance.GetObject();
-                go.transform.position = bulletPosition;
-                go.transform.rotation = bulletRotation;
-                go.GetComponent<WeaponProjectile>().Init(isTheShooter, _weaponData.dispersion, _weaponData.bulletSpeed, _weaponData.damage, bulletPosition, bulletRotation, _collider);
+                go.GetComponent<WeaponProjectile>().Init(isTheShooter, _weaponData.dispersion, _weaponData.bulletSpeed, _weaponData.damage, position, _collider, _rootCamera, direction);
             }
         }
-
-        
-        
-        
-        
-        
-        
-        
         
         public void Reload()
         {
@@ -177,7 +172,8 @@ namespace Project
             if (_showDebug)
             {
                 Gizmos.color = Color.red;
-                Gizmos.DrawRay(_weaponManager.weaponHandler.transform.position, _camera.transform.forward * 100);
+                var transform1 = _rootCamera.transform;
+                Gizmos.DrawRay(transform1.position, transform1.forward * 100);
             }
         }
 
@@ -188,7 +184,7 @@ namespace Project
 
 
 
-// Old Shoot system --> Guillaume systeme 
+// Old Shoot system --> Guillaume system
         
 // [ServerRpc]
 // private void ShootServerRpc(Vector3 position, Quaternion rotation, Vector3 hitPoint)
