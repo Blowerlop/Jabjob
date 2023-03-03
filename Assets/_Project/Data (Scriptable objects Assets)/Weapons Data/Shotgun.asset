@@ -17,8 +17,12 @@ MonoBehaviour:
   model: {fileID: 919132149155446097, guid: 02a0fb548f71fbd4793e99c8e0a7667d, type: 3}
   prefab: {fileID: 0}
   maxAmmo: 7
+  damage: 25
   shootRate: 0.17
-  dispertion: 6
-  riffle: 0
+  dispersion: 0
+  bulletSpeed: 853
+  automatic: 0
+  reloadDuration: 0
+  raycast: 0
   spray: 1
   bulletNumber: 11

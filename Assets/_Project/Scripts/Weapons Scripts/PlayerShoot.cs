@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using Unity.Netcode;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace Project
 {
@@ -13,19 +14,21 @@ namespace Project
         [Header("Shoot state")]
         private float _nextShoot;
         private float _shootRate;
-        private Vector3 _hitPointClient = Vector3.zero;
+        //private Vector3 _hitPointClient = Vector3.zero;
         private bool _canShoot = true;
-        [SerializeField] private LayerMask _layerToAim;
+        //[SerializeField] private LayerMask _layerToAim;
 
         [Header("Other References")] 
         private Weapon _weapon;
         private SOWeapon _weaponData;
         private WeaponManager _weaponManager;
-        [SerializeField] private Camera _camera;
+        private Transform _weaponHandler;
+        [SerializeField] private Transform _rootCamera;
+        private Collider _collider;
 
-        [Header("Debug")] [SerializeField] private bool _showDebug;
-
-
+        [Header("Debug")] 
+        [SerializeField] private bool _showDebug;
+        
         #endregion
 
 
@@ -34,6 +37,12 @@ namespace Project
         private void Awake()
         {
             _weaponManager = GetComponent<WeaponManager>();
+            _collider = GetComponent<Collider>();
+        }
+
+        private void Start()
+        {
+            _weaponHandler = _weaponManager.weaponHandler.transform;
         }
 
         public void OnEnable()
@@ -67,14 +76,17 @@ namespace Project
                     }
                     _nextShoot = Time.time + _weaponData.shootRate;
                     _weapon.ammo--;
-                    GameEvent.onPlayerWeaponAmmoChanged.Invoke(this, true, _weapon.ammo);
-                    
-                    Transform weaponHandlerTransform = _weaponManager.weaponHandler.transform;
-                    Vector3 weaponHandlerPosition = weaponHandlerTransform.position;
-                    Quaternion weaponHandlerRotation = weaponHandlerTransform.rotation;
+                    GameEvent.onPlayerWeaponAmmoChanged.Invoke(this, false, _weapon.ammo);
 
-                    LocalShoot(weaponHandlerPosition, weaponHandlerRotation, true);
-                    ShootServerRpc(weaponHandlerPosition, weaponHandlerRotation, _hitPointClient);
+                    // LocalShoot(true, weaponHandlerPosition, weaponHandlerRotation);
+                    // ShootServerRpc(weaponHandlerPosition, weaponHandlerRotation, _hitPointClient);
+                    Vector3 position = _weaponHandler.position;
+                    float x = Screen.width * 0.5f;
+                    float y = Screen.height * 0.5f;
+                    Vector3 direction = Camera.main.ScreenPointToRay(new Vector3(x, y, 0)).direction;
+                    // Ou faire un raycast / a voir ce qui fonctionne le mieux 
+                    LocalShoot(true, position, direction);
+                    ShootServerRpc(position, direction);
                 }
             }
             if (!InputManager.instance.isShooting)
@@ -85,123 +97,45 @@ namespace Project
         }
 
         #endregion
-
-
+        
 
         #region Methods
 
         [ServerRpc]
-        private void ShootServerRpc(Vector3 position, Quaternion rotation, Vector3 hitPoint)
+        private void ShootServerRpc(Vector3 position, Vector3 direction)
         {
-            ShootClientRpc(position, rotation, hitPoint);
+            ShootClientRpc(position, direction);
         }
 
 
         [ClientRpc]
-        private void ShootClientRpc(Vector3 position, Quaternion rotation, Vector3 hitPoint)
+        private void ShootClientRpc(Vector3 position, Vector3 direction)
         {
-            if (IsOwner == false) LocalShoot(position, rotation, hitPoint, false);
+            if (IsOwner == false) LocalShoot(false, position, direction);
         }
 
-        /// <summary>
-        /// Shoot and instanciate the projectile in term of the actual weapon 
-        /// </summary>
-        public void LocalShoot(Vector3 position, Quaternion rotation, bool isOwner)
+        private void LocalShoot(bool isTheShooter, Vector3 position, Vector3 direction)
         {
-            RaycastHit hit;
-            Ray ray = _camera.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0.5f));
-            if (Physics.Raycast(ray, out hit, 100, _layerToAim))
+            Debug.Log("Shoot");
+            if (_showDebug)
             {
-                _hitPointClient = hit.point;
-                if (_weaponData.spray)
-                {
-                    for (int i = 0; i < _weaponData.bulletNumber; i++)
-                    {
-                        GameObject go = ObjectPoolingManager.instance.GetObject();
-                        go.transform.position = position;
-                        go.transform.rotation = rotation;
-                        go.GetComponent<WeaponProjectile>().Init(hit.point, _weaponData.dispersion, isOwner);
-                    }
-                }
-                else
-                {
-                    GameObject go = ObjectPoolingManager.instance.GetObject();
-                    go.transform.position = position;
-                    go.transform.rotation = rotation;
-                    go.GetComponent<WeaponProjectile>().Init(hit.point, _weaponData.dispersion, isOwner);
-                }
-
-                Debug.Log(GetComponent<NetworkObject>().OwnerClientId + " : shoot at " + hit.point);
             }
-            else
-            {
-                _hitPointClient = Vector3.zero;
-                if (_weaponData.spray)
-                {
-                    for (int i = 0; i < _weaponData.bulletNumber; i++)
-                    {
-                        GameObject go = ObjectPoolingManager.instance.GetObject();
-                        go.transform.position = position;
-                        go.transform.rotation = rotation;
-                        go.GetComponent<WeaponProjectile>().Init(_weaponData.dispersion, isOwner);
-                    }
-                }
-                else
-                {
-                    GameObject go = ObjectPoolingManager.instance.GetObject();
-                    go.transform.position = position;
-                    go.transform.rotation = rotation;
-                    go.GetComponent<WeaponProjectile>().Init(_weaponData.dispersion, isOwner);
-                }
-            }
-        }
+            
 
-        public void LocalShoot(Vector3 position, Quaternion rotation, Vector3 hitpoint, bool isOwner)
-        {
-            if (hitpoint != Vector3.zero)
+            if (_weaponData.spray)
             {
-                if (_weaponData.spray)
-                {
-                    for (int i = 0; i < _weaponData.bulletNumber; i++)
-                    {
-                        GameObject go = ObjectPoolingManager.instance.GetObject();
-                        go.transform.position = position;
-                        go.transform.rotation = rotation;
-                        go.GetComponent<WeaponProjectile>().Init(hitpoint, _weaponData.dispersion, isOwner);
-                    }
-                }
-                else
+                for (int i = 0; i < _weaponData.bulletNumber; i++)
                 {
                     GameObject go = ObjectPoolingManager.instance.GetObject();
-                    go.transform.position = position;
-                    go.transform.rotation = rotation;
-                    go.GetComponent<WeaponProjectile>().Init(hitpoint, _weaponData.dispersion, isOwner);
+                    go.GetComponent<WeaponProjectile>().Init(isTheShooter, _weaponData.dispersion, _weaponData.bulletSpeed, _weaponData.damage, position, _collider, _rootCamera, direction);
                 }
             }
             else
             {
-                if (_weaponData.spray)
-                {
-                    for (int i = 0; i < _weaponData.bulletNumber; i++)
-                    {
-                        GameObject go = ObjectPoolingManager.instance.GetObject();
-                        go.transform.position = position;
-                        go.transform.rotation = rotation;
-                        go.GetComponent<WeaponProjectile>().Init(_weaponData.dispersion, isOwner);
-                    }
-                }
-                else
-                {
-                    GameObject go = ObjectPoolingManager.instance.GetObject();
-                    go.transform.position = position;
-                    go.transform.rotation = rotation;
-                    go.GetComponent<WeaponProjectile>().Init(_weaponData.dispersion, isOwner);
-                }
+                GameObject go = ObjectPoolingManager.instance.GetObject();
+                go.GetComponent<WeaponProjectile>().Init(isTheShooter, _weaponData.dispersion, _weaponData.bulletSpeed, _weaponData.damage, position, _collider, _rootCamera, direction);
             }
         }
-        
-        
-        
         
         public void Reload()
         {
@@ -230,7 +164,7 @@ namespace Project
         
         private void UpdateCurrentWeapon(byte weaponID)
         {
-            _weaponData = SOWeapon.GetWeaponPrefab(weaponID).weaponData;
+            _weaponData = SOWeapon.GetWeaponPrefab(weaponID).weaponData;  
         }
 
         void OnDrawGizmos()
@@ -238,17 +172,136 @@ namespace Project
             if (_showDebug)
             {
                 Gizmos.color = Color.red;
-                Gizmos.DrawRay(_weaponManager.weaponHandler.transform.position, _camera.transform.forward * 100);
+                var transform1 = _rootCamera.transform;
+                Gizmos.DrawRay(transform1.position, transform1.forward * 100);
             }
         }
 
         #endregion
-
-
-
-
     }
 }
+
+
+
+
+// Old Shoot system --> Guillaume system
+        
+// [ServerRpc]
+// private void ShootServerRpc(Vector3 position, Quaternion rotation, Vector3 hitPoint)
+// {
+//     ShootClientRpc(position, rotation, hitPoint);
+// }
+//
+//
+// [ClientRpc]
+// private void ShootClientRpc(Vector3 position, Quaternion rotation, Vector3 hitPoint)
+// {
+//     if (IsOwner == false)
+//     {
+//         //LocalShoot(position, rotation, hitPoint, false); 
+//         // LocalShoot(position, rotation, false);
+//         LocalShoot(false, position, rotation);
+//     }
+// }
+
+
+
+        /// <summary>
+        /// Shoot and instanciate the projectile in term of the actual weapon 
+        /// </summary>
+        // public void LocalShoot(Vector3 position, Quaternion rotation, bool isBulletOwner)
+        // {
+        //     RaycastHit hit;
+        //     Ray ray = _camera.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0.5f));
+        //     if (Physics.Raycast(ray, out hit, 100, _layerToAim))
+        //     {
+        //         _hitPointClient = hit.point;
+        //         if (_weaponData.spray)
+        //         {
+        //             for (int i = 0; i < _weaponData.bulletNumber; i++)
+        //             {
+        //                 GameObject go = ObjectPoolingManager.instance.GetObject();
+        //                 go.transform.position = position;
+        //                 go.transform.rotation = rotation;
+        //                 go.GetComponent<WeaponProjectile>().Init(hit.point, _weaponData.dispersion, isBulletOwner);
+        //             }
+        //         }
+        //         else
+        //         {
+        //             GameObject go = ObjectPoolingManager.instance.GetObject();
+        //             go.transform.position = position;
+        //             go.transform.rotation = rotation;
+        //             go.GetComponent<WeaponProjectile>().Init(hit.point, _weaponData.dispersion, isBulletOwner);
+        //         }
+        //
+        //         Debug.Log(GetComponent<NetworkObject>().OwnerClientId + " : shoot at " + hit.point);
+        //     }
+        //     else
+        //     {
+        //         _hitPointClient = Vector3.zero;
+        //         if (_weaponData.spray)
+        //         {
+        //             for (int i = 0; i < _weaponData.bulletNumber; i++)
+        //             {
+        //                 GameObject go = ObjectPoolingManager.instance.GetObject();
+        //                 go.transform.position = position;
+        //                 go.transform.rotation = rotation;
+        //                 go.GetComponent<WeaponProjectile>().Init(_weaponData.dispersion, isBulletOwner);
+        //             }
+        //         }
+        //         else
+        //         {
+        //             GameObject go = ObjectPoolingManager.instance.GetObject();
+        //             go.transform.position = position;
+        //             go.transform.rotation = rotation;
+        //             go.GetComponent<WeaponProjectile>().Init(_weaponData.dispersion, isBulletOwner);
+        //         }
+        //     }
+        // }
+        //
+        // public void LocalShoot(Vector3 position, Quaternion rotation, Vector3 hitpoint, bool isBulletOwner)
+        // {
+        //     if (hitpoint != Vector3.zero)
+        //     {
+        //         if (_weaponData.spray)
+        //         {
+        //             for (int i = 0; i < _weaponData.bulletNumber; i++)
+        //             {
+        //                 GameObject go = ObjectPoolingManager.instance.GetObject();
+        //                 go.transform.position = position;
+        //                 go.transform.rotation = rotation;
+        //                 go.GetComponent<WeaponProjectile>().Init(hitpoint, _weaponData.dispersion, isBulletOwner);
+        //             }
+        //         }
+        //         else
+        //         {
+        //             GameObject go = ObjectPoolingManager.instance.GetObject();
+        //             go.transform.position = position;
+        //             go.transform.rotation = rotation;
+        //             go.GetComponent<WeaponProjectile>().Init(hitpoint, _weaponData.dispersion, isBulletOwner);
+        //         }
+        //     }
+        //     else
+        //     {
+        //         if (_weaponData.spray)
+        //         {
+        //             for (int i = 0; i < _weaponData.bulletNumber; i++)
+        //             {
+        //                 GameObject go = ObjectPoolingManager.instance.GetObject();
+        //                 go.transform.position = position;
+        //                 go.transform.rotation = rotation;
+        //                 go.GetComponent<WeaponProjectile>().Init(_weaponData.dispersion, isBulletOwner);
+        //             }
+        //         }
+        //         else
+        //         {
+        //             GameObject go = ObjectPoolingManager.instance.GetObject();
+        //             go.transform.position = position;
+        //             go.transform.rotation = rotation;
+        //             go.GetComponent<WeaponProjectile>().Init(_weaponData.dispersion, isBulletOwner);
+        //         }
+        //     }
+        // }
 
     
 

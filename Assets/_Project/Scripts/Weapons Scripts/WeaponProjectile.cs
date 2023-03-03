@@ -1,69 +1,172 @@
-using System;
 using System.Collections;
-using System.Collections.Generic;
 using Project;
-using Unity.Netcode;
-using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Serialization;
 using Random = UnityEngine.Random;
+using Timer = Project.Utilities.Timer;
 
-public class WeaponProjectile : NetworkBehaviour
+public class WeaponProjectile : MonoBehaviour
 {
-    Vector3 target;
+    #region Variables
+    
+    [Header("Projectile Infos")]
+    [SerializeField] private float _despawnProjectileTimer = 10.0f;
+    [SerializeField] [ReadOnlyField] private int _projectileDamage;
+    [SerializeField] [ReadOnlyField] private float _projectileSpeed;
+    [SerializeField] [ReadOnlyField] private bool _isOwner = false;
+    private Vector3 _physicsProjectileMovement;
+    private Vector3 _visualProjectileMovement;
+    [SerializeField] private Rigidbody _rigidbodyPhysicsProjectile;
+    [SerializeField] private Rigidbody _rigidbodyVisualProjectile;
+    private Vector3 _bulletDirection;
 
-    [SerializeField] private int damage;
-    [SerializeField] float speed;
-    private bool _isOwner = false;
+    private bool _hasInit = false;
+    
+    // References
+    [FormerlySerializedAs("_onTriggerEnterEvent")] [SerializeField] private OnTriggerEnterEventClass _onTriggerEnterEventClass;
+    private Collider _colliderOfBulletOwner;
+    
+    
+    
+    #if UNITY_EDITOR
+    [Header("Debug")] 
+    [SerializeField] private bool _debug = false;
+    private Vector3 _initialPosition;
+    private Vector3 _initialPosition2;
+    [SerializeField] private Timer _timer;
+    #endif
 
+    //Vector3 target;
 
+    
+
+    
+    #endregion
+    
+
+    #region Updates
+
+    public void Start()
+    {
+        _onTriggerEnterEventClass.@event.Subscribe(OnTriggerEnter, this);
+    }
+
+    void Update()
+    {
+        if (_hasInit)
+        { 
+            // _rigidbodyPhysicsProjectile.velocity = _physicsProjectileMovement;
+            // _rigidbodyVisualProjectile.velocity = _visualProjectileMovement;
+            _rigidbodyPhysicsProjectile.velocity = _rigidbodyPhysicsProjectile.transform.forward * _projectileSpeed;
+            _rigidbodyVisualProjectile.velocity = _bulletDirection * _projectileSpeed;
+
+            // _rigidbody.velocity = transform.forward * _projectileSpeed;
+        }
+    }
+     
+    private void OnTriggerEnter(Collider other)
+    {
+        if (_isOwner == false)
+        {
+            // ObjectPoolingManager.instance.ReturnGameObject(gameObject);
+            return;
+        }
+
+        if (other == _colliderOfBulletOwner) return;
+
+        if (other.TryGetComponent(out IHealthManagement healthManagement))
+        {
+            Debug.Log("Hit :" + other.name);
+            healthManagement.Damage(_projectileDamage);
+        }
+        
+        ObjectPoolingManager.instance.ReturnGameObject(gameObject);
+    }
+    
+    #endregion
+    
+    
+    #region Methods
+    
     /// <summary>
     /// Initialize bullet
     /// </summary>
-    public void Init(Vector3 _target, float disp, bool isOwner)
-    {
-        this._isOwner = isOwner;
-        target = _target;
-        transform.LookAt(target);
-        RandomizeRotation(disp);
-        StartCoroutine(DestroyCD());
-    }
-    public void Init(float disp, bool isOwner)
-    {
-        this._isOwner = isOwner;
-        RandomizeRotation(disp);
-        StartCoroutine(DestroyCD());
-    }
+    // public void Init(Vector3 _target, float disp, bool isOwner)
+    // {
+    //     this._isOwner = isOwner;
+    //     target = _target;
+    //     transform.LookAt(target);
+    //     RandomizeRotation(disp);
+    //     //StartCoroutine(DestroyProjectileCooldown());
+    // }
 
-    // Update is called once per frame
-    void Update()
+    public void Init(bool isBulletOwner, float projectileDispersion, float projectileSpeed, int projectileDamage,
+        Vector3 position, Collider collider, Transform playerRootCamera, Vector3 direction)
     {
-        transform.Translate(Vector3.forward * Time.deltaTime * speed);
-    }
-
-    private void OnTriggerEnter(Collider other)
-    {
-        if (_isOwner == false) return;
+        // Global projectile setup
+        _isOwner = isBulletOwner;
+        RandomizeRotation(projectileDispersion);
+        _projectileSpeed = projectileSpeed;
+        _projectileDamage = projectileDamage;
+        _colliderOfBulletOwner = collider;
         
-        if (other.TryGetComponent(out IHealthManagement healthManagement))
-        {
-            healthManagement.Damage(damage);
-        }
+        // Physics projectile setup
+        _rigidbodyPhysicsProjectile.position = playerRootCamera.position;
+        _rigidbodyPhysicsProjectile.rotation = playerRootCamera.rotation;
+        // _physicsProjectileMovement = _rigidbodyPhysicsProjectile.transform.forward * _projectileSpeed;
+        
+        // Visual projectile setup
+        _bulletDirection = direction;
+        _rigidbodyVisualProjectile.position = position;
+        // _rigidbodyVisualProjectile.rotation = rotation;
+        // _visualProjectileMovement = _rigidbodyVisualProjectile.transform.forward * _projectileSpeed;
+
+#if UNITY_EDITOR
+        _initialPosition = position;
+        _initialPosition2 = playerRootCamera.position;;
+#endif
+
+        StartCoroutine(DestroyProjectileCooldown());
+
+        Debug.Log("Init");
+        _hasInit = true;
     }
 
     /// <summary>
-    /// Randomize the bullet rotation in term of the <paramref name="disp" />
+    /// Randomize the bullet rotation in term of the <paramref name="projectileDispersion" />
     /// </summary>
-    public void RandomizeRotation(float disp)
+    public void RandomizeRotation(float projectileDispersion)
     {
-        transform.Rotate(new Vector3(Random.Range(-disp, disp), Random.Range(-disp, disp), 0), Space.Self);
+        if (projectileDispersion == 0.0f) return;
+        
+        transform.Rotate(new Vector3(Random.Range(-projectileDispersion, projectileDispersion), Random.Range(-projectileDispersion, projectileDispersion), 0), Space.Self);
     }
 
     /// <summary>
-    /// Destroy the GameObject after 10sec
-    /// </summary>
-    public IEnumerator DestroyCD()
+    /// Destroy the GameObject after x seconds
+    /// </summary> 
+    public IEnumerator DestroyProjectileCooldown()
     {
-        yield return new WaitForSeconds(10);
+#if  UNITY_EDITOR
+        _timer.StartSimpleTimer(_despawnProjectileTimer, true);
+#endif
+        yield return new WaitForSeconds(_despawnProjectileTimer);
         ObjectPoolingManager.instance.ReturnGameObject(gameObject);
     }
+
+    private void OnDrawGizmos()
+    {
+        if (_debug == false) return;
+        
+        Gizmos.DrawSphere(_rigidbodyPhysicsProjectile.position, 0.1f);
+
+        Gizmos.color = Color.blue;
+        Gizmos.DrawLine(_initialPosition2, _rigidbodyPhysicsProjectile.position);
+        Gizmos.color = Color.magenta;
+        Gizmos.DrawLine(_initialPosition, _rigidbodyVisualProjectile.position);
+    }
+
+    #endregion
 }
+
+

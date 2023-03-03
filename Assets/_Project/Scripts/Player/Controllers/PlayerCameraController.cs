@@ -14,7 +14,7 @@ public class PlayerCameraController : NetworkBehaviour
     float _rotateVerticalVelocity;
 
     [Header("References")]
-    [SerializeField] private GameObject _playerCamera;
+    // [SerializeField] private GameObject _playerCamera;
     private CinemachineVirtualCamera _cinemachineCamera;
     [SerializeField] private Transform _cameraTarget;
 
@@ -41,13 +41,13 @@ public class PlayerCameraController : NetworkBehaviour
     {
         if (IsOwner == false)
         {
-            _cinemachineCamera.Priority = 0;
+            _cinemachineCamera.Priority = -1;
             enabled = false;
         }
         else
         {
-            if (Camera.main != null) Camera.main.gameObject.SetActive(false);
-            _playerCamera.SetActive(true);
+            // if (Camera.main != null) Camera.main.gameObject.SetActive(false);
+            // _playerCamera.SetActive(true);
         }
     }
 
