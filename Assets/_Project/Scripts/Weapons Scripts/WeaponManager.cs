@@ -34,7 +34,8 @@ public class WeaponManager : NetworkBehaviour
         if (IsOwner == false)
         {
             EquipWeaponLocal(_weaponID.Value);
-            //enabled = false;
+            Debug.Log(_weaponID.Value);
+            enabled = false;
         }
 
     }
