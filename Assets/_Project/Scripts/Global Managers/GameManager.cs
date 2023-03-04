@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using Project.Utilities;
 using Unity.Netcode;
 using UnityEngine;
@@ -11,7 +12,7 @@ namespace Project
         #region Variables
 
         public static GameManager instance;
-
+        private Dictionary<ulong, GameObject> players = new Dictionary<ulong, GameObject>();
 
         [Header("Game Settings")]
         // [SerializeField] private SOGameSettings _gameSettings --> Preview changement futur
@@ -37,20 +38,9 @@ namespace Project
             {
                 SpawnNetworkTimerServerRpc();
             }
-            else
-            {
-                
-            }
         }
         
-        [ServerRpc]
-        public void SpawnNetworkTimerServerRpc()
-        {
-            _networkTimer = Instantiate(_networkTimer);
-            _networkTimer.GetComponent<NetworkObject>().Spawn();
-            
-            _networkTimer.StartTimerWithCallback(_gameDuration, () => GameEvent.onGameFinished.Invoke(this, true), true);
-        }
+        
 
         public void OnEnable()
         {
@@ -68,6 +58,20 @@ namespace Project
 
         #region Methods
 
+        public void AddPlayer(ulong playerNetworkId, GameObject playerGameObject) =>
+            players.Add(playerNetworkId, playerGameObject);
+
+        public GameObject GetPlayerGameObject(ulong playerNetworkId) => players[playerNetworkId];
+        
+        [ServerRpc]
+        public void SpawnNetworkTimerServerRpc()
+        {
+            _networkTimer = Instantiate(_networkTimer);
+            _networkTimer.GetComponent<NetworkObject>().Spawn();
+            
+            _networkTimer.StartTimerWithCallback(_gameDuration, () => GameEvent.onGameFinished.Invoke(this, true), true);
+        }
+
         // [ServerRpc(RequireOwnership = false)] 
         // private void StartRespawnTimerCoroutineServerRpc(ulong clientId)
         // {
@@ -77,7 +81,7 @@ namespace Project
         [ServerRpc(RequireOwnership = false)] 
         private void StartRespawnTimerCoroutineServerRpc(ulong clientId)
         {
-            Timer.StartTimerWithCallback(_respawnDuration, RespawnPlayerTimerCoroutine, clientId);
+            Timer.StartTimerWithCallback(_respawnDuration, (() => RespawnPlayerTimerCoroutineClientRpc(clientId)));
         }  
         
         
@@ -88,11 +92,14 @@ namespace Project
         //     playerInstance.SpawnWithOwnership(clientId, true);
         // }
         
-        private void RespawnPlayerTimerCoroutine(ulong clientId)
+        [ClientRpc]
+        private void RespawnPlayerTimerCoroutineClientRpc(ulong clientId)
         {
-            NetworkObject playerInstance = Instantiate(_playerPrefab);
-            playerInstance.SpawnWithOwnership(clientId, true);
+            GameObject player = GetPlayerGameObject(clientId);
+            player.transform.position = Vector3.zero;
+            player.SetActive(true);
         }
+        
 
         #endregion
     }

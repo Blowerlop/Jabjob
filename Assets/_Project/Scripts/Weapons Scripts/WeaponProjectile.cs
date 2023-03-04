@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using Project;
 using UnityEngine;
@@ -25,9 +26,7 @@ public class WeaponProjectile : MonoBehaviour
     // References
     [FormerlySerializedAs("_onTriggerEnterEvent")] [SerializeField] private OnTriggerEnterEventClass _onTriggerEnterEventClass;
     private Collider _colliderOfBulletOwner;
-
-    private Vector3 direction1 = Vector3.zero;
-    private Vector3 direction2 = Vector3.zero;
+    
 
 #if UNITY_EDITOR
     [Header("Debug")] 
@@ -60,7 +59,12 @@ public class WeaponProjectile : MonoBehaviour
             _rigidbodyVisualProjectile.velocity = _rigidbodyVisualProjectile.transform.forward * _projectileSpeed;
         }
     }
-     
+
+    private void OnDisable()
+    {
+        _hasInit = false;
+    }
+
     private void OnTriggerEnter(Collider other)
     {
         if (_isOwner == false)
@@ -106,16 +110,17 @@ public class WeaponProjectile : MonoBehaviour
         _projectileSpeed = projectileSpeed;
         _projectileDamage = projectileDamage;
         _colliderOfBulletOwner = playerCollider;
-        
+
+        Vector3 bulletDirection;
         // Physics projectile setup
         _rigidbodyPhysicsProjectile.position = rootCamera.position;
-        direction1 = collisionPoint - _rigidbodyPhysicsProjectile.position;
-        _rigidbodyPhysicsProjectile.transform.rotation = Quaternion.LookRotation(direction1, _rigidbodyPhysicsProjectile.transform.up);
+        bulletDirection = collisionPoint - _rigidbodyPhysicsProjectile.position;
+        _rigidbodyPhysicsProjectile.rotation = Quaternion.LookRotation(bulletDirection, _rigidbodyPhysicsProjectile.transform.up);
 
         // Visual projectile setup
         _rigidbodyVisualProjectile.position = weaponHolderPosition;
-        direction2 = collisionPoint - _rigidbodyVisualProjectile.position;
-        _rigidbodyVisualProjectile.transform.rotation = Quaternion.LookRotation(direction2, _rigidbodyVisualProjectile.transform.up);
+        bulletDirection = collisionPoint - _rigidbodyVisualProjectile.position;
+        _rigidbodyVisualProjectile.rotation = Quaternion.LookRotation(bulletDirection, _rigidbodyVisualProjectile.transform.up);
 
 
 #if UNITY_EDITOR
@@ -126,6 +131,12 @@ public class WeaponProjectile : MonoBehaviour
         StartCoroutine(DestroyProjectileCooldown());
 
         Debug.Log("Init");
+        StartCoroutine(InitDelayFrame());
+    }
+
+    private IEnumerator InitDelayFrame()
+    {
+        yield return null;
         _hasInit = true;
     }
 
@@ -153,6 +164,7 @@ public class WeaponProjectile : MonoBehaviour
 
     private void OnDrawGizmos()
     {
+        #if UNITY_EDITOR
         if (_debug == false) return;
         
         Gizmos.DrawSphere(_rigidbodyPhysicsProjectile.position, 0.1f);
@@ -161,6 +173,7 @@ public class WeaponProjectile : MonoBehaviour
         Gizmos.DrawLine(_initialPosition2, _rigidbodyPhysicsProjectile.position);
         Gizmos.color = Color.magenta;
         Gizmos.DrawLine(_initialPosition, _rigidbodyVisualProjectile.position);
+        #endif
     } 
 
     #endregion

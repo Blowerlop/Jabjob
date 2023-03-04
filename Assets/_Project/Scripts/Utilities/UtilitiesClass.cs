@@ -118,13 +118,6 @@ namespace Project
                 await Task.Delay(timeInMilliseconds);
                 callback.Invoke();
             }
-
-            public static async void StartTimerWithCallback<T>(float timeInSeconds, Action<T> callback, T arg)
-            {
-                int timeInMilliseconds = (int)(timeInSeconds * 1000);
-                await Task.Delay(timeInMilliseconds);
-                callback.Invoke(arg);
-            }
         }
     }
 }

@@ -10,7 +10,8 @@ namespace Project
     {
         #region Variables
         
-        [SerializeField] private int _health = 100;
+        [SerializeField] private int _health = 100; 
+        [SerializeField] [ReadOnlyField] private int _currentHealth = 100;
         private NetworkObject _networkObject;
 
         #endregion
@@ -21,6 +22,21 @@ namespace Project
         private void Awake()
         {
             _networkObject = GetComponent<NetworkObject>();
+        }
+
+        public override void OnNetworkSpawn()
+        {
+            GameManager.instance.AddPlayer(OwnerClientId, gameObject);
+        }
+
+        private void Start()
+        {
+            _currentHealth = _health;
+        }
+
+        private void OnEnable()
+        {
+            PlayerRespawn();  
         }
 
         #endregion
@@ -51,36 +67,53 @@ namespace Project
         public void DamageLocalClient(int damage)
         {
             Debug.Log("You've taken damage");
-            SetHealth(_health - damage);
+            SetHealth(_currentHealth - damage);
         }
         
         public void Heal(int heal)
         {
-            SetHealth(_health + heal);
+            SetHealth(_currentHealth + heal);
         }
         
         private void SetHealth(int newHealth)
-        {
-            _health = newHealth;
-            GameEvent.onPlayerHealthChanged.Invoke(this, false, _health);
+        { 
+            _currentHealth = newHealth;
+            GameEvent.onPlayerHealthChanged.Invoke(this, false, _currentHealth);
             
-            if (_health <= 0)
+            if (_currentHealth <= 0)
             {
-                PlayerDeath();
+                PlayerDeath(); 
             }
         }
 
         private void PlayerDeath()
         {
-            GameEvent.onPlayerDied.Invoke(this, true, OwnerClientId);
+            PlayerDeathLocal();
+            GameEvent.onPlayerDied.Invoke(this, true, OwnerClientId); 
+            PlayerDeathServerRpc();
             Debug.Log("You're dead");
-            PlayerDespawnServerRpc(); 
         }
 
         [ServerRpc]
-        private void PlayerDespawnServerRpc()
+        private void PlayerDeathServerRpc()
         {
-            _networkObject.Despawn();
+            PlayerDeathClientRpc();
+        }
+
+        [ClientRpc]
+        private void PlayerDeathClientRpc()
+        {
+            if (IsOwner == false) gameObject.SetActive(false);
+        }
+
+        private void PlayerDeathLocal()
+        {
+            gameObject.SetActive(false);
+        }
+
+        public void PlayerRespawn()
+        {
+            SetHealth(_health);
         }
         
         

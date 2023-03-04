@@ -25,7 +25,6 @@ namespace Project
         private Transform _weaponHandler;
         [SerializeField] private Transform _rootCamera;
         private Collider _collider;
-        private Transform _cameraTransform;
         [SerializeField] private LayerMask _shootLayerMask;
 
         [Header("Debug")] 
@@ -40,11 +39,6 @@ namespace Project
         {
             _weaponManager = GetComponent<WeaponManager>();
             _collider = GetComponent<Collider>();
-            if (Camera.main != null) _cameraTransform = Camera.main.transform;
-            else
-            {
-                Debug.Log("There is no main camera !");
-            }
         }
 
         private void Start()
