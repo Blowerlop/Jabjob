@@ -7,7 +7,7 @@ using UnityEngine.Serialization;
 namespace Project
 {
     [RequireComponent(typeof(WeaponManager))]
-    public class PlayerShoot : NetworkBehaviour
+    public class PlayerShoot : NetworkBehaviour, IGameEventListener
     {
         #region Variables
 
@@ -19,12 +19,13 @@ namespace Project
         //[SerializeField] private LayerMask _layerToAim;
 
         [Header("Other References")] 
-        [SerializeField] [ReadOnlyField] private Weapon _weapon;
-        [SerializeField] [ReadOnlyField] private SOWeapon _weaponData;
+        private Weapon _weapon;
+        private SOWeapon _weaponData;
         private WeaponManager _weaponManager;
         private Transform _weaponHandler;
         [SerializeField] private Transform _rootCamera;
         private Collider _collider;
+        private Transform _cameraTransform;
         [SerializeField] private LayerMask _shootLayerMask;
 
         [Header("Debug")] 
@@ -32,26 +33,33 @@ namespace Project
         
         #endregion
 
-  
+
         #region Updates
 
         private void Awake()
         {
             _weaponManager = GetComponent<WeaponManager>();
             _collider = GetComponent<Collider>();
+            if (Camera.main != null) _cameraTransform = Camera.main.transform;
+            else
+            {
+                Debug.Log("There is no main camera !");
+            }
         }
 
         private void Start()
         {
             _weaponHandler = _weaponManager.weaponHandler.transform;
+        }
+
+        public void OnEnable()
+        {
             InputManager.instance.reload.AddListener(Reload);
             GameEvent.onPlayerWeaponChangedLocal.Subscribe(UpdateCurrentWeapon, this);
             GameEvent.onPlayerWeaponChangedServer.Subscribe(UpdateCurrentWeapon, this);
         }
- 
 
-
-        public override void OnDestroy()
+        public void OnDisable()
         {
             InputManager.instance.reload.RemoveListener(Reload);
             GameEvent.onPlayerWeaponChangedLocal.Unsubscribe(UpdateCurrentWeapon);
@@ -79,26 +87,25 @@ namespace Project
 
                     // LocalShoot(true, weaponHandlerPosition, weaponHandlerRotation);
                     // ShootServerRpc(weaponHandlerPosition, weaponHandlerRotation, _hitPointClient);
-                    Vector3 weaponHolderPosition = _weaponHandler.position;
-                    Vector3 rootCameraPosition = _rootCamera.position;
+                    Vector3 position = _weaponHandler.position;
                     // float x = Screen.width * 0.5f;
                     // float y = Screen.height * 0.5f;
                     // Vector3 direction = Camera.main.ScreenPointToRay(new Vector3(x, y, 0)).direction;
-                    Vector3 hitPoint = Vector3.zero;
+                    Vector3 direction = Vector3.zero;
                     if (Physics.Raycast(_rootCamera.position, _rootCamera.forward, out RaycastHit hit,
                             Mathf.Infinity, _shootLayerMask))
                     {
-                        hitPoint = hit.point;
+                        direction = hit.point;
                     }
-                    LocalShoot(true, weaponHolderPosition, rootCameraPosition, hitPoint);
-                    ShootServerRpc(weaponHolderPosition, rootCameraPosition, hitPoint);
+                    LocalShoot(true, position, direction);
+                    ShootServerRpc(position, direction);
                 }
             }
             if (!InputManager.instance.isShooting)
             {
                 _canShoot = true;
             }    
-             
+            
         }
 
         #endregion
@@ -107,42 +114,39 @@ namespace Project
         #region Methods
 
         [ServerRpc]
-        private void ShootServerRpc(Vector3 weaponHolderPosition, Vector3 rootCameraPosition, Vector3 hitPoint)
+        private void ShootServerRpc(Vector3 weaponHolderPosition, Vector3 hitPoint)
         {
-            ShootClientRpc(weaponHolderPosition, rootCameraPosition, hitPoint);
+            ShootClientRpc(weaponHolderPosition, hitPoint);
         }
 
 
         [ClientRpc]
-        private void ShootClientRpc(Vector3 weaponHolderPosition, Vector3 rootCameraPosition, Vector3 hitPoint)
+        private void ShootClientRpc(Vector3 weaponHolderPosition, Vector3 hitPoint)
         {
-            if (IsOwner == false) LocalShoot(false, weaponHolderPosition, rootCameraPosition, hitPoint);
+            if (IsOwner == false) LocalShoot(false, weaponHolderPosition, hitPoint);
         }
 
-        private void LocalShoot(bool isTheShooter, Vector3 weaponHolderPosition, Vector3 rootCameraPosition, Vector3 hitPoint)
+        private void LocalShoot(bool isTheShooter, Vector3 weaponHolderPosition, Vector3 hitPoint)
         {
+            Debug.Log("Shoot");
+            if (_showDebug)
+            {
+            }
             
-             
-            
-            GameObject go = ObjectPoolingManager.instance.GetObject();
-            go.GetComponent<WeaponProjectile>().Init(isTheShooter, _weaponData.dispersion, _weaponData.bulletSpeed, _weaponData.damage, weaponHolderPosition, _collider, rootCameraPosition, hitPoint);
-            
-            // Debug.Log(weaponHolderPosition);
-            // Debug.Log(rootCameraPosition);
-            // Debug.Log(_weaponData.spray);
-            // if (_weaponData.spray)
-            // {
-            //     for (int i = 0; i < _weaponData.bulletNumber; i++)
-            //     {
-            //         GameObject go = ObjectPoolingManager.instance.GetObject();
-            //         go.GetComponent<WeaponProjectile>().Init(isTheShooter, _weaponData.dispersion, _weaponData.bulletSpeed, _weaponData.damage, weaponHolderPosition, _collider, rootCameraPosition, hitPoint);
-            //     }
-            // }
-            // else
-            // {
-            //     GameObject go = ObjectPoolingManager.instance.GetObject();
-            //     go.GetComponent<WeaponProjectile>().Init(isTheShooter, _weaponData.dispersion, _weaponData.bulletSpeed, _weaponData.damage, weaponHolderPosition, _collider, rootCameraPosition, hitPoint);
-            // }
+
+            if (_weaponData.spray)
+            {
+                for (int i = 0; i < _weaponData.bulletNumber; i++)
+                {
+                    GameObject go = ObjectPoolingManager.instance.GetObject();
+                    go.GetComponent<WeaponProjectile>().Init(isTheShooter, _weaponData.dispersion, _weaponData.bulletSpeed, _weaponData.damage, weaponHolderPosition, _collider, _rootCamera, hitPoint);
+                }
+            }
+            else
+            {
+                GameObject go = ObjectPoolingManager.instance.GetObject();
+                go.GetComponent<WeaponProjectile>().Init(isTheShooter, _weaponData.dispersion, _weaponData.bulletSpeed, _weaponData.damage, weaponHolderPosition, _collider, _rootCamera, hitPoint);
+            }
         }
         
         public void Reload()
@@ -172,7 +176,7 @@ namespace Project
         
         private void UpdateCurrentWeapon(byte weaponID)
         {
-            _weaponData = SOWeapon.GetWeaponPrefab(weaponID).weaponData;
+            _weaponData = SOWeapon.GetWeaponPrefab(weaponID).weaponData;  
         }
 
         void OnDrawGizmos()

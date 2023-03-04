@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using Project;
 using UnityEngine;
@@ -26,7 +25,8 @@ public class WeaponProjectile : MonoBehaviour
     // References
     [FormerlySerializedAs("_onTriggerEnterEvent")] [SerializeField] private OnTriggerEnterEventClass _onTriggerEnterEventClass;
     private Collider _colliderOfBulletOwner;
-    
+
+
 
 #if UNITY_EDITOR
     [Header("Debug")] 
@@ -59,21 +59,16 @@ public class WeaponProjectile : MonoBehaviour
             _rigidbodyVisualProjectile.velocity = _rigidbodyVisualProjectile.transform.forward * _projectileSpeed;
         }
     }
-
-    private void OnDisable()
-    {
-        _hasInit = false;
-    }
-
+     
     private void OnTriggerEnter(Collider other)
     {
+        if (other == _colliderOfBulletOwner || other.CompareTag("Border")) return;
+        
         if (_isOwner == false)
         {
-            // ObjectPoolingManager.instance.ReturnGameObject(gameObject);
+            ObjectPoolingManager.instance.ReturnGameObject(gameObject);
             return;
         }
-
-        if (other == _colliderOfBulletOwner || other.CompareTag("Border")) return;
 
         if (other.TryGetComponent(out IHealthManagement healthManagement))
         {
@@ -102,7 +97,7 @@ public class WeaponProjectile : MonoBehaviour
     // }
 
     public void Init(bool isBulletOwner, float projectileDispersion, float projectileSpeed, int projectileDamage,
-        Vector3 weaponHolderPosition, Collider playerCollider, Vector3 rootCameraPosition, Vector3 collisionPoint)
+        Vector3 weaponHolderPosition, Collider playerCollider, Transform rootCamera, Vector3 collisionPoint)
     {
         // Global projectile setup
         _isOwner = isBulletOwner;
@@ -111,32 +106,26 @@ public class WeaponProjectile : MonoBehaviour
         _projectileDamage = projectileDamage;
         _colliderOfBulletOwner = playerCollider;
 
-        Vector3 bulletDirection;
+        Vector3 direction;
         // Physics projectile setup
-        _rigidbodyPhysicsProjectile.position = rootCameraPosition;
-        bulletDirection = collisionPoint - _rigidbodyPhysicsProjectile.position;
-        _rigidbodyPhysicsProjectile.rotation = Quaternion.LookRotation(bulletDirection, _rigidbodyPhysicsProjectile.transform.up);
+        _rigidbodyPhysicsProjectile.position = rootCamera.position;
+        direction = collisionPoint - _rigidbodyPhysicsProjectile.position;
+        _rigidbodyPhysicsProjectile.transform.rotation = Quaternion.LookRotation(direction, _rigidbodyPhysicsProjectile.transform.up);
 
         // Visual projectile setup
         _rigidbodyVisualProjectile.position = weaponHolderPosition;
-        bulletDirection = collisionPoint - _rigidbodyVisualProjectile.position;
-        _rigidbodyVisualProjectile.rotation = Quaternion.LookRotation(bulletDirection, _rigidbodyVisualProjectile.transform.up);
+        direction = collisionPoint - _rigidbodyVisualProjectile.position;
+        _rigidbodyVisualProjectile.transform.rotation = Quaternion.LookRotation(direction, _rigidbodyVisualProjectile.transform.up);
 
 
 #if UNITY_EDITOR
         _initialPosition = weaponHolderPosition;
-        _initialPosition2 = rootCameraPosition;;
+        _initialPosition2 = rootCamera.position;;
 #endif
 
         StartCoroutine(DestroyProjectileCooldown());
 
         Debug.Log("Init");
-        StartCoroutine(InitDelayFrame());
-    }
-
-    private IEnumerator InitDelayFrame()
-    {
-        yield return null;
         _hasInit = true;
     }
 
@@ -164,7 +153,6 @@ public class WeaponProjectile : MonoBehaviour
 
     private void OnDrawGizmos()
     {
-        #if UNITY_EDITOR
         if (_debug == false) return;
         
         Gizmos.DrawSphere(_rigidbodyPhysicsProjectile.position, 0.1f);
@@ -173,7 +161,6 @@ public class WeaponProjectile : MonoBehaviour
         Gizmos.DrawLine(_initialPosition2, _rigidbodyPhysicsProjectile.position);
         Gizmos.color = Color.magenta;
         Gizmos.DrawLine(_initialPosition, _rigidbodyVisualProjectile.position);
-        #endif
     } 
 
     #endregion

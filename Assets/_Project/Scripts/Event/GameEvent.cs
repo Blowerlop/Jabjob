@@ -26,7 +26,7 @@ namespace Project
 
         // Weapon relative
         public static readonly Event<Weapon> onPlayerWeaponChangedLocal =
-            new Event<Weapon>(nameof(onPlayerWeaponChangedServer));
+            new Event<Weapon>(nameof(onPlayerWeaponChangedLocal));
 
         public static readonly Event<byte> onPlayerWeaponChangedServer =
             new Event<byte>(nameof(onPlayerWeaponChangedServer));
