@@ -122,12 +122,6 @@ namespace Project
 
         private void LocalShoot(bool isTheShooter, Vector3 weaponHolderPosition, Vector3 hitPoint)
         {
-            Debug.Log("Shoot");
-            if (_showDebug)
-            {
-            }
-            
-
             if (_weaponData.spray)
             {
                 for (int i = 0; i < _weaponData.bulletNumber; i++)
