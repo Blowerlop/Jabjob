@@ -37,20 +37,6 @@ public class PlayerCameraController : NetworkBehaviour
         
     }
 
-    public override void OnNetworkSpawn()
-    {
-        if (IsOwner == false)
-        {
-            _cinemachineCamera.Priority = -1;
-            enabled = false;
-        }
-        else
-        {
-            // if (Camera.main != null) Camera.main.gameObject.SetActive(false);
-            // _playerCamera.SetActive(true);
-        }
-    }
-
     private void LateUpdate()
     {
         PerfomCameraRotation();

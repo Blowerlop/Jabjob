@@ -195,10 +195,11 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5543709036593814152}
-  - component: {fileID: 608825510561745047}
   - component: {fileID: 2755970706688381936}
   - component: {fileID: 5326042772935520539}
   - component: {fileID: 693733510563446535}
+  - component: {fileID: 608825510561745047}
+  - component: {fileID: -3625797593083050123}
   - component: {fileID: 2755970706688381934}
   - component: {fileID: 2755970706688381933}
   - component: {fileID: 3202390217754404730}
@@ -230,19 +231,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &608825510561745047
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4408861272393954034}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 65d2e0aaf3534b24a90911122e9dffe7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _health: 100
 --- !u!143 &2755970706688381936
 CharacterController:
   m_ObjectHideFlags: 0
@@ -303,6 +291,38 @@ MonoBehaviour:
   AlwaysReplicateAsRoot: 0
   DontDestroyWithOwner: 0
   AutoObjectParentSync: 1
+--- !u!114 &608825510561745047
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4408861272393954034}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 65d2e0aaf3534b24a90911122e9dffe7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _health: 100
+  _currentHealth: 100
+--- !u!114 &-3625797593083050123
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4408861272393954034}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3c8c430a9db40584daf5f0b76d001ed0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _componentsToDisabledIfNotOwner:
+  - {fileID: 2755970706688381934}
+  - {fileID: 2755970706688381933}
+  - {fileID: 7926455562032434284}
+  - {fileID: -2871981651348838108}
+  _cinemachineCamera: {fileID: 1736586212553184951}
 --- !u!114 &2755970706688381934
 MonoBehaviour:
   m_ObjectHideFlags: 0

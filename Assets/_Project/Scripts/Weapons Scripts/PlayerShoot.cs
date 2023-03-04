@@ -60,11 +60,6 @@ namespace Project
             GameEvent.onPlayerWeaponChangedServer.Unsubscribe(UpdateCurrentWeapon);
         }
 
-        public override void OnNetworkSpawn()
-        {
-            if (IsOwner == false) enabled = false;
-        }
-
         private void Update()
         {
             if (InputManager.instance.isShooting && (_weaponData.automatic || _canShoot))
