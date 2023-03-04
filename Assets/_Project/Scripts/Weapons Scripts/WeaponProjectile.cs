@@ -102,7 +102,7 @@ public class WeaponProjectile : MonoBehaviour
     // }
 
     public void Init(bool isBulletOwner, float projectileDispersion, float projectileSpeed, int projectileDamage,
-        Vector3 weaponHolderPosition, Collider playerCollider, Transform rootCamera, Vector3 collisionPoint)
+        Vector3 weaponHolderPosition, Collider playerCollider, Vector3 rootCameraPosition, Vector3 collisionPoint)
     {
         // Global projectile setup
         _isOwner = isBulletOwner;
@@ -113,7 +113,7 @@ public class WeaponProjectile : MonoBehaviour
 
         Vector3 bulletDirection;
         // Physics projectile setup
-        _rigidbodyPhysicsProjectile.position = rootCamera.position;
+        _rigidbodyPhysicsProjectile.position = rootCameraPosition;
         bulletDirection = collisionPoint - _rigidbodyPhysicsProjectile.position;
         _rigidbodyPhysicsProjectile.rotation = Quaternion.LookRotation(bulletDirection, _rigidbodyPhysicsProjectile.transform.up);
 
@@ -125,7 +125,7 @@ public class WeaponProjectile : MonoBehaviour
 
 #if UNITY_EDITOR
         _initialPosition = weaponHolderPosition;
-        _initialPosition2 = rootCamera.position;;
+        _initialPosition2 = rootCameraPosition;;
 #endif
 
         StartCoroutine(DestroyProjectileCooldown());

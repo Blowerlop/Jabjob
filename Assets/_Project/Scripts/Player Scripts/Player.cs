@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Project.Utilities;
 using Unity.Netcode;
 using UnityEngine;
 
@@ -36,7 +37,7 @@ namespace Project
 
         private void OnEnable()
         {
-            PlayerRespawn();  
+            SetHealth(_health);
         }
 
         #endregion
@@ -85,10 +86,15 @@ namespace Project
                 PlayerDeath(); 
             }
         }
+        
+        #endregion
+        
+        #region Spawn and Death
 
         private void PlayerDeath()
         {
             PlayerDeathLocal();
+            StartRespawnTimerCoroutineServerRpc(OwnerClientId);
             GameEvent.onPlayerDied.Invoke(this, true, OwnerClientId); 
             PlayerDeathServerRpc();
             Debug.Log("You're dead");
@@ -110,12 +116,20 @@ namespace Project
         {
             gameObject.SetActive(false);
         }
-
-        public void PlayerRespawn()
-        {
-            SetHealth(_health);
-        }
         
+        [ServerRpc]
+        private void StartRespawnTimerCoroutineServerRpc(ulong clientId)
+        {
+            Timer.StartTimerWithCallback(GameManager.instance._respawnDuration, (() => RespawnPlayerTimerCoroutineClientRpc(clientId)));
+        }  
+        
+        [ClientRpc]
+        private void RespawnPlayerTimerCoroutineClientRpc(ulong clientId)
+        {
+            GameObject player = GameManager.instance.GetPlayerGameObject(clientId);
+            player.transform.position = Vector3.zero;
+            player.SetActive(true);
+        }
         
         
         #endregion
