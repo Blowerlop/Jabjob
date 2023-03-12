@@ -15,6 +15,12 @@ namespace Project
         [SerializeField] [ReadOnlyField] private int _currentHealth = 100;
         private NetworkObject _networkObject;
 
+        [SerializeField] [ReadOnlyField] private int _kills;
+        [SerializeField] [ReadOnlyField] private int _assists;
+        [SerializeField] [ReadOnlyField] private int _deaths;
+        [SerializeField] [ReadOnlyField] private Player _killer;
+        
+
         #endregion
 
 
@@ -27,7 +33,7 @@ namespace Project
 
         public override void OnNetworkSpawn()
         {
-            GameManager.instance.AddPlayer(OwnerClientId, gameObject);
+            GameManager.instance.AddPlayer(OwnerClientId, this);
         }
 
         private void Start()
@@ -45,27 +51,31 @@ namespace Project
 
         #region Methods
 
+        #region Name
+
+        #endregion
+        
         #region  Health Relative
         
-        public void Damage(int damage)
+        public void Damage(int damage, ulong damagerId)
         {
-            DamageServerRpc(damage);
+            DamageServerRpc(damage, damagerId);
         }
 
         [ServerRpc(RequireOwnership = false)]
-        public void DamageServerRpc(int damage)
+        public void DamageServerRpc(int damage, ulong damagerId)
         {
             ulong ownerId = OwnerClientId;
-            DamageClientRpc(damage, NetworkUtilities.GetNewClientRpcSenderParams(new List<ulong> {ownerId}));
+            DamageClientRpc(damage, damagerId, NetworkUtilities.GetNewClientRpcSenderParams(new List<ulong> {ownerId}));
         }
 
         [ClientRpc]
-        public void DamageClientRpc(int damage, ClientRpcParams clientRpcParams)
+        public void DamageClientRpc(int damage, ulong damagerId, ClientRpcParams clientRpcParams)
         {
-            DamageLocalClient(damage);
+            DamageLocalClient(damage, damagerId);
         }
 
-        public void DamageLocalClient(int damage)
+        public void DamageLocalClient(int damage, ulong damagerId)
         {
             Debug.Log("You've taken damage");
             SetHealth(_currentHealth - damage);
@@ -93,26 +103,27 @@ namespace Project
 
         private void PlayerDeath()
         {
-            PlayerDeathLocal();
+            _deaths++;
+            PlayerDeathBehaviourLocal();
+            PlayerDeathBehaviourServerRpc();
             StartRespawnTimerCoroutineServerRpc(OwnerClientId);
-            GameEvent.onPlayerDied.Invoke(this, true, OwnerClientId); 
-            PlayerDeathServerRpc();
+            GameEvent.onPlayerDied.Invoke(this, true, OwnerClientId);
             Debug.Log("You're dead");
         }
 
         [ServerRpc]
-        private void PlayerDeathServerRpc()
+        private void PlayerDeathBehaviourServerRpc()
         {
-            PlayerDeathClientRpc();
+            PlayerDeathBehaviourClientRpc();
         }
 
         [ClientRpc]
-        private void PlayerDeathClientRpc()
+        private void PlayerDeathBehaviourClientRpc()
         {
-            if (IsOwner == false) gameObject.SetActive(false);
+            if (IsOwner == false) PlayerDeathBehaviourLocal();
         }
 
-        private void PlayerDeathLocal()
+        private void PlayerDeathBehaviourLocal()
         {
             gameObject.SetActive(false);
         }
@@ -126,9 +137,10 @@ namespace Project
         [ClientRpc]
         private void RespawnPlayerTimerCoroutineClientRpc(ulong clientId)
         {
-            GameObject player = GameManager.instance.GetPlayerGameObject(clientId);
+            Player player = GameManager.instance.GetPlayer(clientId);
             player.transform.position = Vector3.zero;
-            player.SetActive(true);
+            player.gameObject.SetActive(true);
+            
         }
         
         

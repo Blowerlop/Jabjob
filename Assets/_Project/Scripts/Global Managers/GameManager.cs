@@ -1,7 +1,4 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
-using Project.Utilities;
 using Unity.Netcode;
 using UnityEngine;
 
@@ -12,7 +9,7 @@ namespace Project
         #region Variables
 
         public static GameManager instance;
-        private Dictionary<ulong, GameObject> players = new Dictionary<ulong, GameObject>();
+        private Dictionary<ulong, Player> players = new Dictionary<ulong, Player>();
 
         //[Header("Game Settings")]
         // [SerializeField] private SOGameSettings _gameSettings --> Preview changement futur
@@ -44,10 +41,10 @@ namespace Project
 
         #region Methods
 
-        public void AddPlayer(ulong playerNetworkId, GameObject playerGameObject) =>
+        public void AddPlayer(ulong playerNetworkId, Player playerGameObject) =>
             players.Add(playerNetworkId, playerGameObject);
 
-        public GameObject GetPlayerGameObject(ulong playerNetworkId) => players[playerNetworkId];
+        public Player GetPlayer(ulong playerNetworkId) => players[playerNetworkId];
         
         [ServerRpc]
         private void SpawnNetworkTimerServerRpc()

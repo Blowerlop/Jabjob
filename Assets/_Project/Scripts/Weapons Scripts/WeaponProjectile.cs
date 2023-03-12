@@ -19,6 +19,7 @@ public class WeaponProjectile : MonoBehaviour
     [SerializeField] private Rigidbody _rigidbodyPhysicsProjectile;
     [SerializeField] private Rigidbody _rigidbodyVisualProjectile;
     private Vector3 _bulletDirection;
+    private ulong _ownerId;
 
     private bool _hasInit = false;
     
@@ -29,7 +30,7 @@ public class WeaponProjectile : MonoBehaviour
 
 
 #if UNITY_EDITOR
-    [Header("Debug")] 
+    [Header("Debug")]
     [SerializeField] private bool _debug = false;
     private Vector3 _initialPosition;
     private Vector3 _initialPosition2;
@@ -73,7 +74,7 @@ public class WeaponProjectile : MonoBehaviour
         if (other.TryGetComponent(out IHealthManagement healthManagement))
         {
             Debug.Log("Hit :" + other.name);
-            healthManagement.Damage(_projectileDamage);
+            healthManagement.Damage(_projectileDamage, _ownerId);
         }
         
         ObjectPoolingManager.instance.ReturnGameObject(gameObject);
@@ -97,7 +98,7 @@ public class WeaponProjectile : MonoBehaviour
     // }
 
     public void Init(bool isBulletOwner, float projectileDispersion, float projectileSpeed, int projectileDamage,
-        Vector3 weaponHolderPosition, Collider playerCollider, Vector3 rootCameraPosition, Vector3 collisionPoint)
+        Vector3 weaponHolderPosition, Collider playerCollider, Vector3 rootCameraPosition, Vector3 collisionPoint, ulong ownerId)
     {
         // Global projectile setup
         _isOwner = isBulletOwner;
@@ -105,6 +106,7 @@ public class WeaponProjectile : MonoBehaviour
         _projectileSpeed = projectileSpeed;
         _projectileDamage = projectileDamage;
         _colliderOfBulletOwner = playerCollider;
+        _ownerId = ownerId;
 
         Vector3 direction;
         // Physics projectile setup
@@ -151,6 +153,7 @@ public class WeaponProjectile : MonoBehaviour
         ObjectPoolingManager.instance.ReturnGameObject(gameObject);
     }
 
+    #if UNITY_EDITOR
     private void OnDrawGizmos()
     {
         if (_debug == false) return;
@@ -162,6 +165,7 @@ public class WeaponProjectile : MonoBehaviour
         Gizmos.color = Color.magenta;
         Gizmos.DrawLine(_initialPosition, _rigidbodyVisualProjectile.position);
     } 
+    #endif
 
     #endregion
 }
