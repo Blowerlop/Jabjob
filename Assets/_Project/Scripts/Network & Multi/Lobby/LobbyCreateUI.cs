@@ -36,7 +36,7 @@ public class LobbyCreateUI : MonoBehaviour {
         publicPrivateButton.onClick.AddListener(() => {
             isPrivate = !isPrivate;
             UpdateText();
-        });
+        }); 
 
         gameModeButton.onClick.AddListener(() => {
             var values = (LobbyManager.GameMode[])Enum.GetValues(typeof(LobbyManager.GameMode));
