@@ -22,6 +22,9 @@ public class PlayerCameraController : NetworkBehaviour
     [SerializeField] private bool isMultiplayer = true;
 
     private Animator _animator;
+    [SerializeField] private Vector3 _lowAngleAnimOffset;
+    [SerializeField] private Vector3 _upAngleAnimOffset;
+    private Vector3 _baseOffset;
     #endregion
 
 
@@ -30,6 +33,7 @@ public class PlayerCameraController : NetworkBehaviour
     {
         _cinemachineCamera = GetComponentInChildren<CinemachineVirtualCamera>();
         _animator = GetComponent<Animator>();
+        _baseOffset = _cameraTarget.transform.localPosition;
     }
 
     private void Start()
@@ -72,8 +76,10 @@ public class PlayerCameraController : NetworkBehaviour
             transform.Rotate(rotateHorizontalVelocity * Vector3.up);
             _cameraTarget.transform.localRotation = Quaternion.Euler(this._rotateVerticalVelocity, 0.0f, 0.0f);
 
-
+            if(_rotateVerticalVelocity >= 0) _cameraTarget.transform.localPosition = new Vector3(_baseOffset.x, _baseOffset.y + _rotateVerticalVelocity * (_lowAngleAnimOffset .y- _baseOffset.y) /60f, _baseOffset.z + _rotateVerticalVelocity * (_lowAngleAnimOffset.z - _baseOffset.z) / 60f);
+            else _cameraTarget.transform.localPosition = new Vector3(_baseOffset.x, _baseOffset.y + _rotateVerticalVelocity * (_upAngleAnimOffset.y - _baseOffset.y) / 60f, _baseOffset.z + _rotateVerticalVelocity * (_upAngleAnimOffset.z - _baseOffset.z) / 60f);
             _animator.SetFloat("VerticalAngle", -_rotateVerticalVelocity/60f);
+
             if (rotateHorizontalVelocity > 0) _animator.SetBool("isRotatingLeft", true);
             else if (rotateHorizontalVelocity < 0) _animator.SetBool("isRotatingRight", true);
         }
