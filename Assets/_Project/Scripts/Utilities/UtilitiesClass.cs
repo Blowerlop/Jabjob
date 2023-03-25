@@ -39,6 +39,7 @@ namespace Project
             public void CoroutineStop(Coroutine coroutine) => StopCoroutine(coroutine);
             public void CoroutineStop(IEnumerator coroutine) => StopCoroutine(coroutine);
             public void CoroutineStop(string methodName) => StopCoroutine(methodName);
+            
             #endregion
         }
         

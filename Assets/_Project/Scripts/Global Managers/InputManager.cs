@@ -5,16 +5,19 @@ using Project;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.InputSystem;
+using Event = Project.Event;
 
 
 public class InputManager : MonoBehaviour
 {
     #region Singleton
     public static InputManager instance { get; private set; }
-
+    
     private void Awake()
     {
         instance = this;
+
+        _playerInput = GetComponent<PlayerInput>();
     }
 
     #endregion
@@ -27,6 +30,19 @@ public class InputManager : MonoBehaviour
     public bool isDashing;
     public bool isConsoleOpened;
     public bool isWeaponSelectionOpen;
+    public readonly Event onEscapePressed = new Event(nameof(onEscapePressed));
+    public readonly Event onEnterPressed = new Event(nameof(onEnterPressed));
+    
+    
+    
+    private PlayerInput _playerInput;
+    public enum EActionMap
+    {
+        Player,
+        UI
+    }; 
+
+    
     #endregion
 
 
@@ -76,5 +92,21 @@ public class InputManager : MonoBehaviour
     {
         isWeaponSelectionOpen = true;
     }
+
+    public void OnEscape()
+    {
+        onEscapePressed.Invoke(this, true);
+    }
+
+    public void OnEnter()
+    {
+        onEnterPressed.Invoke(this, true);
+    }
     #endregion
+
+
+    public void SwitchActionMapTo(EActionMap actionMap)
+    {
+        _playerInput.SwitchCurrentActionMap(actionMap.ToString());
+    }
 }

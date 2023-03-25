@@ -14,6 +14,7 @@ namespace Project
             clientsIds.Remove(clientId);
             return clientsIds;
         }
+        
 
         public static ClientRpcParams GetNewClientRpcSenderParams(List<ulong> targetClientIds)
         {

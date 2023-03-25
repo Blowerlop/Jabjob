@@ -33,7 +33,8 @@ namespace Project
 
         public override void OnNetworkSpawn()
         {
-            GameManager.instance.AddPlayer(OwnerClientId, this);
+            GameManager.instance.AddPlayerLocal(OwnerClientId, this);
+            // Debug.Log("My id : " + OwnerClientId);
         }
 
         private void Start()

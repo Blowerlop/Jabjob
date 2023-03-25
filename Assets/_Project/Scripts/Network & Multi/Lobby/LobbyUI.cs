@@ -107,7 +107,7 @@ public class LobbyUI : MonoBehaviour {
         gameObject.SetActive(false);
     }
     private void Show() {
-        gameObject.SetActive(true);
+        gameObject.SetActive(true); 
     }
 
     private void SetStartButtonVisible(bool visible)

@@ -1,6 +1,9 @@
+using System;
 using System.Collections.Generic;
 using Unity.Netcode;
+using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace Project
 {
@@ -9,7 +12,8 @@ namespace Project
         #region Variables
 
         public static GameManager instance;
-        private Dictionary<ulong, Player> players = new Dictionary<ulong, Player>();
+        [SerializeField] private Transform _playerPrefab;
+        [ReadOnlyField] private readonly Dictionary<ulong, Player> _players = new Dictionary<ulong, Player>();
 
         //[Header("Game Settings")]
         // [SerializeField] private SOGameSettings _gameSettings --> Preview changement futur
@@ -33,18 +37,31 @@ namespace Project
             if (IsServer)
             {
                 SpawnNetworkTimerServerRpc();
+                NetworkManager.Singleton.SceneManager.OnLoadComplete += SpawnClientServerRpc;
             }
         }
-
-        #endregion
+        
+        #endregion 
 
 
         #region Methods
 
-        public void AddPlayer(ulong playerNetworkId, Player playerGameObject) =>
-            players.Add(playerNetworkId, playerGameObject);
+        #region ManageClients
+        
+        [ServerRpc]
+        private void SpawnClientServerRpc(ulong clientId, string sceneName, LoadSceneMode loadSceneMode)
+        {
+            Transform playerTransform = Instantiate((_playerPrefab)); 
+            playerTransform.GetComponent<NetworkObject>().SpawnAsPlayerObject(clientId, true);
+        }
+        
+        public void AddPlayerLocal(ulong playerNetworkId, Player player) => _players.Add(playerNetworkId, player);
 
-        public Player GetPlayer(ulong playerNetworkId) => players[playerNetworkId];
+        public Player GetPlayer(ulong playerNetworkId) => _players[playerNetworkId];
+        
+        #endregion
+        
+        
         
         [ServerRpc]
         private void SpawnNetworkTimerServerRpc()

@@ -22,7 +22,9 @@ public class PaintManager : Singleton<PaintManager>{
 
     CommandBuffer command;
 
-    public override void Awake(){
+    public override void Awake()
+    {
+        keepAlive = false;
         base.Awake();
         
         paintMaterial = new Material(texturePaint);

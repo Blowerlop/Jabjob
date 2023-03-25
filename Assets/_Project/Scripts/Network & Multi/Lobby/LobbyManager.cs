@@ -1,6 +1,8 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using _Project.Scripts.Managers;
+using Unity.Netcode;
 using Unity.Services.Authentication;
 using Unity.Services.Core;
 using Unity.Services.Lobbies;
@@ -328,6 +330,8 @@ public class LobbyManager : MonoBehaviour {
                 });
                 joinedLobby = lobby;
                 OnStartGame?.Invoke(this, EventArgs.Empty);
+                // SceneManager.LoadSceneAsyncNetworkServerRpc(SceneManager.EScene.Multi_Lobby); 
+                SceneManager.LoadSceneNetwork();
             }
             catch (LobbyServiceException e)
             {
