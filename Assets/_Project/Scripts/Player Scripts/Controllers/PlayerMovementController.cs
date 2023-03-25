@@ -8,6 +8,7 @@ using UnityEngine;
 public class PlayerMovementController : NetworkBehaviour
 {
     #region Variables
+    public bool ShowDebug = true;
     [Header("Movements")]
     [SerializeField] private float _moveSpeed = 6.0f;
     private float _speedOffset = 0.1f;
@@ -29,8 +30,10 @@ public class PlayerMovementController : NetworkBehaviour
 
     [Header("Player Grounded")] 
     [SerializeField] [ReadOnlyField] private bool _isGrounded;
+    private bool _isSoonGrounded;
     [SerializeField] private float _groundedOffset = -0.14f;
     [SerializeField] private float _groundedRadius = 0.28f;
+    [SerializeField] [ReadOnlyField] private float _soonGroundedRadius = 1f;
     [SerializeField] private LayerMask _groundLayerMask;
     
     [Header("References")]
@@ -38,6 +41,8 @@ public class PlayerMovementController : NetworkBehaviour
 
     [Header("Multiplayer")]
     [SerializeField] private bool _isMultiplayer = true;
+
+    private Animator _animator; 
     #endregion
 
 
@@ -45,6 +50,7 @@ public class PlayerMovementController : NetworkBehaviour
     private void Awake()
     { 
         _characterController = GetComponent<CharacterController>();
+        _animator = GetComponent<Animator>();
     }
 
     private void Start()
@@ -63,7 +69,7 @@ public class PlayerMovementController : NetworkBehaviour
         if (InputManager.instance.isDashing)
         {
             AddForce(transform.forward * 2.0f);
-
+            _animator.SetTrigger("Dash");
             InputManager.instance.isDashing = false;
         }
     }
@@ -76,12 +82,13 @@ public class PlayerMovementController : NetworkBehaviour
         Vector3 position = transform.position;
         Vector3 spherePosition = new Vector3(position.x, position.y - _groundedOffset, position.z);
         _isGrounded = Physics.CheckSphere(spherePosition, _groundedRadius, _groundLayerMask, QueryTriggerInteraction.Ignore);
+        _animator.SetBool("isGrounded",_isGrounded);
+        _isSoonGrounded = Physics.CheckSphere(spherePosition, _soonGroundedRadius , _groundLayerMask, QueryTriggerInteraction.Ignore);
     }
 
     private void PerformJumpAndGravity()
     {
         if (_gravityEnabled == false) return;
-
         if (_isGrounded)
         {
             if (_verticalVelocity < 0.0f)
@@ -92,10 +99,12 @@ public class PlayerMovementController : NetworkBehaviour
             if (_jumpCount != 0)
             {
                 ResetJump();
+                _animator.SetBool("JumpingDown", false);
             }
         }
         else
         {
+            if (_isSoonGrounded && _verticalVelocity < 0f) _animator.SetBool("JumpingDown",true);
             if (_verticalVelocity > _maximumVerticalVelocity)
             {
                 _verticalVelocity += _gravityForce * Time.deltaTime;
@@ -155,6 +164,21 @@ public class PlayerMovementController : NetworkBehaviour
             ));
 
 
+        //ANIMATION 
+
+        if (_isGrounded)
+        {
+            if (moveHorizontalVelocity.y > 0 && moveHorizontalVelocity.x > 0) _animator.SetBool("isRunningFLeft", true);
+            else if (moveHorizontalVelocity.y > 0 && moveHorizontalVelocity.x < 0) _animator.SetBool("isRunningFRight", true);
+            else if (moveHorizontalVelocity.y > 0 && moveHorizontalVelocity.x == 0) _animator.SetBool("isRunningF", true);
+            else if (moveHorizontalVelocity.y < 0 && moveHorizontalVelocity.x > 0) _animator.SetBool("isRunningBLeft", true);
+            else if (moveHorizontalVelocity.y < 0 && moveHorizontalVelocity.x < 0) _animator.SetBool("isRunningBright", true);
+            else if (moveHorizontalVelocity.y < 0 && moveHorizontalVelocity.x == 0) _animator.SetBool("isRunningB", true);
+            else if (moveHorizontalVelocity.y == 0 && moveHorizontalVelocity.x > 0) _animator.SetBool("isRunningLeft", true);
+            else if (moveHorizontalVelocity.y == 0 && moveHorizontalVelocity.x < 0) _animator.SetBool("isRunningRight", true);
+            else NoRunningAnimBool();
+        }
+
         /*
 
         float targetVelocity;
@@ -202,13 +226,13 @@ public class PlayerMovementController : NetworkBehaviour
         if (_jumpCount < _maxJumpNumber) 
         { 
             _verticalVelocity = Mathf.Sqrt(-2.0f * _gravityForce * _jumpHeight);
-            _jumpCount++;
+            _animator.SetTrigger("Jumped"); 
+             _jumpCount++;
         }
 
         yield return new WaitForSeconds(_jumpThreshold);
         _canJump = true;
     }
-
     private void ResetJump()
     {
         _jumpCount = 0;
@@ -216,9 +240,19 @@ public class PlayerMovementController : NetworkBehaviour
         _canJump = true;
     }
 
+    private void NoRunningAnimBool()
+    {
+        foreach (AnimatorControllerParameter parameter in _animator.parameters)
+        {
+            if (parameter.type == AnimatorControllerParameterType.Bool)
+                _animator.SetBool(parameter.name, false);
+        }
+    }
+
     private void OnDrawGizmos()
     {
         if (Application.isPlaying == false) return;
+        if (!ShowDebug) return;
         Vector3 playerPosition = transform.position;
 
         // Draw grounded
