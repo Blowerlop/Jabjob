@@ -244,7 +244,7 @@ public class PlayerMovementController : NetworkBehaviour
     {
         foreach (AnimatorControllerParameter parameter in _animator.parameters)
         {
-            if (parameter.type == AnimatorControllerParameterType.Bool)
+            if (parameter.type == AnimatorControllerParameterType.Bool && (parameter.name.Length > 9 && parameter.name.Remove(9) == "isRunning"))
                 _animator.SetBool(parameter.name, false);
         }
     }

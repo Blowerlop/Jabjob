@@ -21,6 +21,7 @@ public class PlayerCameraController : NetworkBehaviour
     [Header("Multiplayer")]
     [SerializeField] private bool isMultiplayer = true;
 
+    private Animator _animator;
     #endregion
 
 
@@ -28,6 +29,7 @@ public class PlayerCameraController : NetworkBehaviour
     private void Awake()
     {
         _cinemachineCamera = GetComponentInChildren<CinemachineVirtualCamera>();
+        _animator = GetComponent<Animator>();
     }
 
     private void Start()
@@ -69,7 +71,18 @@ public class PlayerCameraController : NetworkBehaviour
 
             transform.Rotate(rotateHorizontalVelocity * Vector3.up);
             _cameraTarget.transform.localRotation = Quaternion.Euler(this._rotateVerticalVelocity, 0.0f, 0.0f);
+
+
+            _animator.SetFloat("VerticalAngle", -_rotateVerticalVelocity/60f);
+            if (rotateHorizontalVelocity > 0) _animator.SetBool("isRotatingLeft", true);
+            else if (rotateHorizontalVelocity < 0) _animator.SetBool("isRotatingRight", true);
         }
+       else
+        {
+            _animator.SetBool("isRotatingLeft", false);
+            _animator.SetBool("isRotatingRight", false);
+        }
+
     }
 
     private static float ClampAngle(float lfAngle, float lfMin, float lfMax)
