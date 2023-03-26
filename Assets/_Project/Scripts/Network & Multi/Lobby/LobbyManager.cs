@@ -206,6 +206,7 @@ public class LobbyManager : MonoBehaviour {
         Lobby lobby = await LobbyService.Instance.CreateLobbyAsync(lobbyName, maxPlayerLobby, options);
         Debug.Log("Created Lobby " + lobby.Name);
         joinedLobby = lobby;
+
         OnJoinedLobby?.Invoke(this, new LobbyEventArgs { lobby = lobby });
     }
 
@@ -331,7 +332,7 @@ public class LobbyManager : MonoBehaviour {
                 joinedLobby = lobby;
                 OnStartGame?.Invoke(this, EventArgs.Empty);
                 // SceneManager.LoadSceneAsyncNetworkServerRpc(SceneManager.EScene.Multi_Lobby); 
-                SceneManager.LoadSceneNetwork();
+                SceneManager.LoadSceneNetwork(SceneManager.EScene.Multi_Lobby);
             }
             catch (LobbyServiceException e)
             {

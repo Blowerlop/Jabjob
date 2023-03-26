@@ -85,9 +85,11 @@ namespace _Project.Scripts.Managers
             }
         }
 
-        public static void LoadSceneNetwork()
+        public static void LoadSceneNetwork(EScene scene)
         {
-            NetworkManager.Singleton.SceneManager.LoadScene(EScene.Multi_Lobby.ToString(), LoadSceneMode.Single);
+            NetworkManager.Singleton.SceneManager.LoadScene(scene.ToString(), LoadSceneMode.Single);
+            // NetworkManager.Singleton.SceneManager.OnLoadComplete += (id, sceneName, mode) =>
+                // UnityEngine.SceneManagement.SceneManager.UnloadSceneAsync(EScene.LoadingScene.ToString());
             // NetworkManager.Singleton.SceneManager.LoadScene(EScene.LoadingScene.ToString(), LoadSceneMode.Single);
         }
         
