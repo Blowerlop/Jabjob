@@ -11,8 +11,10 @@ public class WeaponManager : NetworkBehaviour
     
     #region Variables
     [SerializeField] private Weapon _defaultWeapon;
-    [SerializeField] [ReadOnlyField] private Weapon _currentWeapon;
+    [SerializeField] [ReadOnlyField] private Weapon _currentWeapon, _fakeWeapon;
     private readonly NetworkVariable<byte> _weaponID = new NetworkVariable<byte>(writePerm: NetworkVariableWritePermission.Owner);
+    public Transform fakeWeaponHandler;
+    public SkinnedMeshRenderer humanMesh;
     [field: SerializeField] public Transform weaponHandler { get; private set; }
     #endregion
 
@@ -35,8 +37,10 @@ public class WeaponManager : NetworkBehaviour
         {
             EquipWeaponLocal(_weaponID.Value);
             Debug.Log(_weaponID.Value);
+            humanMesh.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.On;
             enabled = false;
         }
+        else humanMesh.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.ShadowsOnly;
 
     }
 
@@ -61,6 +65,9 @@ public class WeaponManager : NetworkBehaviour
     {
         UnEquipWeapon();
         _currentWeapon = Instantiate(weapon, weaponHandler);
+        _fakeWeapon = Instantiate(weapon, fakeWeaponHandler);
+        SetLayerRecursively(_fakeWeapon.gameObject, IsOwner ? 0 :  8);
+        SetLayerRecursively(_currentWeapon.gameObject, IsOwner ? 8 : 0);
         _weaponID.Value = _currentWeapon.weaponData.ID;
         GameEvent.onPlayerWeaponChangedLocal.Invoke(this, true, _currentWeapon);
         
@@ -74,6 +81,9 @@ public class WeaponManager : NetworkBehaviour
     {
         UnEquipWeapon();
         _currentWeapon = Instantiate(SOWeapon.GetWeaponPrefab(weaponID), weaponHandler);
+        _fakeWeapon = Instantiate(SOWeapon.GetWeaponPrefab(weaponID), fakeWeaponHandler);
+        SetLayerRecursively(_fakeWeapon.gameObject, IsOwner ? 0 : 8);
+        SetLayerRecursively(_currentWeapon.gameObject, IsOwner ? 8 : 0);
         GameEvent.onPlayerWeaponChangedServer.Invoke(this, true, weaponID);
 
         Debug.Log("Equipping Weapon !");
@@ -87,13 +97,22 @@ public class WeaponManager : NetworkBehaviour
         if (_currentWeapon == null) return;
         
         Destroy(_currentWeapon.gameObject);
+        Destroy(_fakeWeapon.gameObject);
     }
 
     public Weapon GetCurrentWeapon() => _currentWeapon;
 
+
+    public static void SetLayerRecursively(GameObject go, int layerNumber)
+    {
+        foreach (Transform trans in go.GetComponentsInChildren<Transform>(true))
+        {
+            trans.gameObject.layer = layerNumber;
+        }
+    }
     #endregion
 
-    
+
 }
 
 
