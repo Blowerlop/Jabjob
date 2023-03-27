@@ -1,8 +1,10 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using Project;
 using Unity.Netcode;
 using UnityEngine;
+
 
 
 public class PlayerMovementController : NetworkBehaviour
@@ -42,6 +44,12 @@ public class PlayerMovementController : NetworkBehaviour
     [Header("Multiplayer")]
     [SerializeField] private bool _isMultiplayer = true;
 
+    [Header("Sound")]
+    public AudioSource bodySourceSound;
+    public SoundList[] soundList;
+    private Dictionary<string, AudioClip> _soundListDico = new Dictionary<string, AudioClip>();
+
+
     private Animator _animator; 
     #endregion
 
@@ -51,6 +59,10 @@ public class PlayerMovementController : NetworkBehaviour
     { 
         _characterController = GetComponent<CharacterController>();
         _animator = GetComponent<Animator>();
+        for (int i = 0; i < soundList.Length; i++)
+        {
+            if (soundList[i].name != null && soundList[i].sound != null) _soundListDico.Add(soundList[i].name, soundList[i].sound);
+        }
     }
 
     private void Start()
@@ -70,6 +82,7 @@ public class PlayerMovementController : NetworkBehaviour
         {
             AddForce(transform.forward * 2.0f);
             _animator.SetTrigger("Dash");
+            PlaySound("Dash");
             InputManager.instance.isDashing = false;
         }
     }
@@ -100,6 +113,7 @@ public class PlayerMovementController : NetworkBehaviour
             {
                 ResetJump();
                 _animator.SetBool("JumpingDown", false);
+                PlaySound("StepLanding");
             }
         }
         else
@@ -226,6 +240,7 @@ public class PlayerMovementController : NetworkBehaviour
         if (_jumpCount < _maxJumpNumber) 
         { 
             _verticalVelocity = Mathf.Sqrt(-2.0f * _gravityForce * _jumpHeight);
+            PlaySound("Jump");
             _animator.SetTrigger("Jumped"); 
              _jumpCount++;
         }
@@ -240,13 +255,19 @@ public class PlayerMovementController : NetworkBehaviour
         _canJump = true;
     }
 
-    private void NoRunningAnimBool()
+    public void NoRunningAnimBool()
     {
         foreach (AnimatorControllerParameter parameter in _animator.parameters)
         {
             if (parameter.type == AnimatorControllerParameterType.Bool && (parameter.name.Length > 9 && parameter.name.Remove(9) == "isRunning"))
                 _animator.SetBool(parameter.name, false);
         }
+    }
+
+    public void PlaySound(string name)
+    {
+        if (!_soundListDico.ContainsKey(name)) Debug.LogError("Mauvais string pour le son : " + name);
+        else bodySourceSound.PlayOneShot(_soundListDico[name]);
     }
 
     private void OnDrawGizmos()
