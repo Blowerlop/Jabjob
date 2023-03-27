@@ -137,7 +137,7 @@ namespace Project
                 go.GetComponent<WeaponProjectile>().Init(isTheShooter, _weaponData.dispersion, _weaponData.bulletSpeed, _weaponData.damage, weaponHolderPosition, _collider, rootCameraPosition, hitPoint, OwnerClientId);
             }
 
-            _audioSource.PlayOneShot(_weapon.FiringSound);
+            _audioSource.PlayOneShot(_weaponData.FiringSound);
         }
         
         public void Reload()

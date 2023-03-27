@@ -55,16 +55,16 @@ public class SOWeapon : ScriptableObject
 
     [HideInInspector, Tooltip(@"If weapons shoot multiple bullets")]
     public int bulletNumber;
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
+
+
+    public AudioClip FiringSound;
+
+
+
+
+
+
+
     public static Dictionary<byte, SOWeapon> _allSOWeapons = new Dictionary<byte, SOWeapon>();
     
     

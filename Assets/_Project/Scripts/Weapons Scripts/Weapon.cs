@@ -12,8 +12,6 @@ namespace Project
     {
         [field: SerializeField] public SOWeapon weaponData;
         public int ammo;
-        public AudioClip FiringSound;
-
         private void Awake()
         {
             ammo = weaponData.maxAmmo;
