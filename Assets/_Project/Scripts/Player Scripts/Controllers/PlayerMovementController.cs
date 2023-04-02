@@ -181,15 +181,15 @@ public class PlayerMovementController : NetworkBehaviour
 
         if (_isGrounded)
         {
-            if (moveHorizontalVelocity.y > 0 && moveHorizontalVelocity.x > 0) _animator.SetBool("isRunningFLeft", true);
-            else if (moveHorizontalVelocity.y > 0 && moveHorizontalVelocity.x < 0) _animator.SetBool("isRunningFRight", true);
+            NoRunningAnimBool();
+            if (moveHorizontalVelocity.y > 0 && moveHorizontalVelocity.x > 0) _animator.SetBool("isRunningFRight", true);
+            else if (moveHorizontalVelocity.y > 0 && moveHorizontalVelocity.x < 0) _animator.SetBool("isRunningFLeft", true);
             else if (moveHorizontalVelocity.y > 0 && moveHorizontalVelocity.x == 0) _animator.SetBool("isRunningF", true);
-            else if (moveHorizontalVelocity.y < 0 && moveHorizontalVelocity.x > 0) _animator.SetBool("isRunningBLeft", true);
-            else if (moveHorizontalVelocity.y < 0 && moveHorizontalVelocity.x < 0) _animator.SetBool("isRunningBright", true);
+            else if (moveHorizontalVelocity.y < 0 && moveHorizontalVelocity.x < 0) _animator.SetBool("isRunningBLeft", true);
+            else if (moveHorizontalVelocity.y < 0 && moveHorizontalVelocity.x > 0) _animator.SetBool("isRunningBright", true);
             else if (moveHorizontalVelocity.y < 0 && moveHorizontalVelocity.x == 0) _animator.SetBool("isRunningB", true);
-            else if (moveHorizontalVelocity.y == 0 && moveHorizontalVelocity.x > 0) _animator.SetBool("isRunningLeft", true);
-            else if (moveHorizontalVelocity.y == 0 && moveHorizontalVelocity.x < 0) _animator.SetBool("isRunningRight", true);
-            else NoRunningAnimBool();
+            else if (moveHorizontalVelocity.y == 0 && moveHorizontalVelocity.x < 0) _animator.SetBool("isRunningLeft", true);
+            else if (moveHorizontalVelocity.y == 0 && moveHorizontalVelocity.x > 0) _animator.SetBool("isRunningRight", true);
         }
 
         /*
