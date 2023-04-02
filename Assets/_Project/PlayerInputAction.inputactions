@@ -69,6 +69,15 @@
                     "initialStateCheck": false
                 },
                 {
+                    "name": "Escape",
+                    "type": "Button",
+                    "id": "b08b408a-4103-4388-ab08-e70b0e0df86b",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
                     "name": "Console",
                     "type": "Button",
                     "id": "e89c8c40-45ad-4497-bc9b-b3d4e983a740",
@@ -393,6 +402,17 @@
                     "processors": "",
                     "groups": "",
                     "action": "OpenGunSelection",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "d9bcd7f7-366f-4321-b893-ad1dc4cb2856",
+                    "path": "<Keyboard>/escape",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Escape",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

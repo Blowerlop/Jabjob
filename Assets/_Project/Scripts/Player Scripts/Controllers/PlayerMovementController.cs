@@ -4,8 +4,7 @@ using System.Collections.Generic;
 using Project;
 using Unity.Netcode;
 using UnityEngine;
-
-
+using _Project.Scripts.Managers;
 
 public class PlayerMovementController : NetworkBehaviour
 {
@@ -269,7 +268,6 @@ public class PlayerMovementController : NetworkBehaviour
         if (!_soundListDico.ContainsKey(name)) Debug.LogError("Mauvais string pour le son : " + name);
         else bodySourceSound.PlayOneShot(_soundListDico[name]);
     }
-
     private void OnDrawGizmos()
     {
         if (Application.isPlaying == false) return;
