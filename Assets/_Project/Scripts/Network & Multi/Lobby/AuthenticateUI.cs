@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Project;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -13,9 +14,12 @@ public class AuthenticateUI : MonoBehaviour {
     [SerializeField] private TMP_InputField _playerNameInputField;
     private string _playerName;
 
+    private OpenCloseUI _openCloseUI;
+
     private void Awake()
     {
         Instance = this;
+        _openCloseUI = GetComponent<OpenCloseUI>();
     }
 
     private void OnEnable()
@@ -33,7 +37,7 @@ public class AuthenticateUI : MonoBehaviour {
     {
         if (Input.GetKeyDown(KeyCode.Return))
         {
-            Authenticate();
+            _openCloseUI.ForceActivation();
         }
     }
 

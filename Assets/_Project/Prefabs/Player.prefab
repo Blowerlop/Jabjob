@@ -304,6 +304,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _health: 100
   _currentHealth: 100
+  _nameNetwork:
+    m_InternalValue:
+      value: 
+  _killsNetworkVariable:
+    m_InternalValue: 0
+  _assistsNetworkVariable:
+    m_InternalValue: 0
+  _deathsNetworkVariable:
+    m_InternalValue: 0
+  _killer: {fileID: 0}
 --- !u!114 &2755970706688381934
 MonoBehaviour:
   m_ObjectHideFlags: 0

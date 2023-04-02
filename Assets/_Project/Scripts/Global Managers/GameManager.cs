@@ -58,6 +58,20 @@ namespace Project
         public void AddPlayerLocal(ulong playerNetworkId, Player player) => _players.Add(playerNetworkId, player);
 
         public Player GetPlayer(ulong playerNetworkId) => _players[playerNetworkId];
+
+        public Player[] GetPlayers()
+        {
+            Player[] players = new Player[_players.Count];
+
+            int index = 0;
+            foreach (KeyValuePair<ulong, Player> kvp in _players)
+            {
+                players[index] = kvp.Value;
+                index++;
+            }
+
+            return players;
+        }
         
         #endregion
         

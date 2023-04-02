@@ -56,10 +56,20 @@ public class LobbyManager : MonoBehaviour {
         Instance = this;
     }
 
+    private void Start()
+    {
+        OnJoinedLobby += (sender, args) =>         Debug.Log("Player id in lobby : " + AuthenticationService.Instance.PlayerId);
+
+    }
+    
+    
+
     private void Update() {
         //HandleRefreshLobbyList(); // Disabled Auto Refresh for testing with multiple builds
         HandleLobbyHeartbeat();
         HandleLobbyPolling();
+        
+        if (Input.GetKey(KeyCode.I)) Debug.Log("Player id" + AuthenticationService.Instance.PlayerId);
     }
 
     public async void Authenticate(string playerName) {
@@ -155,8 +165,14 @@ public class LobbyManager : MonoBehaviour {
         return false;
     }
 
-    private Player GetPlayer() {
+    public Player GetPlayer() {
         return new Player(AuthenticationService.Instance.PlayerId, null, new Dictionary<string, PlayerDataObject> {
+            { KEY_PLAYER_NAME, new PlayerDataObject(PlayerDataObject.VisibilityOptions.Public, playerName) },
+        });
+    }
+    
+    public Player GetPlayer(string playerId) {
+        return new Player(playerId, null, new Dictionary<string, PlayerDataObject> {
             { KEY_PLAYER_NAME, new PlayerDataObject(PlayerDataObject.VisibilityOptions.Public, playerName) },
         });
     }
@@ -367,5 +383,7 @@ public class LobbyManager : MonoBehaviour {
             Debug.Log(e);
         }
     }
+
+    public string GetPlayerName() => playerName;
 
 }
