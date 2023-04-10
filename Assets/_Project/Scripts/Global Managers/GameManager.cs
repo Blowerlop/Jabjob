@@ -20,8 +20,7 @@ namespace Project
         [field: SerializeField] public float _respawnDuration { get; private set; } = 2.0f;
         [field: SerializeField] public float _gameDuration { get; private set; }
         [field: SerializeField] public NetworkTimer _networkTimer { get; private set; }
-        
-        
+            
         #endregion
 
 
@@ -38,6 +37,8 @@ namespace Project
             {
                 SpawnNetworkTimerServerRpc();
                 NetworkManager.Singleton.SceneManager.OnLoadComplete += SpawnClientServerRpc;
+                
+                NetworkManager.Singleton.OnClientDisconnectCallback += OnClientDisconnect;
             }
         }
         
@@ -54,7 +55,9 @@ namespace Project
             Transform playerTransform = Instantiate((_playerPrefab)); 
             playerTransform.GetComponent<NetworkObject>().SpawnAsPlayerObject(clientId, true);
         }
-        
+
+        private void OnClientDisconnect(ulong clientId) => GameEvent.onPlayerLeaveGameEvent.Invoke(this, true, clientId);
+
         public void AddPlayerLocal(ulong playerNetworkId, Player player) => _players.Add(playerNetworkId, player);
 
         public Player GetPlayer(ulong playerNetworkId) => _players[playerNetworkId];
@@ -83,7 +86,7 @@ namespace Project
             _networkTimer = Instantiate(_networkTimer);
             _networkTimer.GetComponent<NetworkObject>().Spawn();
             
-            _networkTimer.StartTimerWithCallback(_gameDuration, () => GameEvent.onGameFinished.Invoke(this, true), true);
+            _networkTimer.StartTimerWithCallback(_gameDuration, () => GameEvent.onGameFinishedEvent.Invoke(this, true), true);
         }
         #endregion
     }

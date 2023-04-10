@@ -17,12 +17,12 @@ namespace Project
 
         public void OnEnable()
         {
-            GameEvent.onPlayerSpeedChanged.Subscribe(UpdatePlayerSpeedUI, this);
+            GameEvent.onPlayerSpeedChangedEvent.Subscribe(UpdatePlayerSpeedUI, this);
         }
 
         public void OnDisable()
         {
-            GameEvent.onPlayerSpeedChanged.Unsubscribe(UpdatePlayerSpeedUI);
+            GameEvent.onPlayerSpeedChangedEvent.Unsubscribe(UpdatePlayerSpeedUI);
         }
 
 

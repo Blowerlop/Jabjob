@@ -62,7 +62,7 @@ public class WeaponManager : NetworkBehaviour
         UnEquipWeapon();
         _currentWeapon = Instantiate(weapon, weaponHandler);
         _weaponID.Value = _currentWeapon.weaponData.ID;
-        GameEvent.onPlayerWeaponChangedLocal.Invoke(this, true, _currentWeapon);
+        GameEvent.onPlayerWeaponChangedLocalEvent.Invoke(this, true, _currentWeapon);
         
         Debug.Log("Equipping Weapon !");
         
@@ -74,7 +74,7 @@ public class WeaponManager : NetworkBehaviour
     {
         UnEquipWeapon();
         _currentWeapon = Instantiate(SOWeapon.GetWeaponPrefab(weaponID), weaponHandler);
-        GameEvent.onPlayerWeaponChangedServer.Invoke(this, true, weaponID);
+        GameEvent.onPlayerWeaponChangedServerEvent.Invoke(this, true, weaponID);
 
         Debug.Log("Equipping Weapon !");
         

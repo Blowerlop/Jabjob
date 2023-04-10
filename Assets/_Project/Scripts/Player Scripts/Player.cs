@@ -15,23 +15,22 @@ namespace Project
     public class Player : NetworkBehaviour, IHealthManagement
     {
         #region Variables
-        
+
         [SerializeField] private int _health = 100; 
         [SerializeField] [ReadOnlyField] private int _currentHealth = 100;
         private NetworkObject _networkObject;
 
-        [SerializeField] private NetworkVariable<StringNetwork> _nameNetworkVariable = new NetworkVariable<StringNetwork>(new StringNetwork());
+        [SerializeField] private NetworkVariable<StringNetwork> _nameNetworkVariable = new NetworkVariable<StringNetwork>(new StringNetwork() {value = ""});
         [SerializeField] private NetworkVariable<int> _killsNetworkVariable = new NetworkVariable<int>();
         [SerializeField] private NetworkVariable<int> _assistsNetworkVariable = new NetworkVariable<int>();
         [SerializeField] private NetworkVariable<int> _deathsNetworkVariable = new NetworkVariable<int>();
         [SerializeField] private Player _killer;
  
-        private string _name { get => _nameNetworkVariable.Value.value; set => _nameNetworkVariable.Value = new StringNetwork() {value = value}; }
-        private int _kills { get => _killsNetworkVariable.Value; set => _killsNetworkVariable.Value = value; }
-        private int _assists { get => _assistsNetworkVariable.Value; set => _assistsNetworkVariable.Value = value; }
-        private int _deaths { get => _deathsNetworkVariable.Value; set => _deathsNetworkVariable.Value = value; }
+        public string _name { get => _nameNetworkVariable.Value.value; private set => _nameNetworkVariable.Value = new StringNetwork() {value = value}; }
+        public int _kills { get => _killsNetworkVariable.Value; private set => _killsNetworkVariable.Value = value; }
+        public int _assists { get => _assistsNetworkVariable.Value; private set => _assistsNetworkVariable.Value = value; }
+        public int _deaths { get => _deathsNetworkVariable.Value; private set => _deathsNetworkVariable.Value = value; }
 
- 
         #endregion
 
 
@@ -44,9 +43,22 @@ namespace Project
 
         public override void OnNetworkSpawn()
         {
+            GameEvent.onPlayerJoinGameEvent.Invoke(this, true, OwnerClientId);
             GameManager.instance.AddPlayerLocal(OwnerClientId, this);
 
-            if (IsOwner == false) return;
+            _nameNetworkVariable.OnValueChanged += OnNameValueChange;
+            _killsNetworkVariable.OnValueChanged += OnKillValueChange;
+            _assistsNetworkVariable.OnValueChanged += OnAssistValueChange;
+            _deathsNetworkVariable.OnValueChanged += OnDeathValueChange;
+            
+            if (IsOwner == false)
+            {
+                enabled = false;
+                return;
+            }
+
+            
+
 
             UpdatePlayerNameServerRpc(LobbyManager.Instance.GetPlayerName()); 
         }
@@ -59,6 +71,14 @@ namespace Project
         private void OnEnable()
         {
             SetHealth(_health);
+        }
+
+        public override void OnNetworkDespawn()
+        {
+            _nameNetworkVariable.OnValueChanged -= OnNameValueChange;
+            _killsNetworkVariable.OnValueChanged -= OnKillValueChange;
+            _assistsNetworkVariable.OnValueChanged -= OnAssistValueChange;
+            _deathsNetworkVariable.OnValueChanged -= OnDeathValueChange;
         }
 
         #endregion 
@@ -113,6 +133,10 @@ namespace Project
             }
         }
         #endif
+        
+        private void OnNameValueChange(StringNetwork previousValue, StringNetwork nextValue) => GameEvent.onPlayerUpdateNameEvent.Invoke(this, true, OwnerClientId, nextValue);
+
+        
             
         #endregion
         
@@ -150,7 +174,7 @@ namespace Project
         private void SetHealth(int newHealth)
         { 
             _currentHealth = newHealth;
-            GameEvent.onPlayerHealthChanged.Invoke(this, false, _currentHealth);
+            GameEvent.onPlayerHealthChangedEvent.Invoke(this, false, _currentHealth);
             
             if (_currentHealth <= 0)
             {
@@ -166,14 +190,13 @@ namespace Project
         {
             PlayerDeathBehaviourLocal();
             PlayerDeathBehaviourServerRpc(OwnerClientId);
-            GameEvent.onPlayerDied.Invoke(this, true, OwnerClientId);
             Debug.Log("You're dead");
         }
 
         [ServerRpc]
         private void PlayerDeathBehaviourServerRpc(ulong clientId)
         {
-            _kills = _kills + 1;
+            _deaths = _deaths + 1;
             PlayerDeathBehaviourClientRpc();
             Timer.StartTimerWithCallback(GameManager.instance._respawnDuration, (() => PlayerRespawnClientRpc(clientId)));
         }
@@ -202,6 +225,10 @@ namespace Project
             player.transform.position = Vector3.zero;
             player.gameObject.SetActive(true);
         }
+        
+        private void OnKillValueChange(int previousValue, int nextValue) => GameEvent.onPlayerGetAKillEvent.Invoke(this, true, OwnerClientId, nextValue);
+        private void OnAssistValueChange(int previousValue, int nextValue) => GameEvent.onPlayerGetAssistEvent.Invoke(this, true, OwnerClientId, nextValue);
+        private void OnDeathValueChange(int previousValue, int nextValue) => GameEvent.onPlayerDiedEvent.Invoke(this, true, OwnerClientId, nextValue);
 
         #endregion
 

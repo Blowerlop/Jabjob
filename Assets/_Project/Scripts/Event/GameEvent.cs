@@ -16,31 +16,32 @@ namespace Project
         #region Player
 
         // Movement relative
-        public static readonly Event<Vector3> onPlayerVelocityChanged =
-            new Event<Vector3>(nameof(onPlayerVelocityChanged));
-
-        public static readonly Event<float> onPlayerSpeedChanged = new Event<float>(nameof(onPlayerSpeedChanged));
+        public static readonly Event<Vector3> onPlayerVelocityChangedEvent = new Event<Vector3>(nameof(onPlayerVelocityChangedEvent));
+        public static readonly Event<float> onPlayerSpeedChangedEvent = new Event<float>(nameof(onPlayerSpeedChangedEvent));
 
 
         // Weapon relative
-        public static readonly Event<Weapon> onPlayerWeaponChangedLocal =
-            new Event<Weapon>(nameof(onPlayerWeaponChangedLocal));
+        public static readonly Event<Weapon> onPlayerWeaponChangedLocalEvent = new Event<Weapon>(nameof(onPlayerWeaponChangedLocalEvent));
 
-        public static readonly Event<byte> onPlayerWeaponChangedServer =
-            new Event<byte>(nameof(onPlayerWeaponChangedServer));
+        public static readonly Event<byte> onPlayerWeaponChangedServerEvent = new Event<byte>(nameof(onPlayerWeaponChangedServerEvent));
 
-        public static readonly Event<int> onPlayerWeaponAmmoChanged = new Event<int>(nameof(onPlayerWeaponAmmoChanged));
+        public static readonly Event<int> onPlayerWeaponAmmoChangedEvent = new Event<int>(nameof(onPlayerWeaponAmmoChangedEvent));
 
-        // Health relative
-        public static readonly Event<int> onPlayerHealthChanged = new Event<int>(nameof(onPlayerHealthChanged));
-        public static readonly Event<ulong> onPlayerDied = new Event<ulong>(nameof(onPlayerDied));
+        // Stats relative
+        public static readonly Event<int> onPlayerHealthChangedEvent = new Event<int>(nameof(onPlayerHealthChangedEvent));
+        public static readonly Event<ulong, int> onPlayerDiedEvent = new Event<ulong, int>(nameof(onPlayerDiedEvent));
+        public static readonly Event<ulong, int> onPlayerGetAKillEvent = new Event<ulong, int>(nameof(onPlayerGetAKillEvent));
+        public static readonly Event<ulong, int> onPlayerGetAssistEvent = new Event<ulong, int>(nameof(onPlayerGetAssistEvent));
+        public static readonly Event<ulong, StringNetwork> onPlayerUpdateNameEvent = new Event<ulong, StringNetwork>(nameof(onPlayerUpdateNameEvent));
         
         #endregion
         
         
         #region GameManager
 
-        public static readonly Event onGameFinished = new Event(nameof(onGameFinished));
+        public static readonly Event onGameFinishedEvent = new Event(nameof(onGameFinishedEvent));
+        public static readonly Event<ulong> onPlayerJoinGameEvent = new Event<ulong>(nameof(onPlayerJoinGameEvent));
+        public static readonly Event<ulong> onPlayerLeaveGameEvent = new Event<ulong>(nameof(onPlayerLeaveGameEvent));
 
         #endregion
 
