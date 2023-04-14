@@ -16,7 +16,7 @@ namespace Utils
 
         [HideInInspector] public static Console Instance;
 
-        bool follow = true;
+        public bool follow = true;
         bool unityMessages = false;
 
         List<string> blackList = new List<string> 

@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -74,6 +75,17 @@ public class InputManager : MonoBehaviour
     {
         isConsoleOpened = !isConsoleOpened;
         openCommand.Invoke();
+    }
+
+    public void OnScrollWheel()
+    {
+        try
+        {
+            Utils.Console.Instance.follow = false;
+        }catch(Exception ex)
+        {
+            Debug.LogError(ex);
+        }
     }
 
     public void OnOpenGunSelection()
