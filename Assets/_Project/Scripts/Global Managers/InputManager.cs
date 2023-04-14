@@ -5,6 +5,7 @@ using Project;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.InputSystem;
+using UnityEngine.Serialization;
 
 
 public class InputManager : MonoBehaviour
@@ -15,6 +16,7 @@ public class InputManager : MonoBehaviour
     private void Awake()
     {
         instance = this;
+        playerInput = GetComponent<PlayerInput>();
     }
 
     #endregion
@@ -27,6 +29,8 @@ public class InputManager : MonoBehaviour
     public bool isDashing;
     public bool isConsoleOpened;
     public bool isWeaponSelectionOpen;
+
+    [FormerlySerializedAs("PlayerInput")] public PlayerInput playerInput;
     #endregion
 
 
@@ -76,5 +80,11 @@ public class InputManager : MonoBehaviour
     {
         isWeaponSelectionOpen = true;
     }
-    #endregion
+    #endregion 
+
+    public void SwitchPlayerInputMap(string mapName)
+    {
+        playerInput.SwitchCurrentActionMap(mapName);
+        Debug.Log("Input Manager - New current Action Map is " + playerInput.currentActionMap.name);
+    }
 }

@@ -34,6 +34,8 @@ namespace Utils
         public void OpenConsole()
         {
             gameObject.SetActive(!gameObject.activeSelf);
+            if (gameObject.activeSelf) InputManager.instance.SwitchPlayerInputMap("UI");
+            else InputManager.instance.SwitchPlayerInputMap("Player"); 
         }
 
         public void ExecuteCommand(string command)

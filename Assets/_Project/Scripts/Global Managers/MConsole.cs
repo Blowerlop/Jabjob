@@ -34,6 +34,10 @@ namespace Managers
         void OpenConsole()
         {
             actualConsole.SetActive(!actualConsole.activeSelf);
+            if (actualConsole.activeSelf) InputManager.instance.SwitchPlayerInputMap("UI");
+            else InputManager.instance.SwitchPlayerInputMap("Player"); 
+            
+            
         }
         void OnApplicationQuit()
         {
