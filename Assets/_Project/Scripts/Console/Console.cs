@@ -13,22 +13,34 @@ namespace Utils
         [SerializeField] TMPro.TMP_InputField consoleIF;
         [SerializeField] RectTransform content;
         [SerializeField] ScrollRect scroll;
+
+        [HideInInspector] public static Console Instance;
+
         bool follow = true;
+        bool unityMessages = false;
+
+        List<string> blackList = new List<string> 
+        {
+            "[Netcode] Syncing Time To Clients",
+            "Painting",
+            "Physics Projectile (Project.OnTriggerEnterEventClass) invoked event",
+            "Init",
+            "Shoot",
+            "Method - OnTriggerEnter - has subscribed",
+        };
+
         // Start is called before the first frame update
         void Awake()
         {
+            if(Instance == null)
+            {
+                Instance = this;
+            }
+            else
+            {
+                Destroy(gameObject);
+            }
             Application.logMessageReceived += NewLog;
-            content.sizeDelta = new Vector2(content.sizeDelta.x, 0);
-            // NewLog("AAAA", "", LogType.Exception);
-            // Debug.Log("eee");
-            // Debug.Log("eee");
-            // NewLog("AAAA", "", LogType.Exception);
-        }
-
-        // Update is called once per frame
-        void Update()
-        {
-            
         }
 
         public void OpenConsole()
@@ -48,6 +60,8 @@ namespace Utils
 
         void NewLog(string logString, string stackTrace, LogType type)
         {
+            if (!unityMessages) return;
+            if (CheckIfInList(logString)) return;
             string balise = "";
             switch (type)
             {
@@ -64,9 +78,9 @@ namespace Utils
                     balise = "<color=purple>";
                     break;
             }
-            consoleText.text += balise + logString.Split("\n")[0] + (stackTrace.Split("\n").Length >= 2? "\n" + stackTrace.Split("\n")[1] + "\n" : "")+ "</color>";
-            if(content != null) content.sizeDelta = new Vector2(content.sizeDelta.x, content.sizeDelta.y + 29 * (stackTrace.Split("\n").Length >= 2? 2: 1));
-            if(stackTrace.Split("\n").Length == 1)
+            consoleText.text += balise + logString.Split("\n")[0] + (stackTrace.Split("\n").Length >= 2 ? "\n" + stackTrace.Split("\n")[1] + "\n" : "") + "</color>";
+            //if (content != null) content.sizeDelta = new Vector2(content.sizeDelta.x, content.sizeDelta.y + 29 * (stackTrace.Split("\n").Length >= 2 ? 2 : 1));
+            if (stackTrace.Split("\n").Length == 1)
             {
                 consoleText.text += "\n";
             }
@@ -75,6 +89,11 @@ namespace Utils
         public void OnApplicationQuit()
         {
             Application.logMessageReceived -= NewLog;
+        }
+
+        public void OnGUI()
+        {
+            UpdateBarPos();
         }
 
         void UpdateBarPos()
@@ -89,6 +108,16 @@ namespace Utils
         public void ToggleFollow(bool valueFollow)
         {
             follow = valueFollow;
+        }
+
+        public void ToggleUnityDebug(bool value)
+        {
+            unityMessages = value;
+        }
+
+        public bool CheckIfInList(string logToCheck)
+        {
+            return blackList.Where(x => logToCheck.Contains(x)).Count() != 0;
         }
     }
 }

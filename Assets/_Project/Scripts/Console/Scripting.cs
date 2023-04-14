@@ -27,7 +27,6 @@ namespace Utils
             }
             else
             {
-                DontDestroyOnLoad(this);
                 instance = this;
             }
         }
@@ -35,6 +34,7 @@ namespace Utils
         void Start()
         {
             RegisterCommand(Example, "example");
+            RegisterCommand(ShowDebug, "show_debug");
         }
 
         void RegisterCommand(Action<string[]> newCommandAction, string commandName)
@@ -44,7 +44,13 @@ namespace Utils
 
         public void CallCommand(string command, string[] args)
         {
-            commands[command].Invoke(args);
+            try
+            {
+                commands[command].Invoke(args);
+            }catch(Exception ex)
+            {
+                Debug.LogError(ex);
+            }
         }
 
         private static readonly Action<string[]> Example = (args) =>
@@ -55,6 +61,11 @@ namespace Utils
                 printValue += str + "/";
             }
             Debug.Log(printValue);
+        };
+
+        private static readonly Action<string[]> ShowDebug = (args) =>
+        {
+            Console.Instance.ToggleUnityDebug(Convert.ToBoolean(args[1]));
         };
     }
 }
