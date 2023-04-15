@@ -31,6 +31,8 @@ namespace Project
         public int _assists { get => _assistsNetworkVariable.Value; private set => _assistsNetworkVariable.Value = value; }
         public int _deaths { get => _deathsNetworkVariable.Value; private set => _deathsNetworkVariable.Value = value; }
 
+        private ulong _damagerId;
+
         #endregion
 
 
@@ -132,9 +134,11 @@ namespace Project
                 player.name = newPlayerGameObjectName.ToString();
             }
         }
-        #endif
         
         private void OnNameValueChange(StringNetwork previousValue, StringNetwork nextValue) => GameEvent.onPlayerUpdateNameEvent.Invoke(this, true, OwnerClientId, nextValue);
+        #endif
+        
+        
 
         
             
@@ -163,6 +167,7 @@ namespace Project
         public void DamageLocalClient(int damage, ulong damagerId)
         {
             Debug.Log("You've taken damage");
+            _damagerId = damagerId;
             SetHealth(_currentHealth - damage);
         }
         
@@ -196,7 +201,8 @@ namespace Project
         [ServerRpc]
         private void PlayerDeathBehaviourServerRpc(ulong clientId)
         {
-            _deaths = _deaths + 1;
+            _deaths++;
+            GameManager.instance.GetPlayer(_damagerId)._kills++;
             PlayerDeathBehaviourClientRpc();
             Timer.StartTimerWithCallback(GameManager.instance._respawnDuration, (() => PlayerRespawnClientRpc(clientId)));
         }
