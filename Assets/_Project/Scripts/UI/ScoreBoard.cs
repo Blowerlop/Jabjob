@@ -62,10 +62,10 @@ public class ScoreBoard : MonoBehaviour
             Player player = players[i];
             ulong playerId = player.OwnerClientId;
             AddPlayerToTheScoreboard(playerId);
-            UpdateNameText(playerId, player._name);
-            UpdateKillText(playerId, player._kills);
-            UpdateAssistText(playerId, player._assists);
-            UpdateDeathText(playerId, player._deaths);
+            UpdateNameText(playerId, player.playerName);
+            UpdateKillText(playerId, player.kills);
+            UpdateAssistText(playerId, player.assists);
+            UpdateDeathText(playerId, player.deaths);
         }
     }
 

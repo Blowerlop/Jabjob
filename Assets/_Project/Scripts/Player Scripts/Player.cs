@@ -24,12 +24,17 @@ namespace Project
         [SerializeField] private NetworkVariable<int> _killsNetworkVariable = new NetworkVariable<int>();
         [SerializeField] private NetworkVariable<int> _assistsNetworkVariable = new NetworkVariable<int>();
         [SerializeField] private NetworkVariable<int> _deathsNetworkVariable = new NetworkVariable<int>();
+        [SerializeField] private NetworkVariable<bool> _isHost = new NetworkVariable<bool>();
         [SerializeField] private Player _killer;
+
+        public string playerName { get => _nameNetworkVariable.Value.value; private set => _nameNetworkVariable.Value = new StringNetwork() {value = value}; }
+        public int kills { get => _killsNetworkVariable.Value; private set => _killsNetworkVariable.Value = value; }
+        public int assists { get => _assistsNetworkVariable.Value; private set => _assistsNetworkVariable.Value = value; }
+        public int deaths { get => _deathsNetworkVariable.Value; private set => _deathsNetworkVariable.Value = value; }
+        public bool isHost {get => _isHost.Value; private set => _isHost.Value = value;}
+        
  
-        public string _name { get => _nameNetworkVariable.Value.value; private set => _nameNetworkVariable.Value = new StringNetwork() {value = value}; }
-        public int _kills { get => _killsNetworkVariable.Value; private set => _killsNetworkVariable.Value = value; }
-        public int _assists { get => _assistsNetworkVariable.Value; private set => _assistsNetworkVariable.Value = value; }
-        public int _deaths { get => _deathsNetworkVariable.Value; private set => _deathsNetworkVariable.Value = value; }
+        
 
         private ulong _damagerId;
 
@@ -53,13 +58,17 @@ namespace Project
             _assistsNetworkVariable.OnValueChanged += OnAssistValueChange;
             _deathsNetworkVariable.OnValueChanged += OnDeathValueChange;
             
+            #if UNITY_EDITOR
+            _nameNetworkVariable.OnValueChanged += UpdatePlayersGameObjectNameLocal;
+            #endif
+            
             if (IsOwner == false)
             {
                 enabled = false;
                 return;
             }
 
-            
+            IsPlayerHostServerRpc();
 
 
             UpdatePlayerNameServerRpc(LobbyManager.Instance.GetPlayerName()); 
@@ -81,6 +90,10 @@ namespace Project
             _killsNetworkVariable.OnValueChanged -= OnKillValueChange;
             _assistsNetworkVariable.OnValueChanged -= OnAssistValueChange;
             _deathsNetworkVariable.OnValueChanged -= OnDeathValueChange;
+            
+            #if UNITY_EDITOR
+            _nameNetworkVariable.OnValueChanged -= UpdatePlayersGameObjectNameLocal;
+            #endif
         }
 
         #endregion 
@@ -90,7 +103,8 @@ namespace Project
 
         #region Network
 
-        public bool IsPlayerHost() => IsHost;
+        [ServerRpc]
+        private void IsPlayerHostServerRpc() => isHost = IsOwner && IsHost;
         private bool IsMyPlayer(ulong playerOwnerId) => OwnerClientId == playerOwnerId;
         
         #endregion
@@ -100,8 +114,8 @@ namespace Project
         [ServerRpc]
         private void UpdatePlayerNameServerRpc(string playerName)
         {
-            _name = playerName;
-            Debug.Log("New player has joined : Player name : " + _name);
+            this.playerName = playerName;
+            Debug.Log("New player has joined : Player name : " + this.playerName);
 
             #if UNITY_EDITOR
             UpdatePlayerGameObjectNameClientRpc();
@@ -112,36 +126,36 @@ namespace Project
         [ClientRpc]
         private void UpdatePlayerGameObjectNameClientRpc()
         {
-            UpdatePlayerGameObjectNameLocal();
+            UpdatePlayersGameObjectNameLocal(new StringNetwork(), new StringNetwork());
         }
-
-        private void UpdatePlayerGameObjectNameLocal()
+        
+        public void UpdatePlayersGameObjectNameLocal(StringNetwork previousValue, StringNetwork nextValue)
         {
             StringBuilder newPlayerGameObjectName = new StringBuilder();
 
             Player[] players = GameManager.instance.GetPlayers();
-
+            
             for (int i = 0; i < players.Length; i++)
             {
                 newPlayerGameObjectName.Clear();
                 Player player = players[i];
                 
-                newPlayerGameObjectName.Append(player._name);
-
-                if (player.IsPlayerHost()) newPlayerGameObjectName.Append(" (Host)");
-                if (player == this) newPlayerGameObjectName.Append(" (You))");
-
+                newPlayerGameObjectName.Append(player.playerName);
+                
+                if (player.isHost) newPlayerGameObjectName.Append(" (Host)");
+                if (player.IsOwner) newPlayerGameObjectName.Append(" (You))");
+                
                 player.name = newPlayerGameObjectName.ToString();
             }
         }
-        
-        private void OnNameValueChange(StringNetwork previousValue, StringNetwork nextValue) => GameEvent.onPlayerUpdateNameEvent.Invoke(this, true, OwnerClientId, nextValue);
         #endif
-        
-        
 
         
-            
+        
+        private void OnNameValueChange(StringNetwork previousValue, StringNetwork nextValue) => GameEvent.onPlayerUpdateNameEvent.Invoke(this, true, OwnerClientId, nextValue);
+
+
+
         #endregion
         
         #region  Health Relative
@@ -201,8 +215,8 @@ namespace Project
         [ServerRpc]
         private void PlayerDeathBehaviourServerRpc(ulong clientId)
         {
-            _deaths++;
-            GameManager.instance.GetPlayer(_damagerId)._kills++;
+            deaths++;
+            GameManager.instance.GetPlayer(_damagerId).kills++;
             PlayerDeathBehaviourClientRpc();
             Timer.StartTimerWithCallback(GameManager.instance._respawnDuration, (() => PlayerRespawnClientRpc(clientId)));
         }
