@@ -78,6 +78,5 @@ public class RelayWithLobby : MonoBehaviour
     {
         _inputText = s;
     }
-
     #endregion
 }

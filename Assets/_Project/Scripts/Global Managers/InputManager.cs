@@ -26,7 +26,7 @@ public class InputManager : MonoBehaviour
     public Vector2 move;
     public Vector2 look;
     public bool isJumping, isShooting;
-    public UnityEvent reload, openCommand;
+    public UnityEvent reload, openCommand, escapeKey;
     public bool isDashing;
     public bool isConsoleOpened;
     public bool isWeaponSelectionOpen;
@@ -71,6 +71,10 @@ public class InputManager : MonoBehaviour
         isDashing = true;
     }
 
+    public void OnEscape()
+    {
+        escapeKey.Invoke();
+    }
     public void OnConsole()
     {
         isConsoleOpened = !isConsoleOpened;

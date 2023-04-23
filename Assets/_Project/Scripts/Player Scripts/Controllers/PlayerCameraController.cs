@@ -20,7 +20,6 @@ public class PlayerCameraController : NetworkBehaviour
     // [SerializeField] private GameObject _playerCamera;
     private CinemachineVirtualCamera _cinemachineCamera;
     [SerializeField] private Transform _cameraTarget;
-
     [Header("Multiplayer")]
     [SerializeField] private bool isMultiplayer = true;
 
@@ -39,8 +38,6 @@ public class PlayerCameraController : NetworkBehaviour
     private void Start()
     {
         if (isMultiplayer == false) return;
-
-        
     }
 
     public override void OnNetworkSpawn()
@@ -74,7 +71,7 @@ public class PlayerCameraController : NetworkBehaviour
             _rotateVerticalVelocity = ClampAngle(this._rotateVerticalVelocity, -60.0f, 60.0f);
 
             transform.Rotate(rotateHorizontalVelocity * Vector3.up);
-            _cameraTarget.transform.localRotation = Quaternion.Euler(this._rotateVerticalVelocity, 0.0f, 0.0f);
+            _cameraTarget.localRotation = Quaternion.Euler(this._rotateVerticalVelocity, 0.0f, 0.0f);
             if (rotateHorizontalVelocity > 0) _animator.SetBool("isRotatingLeft", true);
             else if (rotateHorizontalVelocity < 0) _animator.SetBool("isRotatingRight", true);
         }
