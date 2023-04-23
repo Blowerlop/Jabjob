@@ -69,7 +69,7 @@ public class WeaponManager : NetworkBehaviour
         SetLayerRecursively(_fakeWeapon.gameObject, IsOwner ? 0 :  8);
         SetLayerRecursively(_currentWeapon.gameObject, IsOwner ? 8 : 0);
         _weaponID.Value = _currentWeapon.weaponData.ID;
-        GameEvent.onPlayerWeaponChangedLocal.Invoke(this, true, _currentWeapon);
+        GameEvent.onPlayerWeaponChangedLocalEvent.Invoke(this, true, _currentWeapon);
         
         Debug.Log("Equipping Weapon !");
         
@@ -84,7 +84,7 @@ public class WeaponManager : NetworkBehaviour
         _fakeWeapon = Instantiate(SOWeapon.GetWeaponPrefab(weaponID), fakeWeaponHandler);
         SetLayerRecursively(_fakeWeapon.gameObject, IsOwner ? 0 : 8);
         SetLayerRecursively(_currentWeapon.gameObject, IsOwner ? 8 : 0);
-        GameEvent.onPlayerWeaponChangedServer.Invoke(this, true, weaponID);
+        GameEvent.onPlayerWeaponChangedServerEvent.Invoke(this, true, weaponID);
 
         Debug.Log("Equipping Weapon !");
         

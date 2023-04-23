@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -5,24 +6,26 @@ using Project;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.InputSystem;
+using UnityEngine.Serialization;
 using Event = Project.Event;
 
 
 public class InputManager : MonoBehaviour
 {
     #region Singleton
+
     public static InputManager instance { get; private set; }
-    
+
     private void Awake()
     {
         instance = this;
-
         _playerInput = GetComponent<PlayerInput>();
     }
 
     #endregion
-    
+
     #region Variables
+
     public Vector2 move;
     public Vector2 look;
     public bool isJumping, isShooting;
@@ -30,23 +33,15 @@ public class InputManager : MonoBehaviour
     public bool isDashing;
     public bool isConsoleOpened;
     public bool isWeaponSelectionOpen;
-    public readonly Event onEscapePressed = new Event(nameof(onEscapePressed));
-    public readonly Event onEnterPressed = new Event(nameof(onEnterPressed));
-    
-    
-    
-    private PlayerInput _playerInput;
-    public enum EActionMap
-    {
-        Player,
-        UI
-    }; 
+    public Event onEscapePressed = new Event(nameof(onEscapePressed));
 
-    
+    [FormerlySerializedAs("playerInput")] [FormerlySerializedAs("PlayerInput")] public PlayerInput _playerInput;
+
     #endregion
 
 
     #region Methods
+
     public void OnMove(InputValue inputValue)
     {
         move = inputValue.Get<Vector2>();
@@ -67,6 +62,7 @@ public class InputManager : MonoBehaviour
     {
         isShooting = true;
     }
+
     public void OnUnFire()
     {
         isShooting = false;
@@ -88,6 +84,18 @@ public class InputManager : MonoBehaviour
         openCommand.Invoke();
     }
 
+    public void OnScrollWheel()
+    {
+        try
+        {
+            Utils.Console.Instance.follow = false;
+        }
+        catch (Exception ex)
+        {
+            Debug.LogError(ex);
+        }
+    }
+
     public void OnOpenGunSelection()
     {
         isWeaponSelectionOpen = true;
@@ -95,18 +103,14 @@ public class InputManager : MonoBehaviour
 
     public void OnEscape()
     {
-        onEscapePressed.Invoke(this, true);
+        onEscapePressed.Invoke(this, false);
     }
-
-    public void OnEnter()
+     
+    public void SwitchPlayerInputMap(string actionMap)
     {
-        onEnterPressed.Invoke(this, true);
+        _playerInput.SwitchCurrentActionMap(actionMap);
     }
+    
+
     #endregion
-
-
-    public void SwitchActionMapTo(EActionMap actionMap)
-    {
-        _playerInput.SwitchCurrentActionMap(actionMap.ToString());
-    }
 }
