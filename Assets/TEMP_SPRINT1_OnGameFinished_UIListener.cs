@@ -12,12 +12,12 @@ namespace Project
 
         public void OnEnable()
         {
-            GameEvent.onGameFinished.Subscribe(ShowUI, this);
+            GameEvent.onGameFinishedEvent.Subscribe(ShowUI, this);
         }
 
         public void OnDisable()
         {
-            GameEvent.onGameFinished.Unsubscribe(ShowUI);
+            GameEvent.onGameFinishedEvent.Unsubscribe(ShowUI);
         }
 
         public void ShowUI()

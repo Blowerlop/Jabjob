@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Project;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -11,24 +12,24 @@ public class AuthenticateUI : MonoBehaviour {
     public static AuthenticateUI Instance { get; private set; }
     [SerializeField] private TMP_Text _playerNameText;
     [SerializeField] private TMP_InputField _playerNameInputField;
-    [SerializeField] private Button authenticateButton;
     private string _playerName;
+
+    private OpenCloseUI _openCloseUI;
 
     private void Awake()
     {
         Instance = this;
+        _openCloseUI = GetComponent<OpenCloseUI>();
     }
 
     private void OnEnable()
     {
         _playerNameInputField.onEndEdit.AddListener(UpdateInputName);
         _playerNameInputField.onDeselect.AddListener(UpdateInputName);
-        authenticateButton.onClick.AddListener(EnterKey);
     }
 
     private void OnDisable()
     {
-        authenticateButton.onClick.RemoveAllListeners();
         _playerNameInputField.onEndEdit.RemoveAllListeners();
     }
 
@@ -36,7 +37,7 @@ public class AuthenticateUI : MonoBehaviour {
     {
         if (Input.GetKeyDown(KeyCode.Return))
         {
-            EnterKey();
+            _openCloseUI.ForceActivation();
         }
     }
 
@@ -50,16 +51,9 @@ public class AuthenticateUI : MonoBehaviour {
         LobbyManager.Instance.UpdatePlayerName(_playerName);
     }
 
-    public void EnterKey()
+    public void Authenticate()
     {
         LobbyManager.Instance.Authenticate(_playerName);
         _playerNameText.text += _playerName;
-        Hide();
     }
-
-
-    private void Hide() {
-        gameObject.SetActive(false);
-    }
-
 }

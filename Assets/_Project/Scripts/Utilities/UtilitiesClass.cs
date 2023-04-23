@@ -1,9 +1,12 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Threading.Tasks;
+using Cinemachine;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.Internal;
+using Object = UnityEngine.Object;
 
 namespace Project
 {
@@ -39,6 +42,7 @@ namespace Project
             public void CoroutineStop(Coroutine coroutine) => StopCoroutine(coroutine);
             public void CoroutineStop(IEnumerator coroutine) => StopCoroutine(coroutine);
             public void CoroutineStop(string methodName) => StopCoroutine(methodName);
+            
             #endregion
         }
         
@@ -117,6 +121,54 @@ namespace Project
                 int timeInMilliseconds = (int)(timeInSeconds * 1000);
                 await Task.Delay(timeInMilliseconds);
                 callback.Invoke();
+            }
+        }
+
+        public static class Extensions
+        {
+            public static List<Transform> GetChildren(this Transform transform, List<Transform> children = null)
+            {
+                return GetChildren<Transform>(transform);
+            }
+            public static List<T> GetChildren<T>(this Transform transform, List<T> children = null) where T : Component
+            {
+                if (children == null) children = new List<T>();
+                
+                for (int i = 0; i < transform.transform.childCount; i++)
+                {
+                    T child = transform.GetChild(i).GetComponent<T>();
+
+                    if (child != null)
+                    {
+                        child.transform.GetChildren(children);
+                        children.Add(child);                        
+                    }
+                    else
+                    {
+                        transform.GetChild(i).GetChildren(children);
+                    }
+                }
+                
+                return children;
+            }
+
+            public static void DestroyChildren(this Transform transform)
+            {
+                for (int i = 0; i < transform.childCount; i++)
+                {
+                    Transform child = transform.GetChild(i);
+                    child.DestroyChildren();
+
+                    if (Application.isEditor)
+                    {
+                        Object.DestroyImmediate(child.gameObject);
+                    }
+                    else
+                    {
+                        Object.Destroy(child.gameObject);
+                    }
+                }
+
             }
         }
     }

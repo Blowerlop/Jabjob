@@ -47,15 +47,15 @@ namespace Project
         public void OnEnable()
         {
             InputManager.instance.reload.AddListener(Reload);
-            GameEvent.onPlayerWeaponChangedLocal.Subscribe(UpdateCurrentWeapon, this);
-            GameEvent.onPlayerWeaponChangedServer.Subscribe(UpdateCurrentWeapon, this);
+            GameEvent.onPlayerWeaponChangedLocalEvent.Subscribe(UpdateCurrentWeapon, this);
+            GameEvent.onPlayerWeaponChangedServerEvent.Subscribe(UpdateCurrentWeapon, this);
         }
 
         public void OnDisable()
         {
             InputManager.instance.reload.RemoveListener(Reload);
-            GameEvent.onPlayerWeaponChangedLocal.Unsubscribe(UpdateCurrentWeapon);
-            GameEvent.onPlayerWeaponChangedServer.Unsubscribe(UpdateCurrentWeapon);
+            GameEvent.onPlayerWeaponChangedLocalEvent.Unsubscribe(UpdateCurrentWeapon);
+            GameEvent.onPlayerWeaponChangedServerEvent.Unsubscribe(UpdateCurrentWeapon);
         }
 
         public override void OnNetworkSpawn()
@@ -75,7 +75,7 @@ namespace Project
                     }
                     _nextShoot = Time.time + _weaponData.shootRate;
                     _weapon.ammo--;
-                    GameEvent.onPlayerWeaponAmmoChanged.Invoke(this, false, _weapon.ammo);
+                    GameEvent.onPlayerWeaponAmmoChangedEvent.Invoke(this, false, _weapon.ammo);
                     
                     Vector3 weaponHolderPosition = _weaponHolder.position;
                     Vector3 rootCameraPosition = _rootCamera.position;
@@ -153,7 +153,7 @@ namespace Project
             // Start animation
             yield return new WaitForSeconds(_weaponData.reloadDuration);
             _weapon.ammo = _weaponData.maxAmmo;
-            GameEvent.onPlayerWeaponAmmoChanged.Invoke(this, true, _weapon.ammo);
+            GameEvent.onPlayerWeaponAmmoChangedEvent.Invoke(this, true, _weapon.ammo);
             _canShoot = true;
         }
 
@@ -162,7 +162,7 @@ namespace Project
             _weapon = weapon;
             _weaponData = weapon.weaponData;
 
-            GameEvent.onPlayerWeaponAmmoChanged.Invoke(this, true, _weapon.ammo);
+            GameEvent.onPlayerWeaponAmmoChangedEvent.Invoke(this, true, _weapon.ammo);
         }
         
         private void UpdateCurrentWeapon(byte weaponID)

@@ -7,6 +7,6 @@ public class ButtonSceneLoader : ButtonListener
     
     private void Start()
     {
-        button.onClick.AddListener(() => SceneManager.LoadSceneAsync(_sceneToLoad));
+        button.onClick.AddListener(() => SceneManager.LoadSceneAsyncLocal(_sceneToLoad));
     }
 }

@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -6,18 +5,19 @@ using Project;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.InputSystem;
-using UnityEngine.Serialization;
+using Event = Project.Event;
 
 
 public class InputManager : MonoBehaviour
 {
     #region Singleton
     public static InputManager instance { get; private set; }
-
+    
     private void Awake()
     {
         instance = this;
-        playerInput = GetComponent<PlayerInput>();
+
+        _playerInput = GetComponent<PlayerInput>();
     }
 
     #endregion
@@ -26,12 +26,23 @@ public class InputManager : MonoBehaviour
     public Vector2 move;
     public Vector2 look;
     public bool isJumping, isShooting;
-    public UnityEvent reload, openCommand, escapeKey;
+    public UnityEvent reload, openCommand;
     public bool isDashing;
     public bool isConsoleOpened;
     public bool isWeaponSelectionOpen;
+    public readonly Event onEscapePressed = new Event(nameof(onEscapePressed));
+    public readonly Event onEnterPressed = new Event(nameof(onEnterPressed));
+    
+    
+    
+    private PlayerInput _playerInput;
+    public enum EActionMap
+    {
+        Player,
+        UI
+    }; 
 
-    [FormerlySerializedAs("PlayerInput")] public PlayerInput playerInput;
+    
     #endregion
 
 
@@ -71,36 +82,31 @@ public class InputManager : MonoBehaviour
         isDashing = true;
     }
 
-    public void OnEscape()
-    {
-        escapeKey.Invoke();
-    }
     public void OnConsole()
     {
         isConsoleOpened = !isConsoleOpened;
         openCommand.Invoke();
     }
 
-    public void OnScrollWheel()
-    {
-        try
-        {
-            Utils.Console.Instance.follow = false;
-        }catch(Exception ex)
-        {
-            Debug.LogError(ex);
-        }
-    }
-
     public void OnOpenGunSelection()
     {
         isWeaponSelectionOpen = true;
     }
-    #endregion 
 
-    public void SwitchPlayerInputMap(string mapName)
+    public void OnEscape()
     {
-        playerInput.SwitchCurrentActionMap(mapName);
-        Debug.Log("Input Manager - New current Action Map is " + playerInput.currentActionMap.name);
+        onEscapePressed.Invoke(this, true);
+    }
+
+    public void OnEnter()
+    {
+        onEnterPressed.Invoke(this, true);
+    }
+    #endregion
+
+
+    public void SwitchActionMapTo(EActionMap actionMap)
+    {
+        _playerInput.SwitchCurrentActionMap(actionMap.ToString());
     }
 }

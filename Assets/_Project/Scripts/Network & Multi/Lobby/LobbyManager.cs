@@ -1,6 +1,8 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using _Project.Scripts.Managers;
+using Unity.Netcode;
 using Unity.Services.Authentication;
 using Unity.Services.Core;
 using Unity.Services.Lobbies;
@@ -16,6 +18,7 @@ public class LobbyManager : MonoBehaviour {
     public const string KEY_PLAYER_NAME = "PlayerName";
     public const string KEY_GAME_MODE = "GameMode";
     public const string KEY_RELAY_GAME = "RelayGameCode";
+    public const string KEY_GAMEMAP_NAME = "GameMapName";
     public int maxPlayerLobby = 4;
 
 
@@ -54,10 +57,20 @@ public class LobbyManager : MonoBehaviour {
         Instance = this;
     }
 
+    private void Start()
+    {
+        OnJoinedLobby += (sender, args) =>         Debug.Log("Player id in lobby : " + AuthenticationService.Instance.PlayerId);
+
+    }
+    
+    
+
     private void Update() {
         //HandleRefreshLobbyList(); // Disabled Auto Refresh for testing with multiple builds
         HandleLobbyHeartbeat();
         HandleLobbyPolling();
+        
+        if (Input.GetKey(KeyCode.I)) Debug.Log("Player id" + AuthenticationService.Instance.PlayerId);
     }
 
     public async void Authenticate(string playerName) {
@@ -153,8 +166,14 @@ public class LobbyManager : MonoBehaviour {
         return false;
     }
 
-    private Player GetPlayer() {
+    public Player GetPlayer() {
         return new Player(AuthenticationService.Instance.PlayerId, null, new Dictionary<string, PlayerDataObject> {
+            { KEY_PLAYER_NAME, new PlayerDataObject(PlayerDataObject.VisibilityOptions.Public, playerName) },
+        });
+    }
+    
+    public Player GetPlayer(string playerId) {
+        return new Player(playerId, null, new Dictionary<string, PlayerDataObject> {
             { KEY_PLAYER_NAME, new PlayerDataObject(PlayerDataObject.VisibilityOptions.Public, playerName) },
         });
     }
@@ -171,7 +190,7 @@ public class LobbyManager : MonoBehaviour {
         }
     }
 
-    public async void CreateLobby(bool isPrivate, GameMode gameMode)
+    public async void CreateLobby(bool isPrivate, GameMode gameMode, string gameMapSceneName)
     {
         Player player = GetPlayer();
         CreateLobbyOptions options = new CreateLobbyOptions
@@ -180,7 +199,8 @@ public class LobbyManager : MonoBehaviour {
             IsPrivate = isPrivate,
             Data = new Dictionary<string, DataObject> {
                 { KEY_GAME_MODE, new DataObject(DataObject.VisibilityOptions.Public, gameMode.ToString()) },
-                { KEY_RELAY_GAME, new DataObject(DataObject.VisibilityOptions.Member, "0") }
+                { KEY_RELAY_GAME, new DataObject(DataObject.VisibilityOptions.Member, "0") },
+                { KEY_GAMEMAP_NAME, new DataObject(DataObject.VisibilityOptions.Public, gameMapSceneName)}
             }
         };
         Lobby lobby = await LobbyService.Instance.CreateLobbyAsync(string.Concat(playerName, "'s Lobby"), maxPlayerLobby, options);
@@ -204,6 +224,7 @@ public class LobbyManager : MonoBehaviour {
         Lobby lobby = await LobbyService.Instance.CreateLobbyAsync(lobbyName, maxPlayerLobby, options);
         Debug.Log("Created Lobby " + lobby.Name);
         joinedLobby = lobby;
+
         OnJoinedLobby?.Invoke(this, new LobbyEventArgs { lobby = lobby });
     }
 
@@ -316,7 +337,7 @@ public class LobbyManager : MonoBehaviour {
         if (IsLobbyHost())
         {
             try
-            {
+            { 
                 Debug.Log("Start Game");
                 string relayCode = await RelayWithLobby.Instance.CreateRelay();
                 Lobby lobby = await Lobbies.Instance.UpdateLobbyAsync(joinedLobby.Id, new UpdateLobbyOptions
@@ -328,6 +349,8 @@ public class LobbyManager : MonoBehaviour {
                 });
                 joinedLobby = lobby;
                 OnStartGame?.Invoke(this, EventArgs.Empty);
+                // SceneManager.LoadSceneAsyncNetworkServerRpc(SceneManager.EScene.Multi_Lobby); 
+                SceneManager.LoadSceneNetwork(SceneManager.EScene.Multi_Lobby);
             }
             catch (LobbyServiceException e)
             {
@@ -362,5 +385,7 @@ public class LobbyManager : MonoBehaviour {
             Debug.Log(e);
         }
     }
+
+    public string GetPlayerName() => playerName;
 
 }

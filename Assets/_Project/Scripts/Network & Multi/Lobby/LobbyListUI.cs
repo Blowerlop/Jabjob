@@ -25,7 +25,7 @@ public class LobbyListUI : MonoBehaviour {
 
         refreshButton.onClick.AddListener(RefreshButtonClick);
         createLobbyButton.onClick.AddListener(CreateLobbyButtonClick);
-    }
+    } 
 
     private void Start() {
         LobbyManager.Instance.OnLobbyListChanged += LobbyManager_OnLobbyListChanged;
@@ -38,7 +38,7 @@ public class LobbyListUI : MonoBehaviour {
         Show();
     }
 
-    private void LobbyManager_OnLeftLobby(object sender, EventArgs e) {
+    private void LobbyManager_OnLeftLobby(object sender, EventArgs e) { 
         Show();
     }
 

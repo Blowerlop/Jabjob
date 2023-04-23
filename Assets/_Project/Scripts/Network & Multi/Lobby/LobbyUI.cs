@@ -21,7 +21,7 @@ public class LobbyUI : MonoBehaviour {
     //[SerializeField] private Button changeGameModeButton;
     [SerializeField] private Button startGameButton;
 
-
+ 
     private void Awake() {
         Instance = this;
 
@@ -108,7 +108,7 @@ public class LobbyUI : MonoBehaviour {
         gameObject.SetActive(false);
     }
     private void Show() {
-        gameObject.SetActive(true);
+        gameObject.SetActive(true); 
     }
 
     private void SetStartButtonVisible(bool visible)

@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Project;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -17,19 +18,27 @@ public class LobbyCreateUI : MonoBehaviour {
     [SerializeField] private TextMeshProUGUI lobbyNameText;
     [SerializeField] private TextMeshProUGUI publicPrivateText;
     [SerializeField] private TextMeshProUGUI gameModeText;
+    [SerializeField] private GameMapsUI _gameMaps;
 
 
     private string lobbyName;
     private bool isPrivate;
     private LobbyManager.GameMode gameMode;
+    public string gameMapSceneName = "";
 
     private void Awake() {
         Instance = this;
 
         createButton.onClick.AddListener(() => {
+            if (gameMapSceneName == "")
+            {
+                Debug.Log("Choose a map before creating the lobby !");
+                return;
+            }
             LobbyManager.Instance.CreateLobby(
                 isPrivate,
-                gameMode
+                gameMode,
+                gameMapSceneName
             );
             Hide();
         });
@@ -37,7 +46,7 @@ public class LobbyCreateUI : MonoBehaviour {
             isPrivate = !isPrivate;
             UpdateText();
         });
-
+ 
         gameModeButton.onClick.AddListener(() => {
             var values = (LobbyManager.GameMode[])Enum.GetValues(typeof(LobbyManager.GameMode));
             var index = Array.IndexOf(values, gameMode);
@@ -45,8 +54,12 @@ public class LobbyCreateUI : MonoBehaviour {
             UpdateText();
         });
 
+        _gameMaps.AddListeners(map => gameMapSceneName = map._gameMap.sceneName);
+
         Hide();
     }
+    
+
 
     private void UpdateText() {
         lobbyNameText.text = lobbyName;

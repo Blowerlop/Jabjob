@@ -1,6 +1,10 @@
+using System;
 using System.Collections.Generic;
+using System.Text;
 using Unity.Netcode;
+using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace Project
 {
@@ -9,15 +13,15 @@ namespace Project
         #region Variables
 
         public static GameManager instance;
-        private Dictionary<ulong, Player> players = new Dictionary<ulong, Player>();
+        [SerializeField] private Transform _playerPrefab;
+        [ReadOnlyField] private readonly Dictionary<ulong, Player> _players = new Dictionary<ulong, Player>();
 
         //[Header("Game Settings")]
         // [SerializeField] private SOGameSettings _gameSettings --> Preview changement futur
         [field: SerializeField] public float _respawnDuration { get; private set; } = 2.0f;
         [field: SerializeField] public float _gameDuration { get; private set; }
         [field: SerializeField] public NetworkTimer _networkTimer { get; private set; }
-        
-        
+            
         #endregion
 
 
@@ -33,18 +37,49 @@ namespace Project
             if (IsServer)
             {
                 SpawnNetworkTimerServerRpc();
+                NetworkManager.Singleton.SceneManager.OnLoadComplete += SpawnClientServerRpc;
+                
+                NetworkManager.Singleton.OnClientDisconnectCallback += OnClientDisconnect;
             }
         }
-
-        #endregion
+        
+        #endregion 
 
 
         #region Methods
 
-        public void AddPlayer(ulong playerNetworkId, Player playerGameObject) =>
-            players.Add(playerNetworkId, playerGameObject);
+        #region ManageClients
+        
+        [ServerRpc]
+        private void SpawnClientServerRpc(ulong clientId, string sceneName, LoadSceneMode loadSceneMode)
+        {
+            Transform playerTransform = Instantiate((_playerPrefab)); 
+            playerTransform.GetComponent<NetworkObject>().SpawnAsPlayerObject(clientId, true);
+        }
 
-        public Player GetPlayer(ulong playerNetworkId) => players[playerNetworkId];
+        private void OnClientDisconnect(ulong clientId) => GameEvent.onPlayerLeaveGameEvent.Invoke(this, true, clientId);
+
+        public void AddPlayerLocal(ulong playerNetworkId, Player player) => _players.Add(playerNetworkId, player);
+
+        public Player GetPlayer(ulong playerNetworkId) => _players[playerNetworkId];
+
+        public Player[] GetPlayers()
+        {
+            Player[] players = new Player[_players.Count];
+
+            int index = 0;
+            foreach (KeyValuePair<ulong, Player> kvp in _players)
+            {
+                players[index] = kvp.Value;
+                index++;
+            }
+            
+            return players;
+        }
+        
+        #endregion
+        
+        
         
         [ServerRpc]
         private void SpawnNetworkTimerServerRpc()
@@ -52,7 +87,7 @@ namespace Project
             _networkTimer = Instantiate(_networkTimer);
             _networkTimer.GetComponent<NetworkObject>().Spawn();
             
-            _networkTimer.StartTimerWithCallback(_gameDuration, () => GameEvent.onGameFinished.Invoke(this, true), true);
+            _networkTimer.StartTimerWithCallback(_gameDuration, () => GameEvent.onGameFinishedEvent.Invoke(this, true), true);
         }
         #endregion
     }
