@@ -18,6 +18,7 @@ public class LobbyManager : MonoBehaviour {
     public const string KEY_PLAYER_NAME = "PlayerName";
     public const string KEY_GAME_MODE = "GameMode";
     public const string KEY_RELAY_GAME = "RelayGameCode";
+    public const string KEY_GAMEMAP_NAME = "GameMapName";
     public int maxPlayerLobby = 4;
 
 
@@ -189,7 +190,7 @@ public class LobbyManager : MonoBehaviour {
         }
     }
 
-    public async void CreateLobby(bool isPrivate, GameMode gameMode)
+    public async void CreateLobby(bool isPrivate, GameMode gameMode, string gameMapSceneName)
     {
         Player player = GetPlayer();
         CreateLobbyOptions options = new CreateLobbyOptions
@@ -198,7 +199,8 @@ public class LobbyManager : MonoBehaviour {
             IsPrivate = isPrivate,
             Data = new Dictionary<string, DataObject> {
                 { KEY_GAME_MODE, new DataObject(DataObject.VisibilityOptions.Public, gameMode.ToString()) },
-                { KEY_RELAY_GAME, new DataObject(DataObject.VisibilityOptions.Member, "0") }
+                { KEY_RELAY_GAME, new DataObject(DataObject.VisibilityOptions.Member, "0") },
+                { KEY_GAMEMAP_NAME, new DataObject(DataObject.VisibilityOptions.Public, gameMapSceneName)}
             }
         };
         Lobby lobby = await LobbyService.Instance.CreateLobbyAsync(string.Concat(playerName, "'s Lobby"), maxPlayerLobby, options);
@@ -335,7 +337,7 @@ public class LobbyManager : MonoBehaviour {
         if (IsLobbyHost())
         {
             try
-            {
+            { 
                 Debug.Log("Start Game");
                 string relayCode = await RelayWithLobby.Instance.CreateRelay();
                 Lobby lobby = await Lobbies.Instance.UpdateLobbyAsync(joinedLobby.Id, new UpdateLobbyOptions
