@@ -16,22 +16,22 @@ namespace Project
     {
         #region Variables
 
-        [SerializeField] private int _health = 100; 
+        [SerializeField] private int _defaultHealth = 100; 
         [SerializeField] [ReadOnlyField] private int _currentHealth = 100;
         private NetworkObject _networkObject;
 
-        [SerializeField] private NetworkVariable<StringNetwork> _nameNetworkVariable = new NetworkVariable<StringNetwork>(new StringNetwork() {value = ""});
-        [SerializeField] private NetworkVariable<int> _killsNetworkVariable = new NetworkVariable<int>();
-        [SerializeField] private NetworkVariable<int> _assistsNetworkVariable = new NetworkVariable<int>();
-        [SerializeField] private NetworkVariable<int> _deathsNetworkVariable = new NetworkVariable<int>();
-        [SerializeField] private NetworkVariable<bool> _isHost = new NetworkVariable<bool>();
+        [SerializeField] private NetworkVariable<StringNetwork> _networkName = new NetworkVariable<StringNetwork>(new StringNetwork() {value = ""});
+        [SerializeField] private NetworkVariable<int> _networkKills = new NetworkVariable<int>();
+        [SerializeField] private NetworkVariable<int> _networkAssists = new NetworkVariable<int>();
+        [SerializeField] private NetworkVariable<int> _networkDeaths = new NetworkVariable<int>();
+        [SerializeField] private NetworkVariable<bool> _networkIsHost = new NetworkVariable<bool>();
         [SerializeField] private Player _killer;
 
-        public string playerName { get => _nameNetworkVariable.Value.value; private set => _nameNetworkVariable.Value = new StringNetwork() {value = value}; }
-        public int kills { get => _killsNetworkVariable.Value; private set => _killsNetworkVariable.Value = value; }
-        public int assists { get => _assistsNetworkVariable.Value; private set => _assistsNetworkVariable.Value = value; }
-        public int deaths { get => _deathsNetworkVariable.Value; private set => _deathsNetworkVariable.Value = value; }
-        public bool isHost {get => _isHost.Value; private set => _isHost.Value = value;}
+        public string playerName { get => _networkName.Value.value; private set => _networkName.Value = new StringNetwork() {value = value}; }
+        public int kills { get => _networkKills.Value; private set => _networkKills.Value = value; }
+        public int assists { get => _networkAssists.Value; private set => _networkAssists.Value = value; }
+        public int deaths { get => _networkDeaths.Value; private set => _networkDeaths.Value = value; }
+        public bool isHost {get => _networkIsHost.Value; private set => _networkIsHost.Value = value;}
         
  
         
@@ -53,13 +53,13 @@ namespace Project
             GameEvent.onPlayerJoinGameEvent.Invoke(this, true, OwnerClientId);
             GameManager.instance.AddPlayerLocal(OwnerClientId, this);
 
-            _nameNetworkVariable.OnValueChanged += OnNameValueChange;
-            _killsNetworkVariable.OnValueChanged += OnKillValueChange;
-            _assistsNetworkVariable.OnValueChanged += OnAssistValueChange;
-            _deathsNetworkVariable.OnValueChanged += OnDeathValueChange;
+            _networkName.OnValueChanged += OnNameValueChange;
+            _networkKills.OnValueChanged += OnKillValueChange;
+            _networkAssists.OnValueChanged += OnAssistValueChange;
+            _networkDeaths.OnValueChanged += OnDeathValueChange;
             
             #if UNITY_EDITOR
-            _nameNetworkVariable.OnValueChanged += UpdatePlayersGameObjectNameLocal;
+            _networkName.OnValueChanged += UpdatePlayersGameObjectNameLocal;
             #endif
             
             if (IsOwner == false)
@@ -76,23 +76,23 @@ namespace Project
  
         private void Start()
         {
-            _currentHealth = _health;
+            _currentHealth = _defaultHealth;
         }
 
         private void OnEnable()
         {
-            SetHealth(_health);
+            SetHealth(_defaultHealth);
         }
 
         public override void OnNetworkDespawn()
         {
-            _nameNetworkVariable.OnValueChanged -= OnNameValueChange;
-            _killsNetworkVariable.OnValueChanged -= OnKillValueChange;
-            _assistsNetworkVariable.OnValueChanged -= OnAssistValueChange;
-            _deathsNetworkVariable.OnValueChanged -= OnDeathValueChange;
+            _networkName.OnValueChanged -= OnNameValueChange;
+            _networkKills.OnValueChanged -= OnKillValueChange;
+            _networkAssists.OnValueChanged -= OnAssistValueChange;
+            _networkDeaths.OnValueChanged -= OnDeathValueChange;
             
             #if UNITY_EDITOR
-            _nameNetworkVariable.OnValueChanged -= UpdatePlayersGameObjectNameLocal;
+            _networkName.OnValueChanged -= UpdatePlayersGameObjectNameLocal;
             #endif
         }
 
