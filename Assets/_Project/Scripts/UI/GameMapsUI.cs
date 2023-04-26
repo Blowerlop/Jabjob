@@ -44,10 +44,11 @@ namespace Project
         
         public void Apply()
         {
-            _repo.DestroyChildren();
-
+            ClearUI();
             InitializeUI();
         }
+        
+        public void ClearUI() => _repo.DestroyChildren();
 
         public void AddListeners(Action<GameMap> call)
         {
@@ -83,6 +84,10 @@ namespace Project
             if (GUILayout.Button("Apply"))
             {
                  t.Apply();
+            }
+            else if (GUILayout.Button("Clear UI"))
+            {
+                t.ClearUI();
             }
         }
     }
