@@ -126,8 +126,7 @@ public class WeaponProjectile : MonoBehaviour
 #endif
 
         StartCoroutine(DestroyProjectileCooldown());
-
-        Debug.Log("Init");
+        
         _hasInit = true;
     }
 

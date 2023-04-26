@@ -117,7 +117,6 @@ namespace Project
 
         private void LocalShoot(bool isTheShooter, Vector3 weaponHolderPosition, Vector3 rootCameraPosition, Vector3 hitPoint)
         {
-            Debug.Log("Shoot");
             if (_showDebug)
             {
             }
