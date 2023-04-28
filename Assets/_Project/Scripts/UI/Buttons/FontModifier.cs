@@ -34,11 +34,24 @@ namespace Project
             }
         }
 
-        public void ChangeColor(string Event)
+        public void ChangeFont(string Event)
         {
-            if (Event == "Enter") buttonText.color = enterColor;
-            if (Event == "Click") buttonText.color = clickColor;
-            if (Event == "Exit") buttonText.color = baseColor;
+            switch (Event)
+            {
+                case "Enter":
+                    buttonText.color = enterColor;
+                    Upscale();
+                    break;
+                case "Click":
+                    buttonText.color = clickColor;
+                    break;
+                case "Exit":
+                    buttonText.color = baseColor;
+                    Downscale();
+                    break;
+                default:
+                    break;
+            }
         }
 
     }

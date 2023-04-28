@@ -111,7 +111,7 @@ namespace Project
         }
     }
 
-
+#if UNITY_EDITOR
     [CustomEditor(typeof(BorderGenerator))]
     public class BorderGeneratorEditor : Editor
     {
@@ -132,4 +132,5 @@ namespace Project
             }
         }
     }
+#endif
 }

@@ -14,7 +14,7 @@ namespace Project
         {
             if (IsOwner) return;
 
-            
+
             foreach (var componentToDestroy in _componentsToDisableIfNotTheOwner)
             {
                 componentToDestroy.enabled = false;

@@ -20,6 +20,10 @@ public class SoundManager2D : MonoBehaviour
         }
     }
 
+    private void Start()
+    {
+        PlayBackgroundMusic("Start Scene Background Music");
+    }
     public void PlayBackgroundMusic(string name)
     {
         if (!_soundListDico.ContainsKey(name)) Debug.LogError("Mauvais string pour la musique de fond : " + name);

@@ -67,7 +67,7 @@ public class PlayerMovementController : NetworkBehaviour
     private void Start()
     {
         if (_isMultiplayer == false) return;
-        if (IsOwner == false) enabled = false;
+        if (IsOwner == false)  enabled = false; 
     }
 
     private void Update()
