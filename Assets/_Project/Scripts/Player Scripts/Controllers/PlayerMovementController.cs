@@ -38,7 +38,7 @@ public class PlayerMovementController : NetworkBehaviour
     [SerializeField] private LayerMask _groundLayerMask;
     
     [Header("References")]
-    private CharacterController _characterController;
+    private CharacterController _characterController; 
 
     [Header("Multiplayer")]
     [SerializeField] private bool _isMultiplayer = true;
@@ -55,7 +55,7 @@ public class PlayerMovementController : NetworkBehaviour
 
     #region Updates
     private void Awake()
-    { 
+    {
         _characterController = GetComponent<CharacterController>();
         _animator = GetComponent<Animator>();
         for (int i = 0; i < soundList.Length; i++)
@@ -67,12 +67,12 @@ public class PlayerMovementController : NetworkBehaviour
     private void Start()
     {
         if (_isMultiplayer == false) return;
-        if (IsOwner == false)  enabled = false; 
+        if (IsOwner == false) enabled = false;
     }
 
     private void Update()
     {
-        
+
         CheckGrounded();
         PerformJumpAndGravity();
         PerformMovement();
@@ -94,8 +94,8 @@ public class PlayerMovementController : NetworkBehaviour
         Vector3 position = transform.position;
         Vector3 spherePosition = new Vector3(position.x, position.y - _groundedOffset, position.z);
         _isGrounded = Physics.CheckSphere(spherePosition, _groundedRadius, _groundLayerMask, QueryTriggerInteraction.Ignore);
-        _animator.SetBool("isGrounded",_isGrounded);
-        _isSoonGrounded = Physics.CheckSphere(spherePosition, _soonGroundedRadius , _groundLayerMask, QueryTriggerInteraction.Ignore);
+        _animator.SetBool("isGrounded", _isGrounded);
+        _isSoonGrounded = Physics.CheckSphere(spherePosition, _soonGroundedRadius, _groundLayerMask, QueryTriggerInteraction.Ignore);
     }
 
     private void PerformJumpAndGravity()
@@ -117,7 +117,7 @@ public class PlayerMovementController : NetworkBehaviour
         }
         else
         {
-            if (_isSoonGrounded && _verticalVelocity < 0f) _animator.SetBool("JumpingDown",true);
+            if (_isSoonGrounded && _verticalVelocity < 0f) _animator.SetBool("JumpingDown", true);
             if (_verticalVelocity > _maximumVerticalVelocity)
             {
                 _verticalVelocity += _gravityForce * Time.deltaTime;
@@ -126,7 +126,7 @@ public class PlayerMovementController : NetworkBehaviour
 
         if (InputManager.instance.isJumping && _canJump)
         {
-             StartCoroutine(Jump());
+            StartCoroutine(Jump());
         }
         InputManager.instance.isJumping = false;
     }
@@ -142,7 +142,7 @@ public class PlayerMovementController : NetworkBehaviour
         {
             targetVelocity = _moveSpeed;
         }
-        
+
         Vector3 characterControllerVelocity = _characterController.velocity;
         //GameEvent.onPlayerVelocityChange.Invoke(this, false, characterControllerVelocity);
         // if (characterControllerLastVelocity != characterControllerVelocity) // MARCHE PAS CAR FLOAT ISSUE --> JE CHERCHERAI UN TRUC PLUS TARD
@@ -150,7 +150,7 @@ public class PlayerMovementController : NetworkBehaviour
         //     GameEvent.onPlayerVelocityChange.Invoke(this, characterControllerVelocity);
         // }
         //characterControllerLastVelocity = characterControllerVelocity;
-        
+
         float currentVelocity = new Vector3(characterControllerVelocity.x, 0.0f, characterControllerVelocity.z).magnitude;
         float velocityToApply;
 
@@ -164,8 +164,8 @@ public class PlayerMovementController : NetworkBehaviour
         }
         //GameEvent.onPlayerSpeedChange.Invoke(this, false, Mathf.Round(velocityToApply * 100.0f) / 100.0f); // ON VERRA PLUS TARD SI CA IMPACTE LES PERFORMANCES, SI CA LE FAIT JE CHERCHERaIS UNE BONNE CONDITIOn
 
-        
-        
+
+
         Vector2 moveHorizontalVelocity = InputManager.instance.move * velocityToApply;
         Vector3 moveVerticalVelocity = Vector3.up * _verticalVelocity;
 
@@ -236,12 +236,12 @@ public class PlayerMovementController : NetworkBehaviour
     private IEnumerator Jump()
     {
         _canJump = false;
-        if (_jumpCount < _maxJumpNumber) 
-        { 
+        if (_jumpCount < _maxJumpNumber)
+        {
             _verticalVelocity = Mathf.Sqrt(-2.0f * _gravityForce * _jumpHeight);
             PlaySound("Jump");
-            _animator.SetTrigger("Jumped"); 
-             _jumpCount++;
+            _animator.SetTrigger("Jumped");
+            _jumpCount++;
         }
 
         yield return new WaitForSeconds(_jumpThreshold);
