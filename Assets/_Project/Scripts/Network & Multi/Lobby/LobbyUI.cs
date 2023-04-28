@@ -56,7 +56,7 @@ public class LobbyUI : MonoBehaviour {
     private void LobbyManager_OnStartGame(object sender, System.EventArgs e)
     {
         ClearLobby();
-        SoundManager2D.instance.PlayBackgroundMusic("RandomShit");
+        SoundManager2D.instance.PlayBackgroundMusic("Heads Will Roll");
         transform.root.gameObject.SetActive(false);
     }
     private void LobbyManager_OnLeftLobby(object sender, System.EventArgs e) {
