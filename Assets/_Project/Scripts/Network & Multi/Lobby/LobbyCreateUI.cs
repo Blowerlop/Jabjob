@@ -35,18 +35,29 @@ public class LobbyCreateUI : MonoBehaviour {
                 Debug.Log("Choose a map before creating the lobby !");
                 return;
             }
-            LobbyManager.Instance.CreateLobby(
+            try
+            {
+                LobbyManager.Instance.CreateLobby(
                 isPrivate,
                 gameMode,
                 gameMapSceneName
             );
+            }
+            catch(Exception e)
+            {
+                Debug.Log("rickroll");
+            }
             Hide();
         });
+
+
+
         publicPrivateButton.onClick.AddListener(() => {
             isPrivate = !isPrivate;
             UpdateText();
         });
  
+
         gameModeButton.onClick.AddListener(() => {
             var values = (LobbyManager.GameMode[])Enum.GetValues(typeof(LobbyManager.GameMode));
             var index = Array.IndexOf(values, gameMode);
