@@ -13,9 +13,25 @@ namespace Project
         public TextMeshProUGUI buttonText;
         public float sizeIncrease;
         public Color baseColor, enterColor, clickColor;
-
         bool isUpscaled = false;
+        RectTransform thisTranform;
+        Animator animator;
 
+        public void Start()
+        {
+            thisTranform = GetComponent<RectTransform>();
+            animator = GetComponent<Animator>();
+        }
+        public void MoveUI()
+        {
+            if (animator == null) return;
+            animator.SetBool("isHover", true);
+        }
+        public void unMoveUI()
+        {
+            if (animator == null) return;
+            animator.SetBool("isHover", false);
+        }
         public void Upscale()
         {
             if (!isUpscaled)
@@ -41,6 +57,7 @@ namespace Project
                 case "Enter":
                     buttonText.color = enterColor;
                     Upscale();
+                    MoveUI();
                     break;
                 case "Click":
                     buttonText.color = clickColor;
@@ -48,6 +65,7 @@ namespace Project
                 case "Exit":
                     buttonText.color = baseColor;
                     Downscale();
+                    unMoveUI();
                     break;
                 default:
                     break;

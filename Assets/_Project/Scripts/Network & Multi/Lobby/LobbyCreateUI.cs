@@ -28,27 +28,20 @@ public class LobbyCreateUI : MonoBehaviour {
 
     private void Awake() {
         Instance = this;
-
         createButton.onClick.AddListener(() => {
             if (gameMapSceneName == "")
             {
                 Debug.Log("Choose a map before creating the lobby !");
                 return;
             }
-            try
-            {
-                LobbyManager.Instance.CreateLobby(
-                isPrivate,
-                gameMode,
-                gameMapSceneName
+            LobbyManager.Instance.CreateLobby(
+            isPrivate,
+            gameMode,
+            gameMapSceneName
             );
-            }
-            catch(Exception e)
-            {
-                Debug.Log("rickroll");
-            }
             Hide();
         });
+
 
 
 
