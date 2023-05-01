@@ -11,7 +11,7 @@ public class LobbyCreateUI : MonoBehaviour {
 
     public static LobbyCreateUI Instance { get; private set; }
 
-
+    [SerializeField] private Button closeButton;
     [SerializeField] private Button createButton;
     [SerializeField] private Button publicPrivateButton;
     [SerializeField] private Button gameModeButton;
@@ -43,6 +43,10 @@ public class LobbyCreateUI : MonoBehaviour {
         });
 
 
+        closeButton.onClick.AddListener(() =>
+        {
+            Hide();
+        });
 
 
         publicPrivateButton.onClick.AddListener(() => {

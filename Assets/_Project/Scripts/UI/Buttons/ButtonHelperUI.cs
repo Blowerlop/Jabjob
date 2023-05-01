@@ -8,11 +8,12 @@ using UnityEngine.EventSystems;
 
 namespace Project
 {
-    public class FontModifier : MonoBehaviour
+    public class ButtonHelperUI : MonoBehaviour
     {
         public TextMeshProUGUI buttonText;
         public float sizeIncrease;
         public Color baseColor, enterColor, clickColor;
+        public GameObject ToolTip;
         bool isUpscaled = false;
         RectTransform thisTranform;
         Animator animator;
@@ -50,6 +51,14 @@ namespace Project
             }
         }
 
+        public void ShowToolTip()
+        {
+            ToolTip.SetActive(true);
+        }
+        public void HideToolTip()
+        {
+            ToolTip.SetActive(false);
+        }
         public void ChangeFont(string Event)
         {
             switch (Event)
