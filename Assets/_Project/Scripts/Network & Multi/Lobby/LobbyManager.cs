@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using _Project.Scripts.Managers;
+using TMPro;
 using Unity.Netcode;
 using Unity.Services.Authentication;
 using Unity.Services.Core;
@@ -12,6 +13,7 @@ using UnityEngine;
 public class LobbyManager : MonoBehaviour {
 
 
+    #region Public Attributes
     public static LobbyManager Instance { get; private set; }
 
 
@@ -45,13 +47,17 @@ public class LobbyManager : MonoBehaviour {
         GameMode3
     }
 
+    public GameObject PopUpPrefab; 
 
+    #endregion
+
+    #region Private Attribute
     private float heartbeatTimer;
     private float lobbyPollTimer;
     private float refreshLobbyListTimer = 5f;
     private Lobby joinedLobby;
     private string playerName;
-
+    #endregion
 
     private void Awake() {
         Instance = this;
@@ -63,8 +69,6 @@ public class LobbyManager : MonoBehaviour {
 
     }
     
-    
-
     private void Update() {
         //HandleRefreshLobbyList(); // Disabled Auto Refresh for testing with multiple builds
         HandleLobbyHeartbeat();
@@ -73,6 +77,7 @@ public class LobbyManager : MonoBehaviour {
         if (Input.GetKey(KeyCode.I)) Debug.Log("Player id" + AuthenticationService.Instance.PlayerId);
     }
 
+    #region LobbyMethod
     public async void Authenticate(string playerName) {
         this.playerName = playerName;
         InitializationOptions initializationOptions = new InitializationOptions();
@@ -192,21 +197,31 @@ public class LobbyManager : MonoBehaviour {
 
     public async void CreateLobby(bool isPrivate, GameMode gameMode, string gameMapSceneName)
     {
-        Player player = GetPlayer();
-        CreateLobbyOptions options = new CreateLobbyOptions
+        try
         {
-            Player = player,
-            IsPrivate = isPrivate,
-            Data = new Dictionary<string, DataObject> {
+            Player player = GetPlayer();
+            CreateLobbyOptions options = new CreateLobbyOptions
+            {
+                Player = player,
+                IsPrivate = isPrivate,
+                Data = new Dictionary<string, DataObject> {
                 { KEY_GAME_MODE, new DataObject(DataObject.VisibilityOptions.Public, gameMode.ToString()) },
                 { KEY_RELAY_GAME, new DataObject(DataObject.VisibilityOptions.Member, "0") },
                 { KEY_GAMEMAP_NAME, new DataObject(DataObject.VisibilityOptions.Public, gameMapSceneName)}
             }
-        };
-        Lobby lobby = await LobbyService.Instance.CreateLobbyAsync(string.Concat(playerName, "'s Lobby"), maxPlayerLobby, options);
-        Debug.Log("Created " + lobby.Name);
-        joinedLobby = lobby;
-        OnJoinedLobby?.Invoke(this, new LobbyEventArgs { lobby = lobby });
+            };
+            Lobby lobby = await LobbyService.Instance.CreateLobbyAsync(string.Concat(playerName, "'s Lobby"), maxPlayerLobby, options);
+            Debug.Log("Created " + lobby.Name);
+            joinedLobby = lobby;
+            OnJoinedLobby?.Invoke(this, new LobbyEventArgs { lobby = lobby });
+        }
+        catch(Exception e)
+        {
+            Debug.LogError(e);
+            GameObject PopupGO = Instantiate(PopUpPrefab);
+            PopupGO.GetComponent<Project.MessagePopUpUI>().Message.text = "Lobby creation failed. Please retry.";
+        }
+
     }
     public async void CreateLobby(string lobbyName, bool isPrivate, GameMode gameMode) {
         Player player = GetPlayer();
@@ -271,9 +286,20 @@ public class LobbyManager : MonoBehaviour {
     public async void JoinLobby(Lobby lobby) {
         Player player = GetPlayer();
 
-        joinedLobby = await LobbyService.Instance.JoinLobbyByIdAsync(lobby.Id, new JoinLobbyByIdOptions {
-            Player = player
-        });
+        try
+        {
+            joinedLobby = await LobbyService.Instance.JoinLobbyByIdAsync(lobby.Id, new JoinLobbyByIdOptions
+            {
+                Player = player
+            });
+        }
+        
+        catch (Exception e)
+        {
+            Debug.LogError(e);
+            GameObject PopupGO = Instantiate(PopUpPrefab);
+            PopupGO.GetComponent<Project.MessagePopUpUI>().Message.text = "Lobby join failed. Please retry.";
+        }
 
         OnJoinedLobby?.Invoke(this, new LobbyEventArgs { lobby = lobby });
     }
@@ -328,6 +354,8 @@ public class LobbyManager : MonoBehaviour {
                 OnLeftLobby?.Invoke(this, EventArgs.Empty);
             } catch (LobbyServiceException e) {
                 Debug.Log(e);
+                GameObject PopupGO = Instantiate(PopUpPrefab);
+                PopupGO.GetComponent<Project.MessagePopUpUI>().Message.text = "Leaving lobby failed. Please retry.";
             }
         }
     }
@@ -356,6 +384,8 @@ public class LobbyManager : MonoBehaviour {
             catch (LobbyServiceException e)
             {
                 Debug.Log(e);
+                GameObject PopupGO = Instantiate(PopUpPrefab);
+                PopupGO.GetComponent<Project.MessagePopUpUI>().Message.text = "Starting game failed. Please retry.";
             }
         }
     }
@@ -365,6 +395,8 @@ public class LobbyManager : MonoBehaviour {
                 await LobbyService.Instance.RemovePlayerAsync(joinedLobby.Id, playerId);
             } catch (LobbyServiceException e) {
                 Debug.Log(e);
+                GameObject PopupGO = Instantiate(PopUpPrefab);
+                PopupGO.GetComponent<Project.MessagePopUpUI>().Message.text = "Kicking player failed. Please retry.";
             }
         }
     }
@@ -389,4 +421,5 @@ public class LobbyManager : MonoBehaviour {
 
     public string GetPlayerName() => playerName;
 
+    #endregion
 }

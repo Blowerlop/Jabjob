@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Unity.Services.Lobbies.Models;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class LobbyListUI : MonoBehaviour {
 
@@ -16,6 +17,7 @@ public class LobbyListUI : MonoBehaviour {
     [SerializeField] private Transform container;
     [SerializeField] private Button refreshButton;
     [SerializeField] private Button createLobbyButton;
+    [SerializeField] private TextMeshProUGUI emptyText;
 
 
     private void Awake() {
@@ -25,7 +27,7 @@ public class LobbyListUI : MonoBehaviour {
 
         refreshButton.onClick.AddListener(RefreshButtonClick);
         createLobbyButton.onClick.AddListener(CreateLobbyButtonClick);
-    } 
+    }
 
     private void Start() {
         LobbyManager.Instance.OnLobbyListChanged += LobbyManager_OnLobbyListChanged;
@@ -57,12 +59,16 @@ public class LobbyListUI : MonoBehaviour {
             Destroy(child.gameObject);
         }
 
+        emptyText.gameObject.SetActive(lobbyList.Count == 0);
+
         foreach (Lobby lobby in lobbyList) {
             Transform lobbySingleTransform = Instantiate(lobbySingleTemplate, container);
             lobbySingleTransform.gameObject.SetActive(true);
             LobbyListSingleUI lobbyListSingleUI = lobbySingleTransform.GetComponent<LobbyListSingleUI>();
             lobbyListSingleUI.UpdateLobby(lobby);
         }
+
+
     }
 
     private void RefreshButtonClick() {

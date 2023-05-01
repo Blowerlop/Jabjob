@@ -8,15 +8,21 @@ public class SoundManager2D : MonoBehaviour
 
     public AudioSource uiSound, backgroundMusic;
 
-    public SoundList[] soundList;
-    private Dictionary<string, AudioClip> _soundListDico = new Dictionary<string, AudioClip>();
+    public SoundList[] soundListBackground;
+    public SoundList[] soundListUI;
+    private Dictionary<string, AudioClip> _soundListDicoBackground = new Dictionary<string, AudioClip>();
+    private Dictionary<string, AudioClip> _soundListDicoUI = new Dictionary<string, AudioClip>();
 
     private void Awake()
     {
         instance = this;
-        for (int i = 0; i < soundList.Length; i++)
+        for (int i = 0; i < soundListBackground.Length; i++)
         {
-            if (soundList[i].name != null && soundList[i].sound != null) _soundListDico.Add(soundList[i].name, soundList[i].sound);
+            if (soundListBackground[i].name != null && soundListBackground[i].sound != null) _soundListDicoBackground.Add(soundListBackground[i].name, soundListBackground[i].sound);
+        }
+        for (int i = 0; i < soundListUI.Length; i++)
+        {
+            if (soundListUI[i].name != null && soundListUI[i].sound != null) _soundListDicoUI.Add(soundListUI[i].name, soundListUI[i].sound);
         }
     }
 
@@ -26,19 +32,19 @@ public class SoundManager2D : MonoBehaviour
     }
     public void PlayBackgroundMusic(string name)
     {
-        if (!_soundListDico.ContainsKey(name)) Debug.LogError("Mauvais string pour la musique de fond : " + name);
+        if (!_soundListDicoBackground.ContainsKey(name)) Debug.LogError("Mauvais string pour la musique de fond : " + name);
         else
         {
             backgroundMusic.Stop();
-            backgroundMusic.clip = _soundListDico[name];
+            backgroundMusic.clip = _soundListDicoBackground[name];
             backgroundMusic.Play();
         }
     }
 
     public void PlayUISound(string name)
     {
-        if (!_soundListDico.ContainsKey(name)) Debug.LogError("Mauvais string pour le son UI : " + name);
-        else uiSound.PlayOneShot(_soundListDico[name]);
+        if (!_soundListDicoUI.ContainsKey(name)) Debug.LogError("Mauvais string pour le son UI : " + name);
+        else uiSound.PlayOneShot(_soundListDicoUI[name]);
     }
 
 }

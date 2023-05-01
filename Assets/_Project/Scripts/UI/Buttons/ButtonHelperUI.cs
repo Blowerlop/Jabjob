@@ -8,14 +8,31 @@ using UnityEngine.EventSystems;
 
 namespace Project
 {
-    public class FontModifier : MonoBehaviour
+    public class ButtonHelperUI : MonoBehaviour
     {
         public TextMeshProUGUI buttonText;
         public float sizeIncrease;
         public Color baseColor, enterColor, clickColor;
-
+        public GameObject ToolTip;
         bool isUpscaled = false;
+        RectTransform thisTranform;
+        Animator animator;
 
+        public void Start()
+        {
+            thisTranform = GetComponent<RectTransform>();
+            animator = GetComponent<Animator>();
+        }
+        public void MoveUI()
+        {
+            if (animator == null) return;
+            animator.SetBool("isHover", true);
+        }
+        public void unMoveUI()
+        {
+            if (animator == null) return;
+            animator.SetBool("isHover", false);
+        }
         public void Upscale()
         {
             if (!isUpscaled)
@@ -34,6 +51,14 @@ namespace Project
             }
         }
 
+        public void ShowToolTip()
+        {
+            ToolTip.SetActive(true);
+        }
+        public void HideToolTip()
+        {
+            ToolTip.SetActive(false);
+        }
         public void ChangeFont(string Event)
         {
             switch (Event)
@@ -41,6 +66,7 @@ namespace Project
                 case "Enter":
                     buttonText.color = enterColor;
                     Upscale();
+                    MoveUI();
                     break;
                 case "Click":
                     buttonText.color = clickColor;
@@ -48,6 +74,7 @@ namespace Project
                 case "Exit":
                     buttonText.color = baseColor;
                     Downscale();
+                    unMoveUI();
                     break;
                 default:
                     break;
