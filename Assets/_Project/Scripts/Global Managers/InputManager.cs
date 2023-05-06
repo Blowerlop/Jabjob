@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
+using _Project.Scripts.Managers;
 using Project;
 using UnityEngine;
 using UnityEngine.Events;
@@ -10,15 +11,15 @@ using UnityEngine.Serialization;
 using Event = Project.Event;
 
 
-public class InputManager : MonoBehaviour
+public class InputManager : Singleton<InputManager>
 {
     #region Singleton
 
-    public static InputManager instance { get; private set; }
-
-    private void Awake()
+    public override void Awake()
     {
-        instance = this;
+        keepAlive = false;
+        base.Awake();
+        
         _playerInput = GetComponent<PlayerInput>();
     }
 
@@ -35,7 +36,12 @@ public class InputManager : MonoBehaviour
     public bool isWeaponSelectionOpen;
     public Event onEscapePressed = new Event(nameof(onEscapePressed));
 
-    [FormerlySerializedAs("playerInput")] [FormerlySerializedAs("PlayerInput")] public PlayerInput _playerInput;
+    public PlayerInput _playerInput;
+    
+    #if UNITY_EDITOR
+    [Header("EDITOR ONLY")] [SerializeField]
+    private KeyCode keyToGoTheMenu = KeyCode.M; 
+    #endif
 
     #endregion
 
@@ -113,4 +119,16 @@ public class InputManager : MonoBehaviour
     
 
     #endregion
+    
+    
+    
+    #if UNITY_EDITOR
+    private void Update()
+    {
+        if (Input.GetKeyDown(keyToGoTheMenu))
+        {
+            SceneManager.LoadSceneAsyncLocal(SceneManager.EScene.MenuScene);
+        }
+    }
+#endif
 }

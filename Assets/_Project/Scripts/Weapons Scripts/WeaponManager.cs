@@ -53,6 +53,7 @@ public class WeaponManager : NetworkBehaviour
 
     #endregion
 
+    
     #region Methods
 
     private void EquipCurrentWeaponNetwork(byte currentValue, byte newValue)
@@ -111,8 +112,6 @@ public class WeaponManager : NetworkBehaviour
         }
     }
     #endregion
-
-
 }
 
 

@@ -36,14 +36,17 @@ public class ObjectPoolingManager : MonoBehaviour
     /// <summary>
     /// Get a gameobject from ObjectPoolingManager.objects
     /// </summary>
-    public GameObject GetObject()
+    public GameObject GetObject(bool setActiveAuto)
     {
         GameObject go;
         if (objects.Count > 0)
         {
             go = objects[0];
             objects.Remove(objects[0]);
-            go.SetActive(true);
+            if (setActiveAuto)
+            {
+                go.SetActive(true);
+            }
         }
         else
         {

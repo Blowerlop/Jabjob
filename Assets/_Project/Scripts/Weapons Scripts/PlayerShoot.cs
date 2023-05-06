@@ -28,6 +28,9 @@ namespace Project
         [Header("Debug")] 
         [SerializeField] private bool _showDebug;
         [SerializeField] private AudioSource _audioSource;
+
+
+        public GameObject projectile;
         #endregion
 
 
@@ -126,13 +129,16 @@ namespace Project
             {
                 for (int i = 0; i < _weaponData.bulletNumber; i++)
                 {
-                    GameObject go = ObjectPoolingManager.instance.GetObject();
+                    GameObject go = ObjectPoolingManager.instance.GetObject(true);
+                    // GameObject go = Instantiate(projectile);
                     go.GetComponent<WeaponProjectile>().Init(isTheShooter, _weaponData.dispersion, _weaponData.bulletSpeed, _weaponData.damage, weaponHolderPosition, _collider, rootCameraPosition, hitPoint, OwnerClientId);
                 }
             }
             else
             {
-                GameObject go = ObjectPoolingManager.instance.GetObject();
+                GameObject go = ObjectPoolingManager.instance.GetObject(true);
+                // GameObject go = Instantiate(projectile);
+
                 go.GetComponent<WeaponProjectile>().Init(isTheShooter, _weaponData.dispersion, _weaponData.bulletSpeed, _weaponData.damage, weaponHolderPosition, _collider, rootCameraPosition, hitPoint, OwnerClientId);
             }
 

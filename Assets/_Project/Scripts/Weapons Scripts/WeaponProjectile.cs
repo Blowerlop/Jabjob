@@ -1,5 +1,7 @@
+using System;
 using System.Collections;
 using Project;
+using Project.Utilities;
 using UnityEngine;
 using UnityEngine.Serialization;
 using Random = UnityEngine.Random;
@@ -21,10 +23,8 @@ public class WeaponProjectile : MonoBehaviour
     private Vector3 _bulletDirection;
     private ulong _ownerId;
 
-    private bool _hasInit = false;
-    
     // References
-    [FormerlySerializedAs("_onTriggerEnterEvent")] [SerializeField] private OnTriggerEnterEventClass _onTriggerEnterEventClass;
+    [SerializeField] private OnTriggerEnterEventClass _onTriggerEnterEventClass;
     private Collider _colliderOfBulletOwner;
 
 
@@ -36,12 +36,6 @@ public class WeaponProjectile : MonoBehaviour
     private Vector3 _initialPosition2;
     [SerializeField] private Timer _timer;
     #endif
-
-    //Vector3 target;
-
-    
-
-    
     #endregion
     
 
@@ -51,14 +45,18 @@ public class WeaponProjectile : MonoBehaviour
     {
         _onTriggerEnterEventClass.@event.Subscribe(OnTriggerEnter, this);
     }
-
-    void Update()
+    
+    private void OnDisable()
     {
-        if (_hasInit)
-        {
-            _rigidbodyPhysicsProjectile.velocity = _rigidbodyPhysicsProjectile.transform.forward * _projectileSpeed;
-            _rigidbodyVisualProjectile.velocity = _rigidbodyVisualProjectile.transform.forward * _projectileSpeed;
-        }
+        _rigidbodyPhysicsProjectile.ResetVelocities();
+        _rigidbodyVisualProjectile.ResetVelocities();
+
+    }
+
+    void FixedUpdate()
+    {
+        _rigidbodyPhysicsProjectile.velocity = _rigidbodyPhysicsProjectile.transform.forward * _projectileSpeed;
+        _rigidbodyVisualProjectile.velocity = _rigidbodyVisualProjectile.transform.forward * _projectileSpeed;
     }
      
     private void OnTriggerEnter(Collider other)
@@ -80,29 +78,16 @@ public class WeaponProjectile : MonoBehaviour
         ObjectPoolingManager.instance.ReturnGameObject(gameObject);
     }
     
-    #endregion
+    #endregion 
     
     
     #region Methods
     
-    /// <summary>
-    /// Initialize bullet
-    /// </summary>
-    // public void Init(Vector3 _target, float disp, bool isOwner)
-    // {
-    //     this._isOwner = isOwner;
-    //     target = _target;
-    //     transform.LookAt(target);
-    //     RandomizeRotation(disp);
-    //     //StartCoroutine(DestroyProjectileCooldown());
-    // }
-
     public void Init(bool isBulletOwner, float projectileDispersion, float projectileSpeed, int projectileDamage,
         Vector3 weaponHolderPosition, Collider playerCollider, Vector3 rootCameraPosition, Vector3 collisionPoint, ulong ownerId)
     {
         // Global projectile setup
         _isOwner = isBulletOwner;
-        RandomizeRotation(projectileDispersion);
         _projectileSpeed = projectileSpeed;
         _projectileDamage = projectileDamage;
         _colliderOfBulletOwner = playerCollider;
@@ -118,16 +103,17 @@ public class WeaponProjectile : MonoBehaviour
         _rigidbodyVisualProjectile.position = weaponHolderPosition;
         direction = collisionPoint - _rigidbodyVisualProjectile.position;
         _rigidbodyVisualProjectile.transform.rotation = Quaternion.LookRotation(direction, _rigidbodyVisualProjectile.transform.up);
+        
+        RandomizeRotation(projectileDispersion);
+
 
 
 #if UNITY_EDITOR
         _initialPosition = weaponHolderPosition;
         _initialPosition2 = rootCameraPosition;;
 #endif
-
-        StartCoroutine(DestroyProjectileCooldown());
         
-        _hasInit = true;
+        StartCoroutine(DestroyProjectileCooldown());
     }
 
     /// <summary>
