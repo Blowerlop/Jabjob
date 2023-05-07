@@ -119,19 +119,29 @@ public class WeaponManager : NetworkBehaviour
 [CustomEditor(typeof(WeaponManager)), CanEditMultipleObjects]
 public class WeaponManagerEditor : Editor
 {
-    public Object weapon;
+    public Object weaponPrefab;
+    public Object weaponScriptable;
     
     public override void OnInspectorGUI()
     {
         base.OnInspectorGUI();
         WeaponManager t = target as WeaponManager;
-
-        weapon = EditorGUILayout.ObjectField(weapon, typeof(Weapon), true);
-
+        if (t == null) return;
+        
+        weaponPrefab = EditorGUILayout.ObjectField(weaponPrefab, typeof(Weapon), true);
+        weaponScriptable = EditorGUILayout.ObjectField(weaponScriptable, typeof(SOWeapon), true);
 
         if (GUILayout.Button("EquipWeapon"))
         {
-            if (t != null) t.EquipWeaponLocal(weapon as Weapon);
+            if (weaponPrefab != null) t.EquipWeaponLocal(weaponPrefab as Weapon);
+            else if (weaponScriptable != null)
+            {
+                SOWeapon weapon = weaponScriptable as SOWeapon;;
+                t.EquipWeaponLocal(weapon.prefab.GetComponent<Weapon>());
+            }
+
+            weaponPrefab = null;
+            weaponScriptable = null;
         }
     }
 }

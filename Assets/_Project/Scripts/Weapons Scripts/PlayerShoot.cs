@@ -9,7 +9,8 @@ namespace Project
     {
         #region Variables
 
-        [Header("Shoot state")]
+        [Header("Shoot state")] 
+        [SerializeField] private Color _paintColor;
         private float _nextShoot;
         private float _shootRate;
         //private Vector3 _hitPointClient = Vector3.zero;
@@ -83,14 +84,30 @@ namespace Project
                     Vector3 weaponHolderPosition = _weaponHolder.position;
                     Vector3 rootCameraPosition = _rootCamera.position;
                     
-                    Vector3 direction = Vector3.zero;
-                    if (Physics.Raycast(_rootCamera.position, _rootCamera.forward, out RaycastHit hit,
-                            Mathf.Infinity, _shootLayerMask))
+                    if (_weaponData.raycast)
                     {
-                        direction = hit.point;
+                        if (Physics.Raycast(_rootCamera.position, _rootCamera.forward, out RaycastHit hit,
+                                Mathf.Infinity, _shootLayerMask))
+                        {
+                            if (hit.transform.TryGetComponent(out Paintable paintable))
+                            {
+                                PaintManager.instance.Paint(paintable, hit.point, _weaponData.paintRadius, _weaponData.paintHardness, _weaponData.paintStrength, _paintColor);
+                            }
+                            
+                        }
                     }
-                    LocalShoot(true, weaponHolderPosition, rootCameraPosition, direction);
-                    ShootServerRpc(weaponHolderPosition, rootCameraPosition, direction);
+                    else
+                    {
+                        Vector3 direction = Vector3.zero;
+                        if (Physics.Raycast(_rootCamera.position, _rootCamera.forward, out RaycastHit hit,
+                                Mathf.Infinity, _shootLayerMask))
+                        {
+                            direction = hit.point;
+                        }
+                        
+                        LocalShoot(true, weaponHolderPosition, rootCameraPosition, direction);
+                        ShootServerRpc(weaponHolderPosition, rootCameraPosition, direction);
+                    }
                 }
             }
             if (!InputManager.instance.isShooting)
@@ -129,17 +146,17 @@ namespace Project
             {
                 for (int i = 0; i < _weaponData.bulletNumber; i++)
                 {
-                    GameObject go = ObjectPoolingManager.instance.GetObject(true);
+                    GameObject go = ObjectPoolingManager.instance.GetObject();
                     // GameObject go = Instantiate(projectile);
-                    go.GetComponent<WeaponProjectile>().Init(isTheShooter, _weaponData.dispersion, _weaponData.bulletSpeed, _weaponData.damage, weaponHolderPosition, _collider, rootCameraPosition, hitPoint, OwnerClientId);
+                    go.GetComponent<WeaponProjectile>().Init(isTheShooter, _weaponData.dispersion, _weaponData.bulletSpeed, _weaponData.damage, weaponHolderPosition, _collider, rootCameraPosition, hitPoint, OwnerClientId, _weaponData.paintRadius, _weaponData.paintStrength, _weaponData.paintHardness, _paintColor);
                 }
             }
             else
             {
-                GameObject go = ObjectPoolingManager.instance.GetObject(true);
+                GameObject go = ObjectPoolingManager.instance.GetObject();
                 // GameObject go = Instantiate(projectile);
 
-                go.GetComponent<WeaponProjectile>().Init(isTheShooter, _weaponData.dispersion, _weaponData.bulletSpeed, _weaponData.damage, weaponHolderPosition, _collider, rootCameraPosition, hitPoint, OwnerClientId);
+                go.GetComponent<WeaponProjectile>().Init(isTheShooter, _weaponData.dispersion, _weaponData.bulletSpeed, _weaponData.damage, weaponHolderPosition, _collider, rootCameraPosition, hitPoint, OwnerClientId, _weaponData.paintRadius, _weaponData.paintStrength, _weaponData.paintHardness, _paintColor);
             }
 
             _audioSource.PlayOneShot(_weaponData.FiringSound);

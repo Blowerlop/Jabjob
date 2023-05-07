@@ -26,8 +26,10 @@ public class WeaponProjectile : MonoBehaviour
     // References
     [SerializeField] private OnTriggerEnterEventClass _onTriggerEnterEventClass;
     private Collider _colliderOfBulletOwner;
+    private CollisionPainter _collisionPainter;
 
 
+    public float mult = 0.1f;
 
 #if UNITY_EDITOR
     [Header("Debug")]
@@ -40,6 +42,11 @@ public class WeaponProjectile : MonoBehaviour
     
 
     #region Updates
+
+    private void Awake()
+    {
+        _collisionPainter = GetComponentInChildren<CollisionPainter>();
+    }
 
     public void Start()
     {
@@ -55,8 +62,8 @@ public class WeaponProjectile : MonoBehaviour
 
     void FixedUpdate()
     {
-        _rigidbodyPhysicsProjectile.velocity = _rigidbodyPhysicsProjectile.transform.forward * _projectileSpeed;
-        _rigidbodyVisualProjectile.velocity = _rigidbodyVisualProjectile.transform.forward * _projectileSpeed;
+        _rigidbodyPhysicsProjectile.velocity = Vector3.Lerp(_rigidbodyPhysicsProjectile.velocity, _rigidbodyPhysicsProjectile.transform.forward * _projectileSpeed, Time.fixedDeltaTime * mult);
+        _rigidbodyVisualProjectile.velocity = Vector3.Lerp(_rigidbodyVisualProjectile.velocity, _rigidbodyVisualProjectile.transform.forward * _projectileSpeed, Time.fixedDeltaTime * mult);
     }
      
     private void OnTriggerEnter(Collider other)
@@ -84,7 +91,7 @@ public class WeaponProjectile : MonoBehaviour
     #region Methods
     
     public void Init(bool isBulletOwner, float projectileDispersion, float projectileSpeed, int projectileDamage,
-        Vector3 weaponHolderPosition, Collider playerCollider, Vector3 rootCameraPosition, Vector3 collisionPoint, ulong ownerId)
+        Vector3 weaponHolderPosition, Collider playerCollider, Vector3 rootCameraPosition, Vector3 collisionPoint, ulong ownerId, float paintRadius, float paintStrength, float paintHardness, Color paintColor)
     {
         // Global projectile setup
         _isOwner = isBulletOwner;
@@ -106,7 +113,8 @@ public class WeaponProjectile : MonoBehaviour
         
         RandomizeRotation(projectileDispersion);
 
-
+        _collisionPainter.UpdateParams(paintRadius, paintStrength, paintHardness, paintColor);
+        
 
 #if UNITY_EDITOR
         _initialPosition = weaponHolderPosition;

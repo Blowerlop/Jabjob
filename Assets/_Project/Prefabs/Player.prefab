@@ -1507,12 +1507,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b9cf145c96197f141b1534c7761acf35, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _paintColor: {r: 1, g: 0, b: 0, a: 1}
   _rootCamera: {fileID: 8130439777759429579}
   _shootLayerMask:
     serializedVersion: 2
     m_Bits: 115
   _showDebug: 0
   _audioSource: {fileID: 5431214831792318192}
+  projectile: {fileID: 0}
 --- !u!95 &8996530816311542642
 Animator:
   serializedVersion: 4

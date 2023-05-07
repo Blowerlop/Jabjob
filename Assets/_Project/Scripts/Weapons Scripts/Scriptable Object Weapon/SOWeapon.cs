@@ -62,6 +62,10 @@ public class SOWeapon : ScriptableObject
 
 
 
+    [Header("Paint")] 
+    public float paintRadius = 0.76f;
+    public float paintStrength = 0.48f;
+    public float paintHardness = 0.22f;
 
 
 
