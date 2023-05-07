@@ -5,7 +5,6 @@ using Unity.Services.Authentication;
 using Unity.Services.Lobbies.Models;
 using UnityEngine;
 using UnityEngine.UI;
-
 public class LobbyUI : MonoBehaviour {
 
 
@@ -17,11 +16,12 @@ public class LobbyUI : MonoBehaviour {
     [SerializeField] private TextMeshProUGUI lobbyNameText;
     [SerializeField] private TextMeshProUGUI playerCountText;
     [SerializeField] private TextMeshProUGUI gameModeText;
+    [SerializeField] private TextMeshProUGUI gameMapText;
+    [SerializeField] private Image gameMapImage;
     [SerializeField] private Button leaveLobbyButton;
     //[SerializeField] private Button changeGameModeButton;
     [SerializeField] private Button startGameButton;
-
- 
+    [SerializeField] private Project.GameMapsUI gameMapsUI;
     private void Awake() {
         Instance = this;
 
@@ -92,15 +92,16 @@ public class LobbyUI : MonoBehaviour {
 
         lobbyNameText.text = lobby.Name;
         playerCountText.text = lobby.Players.Count + "/" + lobby.MaxPlayers;
-        gameModeText.text = lobby.Data[LobbyManager.KEY_GAME_MODE].Value;
-
+        gameModeText.text = "MODE : " + lobby.Data[LobbyManager.KEY_GAME_MODE].Value;
+        gameMapText.text = "MAP : " + gameMapsUI.GetMapName(lobby.Data[LobbyManager.KEY_GAMEMAP_NAME].Value) ;
+        gameMapImage.sprite = gameMapsUI.GetMapSprite(lobby.Data[LobbyManager.KEY_GAMEMAP_NAME].Value);
         Show();
     }
 
     private void ClearLobby() {
         foreach (Transform child in container) {
             if (child == playerSingleTemplate) continue;
-            Destroy(child.gameObject);
+            Destroy(child.gameObject); 
         }
     }
 

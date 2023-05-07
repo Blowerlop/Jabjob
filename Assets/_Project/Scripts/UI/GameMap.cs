@@ -17,6 +17,8 @@ namespace Project
         [SerializeField] private Button _button;
         [SerializeField] private Image _image;
         [SerializeField] private TMP_Text _text;
+        [SerializeField] private Image _inactiveFilter, _selectedBorder;
+        [SerializeField] private GameObject Tooltip;
         public Event<GameMap> call = new Event<GameMap>(nameof(call));
         
         private void Start()
@@ -34,11 +36,11 @@ namespace Project
             _button.onClick.RemoveListener(Invoke);
         }
 
-        
+
         public void InitializeUI()
         {
-            if (_gameMap == null) return;
-            
+            if (_gameMap == null) return; 
+
             if (_image != null)
             {
                 _image.sprite = _gameMap.sceneWallpaper;
@@ -48,11 +50,35 @@ namespace Project
             {
                 _text.text = _gameMap.mapName;
             }
-        }
 
+            if (!_gameMap.isAvailable)
+            {
+                _inactiveFilter.gameObject.SetActive(true);
+                _button.onClick.RemoveListener(Invoke);
+            }
+
+        }
         private void Invoke()
         {
             call.Invoke(this, true, this);
+        }
+        public void ShowSelectedBorder()
+        {
+            _selectedBorder.enabled = true;
+        }
+        public void HideSelectedBorder()
+        {
+            _selectedBorder.enabled = false;
+        }
+        public void ShowToolTip()
+        {
+            if (_gameMap.isAvailable) return;
+            Tooltip.SetActive(true);
+        }
+        public void HideToolTip()
+        { 
+            if (_gameMap.isAvailable) return;
+            Tooltip.SetActive(false);
         }
     }
 }

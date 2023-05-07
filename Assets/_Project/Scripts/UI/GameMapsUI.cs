@@ -68,6 +68,24 @@ namespace Project
                 gameMaps[i].call.Unsubscribe(call);
             }
         }
+
+        public string GetMapName(string KeyGameMap)
+        {
+            for(int i = 0; i < _gameMaps.Length; i++)
+            {
+                if (_gameMaps[i].sceneName == KeyGameMap) return _gameMaps[i].mapName;
+            }
+            return "Error : Couldn't find KEYGAME_MAP";
+        }
+
+        public Sprite GetMapSprite(string keyGameMap)
+        {
+            for (int i = 0; i < _gameMaps.Length; i++)
+            {
+                if (_gameMaps[i].sceneName == keyGameMap) return _gameMaps[i].sceneWallpaper;
+            }
+            return null;
+        }
     }
     
     #if UNITY_EDITOR

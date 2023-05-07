@@ -19,6 +19,7 @@ public class LobbyCreateUI : MonoBehaviour {
     [SerializeField] private TextMeshProUGUI publicPrivateText;
     [SerializeField] private TextMeshProUGUI gameModeText;
     [SerializeField] private GameMapsUI _gameMaps;
+    [SerializeField] private GameObject _popUpMessage;
 
 
     private string lobbyName;
@@ -32,6 +33,8 @@ public class LobbyCreateUI : MonoBehaviour {
             if (gameMapSceneName == "")
             {
                 Debug.Log("Choose a map before creating the lobby !");
+                GameObject popUp = Instantiate(_popUpMessage);
+                popUp.GetComponent<MessagePopUpUI>().Message.text = "Please choose a map before creating the lobby.";
                 return;
             }
             LobbyManager.Instance.CreateLobby(
