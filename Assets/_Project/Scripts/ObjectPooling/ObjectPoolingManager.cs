@@ -44,6 +44,7 @@ public class ObjectPoolingManager : MonoBehaviour
             go = objects[0];
             objects.Remove(objects[0]);
             go.SetActive(true);
+
         }
         else
         {

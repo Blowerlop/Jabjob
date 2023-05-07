@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Cinemachine;
 using Unity.Netcode;
@@ -42,7 +43,7 @@ namespace Project
             public void CoroutineStop(Coroutine coroutine) => StopCoroutine(coroutine);
             public void CoroutineStop(IEnumerator coroutine) => StopCoroutine(coroutine);
             public void CoroutineStop(string methodName) => StopCoroutine(methodName);
-            
+
             #endregion
         }
         
@@ -160,6 +161,30 @@ namespace Project
                     {
                         Object.Destroy(transform.GetChild(i).gameObject);
                     }
+                }
+
+                List<Transform> a = new List<Transform>();
+            }
+
+            public static void ResetVelocities(this Rigidbody rigidbody)
+            {
+                rigidbody.velocity = Vector3.zero;
+                rigidbody.angularVelocity = Vector3.zero;
+            }
+
+            public static void ForInRange<T>(this IList<T> target, Action<T> action)
+            {
+                for (int i = 0; i < target.Count; i++)
+                {
+                    action.Invoke(target[i]);
+                }
+            }
+            
+            public static void ForEach<T>(this IList<T> target, Action<T> action)
+            {
+                foreach (T t in target)
+                {
+                    action.Invoke(t);
                 }
             }
         }

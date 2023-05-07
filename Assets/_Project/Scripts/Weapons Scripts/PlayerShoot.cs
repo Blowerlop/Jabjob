@@ -1,6 +1,10 @@
+using System;
 using System.Collections;
+using System.Reflection;
 using Unity.Netcode;
 using UnityEngine;
+using Object = UnityEngine.Object;
+
 
 namespace Project
 {
@@ -9,7 +13,8 @@ namespace Project
     {
         #region Variables
 
-        [Header("Shoot state")]
+        [Header("Shoot state")] 
+        [SerializeField] private Color _paintColor;
         private float _nextShoot;
         private float _shootRate;
         //private Vector3 _hitPointClient = Vector3.zero;
@@ -23,11 +28,15 @@ namespace Project
         private Transform _weaponHolder;
         [SerializeField] private Transform _rootCamera;
         private Collider _collider;
-        [SerializeField] private LayerMask _shootLayerMask;
+        [SerializeField] private LayerMask _shootLayerMaskPhysics;
+        [SerializeField] private LayerMask _shootLayerMaskNoPhysics;
  
         [Header("Debug")] 
         [SerializeField] private bool _showDebug;
         [SerializeField] private AudioSource _audioSource;
+
+
+        public GameObject projectile;
         #endregion
 
 
@@ -42,6 +51,8 @@ namespace Project
         private void Start()
         {
             _weaponHolder = _weaponManager.weaponHandler.transform;
+            
+            Physics.IgnoreCollision(_collider, _collider, true);
         }
 
         public void OnEnable()
@@ -80,14 +91,40 @@ namespace Project
                     Vector3 weaponHolderPosition = _weaponHolder.position;
                     Vector3 rootCameraPosition = _rootCamera.position;
                     
-                    Vector3 direction = Vector3.zero;
-                    if (Physics.Raycast(_rootCamera.position, _rootCamera.forward, out RaycastHit hit,
-                            Mathf.Infinity, _shootLayerMask))
+                    if (_weaponData.raycast)
                     {
-                        direction = hit.point;
+                        if (Physics.Raycast(_rootCamera.position, _rootCamera.forward, out RaycastHit hit,
+                                Mathf.Infinity, _shootLayerMaskNoPhysics))
+                        {
+                            if (hit.transform.TryGetComponent(out Paintable paintable))
+                            {
+                                var id = hit.colliderInstanceID;
+                                LocalShoot(true, weaponHolderPosition, rootCameraPosition, hit.point, true);
+                                ShootServerRpc(weaponHolderPosition, rootCameraPosition, hit.point, true);
+                            }
+                            
+                            if (hit.transform.TryGetComponent(out IHealthManagement healthManagement))
+                            {
+                                Debug.Log("Hit");
+                                healthManagement.Damage(_weaponData.damage, OwnerClientId);
+                            }
+                            
+                            
+                            
+                        }
                     }
-                    LocalShoot(true, weaponHolderPosition, rootCameraPosition, direction);
-                    ShootServerRpc(weaponHolderPosition, rootCameraPosition, direction);
+                    else
+                    {
+                        Vector3 direction = Vector3.zero;
+                        if (Physics.Raycast(_rootCamera.position, _rootCamera.forward, out RaycastHit hit,
+                                Mathf.Infinity, _shootLayerMaskPhysics))
+                        {
+                            direction = hit.point;
+                        }
+                        
+                        LocalShoot(true, weaponHolderPosition, rootCameraPosition, direction, false);
+                        ShootServerRpc(weaponHolderPosition, rootCameraPosition, direction, false);
+                    }
                 }
             }
             if (!InputManager.instance.isShooting)
@@ -103,38 +140,65 @@ namespace Project
         #region Methods
 
         [ServerRpc]
-        private void ShootServerRpc(Vector3 weaponHolderPosition, Vector3 rootCameraPosition, Vector3 hitPoint)
+        private void ShootServerRpc(Vector3 weaponHolderPosition, Vector3 rootCameraPosition, Vector3 hitPoint, bool isRaycast)
         {
-            ShootClientRpc(weaponHolderPosition, rootCameraPosition, hitPoint);
+            ShootClientRpc(weaponHolderPosition, rootCameraPosition, hitPoint, isRaycast);
         }
 
 
         [ClientRpc]
-        private void ShootClientRpc(Vector3 weaponHolderPosition, Vector3 rootCameraPosition, Vector3 hitPoint)
+        private void ShootClientRpc(Vector3 weaponHolderPosition, Vector3 rootCameraPosition, Vector3 hitPoint, bool isRaycast)
         {
-            if (IsOwner == false) LocalShoot(false, weaponHolderPosition, rootCameraPosition, hitPoint);
+            if (IsOwner == false) LocalShoot(false, weaponHolderPosition, rootCameraPosition, hitPoint, isRaycast);
         }
-
-        private void LocalShoot(bool isTheShooter, Vector3 weaponHolderPosition, Vector3 rootCameraPosition, Vector3 hitPoint)
+        
+        private void LocalShoot(bool isTheShooter, Vector3 weaponHolderPosition, Vector3 rootCameraPosition, Vector3 hitPoint, bool isRaycast)
         {
-            if (_showDebug)
+            if (isRaycast)
             {
-            }
-            
-
-            if (_weaponData.spray)
-            {
-                for (int i = 0; i < _weaponData.bulletNumber; i++)
+                Paintable paintable = null;
+                var a = Physics.OverlapSphere(hitPoint, 0.25f);
+                for (int i = 0; i < a.Length; i++)
                 {
-                    GameObject go = ObjectPoolingManager.instance.GetObject();
-                    go.GetComponent<WeaponProjectile>().Init(isTheShooter, _weaponData.dispersion, _weaponData.bulletSpeed, _weaponData.damage, weaponHolderPosition, _collider, rootCameraPosition, hitPoint, OwnerClientId);
+                    if (a[i].TryGetComponent(out paintable))
+                    {
+                        break;
+                    }
+                }
+
+                if (paintable == null) return;
+                
+                if (_weaponData.spray)
+                {
+                    for (int i = 0; i < _weaponData.bulletNumber; i++)
+                    {
+                        PaintManager.instance.Paint(paintable, hitPoint, _weaponData.paintRadius, _weaponData.paintHardness, _weaponData.paintStrength, _paintColor);
+                    }
+                }
+                else
+                {
+                    PaintManager.instance.Paint(paintable, hitPoint, _weaponData.paintRadius, _weaponData.paintHardness, _weaponData.paintStrength, _paintColor);
                 }
             }
             else
             {
-                GameObject go = ObjectPoolingManager.instance.GetObject();
-                go.GetComponent<WeaponProjectile>().Init(isTheShooter, _weaponData.dispersion, _weaponData.bulletSpeed, _weaponData.damage, weaponHolderPosition, _collider, rootCameraPosition, hitPoint, OwnerClientId);
+                if (_weaponData.spray)
+                {
+                    for (int i = 0; i < _weaponData.bulletNumber; i++)
+                    {
+                        GameObject go = ObjectPoolingManager.instance.GetObject();
+
+                        go.GetComponent<WeaponProjectile>().Init(isTheShooter, _weaponData.dispersion, _weaponData.bulletSpeed, _weaponData.damage, weaponHolderPosition, _collider, rootCameraPosition, hitPoint, OwnerClientId, _weaponData.paintRadius, _weaponData.paintStrength, _weaponData.paintHardness, _paintColor);
+                    }
+                }
+                else
+                {
+                    GameObject go = ObjectPoolingManager.instance.GetObject();
+
+                    go.GetComponent<WeaponProjectile>().Init(isTheShooter, _weaponData.dispersion, _weaponData.bulletSpeed, _weaponData.damage, weaponHolderPosition, _collider, rootCameraPosition, hitPoint, OwnerClientId, _weaponData.paintRadius, _weaponData.paintStrength, _weaponData.paintHardness, _paintColor);
+                }
             }
+            
 
             _audioSource.PlayOneShot(_weaponData.FiringSound);
         }
@@ -184,134 +248,16 @@ namespace Project
 }
 
 
+static class UnityEngineObjectUtility
+{
+    // delegate that lets us invoke an internal method in UnityEngine.Object
+    static readonly Func<int, UnityEngine.Object> findObjectFromInstanceId
+        = (Func<int, UnityEngine.Object>)
+        typeof(UnityEngine.Object)
+            .GetMethod("FindObjectFromInstanceID", BindingFlags.NonPublic | BindingFlags.Static)
+            .CreateDelegate(typeof(Func<int, UnityEngine.Object>));
 
-
-// Old Shoot system --> Guillaume system
-        
-// [ServerRpc]
-// private void ShootServerRpc(Vector3 position, Quaternion rotation, Vector3 hitPoint)
-// {
-//     ShootClientRpc(position, rotation, hitPoint);
-// }
-//
-//
-// [ClientRpc]
-// private void ShootClientRpc(Vector3 position, Quaternion rotation, Vector3 hitPoint)
-// {
-//     if (IsOwner == false)
-//     {
-//         //LocalShoot(position, rotation, hitPoint, false); 
-//         // LocalShoot(position, rotation, false);
-//         LocalShoot(false, position, rotation);
-//     }
-// }
-
-
-
-        /// <summary>
-        /// Shoot and instanciate the projectile in term of the actual weapon 
-        /// </summary>
-        // public void LocalShoot(Vector3 position, Quaternion rotation, bool isBulletOwner)
-        // {
-        //     RaycastHit hit;
-        //     Ray ray = _camera.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0.5f));
-        //     if (Physics.Raycast(ray, out hit, 100, _layerToAim))
-        //     {
-        //         _hitPointClient = hit.point;
-        //         if (_weaponData.spray)
-        //         {
-        //             for (int i = 0; i < _weaponData.bulletNumber; i++)
-        //             {
-        //                 GameObject go = ObjectPoolingManager.instance.GetObject();
-        //                 go.transform.position = position;
-        //                 go.transform.rotation = rotation;
-        //                 go.GetComponent<WeaponProjectile>().Init(hit.point, _weaponData.dispersion, isBulletOwner);
-        //             }
-        //         }
-        //         else
-        //         {
-        //             GameObject go = ObjectPoolingManager.instance.GetObject();
-        //             go.transform.position = position;
-        //             go.transform.rotation = rotation;
-        //             go.GetComponent<WeaponProjectile>().Init(hit.point, _weaponData.dispersion, isBulletOwner);
-        //         }
-        //
-        //         Debug.Log(GetComponent<NetworkObject>().OwnerClientId + " : shoot at " + hit.point);
-        //     }
-        //     else
-        //     {
-        //         _hitPointClient = Vector3.zero;
-        //         if (_weaponData.spray)
-        //         {
-        //             for (int i = 0; i < _weaponData.bulletNumber; i++)
-        //             {
-        //                 GameObject go = ObjectPoolingManager.instance.GetObject();
-        //                 go.transform.position = position;
-        //                 go.transform.rotation = rotation;
-        //                 go.GetComponent<WeaponProjectile>().Init(_weaponData.dispersion, isBulletOwner);
-        //             }
-        //         }
-        //         else
-        //         {
-        //             GameObject go = ObjectPoolingManager.instance.GetObject();
-        //             go.transform.position = position;
-        //             go.transform.rotation = rotation;
-        //             go.GetComponent<WeaponProjectile>().Init(_weaponData.dispersion, isBulletOwner);
-        //         }
-        //     }
-        // }
-        //
-        // public void LocalShoot(Vector3 position, Quaternion rotation, Vector3 hitpoint, bool isBulletOwner)
-        // {
-        //     if (hitpoint != Vector3.zero)
-        //     {
-        //         if (_weaponData.spray)
-        //         {
-        //             for (int i = 0; i < _weaponData.bulletNumber; i++)
-        //             {
-        //                 GameObject go = ObjectPoolingManager.instance.GetObject();
-        //                 go.transform.position = position;
-        //                 go.transform.rotation = rotation;
-        //                 go.GetComponent<WeaponProjectile>().Init(hitpoint, _weaponData.dispersion, isBulletOwner);
-        //             }
-        //         }
-        //         else
-        //         {
-        //             GameObject go = ObjectPoolingManager.instance.GetObject();
-        //             go.transform.position = position;
-        //             go.transform.rotation = rotation;
-        //             go.GetComponent<WeaponProjectile>().Init(hitpoint, _weaponData.dispersion, isBulletOwner);
-        //         }
-        //     }
-        //     else
-        //     {
-        //         if (_weaponData.spray)
-        //         {
-        //             for (int i = 0; i < _weaponData.bulletNumber; i++)
-        //             {
-        //                 GameObject go = ObjectPoolingManager.instance.GetObject();
-        //                 go.transform.position = position;
-        //                 go.transform.rotation = rotation;
-        //                 go.GetComponent<WeaponProjectile>().Init(_weaponData.dispersion, isBulletOwner);
-        //             }
-        //         }
-        //         else
-        //         {
-        //             GameObject go = ObjectPoolingManager.instance.GetObject();
-        //             go.transform.position = position;
-        //             go.transform.rotation = rotation;
-        //             go.GetComponent<WeaponProjectile>().Init(_weaponData.dispersion, isBulletOwner);
-        //         }
-        //     }
-        // }
-
-    
-
-    
-    
-
-    
-
-    
-
-    
+    /// <summary> Get object instance based on its instance ID. See also: <see cref="UnityEngine.Object.GetInstanceID"/> </summary>
+    public static TObject FindObjectFromInstanceID<TObject>(int instanceId) where TObject : UnityEngine.Object
+        => findObjectFromInstanceId.Invoke(instanceId) as TObject;
+}

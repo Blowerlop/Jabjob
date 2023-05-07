@@ -53,6 +53,7 @@ MonoBehaviour:
   _rigidbodyPhysicsProjectile: {fileID: 4051072895574070553}
   _rigidbodyVisualProjectile: {fileID: 22181925168721300}
   _onTriggerEnterEventClass: {fileID: 3938831759813968553}
+  mult: 1
   _debug: 1
   _timer:
     <timer>k__BackingField: 0
@@ -119,7 +120,7 @@ Rigidbody:
   m_IsKinematic: 0
   m_Interpolate: 0
   m_Constraints: 112
-  m_CollisionDetection: 2
+  m_CollisionDetection: 3
 --- !u!114 &3938831759813968553
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -132,6 +133,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 31060b8e465e7ac4189f4155430892e0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  a: []
+  layerMask:
+    serializedVersion: 2
+    m_Bits: 883
 --- !u!114 &1900323482833631141
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -144,10 +149,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2be8a48416f841d4fac024c4f1994147, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  paintColor: {r: 1, g: 0, b: 0, a: 1}
+  color: {r: 1, g: 0, b: 0, a: 0}
   radius: 0.76
   strength: 0.48
   hardness: 0.22
+  a: []
+  layerMask:
+    serializedVersion: 2
+    m_Bits: 883
   _onTriggerEnterEventClass: {fileID: 3938831759813968553}
 --- !u!1 &7379314964294869933
 GameObject:
@@ -246,6 +255,6 @@ Rigidbody:
   m_AngularDrag: 0
   m_UseGravity: 0
   m_IsKinematic: 0
-  m_Interpolate: 0
+  m_Interpolate: 2
   m_Constraints: 112
-  m_CollisionDetection: 2
+  m_CollisionDetection: 3
