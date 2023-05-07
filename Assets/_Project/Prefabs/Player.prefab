@@ -1509,9 +1509,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _paintColor: {r: 1, g: 0, b: 0, a: 1}
   _rootCamera: {fileID: 8130439777759429579}
-  _shootLayerMask:
+  _shootLayerMaskPhysics:
     serializedVersion: 2
-    m_Bits: 115
+    m_Bits: 65
+  _shootLayerMaskNoPhysics:
+    serializedVersion: 2
+    m_Bits: 73
   _showDebug: 0
   _audioSource: {fileID: 5431214831792318192}
   projectile: {fileID: 0}
