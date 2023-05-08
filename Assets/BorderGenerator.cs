@@ -3,7 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 using Project;
 using UnityEditor;
-using UnityEditor.SceneManagement;
+#if UNITY_EDITOR 
+using UnityEditor.SceneManagement; 
+#endif
 using UnityEngine;
 using Object = UnityEngine.Object;
 
@@ -91,8 +93,9 @@ namespace Project
             //     _border[i].size = new Vector3(colliderSize.x, 0.1f, colliderSize.z);
             // }
 
-            
+#if UNITY_EDITOR
             SaveSceneModifaction();
+            #endif
         }
 
         public void ClearBorder()
@@ -122,14 +125,18 @@ namespace Project
 
             _boxCollider.enabled = true;
             
+#if UNITY_EDITOR
             SaveSceneModifaction();
+            #endif
         }
         
+        #if UNITY_EDITOR
         public void SaveSceneModifaction()
         {
             EditorSceneManager.MarkSceneDirty(gameObject.scene);
             EditorUtility.SetDirty(this);
         }
+        #endif
     }
     
     
