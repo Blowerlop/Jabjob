@@ -23,7 +23,7 @@ namespace Project
         private int _frameCounter = 0;
         private float _nextFpsCalculPeriod = 0;
         private int _currentFps;
-        private const string _FPSDISPLAY = "{0} FPS";
+        private const string _FPSDISPLAY = "FPS : {0}";
         [SerializeField] private TMP_Text _fpsText;
 
 
