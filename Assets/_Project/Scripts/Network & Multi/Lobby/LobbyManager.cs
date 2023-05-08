@@ -401,7 +401,7 @@ public class LobbyManager : MonoBehaviour {
         }
     }
 
-    public async void UpdateLobbyGameMode(GameMode gameMode) {
+    public async void UpdateLobbyGameMode(GameMode gameMode) { 
         try {
             Debug.Log("UpdateLobbyGameMode " + gameMode);
             

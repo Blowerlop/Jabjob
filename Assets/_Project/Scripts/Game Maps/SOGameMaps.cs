@@ -11,6 +11,7 @@ namespace Project
     {
         public string sceneName;
         public string mapName;
+        public bool isAvailable;
         public Sprite sceneWallpaper;
     }
 }
