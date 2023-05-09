@@ -51,8 +51,6 @@ namespace Project
         private void Start()
         {
             _weaponHolder = _weaponManager.weaponHandler.transform;
-            
-            Physics.IgnoreCollision(_collider, _collider, true);
         }
 
         public void OnEnable()

@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Project.Utilities;
 using Unity.Netcode;
 using UnityEngine;
 
@@ -9,9 +10,11 @@ namespace Project
     {
         [SerializeField] private Behaviour[] _componentsToDisableIfNotTheOwner;
         [SerializeField] private GameObject[] _gameObjectToDestroyIfNotTheOwner;
+        [SerializeField] private LayerMask _layerIfNotTheOwner;
 
         public override void OnNetworkSpawn()
         {
+
             if (IsOwner) return;
 
 
@@ -24,6 +27,9 @@ namespace Project
             {
                 Destroy(gameObjectToDestroy);
             }
+            
+            UtilitiesClass.SwitchLayerInChildren(gameObject, _layerIfNotTheOwner);
+
         }
     }
 }

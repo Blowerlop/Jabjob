@@ -16,5 +16,8 @@ public class Minimap : MonoBehaviour
         Vector3 newPosition = player.position;
         newPosition.y = transform.position.y;
         transform.position = newPosition;
+        Vector3 newRotation = transform.localEulerAngles;
+        newRotation.y = player.localEulerAngles.y;
+        transform.localEulerAngles = newRotation;
     }
 }

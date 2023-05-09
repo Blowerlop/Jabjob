@@ -654,7 +654,7 @@ MonoBehaviour:
   fitType: 3
   rows: 1
   columns: 1
-  cellSize: {x: 120, y: 32.382324}
+  cellSize: {x: 120, y: 32.400024}
   spacing: {x: 34.7, y: 0}
   fitX: 0
   fitY: 1
@@ -671,6 +671,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _showFps: 1
+  _fpsIntervalSeconds: 0.5
   _fpsText: {fileID: 7383678787804596955}
 --- !u!1 &6152714274779772728
 GameObject:
@@ -827,8 +828,9 @@ MonoBehaviour:
       m_Calls: []
   m_text: 'Fps : 999'
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: bffd0472b892d5346b22aaf610723f0b, type: 2}
+  m_sharedMaterial: {fileID: -9137451837660197966, guid: bffd0472b892d5346b22aaf610723f0b,
+    type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -852,13 +854,13 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 28.65
-  m_fontSizeBase: 36
+  m_fontSize: 25
+  m_fontSizeBase: 25
   m_fontWeight: 400
-  m_enableAutoSizing: 1
+  m_enableAutoSizing: 0
   m_fontSizeMin: 18
   m_fontSizeMax: 72
-  m_fontStyle: 0
+  m_fontStyle: 1
   m_HorizontalAlignment: 1
   m_VerticalAlignment: 256
   m_textAlignment: 65535
