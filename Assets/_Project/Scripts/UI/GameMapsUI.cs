@@ -53,7 +53,7 @@ namespace Project
         public void AddListeners(Action<GameMap> call)
         {
             Apply();
-            gameMaps = _repo.GetChildren<GameMap>();
+            gameMaps = _repo.GetAllChildren<GameMap>();
 
             for (int i = 0; i < gameMaps.Count; i++)
             {

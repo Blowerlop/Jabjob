@@ -127,11 +127,11 @@ namespace Project
 
         public static class Extensions
         {
-            public static List<Transform> GetChildren(this Transform transform, List<Transform> children = null)
+            public static List<Transform> GetAllChildren(this Transform transform, List<Transform> children = null)
             {
-                return GetChildren<Transform>(transform);
+                return GetAllChildren<Transform>(transform);
             }
-            public static List<T> GetChildren<T>(this Transform transform, List<T> children = null) where T : Component
+            public static List<T> GetAllChildren<T>(this Transform transform,  List<T> children = null) where T : Object
             {
                 if (children == null) children = new List<T>();
                 
@@ -139,13 +139,34 @@ namespace Project
                 {
                     Transform child = transform.GetChild(i);
 
-                    child.GetChildren(children);
+                    child.GetAllChildren(children);
                     if (child.TryGetComponent(out T TChild))
                     {
                         children.Add(TChild);                        
                     }
                 }
                 
+                return children;
+            }
+
+            public static List<Transform> GetChildren(this Transform transform)
+            {
+                return GetChildren<Transform>(transform);
+            }
+
+            public static List<T> GetChildren<T>(this Transform transform) where T : Object
+            {
+                int childrenCount = transform.childCount;
+                List<T> children = new List<T>();
+
+                for (int i = 0; i < childrenCount; i++)
+                {
+                    if (transform.GetChild(i).TryGetComponent(out T TChild))
+                    {
+                        children.Add(TChild);                        
+                    }
+                }
+
                 return children;
             }
 

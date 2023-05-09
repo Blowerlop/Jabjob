@@ -1,13 +1,9 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using Project;
 using UnityEditor;
 #if UNITY_EDITOR 
 using UnityEditor.SceneManagement; 
 #endif
 using UnityEngine;
-using Object = UnityEngine.Object;
+
 
 namespace Project
 {
@@ -85,16 +81,10 @@ namespace Project
 
             border.center = new Vector3(colliderCenter.x, colliderCenter.y, colliderCenter.z - colliderSize.z * 0.5f);
             border.size = new Vector3(colliderSize.x, colliderSize.y, 0.1f);
-            // for (int i = 0; i < _border.Length; i++)
-            // {
-            //     _border[i] = gameObject.AddComponent<BoxCollider>();
-            //
-            //     _border[i].center = new Vector3(_boxCollider.center.x, _boxCollider.center.y - colliderSize.y * 0.5f, _boxCollider.center.z);
-            //     _border[i].size = new Vector3(colliderSize.x, 0.1f, colliderSize.z);
-            // }
+            
 
-#if UNITY_EDITOR
-            SaveSceneModifaction();
+            #if UNITY_EDITOR
+            SetSceneAsModified();
             #endif
         }
 
@@ -125,13 +115,13 @@ namespace Project
 
             _boxCollider.enabled = true;
             
-#if UNITY_EDITOR
-            SaveSceneModifaction();
+            #if UNITY_EDITOR
+            SetSceneAsModified();
             #endif
         }
         
         #if UNITY_EDITOR
-        public void SaveSceneModifaction()
+        private void SetSceneAsModified()
         {
             EditorSceneManager.MarkSceneDirty(gameObject.scene);
             EditorUtility.SetDirty(this);
