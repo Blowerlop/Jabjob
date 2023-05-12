@@ -4,19 +4,38 @@ using System.Collections.Generic;
 using Project.Utilities;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace Project
 {
+    [System.Serializable]
     public class Page
     {
-        
+        [ReadOnlyField] public string gameObjectName;
+        [ReadOnlyField] public CanvasGroup canvasGroup;
+        public UnityEvent onPageSelectedEvent = new UnityEvent();
+
+        public Page(string gameObjectName, CanvasGroup canvasGroup)
+        {
+            this.gameObjectName = gameObjectName;
+            this.canvasGroup = canvasGroup;
+        }
     }
     
     
     public class UIPager : MonoBehaviour
     {
-        public List<CanvasGroup> _pages = new List<CanvasGroup>();
+        private RectTransform _rectTransform;
+        
+        public List<Page> _pages = new List<Page>();
+        private int _currentPage;
+        private int _previousPage;
 
+
+        private void Awake()
+        {
+            _rectTransform = GetComponent<RectTransform>();
+        }
 
         private void Start()
         {
@@ -36,24 +55,31 @@ namespace Project
         public void RefreshPager()
         {
             Debug.Log("Refreshing the pager...");
-            List<GameObject> children = transform.GetChildren<GameObject>();
+            _pages.Clear();
+
+            if (_rectTransform == null)
+            {
+                _rectTransform = GetComponent<RectTransform>();
+            }
+            
+            List<RectTransform> children = _rectTransform.GetComponentsInChildrenFirstDepthWithoutTheParent<RectTransform>();
             for (int i = 0; i < children.Count; i++)
             {
-                Debug.Log("a");
                 if (children[i].TryGetComponent(out CanvasGroup canvasGroup))
                 {
-                    _pages.Add(canvasGroup);
+                    _pages.Add(new Page(canvasGroup.name, canvasGroup));
                 }
                 else
                 {
-                    _pages.Add(children[i].AddComponent<CanvasGroup>());
+                    CanvasGroup childrenCanvasGroup = children[i].gameObject.AddComponent<CanvasGroup>();
+                    _pages.Add(new Page(canvasGroup.name, childrenCanvasGroup));
                 }
             }
         }
     }
 
 
-
+#if UNITY_EDITOR
     [CustomEditor(typeof(UIPager))]
     public class UIPagerEditor : Editor
     {
@@ -78,4 +104,5 @@ namespace Project
             }
         }
     }
+    #endif
 }
