@@ -53,6 +53,7 @@ public class ScoreBoard : MonoBehaviour
         GameEvent.onPlayerJoinGameEvent.Subscribe(AddPlayerToTheScoreboard, this);
         
         GameEvent.onPlayerUpdateNameEvent.Subscribe(UpdateNameText, this);
+        GameEvent.onPlayerUpdateColorEvent.Subscribe(UpdateColorImage, this);
         GameEvent.onPlayerGetAKillEvent.Subscribe(UpdateKillText, this);
         GameEvent.onPlayerGetAssistEvent.Subscribe(UpdateAssistText, this);
         GameEvent.onPlayerDiedEvent.Subscribe(UpdateDeathText, this);
@@ -67,6 +68,7 @@ public class ScoreBoard : MonoBehaviour
             UpdateKillText(playerId, player.kills);
             UpdateAssistText(playerId, player.assists);
             UpdateDeathText(playerId, player.deaths);
+            UpdateColorImage(playerId, player.playerColor);
         }
     }
 
@@ -75,6 +77,7 @@ public class ScoreBoard : MonoBehaviour
         GameEvent.onPlayerJoinGameEvent.Unsubscribe(AddPlayerToTheScoreboard);
         
         GameEvent.onPlayerUpdateNameEvent.Unsubscribe(UpdateNameText);
+        GameEvent.onPlayerUpdateColorEvent.Unsubscribe(UpdateColorImage);
         GameEvent.onPlayerGetAKillEvent.Unsubscribe(UpdateKillText);
         GameEvent.onPlayerGetAssistEvent.Unsubscribe(UpdateAssistText);
         GameEvent.onPlayerDiedEvent.Unsubscribe(UpdateDeathText);
@@ -111,4 +114,5 @@ public class ScoreBoard : MonoBehaviour
     private void UpdateKillText(ulong playerId, int newValue) => _playersScoreboard[playerId].UpdateKillText(newValue);
     private void UpdateDeathText(ulong playerId, int newValue) => _playersScoreboard[playerId].UpdateDeathText(newValue);
     private void UpdateAssistText(ulong playerId, int newValue) => _playersScoreboard[playerId].UpdateAssistText(newValue);
+    private void UpdateColorImage(ulong playerId, Color newValue) => _playersScoreboard[playerId].UpdateColorImage(newValue);
 }

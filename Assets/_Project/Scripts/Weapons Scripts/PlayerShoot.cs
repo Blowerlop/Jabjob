@@ -14,14 +14,15 @@ namespace Project
         #region Variables
 
         [Header("Shoot state")] 
-        [SerializeField] private Color _paintColor;
+        public Color paintColor;
         private float _nextShoot;
         private float _shootRate;
         //private Vector3 _hitPointClient = Vector3.zero;
         private bool _canShoot = true;
         //[SerializeField] private LayerMask _layerToAim;
 
-        [Header("Other References")] 
+        [Header("Other References")]
+        private Player _player;
         private Weapon _weapon;
         private SOWeapon _weaponData;
         private WeaponManager _weaponManager;
@@ -44,6 +45,7 @@ namespace Project
 
         private void Awake()
         {
+            _player = GetComponent<Player>();
             _weaponManager = GetComponent<WeaponManager>();
             _collider = GetComponent<Collider>();
         }
@@ -170,12 +172,12 @@ namespace Project
                 {
                     for (int i = 0; i < _weaponData.bulletNumber; i++)
                     {
-                        PaintManager.instance.Paint(paintable, hitPoint, _weaponData.paintRadius, _weaponData.paintHardness, _weaponData.paintStrength, _paintColor);
+                        PaintManager.instance.Paint(paintable, hitPoint, _weaponData.paintRadius, _weaponData.paintHardness, _weaponData.paintStrength, paintColor);
                     }
                 }
                 else
                 {
-                    PaintManager.instance.Paint(paintable, hitPoint, _weaponData.paintRadius, _weaponData.paintHardness, _weaponData.paintStrength, _paintColor);
+                    PaintManager.instance.Paint(paintable, hitPoint, _weaponData.paintRadius, _weaponData.paintHardness, _weaponData.paintStrength, paintColor);
                 }
             }
             else
@@ -186,14 +188,14 @@ namespace Project
                     {
                         GameObject go = ObjectPoolingManager.instance.GetObject();
 
-                        go.GetComponent<WeaponProjectile>().Init(isTheShooter, _weaponData.dispersion, _weaponData.bulletSpeed, _weaponData.damage, weaponHolderPosition, _collider, rootCameraPosition, hitPoint, OwnerClientId, _weaponData.paintRadius, _weaponData.paintStrength, _weaponData.paintHardness, _paintColor);
+                        go.GetComponent<WeaponProjectile>().Init(isTheShooter, _weaponData.dispersion, _weaponData.bulletSpeed, _weaponData.damage, weaponHolderPosition, _collider, rootCameraPosition, hitPoint, OwnerClientId, _weaponData.paintRadius, _weaponData.paintStrength, _weaponData.paintHardness, paintColor);
                     }
                 }
                 else
                 {
                     GameObject go = ObjectPoolingManager.instance.GetObject();
 
-                    go.GetComponent<WeaponProjectile>().Init(isTheShooter, _weaponData.dispersion, _weaponData.bulletSpeed, _weaponData.damage, weaponHolderPosition, _collider, rootCameraPosition, hitPoint, OwnerClientId, _weaponData.paintRadius, _weaponData.paintStrength, _weaponData.paintHardness, _paintColor);
+                    go.GetComponent<WeaponProjectile>().Init(isTheShooter, _weaponData.dispersion, _weaponData.bulletSpeed, _weaponData.damage, weaponHolderPosition, _collider, rootCameraPosition, hitPoint, OwnerClientId, _weaponData.paintRadius, _weaponData.paintStrength, _weaponData.paintHardness, paintColor);
                 }
             }
             

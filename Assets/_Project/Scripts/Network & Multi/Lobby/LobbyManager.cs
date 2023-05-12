@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using _Project.Scripts.Managers;
 using TMPro;
 using Unity.Netcode;
@@ -18,6 +19,8 @@ public class LobbyManager : MonoBehaviour {
 
 
     public const string KEY_PLAYER_NAME = "PlayerName";
+    public const string KEY_PLAYER_CHARACTER = "Character";
+    public const string KEY_PLAYER_COLOR = "Color";
     public const string KEY_GAME_MODE = "GameMode";
     public const string KEY_RELAY_GAME = "RelayGameCode";
     public const string KEY_GAMEMAP_NAME = "GameMapName";
@@ -44,7 +47,14 @@ public class LobbyManager : MonoBehaviour {
     public enum GameMode {
         GameMode1,
         GameMode2,
-        GameMode3
+        GameMode3 
+    }
+    public enum PlayerCharacter
+    {
+        Hotdog,
+        Hobo,
+        Geekette,
+        Office,
     }
 
     public GameObject PopUpPrefab; 
@@ -57,6 +67,7 @@ public class LobbyManager : MonoBehaviour {
     private float refreshLobbyListTimer = 5f;
     private Lobby joinedLobby;
     private string playerName;
+    private Color playerColor;
     #endregion
 
     private void Awake() {
@@ -78,7 +89,7 @@ public class LobbyManager : MonoBehaviour {
     }
 
     #region LobbyMethod
-    public async void Authenticate(string playerName) {
+    public async Task<bool> Authenticate(string playerName) {
         this.playerName = playerName;
         InitializationOptions initializationOptions = new InitializationOptions();
         initializationOptions.SetProfile(playerName);
@@ -90,7 +101,12 @@ public class LobbyManager : MonoBehaviour {
             RefreshLobbyList();
         };
 
-        await AuthenticationService.Instance.SignInAnonymouslyAsync();
+        try { await AuthenticationService.Instance.SignInAnonymouslyAsync(); return true; }
+        catch (Exception e)
+        {
+            Debug.LogError(e);
+            return false;
+        }
     }
 
     private void HandleRefreshLobbyList() {
@@ -174,12 +190,16 @@ public class LobbyManager : MonoBehaviour {
     public Player GetPlayer() {
         return new Player(AuthenticationService.Instance.PlayerId, null, new Dictionary<string, PlayerDataObject> {
             { KEY_PLAYER_NAME, new PlayerDataObject(PlayerDataObject.VisibilityOptions.Public, playerName) },
+             { KEY_PLAYER_CHARACTER, new PlayerDataObject(PlayerDataObject.VisibilityOptions.Public, PlayerCharacter.Hotdog.ToString()) },
+            { KEY_PLAYER_COLOR, new PlayerDataObject(PlayerDataObject.VisibilityOptions.Public, Color.blue.ToString()) },
         });
     }
     
     public Player GetPlayer(string playerId) {
         return new Player(playerId, null, new Dictionary<string, PlayerDataObject> {
             { KEY_PLAYER_NAME, new PlayerDataObject(PlayerDataObject.VisibilityOptions.Public, playerName) },
+             { KEY_PLAYER_CHARACTER, new PlayerDataObject(PlayerDataObject.VisibilityOptions.Public, PlayerCharacter.Hotdog.ToString()) },
+            { KEY_PLAYER_COLOR, new PlayerDataObject(PlayerDataObject.VisibilityOptions.Public, Color.blue.ToString()) },
         });
     }
 
@@ -268,6 +288,8 @@ public class LobbyManager : MonoBehaviour {
             OnLobbyListChanged?.Invoke(this, new OnLobbyListChangedEventArgs { lobbyList = lobbyListQueryResponse.Results });
         } catch (LobbyServiceException e) {
             Debug.Log(e);
+            Project.MessagePopUpUI PopupGO = Instantiate(PopUpPrefab).GetComponent<Project.MessagePopUpUI>();
+            PopupGO.Message.text = "Error when refreshing the list. Please check your connectiion and try again without spamming it. You can refresh the list every 20s.";
         }
     }
 
@@ -331,6 +353,68 @@ public class LobbyManager : MonoBehaviour {
         }
     }
 
+    public async void UpdatePlayerCharacter(PlayerCharacter playerCharacter)
+    {
+        if (joinedLobby != null)
+        {
+            try
+            {
+                UpdatePlayerOptions options = new UpdatePlayerOptions();
+
+                options.Data = new Dictionary<string, PlayerDataObject>() {
+                    {
+                        KEY_PLAYER_CHARACTER, new PlayerDataObject(
+                            visibility: PlayerDataObject.VisibilityOptions.Public,
+                            value: playerCharacter.ToString())
+                    }
+                };
+
+                string playerId = AuthenticationService.Instance.PlayerId;
+
+                Lobby lobby = await LobbyService.Instance.UpdatePlayerAsync(joinedLobby.Id, playerId, options);
+                joinedLobby = lobby;
+
+                OnJoinedLobbyUpdate?.Invoke(this, new LobbyEventArgs { lobby = joinedLobby });
+            }
+            catch (LobbyServiceException e)
+            {
+                Debug.Log(e);
+            }
+        }
+    }
+
+    public async void UpdatePlayerColor(string playerColorHex)
+    {
+        if (joinedLobby != null)
+        {
+            try
+            {
+                UpdatePlayerOptions options = new UpdatePlayerOptions();
+
+                options.Data = new Dictionary<string, PlayerDataObject>() {
+                    {
+                        KEY_PLAYER_COLOR, new PlayerDataObject(
+                            visibility: PlayerDataObject.VisibilityOptions.Public,
+                            value: playerColorHex)
+                    }
+                };
+
+                string playerId = AuthenticationService.Instance.PlayerId;
+
+                Lobby lobby = await LobbyService.Instance.UpdatePlayerAsync(joinedLobby.Id, playerId, options);
+                joinedLobby = lobby;
+
+                OnJoinedLobbyUpdate?.Invoke(this, new LobbyEventArgs { lobby = joinedLobby });
+                Color newColor; ColorUtility.TryParseHtmlString("#" + playerColorHex, out newColor);
+                playerColor = newColor;
+            }
+            catch (LobbyServiceException e)
+            {
+                Debug.Log(e);
+            }
+        }
+    }
+
     public async void QuickJoinLobby() {
         try {
             QuickJoinLobbyOptions options = new QuickJoinLobbyOptions();
@@ -385,7 +469,7 @@ public class LobbyManager : MonoBehaviour {
             {
                 Debug.Log(e);
                 GameObject PopupGO = Instantiate(PopUpPrefab);
-                PopupGO.GetComponent<Project.MessagePopUpUI>().Message.text = "Starting game failed. Please retry.";
+                PopupGO.GetComponent<Project.MessagePopUpUI>().Message.text = "Starting the game failed. Please retry.";
             }
         }
     }
@@ -420,6 +504,6 @@ public class LobbyManager : MonoBehaviour {
     }
 
     public string GetPlayerName() => playerName;
-
+    public Color GetPlayerColor() => playerColor;
     #endregion
 }

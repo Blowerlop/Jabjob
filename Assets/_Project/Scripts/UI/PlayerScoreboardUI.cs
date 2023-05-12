@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Serialization;
-
+using UnityEngine.UI; 
 namespace Project
 {
     public class PlayerScoreboardUI : MonoBehaviour
@@ -14,6 +14,7 @@ namespace Project
         [SerializeField] private TextMeshProUGUI _name;
         [SerializeField] private TextMeshProUGUI _assist;
         [SerializeField] private TextMeshProUGUI _ping;
+        [SerializeField] private Image _colorImage;
         
         // private void Awake()
         // {
@@ -32,5 +33,6 @@ namespace Project
         public void UpdateKillText(int newValue) => _kill.text = newValue.ToString();
         public void UpdateDeathText(int newValue) => _death.text = newValue.ToString();
         public void UpdateAssistText(int newValue) => _assist.text = newValue.ToString();
+        public void UpdateColorImage(Color newValue) => _colorImage.color = newValue; 
     }
 }
