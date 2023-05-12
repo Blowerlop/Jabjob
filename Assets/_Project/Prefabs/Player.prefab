@@ -1537,6 +1537,8 @@ MonoBehaviour:
   _networkName:
     m_InternalValue:
       value: 
+  _networkColor:
+    m_InternalValue: {r: 0, g: 0, b: 0, a: 0}
   _networkKills:
     m_InternalValue: 0
   _networkAssists:
@@ -1658,7 +1660,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b9cf145c96197f141b1534c7761acf35, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _paintColor: {r: 1, g: 0, b: 0, a: 1}
+  paintColor: {r: 0, g: 0, b: 0, a: 0}
   _rootCamera: {fileID: 8130439777759429579}
   _shootLayerMaskPhysics:
     serializedVersion: 2
@@ -4177,7 +4179,7 @@ PrefabInstance:
     - target: {fileID: 4380956185565015332, guid: 7c9659c56e916714bbc909bf2d4a4d04,
         type: 3}
       propertyPath: cellSize.x
-      value: 179.03035
+      value: 153.45459
       objectReference: {fileID: 0}
     - target: {fileID: 5401682274815185662, guid: 7c9659c56e916714bbc909bf2d4a4d04,
         type: 3}
@@ -4194,6 +4196,11 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 10
       objectReference: {fileID: 0}
+    - target: {fileID: 7317458149849868133, guid: 7c9659c56e916714bbc909bf2d4a4d04,
+        type: 3}
+      propertyPath: _playerShoot
+      value: 
+      objectReference: {fileID: -2871981651348838108}
     - target: {fileID: 7922873264794906467, guid: 7c9659c56e916714bbc909bf2d4a4d04,
         type: 3}
       propertyPath: m_Layer

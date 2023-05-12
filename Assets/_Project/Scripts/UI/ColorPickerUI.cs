@@ -15,12 +15,12 @@ namespace Project
 
         public void OnClickColorPickerButton()
         {
-            SetColor(GetColor());
+            SetColor(GetColor()); 
         }
 
         private void OnEnable()
         {
-            _currentColor = _imageColor.color;
+            UpdateLobbyColor(); 
         }
         private Color GetColor()
         {

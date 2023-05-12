@@ -1559,7 +1559,6 @@ GameObject:
   - component: {fileID: 448931821}
   - component: {fileID: 448931823}
   - component: {fileID: 448931822}
-  - component: {fileID: 448931824}
   - component: {fileID: 448931825}
   m_Layer: 5
   m_Name: ColorPicker
@@ -1626,22 +1625,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 448931820}
   m_CullTransparentMesh: 1
---- !u!114 &448931824
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 448931820}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6a5dbd61d60f629498277b96932160b7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _paletteRectTransform: {fileID: 448931821}
-  _imageColor: {fileID: 647075104}
-  _refSprite: {fileID: 2800000, guid: 5fdde140c6c000843beb25960383b9a7, type: 3}
-  canvasScaler: {fileID: 1337794090}
 --- !u!114 &448931825
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1659,7 +1642,7 @@ MonoBehaviour:
     callback:
       m_PersistentCalls:
         m_Calls:
-        - m_Target: {fileID: 448931824}
+        - m_Target: {fileID: 647075107}
           m_TargetAssemblyTypeName: Project.ColorPickerUI, Assembly-CSharp
           m_MethodName: OnClickColorPickerButton
           m_Mode: 1
@@ -1675,7 +1658,7 @@ MonoBehaviour:
     callback:
       m_PersistentCalls:
         m_Calls:
-        - m_Target: {fileID: 448931824}
+        - m_Target: {fileID: 647075107}
           m_TargetAssemblyTypeName: Project.ColorPickerUI, Assembly-CSharp
           m_MethodName: OnClickColorPickerButton
           m_Mode: 1
@@ -2157,6 +2140,7 @@ GameObject:
   - component: {fileID: 647075105}
   - component: {fileID: 647075104}
   - component: {fileID: 647075106}
+  - component: {fileID: 647075107}
   m_Layer: 5
   m_Name: ColorButton
   m_TagString: Untagged
@@ -2279,6 +2263,22 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 1
         m_CallState: 2
+--- !u!114 &647075107
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 647075102}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6a5dbd61d60f629498277b96932160b7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _paletteRectTransform: {fileID: 448931821}
+  _imageColor: {fileID: 647075104}
+  _refSprite: {fileID: 2800000, guid: 5fdde140c6c000843beb25960383b9a7, type: 3}
+  canvasScaler: {fileID: 1337794090}
 --- !u!1 &668374093
 GameObject:
   m_ObjectHideFlags: 0
@@ -4696,7 +4696,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 448931824}
+      - m_Target: {fileID: 647075107}
         m_TargetAssemblyTypeName: Project.ColorPickerUI, Assembly-CSharp
         m_MethodName: UpdateLobbyColor
         m_Mode: 1
@@ -6298,7 +6298,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 448931824}
+      - m_Target: {fileID: 647075107}
         m_TargetAssemblyTypeName: Project.ColorPickerUI, Assembly-CSharp
         m_MethodName: GetPreviousColor
         m_Mode: 1

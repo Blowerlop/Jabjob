@@ -40,6 +40,7 @@ namespace Project
 
         private ulong _damagerId;
 
+        private PlayerShoot _playerShoot;
         #endregion
 
 
@@ -48,6 +49,7 @@ namespace Project
         private void Awake()
         {
             _networkObject = GetComponent<NetworkObject>();
+            _playerShoot = GetComponent<PlayerShoot>();
         }
 
         public override void OnNetworkSpawn()
@@ -64,9 +66,8 @@ namespace Project
             #if UNITY_EDITOR
             _networkName.OnValueChanged += UpdatePlayersGameObjectNameLocal;
             #endif
-            
-            
-            UpdatePlayerColorServerRpc(LobbyManager.Instance.GetPlayerColor());
+
+            _playerShoot.paintColor = playerColor;
             if (IsOwner == false)
             {
                 enabled = false;
@@ -75,6 +76,7 @@ namespace Project
 
             IsPlayerHostServerRpc();
 
+            UpdatePlayerColorServerRpc(LobbyManager.Instance.GetPlayerColor()); 
             UpdatePlayerNameServerRpc(LobbyManager.Instance.GetPlayerName());
         }
  
@@ -165,7 +167,7 @@ namespace Project
         
         private void OnNameValueChange(StringNetwork previousValue, StringNetwork nextValue) => GameEvent.onPlayerUpdateNameEvent.Invoke(this, true, OwnerClientId, nextValue);
 
-        private void OnColorValueChange(Color previousValue, Color nextValue) => GameEvent.onPlayerUpdateColorEvent.Invoke(this, true, OwnerClientId, nextValue);
+        private void OnColorValueChange(Color previousValue, Color nextValue) { GameEvent.onPlayerUpdateColorEvent.Invoke(this, true, OwnerClientId, nextValue); _playerShoot.paintColor = nextValue ;  }
 
         #endregion
 
