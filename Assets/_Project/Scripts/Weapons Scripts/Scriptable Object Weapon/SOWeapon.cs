@@ -63,9 +63,9 @@ public class SOWeapon : ScriptableObject
 
 
     [Header("Paint")] 
-    public float paintRadius = 0.76f;
-    public float paintStrength = 0.48f;
-    public float paintHardness = 0.22f;
+    public float paintRadius;
+    public float paintStrength;
+    public float paintHardness;
 
 
 
@@ -91,6 +91,18 @@ public class SOWeapon : ScriptableObject
 
         throw new KeyNotFoundException($"The SOWeapon {id} ID has not been added to the database. \n 'Project/Resources/Systems/Database/SOWeaponsDatabase'");
     }
+    
+    
+    
+#if UNITY_EDITOR
+    public void ForceSave()
+    {
+        EditorUtility.SetDirty(this);
+        AssetDatabase.SaveAssets();
+        AssetDatabase.Refresh();
+    }
+
+#endif
 }
 
 
@@ -102,7 +114,8 @@ public class MyScriptEditor : Editor
     {
         base.OnInspectorGUI();
         var myScript = target as SOWeapon;
-
+        if (myScript == null) return;
+        
         myScript.raycast = GUILayout.Toggle(myScript.raycast, "Raycast");
 
         if (myScript.raycast == false)
@@ -114,6 +127,11 @@ public class MyScriptEditor : Editor
         if (myScript.raycast == false && myScript.spray)
             myScript.bulletNumber = EditorGUILayout.IntSlider("Bullet Number",myScript.bulletNumber,1,30);
 
+
+        if (GUILayout.Button("Force Save To Disk"))
+        {
+            myScript.ForceSave();
+        }
     }
 }
 #endif
