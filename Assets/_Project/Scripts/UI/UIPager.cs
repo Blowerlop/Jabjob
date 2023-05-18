@@ -13,12 +13,14 @@ namespace Project
     {
         [ReadOnlyField] public string gameObjectName;
         [ReadOnlyField] public CanvasGroup canvasGroup;
+        public int pageIndex;
         public UnityEvent onPageSelectedEvent = new UnityEvent();
 
-        public Page(string gameObjectName, CanvasGroup canvasGroup)
+        public Page(string gameObjectName, CanvasGroup canvasGroup, int pageIndex)
         {
             this.gameObjectName = gameObjectName;
             this.canvasGroup = canvasGroup;
+            this.pageIndex = pageIndex;
         }
     }
     
@@ -28,8 +30,13 @@ namespace Project
         private RectTransform _rectTransform;
         
         public List<Page> _pages = new List<Page>();
-        private int _currentPage;
-        private int _previousPage;
+        [SerializeField] [ReadOnlyField] private int _currentPageIndex;
+        [SerializeField] [ReadOnlyField] private int _previousPageIndex;
+        [SerializeField] private bool pageLoop = true;
+        [SerializeField] private bool crossFadePages;
+        [SerializeField] private float _crossFadeDuration = 0.25f;
+        private Coroutine _crossFadeCoroutineCurrentPage = null;
+        private Coroutine _crossFadeCoroutinePreviousPage = null;
 
 
         private void Awake()
@@ -44,11 +51,46 @@ namespace Project
 
         public void NextPage()
         {
+            CancelCrossPages();
+
+            if (_currentPageIndex + 1 >= _pages.Count)
+            {
+                if (pageLoop)
+                {
+                    _previousPageIndex = _currentPageIndex;
+                    _currentPageIndex = 0;
+                }
+            }
+            else
+            {
+                _previousPageIndex = _currentPageIndex;
+                _currentPageIndex++;
+            }
             
+            
+            ChangePageVisualBehaviour();
         }
 
         public void PreviousPage()
         {
+            CancelCrossPages();
+            
+            if (_currentPageIndex - 1 < 0)
+            {
+                _previousPageIndex = _currentPageIndex;
+                _currentPageIndex = _pages.Count - 1;
+            }
+            else
+            {
+                if (pageLoop)
+                {
+                    _previousPageIndex = _currentPageIndex;
+                    _currentPageIndex--;
+                }
+            }
+
+            
+            ChangePageVisualBehaviour();
             
         }
 
@@ -67,16 +109,110 @@ namespace Project
             {
                 if (children[i].TryGetComponent(out CanvasGroup canvasGroup))
                 {
-                    _pages.Add(new Page(canvasGroup.name, canvasGroup));
+                    _pages.Add(new Page(canvasGroup.name, canvasGroup, i));
                 }
                 else
                 {
                     CanvasGroup childrenCanvasGroup = children[i].gameObject.AddComponent<CanvasGroup>();
-                    _pages.Add(new Page(canvasGroup.name, childrenCanvasGroup));
+                    _pages.Add(new Page(childrenCanvasGroup.name, childrenCanvasGroup, i));
+
                 }
             }
         }
+
+        public void GoToPage(CanvasGroup canvasGroup)
+        {
+            for (int i = 0; i < _pages.Count; i++)
+            {
+                if (GetPage(i).canvasGroup == canvasGroup)
+                {
+                    _previousPageIndex = _currentPageIndex;
+                    _currentPageIndex = i;
+                    
+                    ChangePageVisualBehaviour();
+                    break;
+                }
+            }
+        }
+
+        private void CrossFadePages()
+        {
+            CanvasGroup previousPageCanvasGroup = GetPage(_previousPageIndex).canvasGroup;
+            CanvasGroup currentCanvasGroup = GetPage(_currentPageIndex).canvasGroup;
+
+            _crossFadeCoroutinePreviousPage =
+                UtilitiesClass.StartLerpInTime(_crossFadeDuration, 1.0f, 0.0f, lerpCurrentValue =>
+                {
+                    
+                }, () => previousPageCanvasGroup.gameObject.SetActive(false));
+            
+            _crossFadeCoroutineCurrentPage =
+                UtilitiesClass.StartLerpInTime(_crossFadeDuration, 0.0f, 1.0f, lerpCurrentValue =>
+                {
+                    currentCanvasGroup.alpha = lerpCurrentValue;
+                }, () => currentCanvasGroup.gameObject.SetActive(false));
+        }
+
+        private Page GetPage(int pageIndex) => _pages[pageIndex];
+
+        private void CancelCrossPages()
+        {
+            if (_crossFadeCoroutinePreviousPage != null)
+            {
+                CanvasGroup previousPageCanvasGroup = GetPage(_previousPageIndex).canvasGroup;
+                
+                
+                if (previousPageCanvasGroup.gameObject.activeInHierarchy)
+                {
+                    StopCoroutine(_crossFadeCoroutinePreviousPage);
+                    previousPageCanvasGroup.alpha = 0.0f;
+                    previousPageCanvasGroup.gameObject.SetActive(false);
+                }
+                
+                _crossFadeCoroutinePreviousPage = null;
+            }
+            
+            if (_crossFadeCoroutineCurrentPage != null)
+            {
+                CanvasGroup currentCanvasGroup = GetPage(_currentPageIndex).canvasGroup;
+                
+                if (currentCanvasGroup.gameObject.activeInHierarchy)
+                {
+                    StopCoroutine(_crossFadeCoroutineCurrentPage);
+                    currentCanvasGroup.alpha = 0.0f;
+                    currentCanvasGroup.gameObject.SetActive(false);
+                }
+                
+                _crossFadeCoroutineCurrentPage = null;
+            }
+        }
+
+        private void ChangePageVisualBehaviour()
+        {
+            if (crossFadePages)
+            {
+#if UNITY_EDITOR
+                if (Application.isPlaying == false)
+                {
+                    GetPage(_previousPageIndex).canvasGroup.alpha = 0.0f;
+                    GetPage(_currentPageIndex).canvasGroup.alpha = 1.0f;
+                }
+                else
+                {
+                    CrossFadePages();
+                }
+#else
+                CrossFadePages();
+#endif
+            }
+            else
+            {
+                _pages[_previousPageIndex].canvasGroup.gameObject.SetActive(false);
+                _pages[_currentPageIndex].canvasGroup.gameObject.SetActive(true);
+            }
+        }
     }
+    
 
 
 #if UNITY_EDITOR
@@ -90,13 +226,13 @@ namespace Project
             UIPager t = target as UIPager;;
             if (t == null) return;
             
-            if (GUILayout.Button("Next Page"))
-            {
-                t.NextPage();
-            }
-            else if (GUILayout.Button("Previous Page"))
+            if (GUILayout.Button("Previous Page"))
             {
                 t.PreviousPage();
+            }
+            else if (GUILayout.Button("Next Page"))
+            {
+                t.NextPage();
             }
             else if (GUILayout.Button("Refresh Pager"))
             {

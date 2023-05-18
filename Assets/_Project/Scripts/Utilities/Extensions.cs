@@ -94,6 +94,14 @@ namespace Project.Utilities
                     action.Invoke(target[i]);
                 }
             }
+            
+            public static void ForInRange<T>(this IList<T> target, Action<int, T> action)
+            {
+                for (int i = 0; i < target.Count; i++)
+                {
+                    action.Invoke(i, target[i]);
+                }
+            }
         }
 }
 

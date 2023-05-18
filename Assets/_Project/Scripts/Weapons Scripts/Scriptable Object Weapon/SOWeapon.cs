@@ -128,7 +128,7 @@ public class MyScriptEditor : Editor
             myScript.bulletNumber = EditorGUILayout.IntSlider("Bullet Number",myScript.bulletNumber,1,30);
 
 
-        if (GUILayout.Button("Force Save To Disk"))
+        if (GUILayout.Button("Force Save On Disk"))
         {
             myScript.ForceSave();
         }

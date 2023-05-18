@@ -1,16 +1,19 @@
+using System;
+using System.Collections;
 using UnityEngine;
 
 public class Singleton<T> : MonoBehaviour where T: MonoBehaviour{
     
     public static bool verbose = false;
     public static bool keepAlive = true;
+    public static bool isApplicationQuitting = false;
 
     private static T _instance = null;
     public static T instance {
         get { 
             if(_instance == null){
                 _instance = GameObject.FindObjectOfType<T>();
-                if(_instance == null){
+                if(_instance == null && isApplicationQuitting == false){
                     var singletonObj = new GameObject();
                     singletonObj.name = typeof(T).ToString();
                     _instance = singletonObj.AddComponent<T>();
@@ -46,7 +49,24 @@ public class Singleton<T> : MonoBehaviour where T: MonoBehaviour{
 
         if(verbose)
             Debug.Log("SingleAccessPoint instance found " + instance.GetType().Name);
-
     }
 
+    public void OnApplicationQuit()
+    {
+        isApplicationQuitting = true;
+        StartCoroutine(DestroyInstance());
+    }
+
+    private IEnumerator DestroyInstance()
+    {
+        yield return null;
+        if (isInstanceAlive)
+        {
+            StartCoroutine(DestroyInstance());
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+    }
 }

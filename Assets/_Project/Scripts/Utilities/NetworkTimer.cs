@@ -33,7 +33,7 @@ namespace Project
                     Utilities.UtilitiesClass.instance.StopCoroutine(_coroutine);
                 }
 
-                _coroutine = Utilities.UtilitiesClass.instance.CoroutineStart(SimpleTimer(timeInSeconds));
+                _coroutine = Utilities.UtilitiesClass.instance.StartCoroutine(SimpleTimer(timeInSeconds));
             }
 
             public void StartTimerWithCallback(float timeInSeconds, Action callback, bool forceStart = false)
@@ -49,7 +49,7 @@ namespace Project
                     Utilities.UtilitiesClass.instance.StopCoroutine(_coroutine);
                 }
 
-                _coroutine = Utilities.UtilitiesClass.instance.CoroutineStart(TimerWithCallback(timeInSeconds, callback));
+                _coroutine = Utilities.UtilitiesClass.instance.StartCoroutine(TimerWithCallback(timeInSeconds, callback));
             }
 
 

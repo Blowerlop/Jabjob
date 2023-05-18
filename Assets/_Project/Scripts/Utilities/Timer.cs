@@ -27,7 +27,7 @@ namespace Project.Utilities
                 UtilitiesClass.instance.StopCoroutine(_coroutine);
             }
 
-            _coroutine = UtilitiesClass.instance.CoroutineStart(SimpleTimer(timeInSeconds));
+            _coroutine = UtilitiesClass.instance.StartCoroutine(SimpleTimer(timeInSeconds));
         }
 
         public void StartTimerWithCallback(float timeInSeconds, Action callback, bool forceStart = false)
@@ -43,7 +43,7 @@ namespace Project.Utilities
                 UtilitiesClass.instance.StopCoroutine(_coroutine);
             }
 
-            _coroutine = UtilitiesClass.instance.CoroutineStart(TimerWithCallback(timeInSeconds, callback));
+            _coroutine = UtilitiesClass.instance.StartCoroutine(TimerWithCallback(timeInSeconds, callback));
         }
 
 
@@ -88,7 +88,7 @@ namespace Project.Utilities
         private static IEnumerator TimerWithCallbackStatic(float timeInSeconds, Action callback)
         {
             yield return new WaitForSeconds(timeInSeconds);
-            callback?.Invoke();
+            callback.Invoke();
         }
     }
 }

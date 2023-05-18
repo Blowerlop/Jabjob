@@ -23,20 +23,40 @@ namespace Project.Utilities
         
 
         #region Methods
-
         
-        public Coroutine CoroutineStart(IEnumerator coroutine) => StartCoroutine(coroutine);
-        public Coroutine CoroutineStart(string methodName) => StartCoroutine(methodName);
-        public Coroutine CoroutineStart(string methodName, [DefaultValue("null")] object value) => StartCoroutine(methodName, value);
 
-        public void CoroutineStop(Coroutine coroutine) => StopCoroutine(coroutine);
-        public void CoroutineStop(IEnumerator coroutine) => StopCoroutine(coroutine);
-        public void CoroutineStop(string methodName) => StopCoroutine(methodName);
-
-
+        public static Coroutine StartLerpInTime(float timeInSeconds, float from, float to, Action<float> callback, Action callbackOnFinish = default) => instance.StartCoroutine(LerpInTimeCoroutine(timeInSeconds, from, to, callback, callbackOnFinish)); 
+        private static IEnumerator LerpInTimeCoroutine(float timeInSeconds, float from, float to, Action<float> callback, Action callbackOnFinish)
+        {
+            float timer = 0.0f;
+            while (timer < timeInSeconds)
+            {
+                timer += Time.deltaTime;
+                callback.Invoke(Mathf.Lerp(from, to, timer / timeInSeconds));
+                yield return null;
+            }
+            
+            callbackOnFinish?.Invoke();
+        }
+        
+        private static IEnumerator WaitForSecondsAndDoActionCoroutine(float timeInSeconds, Action action)
+        {
+            yield return new WaitForSeconds(timeInSeconds);
+            action.Invoke();
+        }
+        
+        public static IEnumerator WaitForFramesAndDoActionCoroutine(int frames, Action action)
+        {
+            for (int i = 0; i < frames; i++)
+            {
+                yield return null;
+            }
+            
+            action.Invoke();
+        }
 
         /// <summary>
-        /// This script only if there is only one layer selected
+        /// This script only works if there is only one layer selected
         /// </summary>
         /// <param name="layerMask"></param>
         /// <returns></returns>
