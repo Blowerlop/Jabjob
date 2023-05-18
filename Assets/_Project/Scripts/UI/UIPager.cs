@@ -51,7 +51,10 @@ namespace Project
 
         public void NextPage()
         {
-            CancelCrossPages();
+            if (crossFadePages)
+            {
+                CancelCrossPages();
+            }
 
             if (_currentPageIndex + 1 >= _pages.Count)
             {
@@ -67,13 +70,16 @@ namespace Project
                 _currentPageIndex++;
             }
             
-            
+            GetPage(_currentPageIndex).onPageSelectedEvent.Invoke();
             ChangePageVisualBehaviour();
         }
 
         public void PreviousPage()
         {
-            CancelCrossPages();
+            if (crossFadePages)
+            {
+                CancelCrossPages();
+            }
             
             if (_currentPageIndex - 1 < 0)
             {
@@ -90,6 +96,7 @@ namespace Project
             }
 
             
+            GetPage(_currentPageIndex).onPageSelectedEvent.Invoke();
             ChangePageVisualBehaviour();
             
         }
@@ -122,6 +129,8 @@ namespace Project
 
         public void GoToPage(CanvasGroup canvasGroup)
         {
+            if (GetPage(_currentPageIndex).canvasGroup == canvasGroup) return;
+            
             for (int i = 0; i < _pages.Count; i++)
             {
                 if (GetPage(i).canvasGroup == canvasGroup)
@@ -129,6 +138,7 @@ namespace Project
                     _previousPageIndex = _currentPageIndex;
                     _currentPageIndex = i;
                     
+                    GetPage(_currentPageIndex).onPageSelectedEvent.Invoke();
                     ChangePageVisualBehaviour();
                     break;
                 }
@@ -140,17 +150,23 @@ namespace Project
             CanvasGroup previousPageCanvasGroup = GetPage(_previousPageIndex).canvasGroup;
             CanvasGroup currentCanvasGroup = GetPage(_currentPageIndex).canvasGroup;
 
+            currentCanvasGroup.gameObject.SetActive(true);
+            
             _crossFadeCoroutinePreviousPage =
-                UtilitiesClass.StartLerpInTime(_crossFadeDuration, 1.0f, 0.0f, lerpCurrentValue =>
+                StartCoroutine(UtilitiesClass.LerpInTimeCoroutine(_crossFadeDuration, 1.0f, 0.0f, lerpCurrentValue =>
                 {
-                    
-                }, () => previousPageCanvasGroup.gameObject.SetActive(false));
+                    previousPageCanvasGroup.alpha = lerpCurrentValue;
+                }
+                    , () => previousPageCanvasGroup.gameObject.SetActive(false)
+                    ));
             
             _crossFadeCoroutineCurrentPage =
-                UtilitiesClass.StartLerpInTime(_crossFadeDuration, 0.0f, 1.0f, lerpCurrentValue =>
+                StartCoroutine(UtilitiesClass.LerpInTimeCoroutine(_crossFadeDuration, 0.0f, 1.0f, lerpCurrentValue =>
                 {
                     currentCanvasGroup.alpha = lerpCurrentValue;
-                }, () => currentCanvasGroup.gameObject.SetActive(false));
+                }
+                    , () => currentCanvasGroup.gameObject.SetActive(true)
+                    ));
         }
 
         private Page GetPage(int pageIndex) => _pages[pageIndex];

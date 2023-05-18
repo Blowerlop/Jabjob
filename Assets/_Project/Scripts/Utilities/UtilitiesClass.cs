@@ -25,8 +25,7 @@ namespace Project.Utilities
         #region Methods
         
 
-        public static Coroutine StartLerpInTime(float timeInSeconds, float from, float to, Action<float> callback, Action callbackOnFinish = default) => instance.StartCoroutine(LerpInTimeCoroutine(timeInSeconds, from, to, callback, callbackOnFinish)); 
-        private static IEnumerator LerpInTimeCoroutine(float timeInSeconds, float from, float to, Action<float> callback, Action callbackOnFinish)
+        public static IEnumerator LerpInTimeCoroutine(float timeInSeconds, float from, float to, Action<float> callback, Action onFinishCallback = null)
         {
             float timer = 0.0f;
             while (timer < timeInSeconds)
@@ -36,10 +35,10 @@ namespace Project.Utilities
                 yield return null;
             }
             
-            callbackOnFinish?.Invoke();
+            onFinishCallback?.Invoke();
         }
         
-        private static IEnumerator WaitForSecondsAndDoActionCoroutine(float timeInSeconds, Action action)
+        public static IEnumerator WaitForSecondsAndDoActionCoroutine(float timeInSeconds, Action action)
         {
             yield return new WaitForSeconds(timeInSeconds);
             action.Invoke();

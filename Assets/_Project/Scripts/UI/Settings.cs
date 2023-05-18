@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Project.Utilities;
 using TMPro;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -18,7 +19,7 @@ namespace Project
         Aspect21by9
     }
 
-    
+
     public class Settings : MonoBehaviour
     {
         [SerializeField] private DropDownExtended _screenSizeDropdown;
@@ -29,33 +30,38 @@ namespace Project
 
         public FullScreenMode currentFullScreenMode;
         public FullScreenMode selectedFullScreenMode;
-        
-        
-        
+
+
+
         private Resolution _currentResolution;
         public EAspectRation _currentAspectRation;
 
         private Resolution _selectedResolution;
-        
-        
+
+
         public EAspectRation _previousSelectedAspectRation;
         public EAspectRation _currentSelectedAspectRatio;
 
         private bool _optionsRefreshed = true;
 
 
+        public static Event<EAspectRation> onAspectRatioNotSupportedEvent =
+            new Event<EAspectRation>(nameof(onAspectRatioNotSupportedEvent));
+
         private void Start()
         {
+            CheckAllAspectRatioSupportedState();
+            
             // _screenSizeDropdown.onBeforeDropdownShowEvent.Subscribe(RefreshResolutionOptions, this);
             _screenSizeDropdown.onDropdownItemCreatedEvent.Subscribe(OnDropdownItemCreated, this);
             _screenSizeDropdown.onAfterDropdownShowEvent.Subscribe(AAAA, this);
-            
+
             _screenDisplayDropdown.onDropdownItemCreatedEvent.Subscribe(SetFullScreenModeContainer, this);
 
-            
+
             // _screenSizeDropdown.captionText.text = Screen.currentResolution.ToString();
             _screenSizeDropdown.captionText.text = ResolutionToString(Screen.currentResolution);
-            
+
             Debug.Log(Screen.currentResolution.height);
             Debug.Log(Screen.currentResolution.width);
 
@@ -74,7 +80,7 @@ namespace Project
         private void RefreshResolutionOptions()
         {
             // if (_currentAspectRation == _selectedAspectRation) return;
-            
+
             // if (_currentAspectRation != _currentSelectedAspectRation) _screenSizeDropdown.ClearOptions();
             // screenResolutions = GetAllResolutionOfTheSelectedAspectRatio();
             // if (_currentAspectRation != _currentSelectedAspectRation || _screenSizeDropdown.options.Count == 0)
@@ -88,7 +94,7 @@ namespace Project
             // }
 
             if (_optionsRefreshed == false) return;
-            
+
             _screenSizeDropdown.ClearOptions();
             screenResolutions = GetAllResolutionOfTheSelectedAspectRatio();
             _screenSizeDropdown.AddOptions(ResolutionsToString(screenResolutions));
@@ -110,28 +116,33 @@ namespace Project
         {
             // if (_previousSelectedAspectRation == _currentSelectedAspectRation && _optionsRefreshed == false) return;
             // if (_optionsRefreshed == false) return;
-            
+
             rectTransform.GetComponent<ResolutionContainer>().resolution = screenResolutions[index];
             // There is an Event set in the editor for the item;
         }
-        
+
         private void AAAA()
         {
             if (_optionsRefreshed == false) return;
-            
-            
+
+
             for (int i = 0; i < _screenSizeDropdown.dropdownItems.Count; i++)
             {
-                if (AreResolutionsEqual(_screenSizeDropdown.dropdownItems[i].GetComponent<ResolutionContainer>().resolution, Screen.currentResolution))
+                if (AreResolutionsEqual(
+                        _screenSizeDropdown.dropdownItems[i].GetComponent<ResolutionContainer>().resolution,
+                        Screen.currentResolution))
                 {
                     Debug.Log("ici ca passe");
-                    _screenSizeDropdown.dropdownItems[0].GetComponent<Toggle>().SetIsOnWithoutNotify(false);;
-                    Debug.Log("Resolution : " + _screenSizeDropdown.dropdownItems[i].GetComponent<ResolutionContainer>().resolution);
+                    _screenSizeDropdown.dropdownItems[0].GetComponent<Toggle>().SetIsOnWithoutNotify(false);
+                    ;
+                    Debug.Log("Resolution : " + _screenSizeDropdown.dropdownItems[i].GetComponent<ResolutionContainer>()
+                        .resolution);
                     // _screenSizeDropdown.captionText.text = Screen.currentResolution.ToString();
                     _screenSizeDropdown.dropdownItems[i].GetComponent<Toggle>().isOn = true;
                     // _screenSizeDropdown.dropdownItems[i].GetComponent<Toggle>().Select();
-                    
-                    StartCoroutine(UtilitiesClass.WaitForFramesAndDoActionCoroutine(1, () => _screenSizeDropdown.OnPointerClick(null)));
+
+                    StartCoroutine(UtilitiesClass.WaitForFramesAndDoActionCoroutine(1,
+                        () => _screenSizeDropdown.OnPointerClick(null)));
                     break;
                 }
             }
@@ -140,13 +151,14 @@ namespace Project
             {
                 _screenSizeDropdown.dropdownItems[0].GetComponent<Toggle>().Select();
             }
+
             _optionsRefreshed = false;
         }
 
         private List<Resolution> GetAllResolutionOfTheSelectedAspectRatio()
         {
             List<Resolution> resolutions = new List<Resolution>();
-            
+
             Screen.resolutions.ForEach(resolution =>
             {
                 if (CalculateScreenAspectRationApproximation(resolution) == _currentSelectedAspectRatio)
@@ -165,7 +177,7 @@ namespace Project
                     {
                         resolutions.Add(resolution);
                     }
-                } 
+                }
             });
 
             return resolutions;
@@ -174,13 +186,15 @@ namespace Project
         private List<string> ResolutionsToString(List<Resolution> resolutions)
         {
             List<string> resolutionStrings = new List<string>();
-            
+
             resolutions.ForEach(resolution => resolutionStrings.Add(ResolutionToString(resolution)));
 
             return resolutionStrings;
         }
-        
-        private EAspectRation CalculateScreenAspectRationApproximation(Resolution resolution) => CalculateScreenAspectRationApproximation(resolution.width, resolution.height);
+
+        private EAspectRation CalculateScreenAspectRationApproximation(Resolution resolution) =>
+            CalculateScreenAspectRationApproximation(resolution.width, resolution.height);
+
         private EAspectRation CalculateScreenAspectRationApproximation(float width, float height)
         {
             if (width / height >= 2.37f)
@@ -201,13 +215,13 @@ namespace Project
 
         public void SelectResolution(ResolutionContainer resolutionContainer) =>
             SelectResolution(resolutionContainer.resolution);
-        
+
         public void SelectResolution(Resolution resolution)
         {
             clickedResolutionString = resolution.ToString();
             clickedResolution = resolution;
         }
-        
+
         public void SelectDisplayMode(FullScreenModeContainer fullScreenMode)
         {
             selectedFullScreenMode = fullScreenMode.fullScreenMode;
@@ -230,12 +244,15 @@ namespace Project
             _currentAspectRation = _currentSelectedAspectRatio;
         }
 
-        public bool AreResolutionsEqual(Resolution resolution1, Resolution resolution2) => resolution1.height == resolution2.height && resolution1.width == resolution2.width && resolution1.refreshRate == resolution2.refreshRate;
+        public bool AreResolutionsEqual(Resolution resolution1, Resolution resolution2) =>
+            resolution1.height == resolution2.height && resolution1.width == resolution2.width &&
+            resolution1.refreshRate == resolution2.refreshRate;
 
         public void SelectAspectRatio(AspectRatioContainer aspectRationContainer)
         {
             SelectAspectRatio(aspectRationContainer.aspectRation);
         }
+
         public void SelectAspectRatio(EAspectRation aspectRation)
         {
             _currentSelectedAspectRatio = aspectRation;
@@ -248,13 +265,14 @@ namespace Project
 
             }
         }
-        
-        
+
+
         private void SetFullScreenModeContainer(RectTransform rectTransform, int index)
         {
             if (index == 0)
             {
-                rectTransform.GetComponent<FullScreenModeContainer>().fullScreenMode = FullScreenMode.ExclusiveFullScreen;
+                rectTransform.GetComponent<FullScreenModeContainer>().fullScreenMode =
+                    FullScreenMode.ExclusiveFullScreen;
             }
             else if (index == 1)
             {
@@ -264,6 +282,45 @@ namespace Project
             {
                 Debug.Log("ERRORRRRRRR ITEMS PAS BON NOMBRE");
             }
+        }
+
+        private void CheckAllAspectRatioSupportedState()
+        {
+            bool screenSupport4By3 = false;
+            bool screenSupport16By9 = false;
+            bool screenSupport21By9 = false;
+            
+            Screen.resolutions.ForEach(x =>
+            {
+                EAspectRation aspectRation = CalculateScreenAspectRationApproximation(x);
+                if (aspectRation == EAspectRation.Aspect4by3)
+                {
+                    screenSupport4By3 = true;
+                }
+                else if (aspectRation == EAspectRation.Aspect16by9)
+                {
+                    screenSupport16By9 = true;
+                }
+                else if (aspectRation == EAspectRation.Aspect21by9)
+                {
+                    screenSupport21By9 = true;
+                }
+            });
+            
+            if (screenSupport4By3 == false)
+            {
+                onAspectRatioNotSupportedEvent.Invoke(this, true, EAspectRation.Aspect4by3);
+            }
+            if (screenSupport16By9 == false)
+            {
+                onAspectRatioNotSupportedEvent.Invoke(this, true, EAspectRation.Aspect16by9);
+            }
+            if (screenSupport21By9 == false)
+            {
+                onAspectRatioNotSupportedEvent.Invoke(this, true, EAspectRation.Aspect21by9);
+            }
+            
+            onAspectRatioNotSupportedEvent.Invoke(this, true, EAspectRation.None);
         }
 
         private string ResolutionToString(Resolution resolution)
