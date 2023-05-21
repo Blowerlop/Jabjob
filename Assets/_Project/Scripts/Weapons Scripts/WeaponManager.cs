@@ -102,7 +102,7 @@ public class WeaponManager : NetworkBehaviour
     }
 
     public Weapon GetCurrentWeapon() => _currentWeapon;
-
+    public Weapon GetFakeWeapon() => _fakeWeapon; 
 
     public static void SetLayerRecursively(GameObject go, int layerNumber)
     {

@@ -96,13 +96,9 @@ namespace Project
                         if (Physics.Raycast(_rootCamera.position, _rootCamera.forward, out RaycastHit hit,
                                 Mathf.Infinity, _shootLayerMaskNoPhysics))
                         {
-                            if (hit.transform.TryGetComponent(out Paintable paintable))
-                            {
                                 var id = hit.colliderInstanceID;
                                 LocalShoot(true, weaponHolderPosition, rootCameraPosition, hit.point, true);
                                 ShootServerRpc(weaponHolderPosition, rootCameraPosition, hit.point, true);
-                            }
-                            
                             if (hit.transform.TryGetComponent(out IHealthManagement healthManagement))
                             {
                                 Debug.Log("Hit");
@@ -154,6 +150,9 @@ namespace Project
         
         private void LocalShoot(bool isTheShooter, Vector3 weaponHolderPosition, Vector3 rootCameraPosition, Vector3 hitPoint, bool isRaycast)
         {
+            Weapon currentWeapon = _weaponManager.GetFakeWeapon();
+            Weapon fakeWeapon = _weaponManager.GetFakeWeapon();
+
             if (isRaycast)
             {
                 Paintable paintable = null;
@@ -165,7 +164,7 @@ namespace Project
                         break;
                     }
                 }
-
+                CreateBulletTrail(currentWeapon.bulletStartPoint, fakeWeapon.bulletStartPoint, hitPoint);
                 if (paintable == null) return;
                 
                 if (_weaponData.spray)
@@ -174,10 +173,10 @@ namespace Project
                     {
                         PaintManager.instance.Paint(paintable, hitPoint, _weaponData.paintRadius, _weaponData.paintHardness, _weaponData.paintStrength, paintColor);
                     }
-                }
+                } 
                 else
                 {
-                    PaintManager.instance.Paint(paintable, hitPoint, _weaponData.paintRadius, _weaponData.paintHardness, _weaponData.paintStrength, paintColor);
+                    PaintManager.instance.Paint(paintable, hitPoint, _weaponData.paintRadius, _weaponData.paintHardness, _weaponData.paintStrength, paintColor); 
                 }
             }
             else
@@ -187,19 +186,23 @@ namespace Project
                     for (int i = 0; i < _weaponData.bulletNumber; i++)
                     {
                         GameObject go = ObjectPoolingManager.instance.GetObject();
-
+                        MovingTrailScript movingTrail = go.GetComponentInChildren<MovingTrailScript>();
+                        movingTrail.SetTrailColor(paintColor, paintColor); 
                         go.GetComponent<WeaponProjectile>().Init(isTheShooter, _weaponData.dispersion, _weaponData.bulletSpeed, _weaponData.damage, weaponHolderPosition, _collider, rootCameraPosition, hitPoint, OwnerClientId, _weaponData.paintRadius, _weaponData.paintStrength, _weaponData.paintHardness, paintColor);
                     }
                 }
                 else
                 {
                     GameObject go = ObjectPoolingManager.instance.GetObject();
-
+                    MovingTrailScript movingTrail = go.GetComponentInChildren<MovingTrailScript>();
+                    movingTrail.SetTrailColor(paintColor, paintColor);
                     go.GetComponent<WeaponProjectile>().Init(isTheShooter, _weaponData.dispersion, _weaponData.bulletSpeed, _weaponData.damage, weaponHolderPosition, _collider, rootCameraPosition, hitPoint, OwnerClientId, _weaponData.paintRadius, _weaponData.paintStrength, _weaponData.paintHardness, paintColor);
                 }
             }
-            
 
+
+            if (isTheShooter) { fakeWeapon.SetFiringColorPart(paintColor); fakeWeapon.PlayFiringPart(); }
+            else { currentWeapon.SetFiringColorPart(paintColor);  currentWeapon.PlayFiringPart();  }
             _audioSource.PlayOneShot(_weaponData.FiringSound);
         }
         
@@ -233,6 +236,25 @@ namespace Project
             _weaponData = SOWeapon.GetWeaponPrefab(weaponID).weaponData;  
         }
 
+        #region Trail effects
+        [SerializeField] private GameObject bulletTrail;
+
+        public void CreateBulletTrail(Transform spawnPoint, Transform fakeSpawnPoint, Vector3 hitpoint)
+        {
+            GameObject clone; 
+            if (IsOwner) {
+                clone = Instantiate(bulletTrail, fakeSpawnPoint.position, bulletTrail.transform.rotation);
+            }
+            else 
+            {
+                clone = Instantiate(bulletTrail, spawnPoint.position, bulletTrail.transform.rotation);
+            }
+            MovingTrailScript movingTrail = clone.GetComponent<MovingTrailScript>();
+            movingTrail.hitpoint = hitpoint;
+            movingTrail.SetTrailColor(paintColor, paintColor);
+            movingTrail.Initialize();
+        }
+        #endregion
         void OnDrawGizmos()
         {
             if (_showDebug)

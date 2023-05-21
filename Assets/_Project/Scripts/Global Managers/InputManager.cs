@@ -35,7 +35,7 @@ public class InputManager : Singleton<InputManager>
     public bool isConsoleOpened;
     public bool isWeaponSelectionOpen;
     public Event onEscapePressed = new Event(nameof(onEscapePressed));
-
+    public bool TabPressed;
     public PlayerInput _playerInput;
     
     #if UNITY_EDITOR
@@ -83,7 +83,10 @@ public class InputManager : Singleton<InputManager>
     {
         isDashing = true;
     }
-
+    public void OnTabulation()
+    {
+        TabPressed = true;
+    }
     public void OnConsole()
     {
         isConsoleOpened = !isConsoleOpened;

@@ -56,7 +56,8 @@ public class SOWeapon : ScriptableObject
     [HideInInspector, Tooltip(@"If weapons shoot multiple bullets")]
     public int bulletNumber;
 
-
+    [Header("Visuals and Sound")]
+    public Material bulletTrailMaterial;
     public AudioClip FiringSound;
 
 

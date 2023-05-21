@@ -23,7 +23,8 @@ public class ScoreBoard : MonoBehaviour
     
     [SerializeField] private Transform _bodyPlayersScoreboard; 
     [SerializeField] private PlayerScoreboardUI _playerScoreboardUiTemplate;
-    
+    [SerializeField] private GameObject scoreboard;
+    bool isOpen; 
 
     // private void OnEnable()
     // {
@@ -81,8 +82,17 @@ public class ScoreBoard : MonoBehaviour
         GameEvent.onPlayerGetAKillEvent.Unsubscribe(UpdateKillText);
         GameEvent.onPlayerGetAssistEvent.Unsubscribe(UpdateAssistText);
         GameEvent.onPlayerDiedEvent.Unsubscribe(UpdateDeathText);
-    } 
-    
+    }
+
+    private void Update()
+    {
+        if (InputManager.instance.TabPressed)
+        {
+            scoreboard.SetActive(!isOpen);
+            isOpen = !isOpen;
+            InputManager.instance.TabPressed = false;
+        }
+    }
     public void AddPlayerToTheScoreboard(ulong playerId)
     {
         PlayerScoreboardUI playerScoreboardUi = Instantiate(_playerScoreboardUiTemplate, _bodyPlayersScoreboard);

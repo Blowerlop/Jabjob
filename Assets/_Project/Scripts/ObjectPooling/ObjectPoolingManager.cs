@@ -5,9 +5,9 @@ using UnityEngine;
 public class ObjectPoolingManager : MonoBehaviour
 {
     public static ObjectPoolingManager instance;
-    List<GameObject> objects = new();
+    List<GameObject> projectileList = new();
     public int baseNumber;
-    public GameObject objectToInstanciate;
+    public GameObject projectilePrefab;
     
 
     /// <summary>
@@ -18,8 +18,8 @@ public class ObjectPoolingManager : MonoBehaviour
         instance = this;
         for(int i = 0; i < baseNumber; i++)
         {
-            GameObject go = Instantiate(objectToInstanciate,transform);
-            objects.Add(go);
+            GameObject go = Instantiate(projectilePrefab,transform);
+            projectileList.Add(go);
             go.SetActive(false);
         }
     }
@@ -30,7 +30,7 @@ public class ObjectPoolingManager : MonoBehaviour
     public void ReturnGameObject(GameObject go)
     {
         go.SetActive(false);
-        objects.Add(go); 
+        projectileList.Add(go); 
     }
 
     /// <summary>
@@ -39,16 +39,16 @@ public class ObjectPoolingManager : MonoBehaviour
     public GameObject GetObject()
     {
         GameObject go;
-        if (objects.Count > 0)
+        if (projectileList.Count > 0)
         {
-            go = objects[0];
-            objects.Remove(objects[0]);
+            go = projectileList[0];
+            projectileList.Remove(projectileList[0]);
             go.SetActive(true);
 
         }
         else
         {
-            go = Instantiate(objectToInstanciate, transform);
+            go = Instantiate(projectilePrefab, transform);
         }
         return go;
     }
