@@ -9,7 +9,7 @@ namespace Project
         #if UNITY_EDITOR
         [SerializeField] private string _resolutionString;
         private Resolution _resolution;
-
+        
         public Resolution resolution
         {
             get => _resolution;

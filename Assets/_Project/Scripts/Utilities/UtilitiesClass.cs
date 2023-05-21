@@ -73,7 +73,7 @@ namespace Project.Utilities
                 children[i].gameObject.layer = LayerToInt(layerMask);
             }
         }
-
+        
         #endregion
     }
 }

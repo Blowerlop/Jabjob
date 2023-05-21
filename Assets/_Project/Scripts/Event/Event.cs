@@ -70,7 +70,7 @@ namespace Project
         {
             if (IsListenerAlreadySubscribe(action) == false)
             {
-                Debug.LogError($"Method - {action.Method.Name} - is not registered in the event");
+                Debug.LogWarning($"Method - {action.Method.Name} - is not registered in the event");
             }
             else
             {
@@ -157,7 +157,7 @@ namespace Project
         {
             if (IsListenerAlreadySubscribe(action) == false)
             {
-                Debug.LogError($"Method - {action.Method.Name} - is not registered in the event");
+                Debug.LogWarning($"Method - {action.Method.Name} - is not registered in the event");
             }
             else
             {
@@ -245,7 +245,7 @@ namespace Project
         {
             if (IsListenerAlreadySubscribe(action) == false)
             {
-                Debug.LogError($"Method - {action.Method.Name} - is not registered in the event");
+                Debug.LogWarning($"Method - {action.Method.Name} - is not registered in the event");
             }
             else
             {

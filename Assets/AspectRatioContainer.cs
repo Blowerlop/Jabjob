@@ -12,12 +12,12 @@ namespace Project
         
         private void Awake()
         {
-            Settings.onAspectRatioNotSupportedEvent.Subscribe(IsAspectRatioNotSupported, this);
+            VideoSettings.onAspectRatioNotSupportedEvent.Subscribe(IsAspectRatioNotSupported, this);
         }
 
         private void OnDestroy()
         {
-            Settings.onAspectRatioNotSupportedEvent.Unsubscribe(IsAspectRatioNotSupported);
+            VideoSettings.onAspectRatioNotSupportedEvent.Unsubscribe(IsAspectRatioNotSupported);
         }
 
         private void IsAspectRatioNotSupported(EAspectRation aspectRation)
@@ -28,7 +28,7 @@ namespace Project
             }
             else if (aspectRation == EAspectRation.None)
             {
-                Settings.onAspectRatioNotSupportedEvent.Unsubscribe(IsAspectRatioNotSupported);
+                VideoSettings.onAspectRatioNotSupportedEvent.Unsubscribe(IsAspectRatioNotSupported);
             }
         }
     }

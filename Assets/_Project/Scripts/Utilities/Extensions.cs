@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
@@ -101,6 +102,11 @@ namespace Project.Utilities
                 {
                     action.Invoke(i, target[i]);
                 }
+            }
+
+            public static String SeparateContent(this String @string)
+            {
+                return string.Concat(@string.Select(x => Char.IsUpper(x) ? " " + x : x.ToString())).TrimStart(' ');
             }
         }
 }
