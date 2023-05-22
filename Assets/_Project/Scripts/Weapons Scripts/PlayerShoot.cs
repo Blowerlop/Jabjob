@@ -203,7 +203,7 @@ namespace Project
 
             if (isTheShooter) { fakeWeapon.SetFiringColorPart(paintColor); fakeWeapon.PlayFiringPart(); }
             else { currentWeapon.SetFiringColorPart(paintColor);  currentWeapon.PlayFiringPart();  }
-            _audioSource.PlayOneShot(_weaponData.FiringSound);
+            _audioSource.PlayOneShot(_weaponData.FiringSound); 
         }
         
         public void Reload()
