@@ -34,13 +34,14 @@ namespace Project
         public int kills { get => _networkKills.Value; private set => _networkKills.Value = value; }
         public int assists { get => _networkAssists.Value; private set => _networkAssists.Value = value; }
         public int deaths { get => _networkDeaths.Value; private set => _networkDeaths.Value = value; }
-        public int score { get => GetScore(); private set => _networkScore.Value = value; }
+        public int score { get => _networkScore.Value; private set => _networkScore.Value = value; }
         public bool isHost { get => _networkIsHost.Value; private set => _networkIsHost.Value = value; }
 
         private HashSet<ulong> _damagersId = new HashSet<ulong>();
         private ulong _killerId;
 
         private PlayerShoot _playerShoot;
+        private FeedbackManagerUI _feedbackManager; 
         #endregion
 
 
@@ -50,6 +51,7 @@ namespace Project
         {
             _networkObject = GetComponent<NetworkObject>();
             _playerShoot = GetComponent<PlayerShoot>();
+            _feedbackManager = FindObjectOfType<FeedbackManagerUI>();
         }
 
         public override void OnNetworkSpawn()
@@ -223,6 +225,9 @@ namespace Project
         private void PlayerDeath()
         {
             PlayerDeathBehaviourLocal();
+            ulong[] _damagersIdArray = new ulong[_damagersId.Count];
+            _damagersId.CopyTo(_damagersIdArray);
+            PlayerDeathFeedBackLocal(_killerId, OwnerClientId, _damagersIdArray);
             PlayerDeathBehaviourServerRpc(OwnerClientId);
             Debug.Log("You're dead");
         }
@@ -238,10 +243,18 @@ namespace Project
                 if (assistId == _killerId) continue;
                 Player assistPlayer = GameManager.instance.GetPlayer(assistId);
                 assistPlayer.assists++;
+                assistPlayer.UpdateScore();
             }
-            _damagersId.Clear();
             PlayerDeathBehaviourClientRpc();
             Timer.StartTimerWithCallback(GameManager.instance._respawnDuration, (() => PlayerRespawnClientRpc(clientId)));
+
+            ulong[] _damagersIdArray = new ulong[_damagersId.Count];
+            _damagersId.CopyTo(_damagersIdArray);
+            PlayerDeathFeedbackClientRpc(_killerId, clientId, _damagersIdArray); 
+            _damagersId.Clear();
+
+            killer.UpdateScore();
+            UpdateScore();
         }
 
         [ClientRpc]
@@ -249,13 +262,19 @@ namespace Project
         {
             if (IsOwner == false) PlayerDeathBehaviourLocal();
         }
-
+        [ClientRpc]
+        private void PlayerDeathFeedbackClientRpc(ulong killerId, ulong killedId, ulong[] assistPlayers)
+        {
+            if (IsOwner == false) PlayerDeathFeedBackLocal(killerId, killedId, assistPlayers);
+        }
+        private void PlayerDeathFeedBackLocal(ulong killerId, ulong killedId, ulong[] assistPlayers)
+        {
+            _feedbackManager.SendFeedback(killerId, killedId, assistPlayers);
+        }
         private void PlayerDeathBehaviourLocal()
         {
             gameObject.SetActive(false);
         }
-
-
         [ClientRpc]
         private void PlayerRespawnClientRpc(ulong clientId)
         {
@@ -269,14 +288,15 @@ namespace Project
             player.gameObject.SetActive(true);
         }
 
-        private void OnKillValueChange(int previousValue, int nextValue) { GameEvent.onPlayerGetAKillEvent.Invoke(this, true, OwnerClientId, nextValue); score = GetScore();}
-        private void OnAssistValueChange(int previousValue, int nextValue) {GameEvent.onPlayerGetAssistEvent.Invoke(this, true, OwnerClientId, nextValue); score = GetScore(); }
-        private void OnDeathValueChange(int previousValue, int nextValue){ GameEvent.onPlayerDiedEvent.Invoke(this, true, OwnerClientId, nextValue); score = GetScore(); }
+        private void OnKillValueChange(int previousValue, int nextValue) => GameEvent.onPlayerGetAKillEvent.Invoke(this, true, OwnerClientId, nextValue); 
+        private void OnAssistValueChange(int previousValue, int nextValue) => GameEvent.onPlayerGetAssistEvent.Invoke(this, true, OwnerClientId, nextValue);  
+        private void OnDeathValueChange(int previousValue, int nextValue) => GameEvent.onPlayerDiedEvent.Invoke(this, true, OwnerClientId, nextValue);  
         private void OnScoreValueChange(int previousValue, int nextValue) => GameEvent.onPlayerScoreEvent.Invoke(this, true, OwnerClientId, nextValue);
         #endregion
-        public int GetScore() // scoring de base pourri, peut être à changer
+        public int UpdateScore() // scoring de base pourri, peut être à changer
         {
-            return 3 * kills - 1 * deaths + 1 * assists; 
+            score = 3 * kills - 1 * deaths + 1 * assists; 
+            return score; 
         }
         #endregion
     }

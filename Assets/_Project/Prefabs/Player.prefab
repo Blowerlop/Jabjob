@@ -310,7 +310,7 @@ GameObject:
   - component: {fileID: 721064595389160970}
   - component: {fileID: 4730359429359972857}
   m_Layer: 10
-  m_Name: Canvas
+  m_Name: CanvasOverlay
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1431,9 +1431,9 @@ MonoBehaviour:
     m_InternalValue: 0
   _networkAssists:
     m_InternalValue: 0
-  _networkScore:
-    m_InternalValue: 0
   _networkDeaths:
+    m_InternalValue: 0
+  _networkScore:
     m_InternalValue: 0
   _networkIsHost:
     m_InternalValue: 0

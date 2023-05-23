@@ -46,24 +46,43 @@ namespace Project
             imageBackground.enabled = true;
             Player[] players = GameManager.instance.GetPlayers();
             Array.Sort(players, (x, y) => x.score.CompareTo(y.score));
-            //Array.Reverse(players);
+            Array.Reverse(players);
 
             for (int i = 0; i < players.Length; i++)
             {
                 Player player = players[i];
                 SinglePlayerEndStatsUI singlePlayer = Instantiate(playerSingleTemplate).GetComponent<SinglePlayerEndStatsUI>();
                 singlePlayer.transform.SetParent(this.transform);
-                singlePlayer.transform.localEulerAngles = Vector3.zero; 
-                int finalPlace = i > 0 && player.score == players[i - 1].score ? playerList[i-1].endingPlace : i + 1;
+                singlePlayer.transform.localEulerAngles = Vector3.zero;
+                int finalPlace = GetCelebrationNumber(i, players);
                 singlePlayer.SetPlayerSingleUI(player.playerName, player.playerColor, finalPlace, colorDictionnary[finalPlace], player.kills, player.deaths, player.assists, player.score);
                 singlePlayer.ConfigureCamera(Vector3.zero + i * new Vector3(0, CAMERA_DISPLACE,0), cameraTextureList[i]);
                 singlePlayer.gameObject.SetActive(true);
+                singlePlayer.GetComponent<RectTransform>().localPosition = new Vector3(0, 0, 0);
                 playerList.Add(singlePlayer);
-                
                 SetPlayerVisualandAnim(player, finalPlace , i);
             }
         }
 
+        private int GetCelebrationNumber(int indexPos, Player[] players)
+        {
+            if (indexPos == 0) return 1;
+            else if(players.Length == 2)
+            {
+                if (indexPos == 1 && players[0].score == players[1].score) return 1;
+                else return 4; 
+            }
+            else if(players.Length == 3)
+            {
+                if (players[indexPos - 1].score == players[indexPos].score) return playerList[indexPos - 1].endingPlace;
+                else return indexPos + 2; 
+            }
+            else
+            {
+                if (players[indexPos - 1].score == players[indexPos].score) return playerList[indexPos - 1].endingPlace;
+                else return indexPos + 1; 
+            }
+        }
 
         private void SetPlayerVisualandAnim(Player player, int finalPlace, int playerNumber)
         {
