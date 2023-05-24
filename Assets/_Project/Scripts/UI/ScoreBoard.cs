@@ -19,11 +19,12 @@ public class ScoreBoard : MonoBehaviour
     TextMeshProUGUI _health;
     TextMeshProUGUI _ping;
 
-    private readonly Dictionary<ulong, PlayerScoreboardUI> _playersScoreboard = new Dictionary<ulong, PlayerScoreboardUI>();
+    private readonly Dictionary<ulong, PlayerScoreboardUI> playerScoreboard = new Dictionary<ulong, PlayerScoreboardUI>();
     
     [SerializeField] private Transform _bodyPlayersScoreboard; 
     [SerializeField] private PlayerScoreboardUI _playerScoreboardUiTemplate;
-    
+    [SerializeField] private GameObject scoreboard;
+    bool isOpen; 
 
     // private void OnEnable()
     // {
@@ -53,9 +54,11 @@ public class ScoreBoard : MonoBehaviour
         GameEvent.onPlayerJoinGameEvent.Subscribe(AddPlayerToTheScoreboard, this);
         
         GameEvent.onPlayerUpdateNameEvent.Subscribe(UpdateNameText, this);
+        GameEvent.onPlayerUpdateColorEvent.Subscribe(UpdateColorImage, this);
         GameEvent.onPlayerGetAKillEvent.Subscribe(UpdateKillText, this);
         GameEvent.onPlayerGetAssistEvent.Subscribe(UpdateAssistText, this);
         GameEvent.onPlayerDiedEvent.Subscribe(UpdateDeathText, this);
+        GameEvent.onPlayerScoreEvent.Subscribe(UpdateScoreText, this);
 
         Player[] players = GameManager.instance.GetPlayers();
         for (int i = 0; i < players.Length; i++)
@@ -67,6 +70,8 @@ public class ScoreBoard : MonoBehaviour
             UpdateKillText(playerId, player.kills);
             UpdateAssistText(playerId, player.assists);
             UpdateDeathText(playerId, player.deaths);
+            UpdateColorImage(playerId, player.playerColor);
+            UpdateScoreText(playerId, player.score);
         }
     }
 
@@ -75,40 +80,53 @@ public class ScoreBoard : MonoBehaviour
         GameEvent.onPlayerJoinGameEvent.Unsubscribe(AddPlayerToTheScoreboard);
         
         GameEvent.onPlayerUpdateNameEvent.Unsubscribe(UpdateNameText);
+        GameEvent.onPlayerUpdateColorEvent.Unsubscribe(UpdateColorImage);
         GameEvent.onPlayerGetAKillEvent.Unsubscribe(UpdateKillText);
         GameEvent.onPlayerGetAssistEvent.Unsubscribe(UpdateAssistText);
         GameEvent.onPlayerDiedEvent.Unsubscribe(UpdateDeathText);
-    } 
-    
+        GameEvent.onPlayerScoreEvent.Unsubscribe(UpdateScoreText);
+    }
+
+    private void Update()
+    {
+        if (InputManager.instance.TabPressed)
+        {
+            scoreboard.SetActive(!isOpen);
+            isOpen = !isOpen;
+            InputManager.instance.TabPressed = false;
+        }
+    }
     public void AddPlayerToTheScoreboard(ulong playerId)
     {
         PlayerScoreboardUI playerScoreboardUi = Instantiate(_playerScoreboardUiTemplate, _bodyPlayersScoreboard);
-        _playersScoreboard.Add(playerId, playerScoreboardUi);
+        playerScoreboard.Add(playerId, playerScoreboardUi);
         playerScoreboardUi.gameObject.SetActive(true);
         
     }
 
     public void RemovePlayerToTheScoreboard(ulong playerId)
     {
-        PlayerScoreboardUI playerScoreboardUI = _playersScoreboard[playerId];
+        PlayerScoreboardUI playerScoreboardUI = playerScoreboard[playerId];
         Destroy(playerScoreboardUI);
-        _playersScoreboard.Remove(playerId);
+        playerScoreboard.Remove(playerId);
     }
 
     private void UpdateNameText(ulong playerId, StringNetwork newValue)
     {
         Debug.Log("UpdateNameText playerId : " + playerId);
         Debug.Log("UpdateNameText newValue : " + newValue.value);
-        _playersScoreboard[playerId].UpdateNameText(newValue.value);
+        playerScoreboard[playerId].UpdateNameText(newValue.value);
     }
     private void UpdateNameText(ulong playerId, string newValue)
     {
         Debug.Log("UpdateNameText playerId : " + playerId);
         Debug.Log("UpdateNameText newValue : " + newValue);
-        _playersScoreboard[playerId].UpdateNameText(newValue);
+        playerScoreboard[playerId].UpdateNameText(newValue);
     }
 
-    private void UpdateKillText(ulong playerId, int newValue) => _playersScoreboard[playerId].UpdateKillText(newValue);
-    private void UpdateDeathText(ulong playerId, int newValue) => _playersScoreboard[playerId].UpdateDeathText(newValue);
-    private void UpdateAssistText(ulong playerId, int newValue) => _playersScoreboard[playerId].UpdateAssistText(newValue);
+    private void UpdateKillText(ulong playerId, int newValue) => playerScoreboard[playerId].UpdateKillText(newValue);
+    private void UpdateDeathText(ulong playerId, int newValue) => playerScoreboard[playerId].UpdateDeathText(newValue);
+    private void UpdateAssistText(ulong playerId, int newValue) => playerScoreboard[playerId].UpdateAssistText(newValue);
+    private void UpdateColorImage(ulong playerId, Color newValue) => playerScoreboard[playerId].UpdateColorImage(newValue);
+    private void UpdateScoreText(ulong playerId, int newValue) => playerScoreboard[playerId].UpdateScoreText(newValue);
 }

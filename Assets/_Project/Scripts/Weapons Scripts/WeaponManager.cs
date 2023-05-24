@@ -4,6 +4,7 @@ using Project;
 using Unity.Netcode;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.Animations.Rigging;
 using Object = UnityEngine.Object;
 
 public class WeaponManager : NetworkBehaviour
@@ -15,6 +16,8 @@ public class WeaponManager : NetworkBehaviour
     private readonly NetworkVariable<byte> _weaponID = new NetworkVariable<byte>(writePerm: NetworkVariableWritePermission.Owner);
     public Transform fakeWeaponHandler;
     public SkinnedMeshRenderer humanMesh;
+    public RigBuilder aimRig; 
+
     [field: SerializeField] public Transform weaponHandler { get; private set; }
     #endregion
 
@@ -102,7 +105,7 @@ public class WeaponManager : NetworkBehaviour
     }
 
     public Weapon GetCurrentWeapon() => _currentWeapon;
-
+    public Weapon GetFakeWeapon() => _fakeWeapon; 
 
     public static void SetLayerRecursively(GameObject go, int layerNumber)
     {

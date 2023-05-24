@@ -39,7 +39,9 @@ namespace Project
                 
                 case EOpenClose.Close:
                     if (_dontUseButton == false) _button.onClick.AddListener(CloseUI);
+                    
                     InputManager.instance.onEscapePressed.Subscribe(CloseUI, this);
+
                     _stateToDoMethod = CloseUI;
                     break;
             }
@@ -53,7 +55,10 @@ namespace Project
                     break;
                 
                 case EOpenClose.Close:
-                    InputManager.instance.onEscapePressed.Unsubscribe(CloseUI);
+                    if (InputManager.IsInstanceAlive)
+                    {
+                        InputManager.instance.onEscapePressed.Unsubscribe(CloseUI);
+                    }
                     break;
             }
             

@@ -1,9 +1,13 @@
+using System;
+using System.Collections;
+using Project.Utilities;
 using UnityEngine;
 
 public class Singleton<T> : MonoBehaviour where T: MonoBehaviour{
     
     public static bool verbose = false;
     public static bool keepAlive = true;
+    public static bool isApplicationQuitting;
 
     private static T _instance = null;
     public static T instance {
@@ -20,7 +24,7 @@ public class Singleton<T> : MonoBehaviour where T: MonoBehaviour{
         }
     }
 
-    static public bool isInstanceAlive{
+    static public bool IsInstanceAlive{
         get { return _instance != null; }
     }
 
@@ -46,7 +50,5 @@ public class Singleton<T> : MonoBehaviour where T: MonoBehaviour{
 
         if(verbose)
             Debug.Log("SingleAccessPoint instance found " + instance.GetType().Name);
-
     }
-
 }

@@ -33,10 +33,12 @@ namespace Project
         public static readonly Event<ulong, int> onPlayerGetAKillEvent = new Event<ulong, int>(nameof(onPlayerGetAKillEvent));
         public static readonly Event<ulong, int> onPlayerGetAssistEvent = new Event<ulong, int>(nameof(onPlayerGetAssistEvent));
         public static readonly Event<ulong, StringNetwork> onPlayerUpdateNameEvent = new Event<ulong, StringNetwork>(nameof(onPlayerUpdateNameEvent));
-        
+        public static readonly Event<ulong, Color> onPlayerUpdateColorEvent = new Event<ulong, Color>(nameof(onPlayerUpdateColorEvent));
+        public static readonly Event<ulong, int> onPlayerScoreEvent = new Event<ulong, int>(nameof(onPlayerScoreEvent));
+
         #endregion
-        
-        
+
+
         #region GameManager
 
         public static readonly Event onGameFinishedEvent = new Event(nameof(onGameFinishedEvent));

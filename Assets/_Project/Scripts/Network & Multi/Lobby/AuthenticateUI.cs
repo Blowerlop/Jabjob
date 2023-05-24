@@ -12,7 +12,10 @@ public class AuthenticateUI : MonoBehaviour {
     public static AuthenticateUI Instance { get; private set; }
     [SerializeField] private TMP_Text _playerNameText;
     [SerializeField] private TMP_InputField _playerNameInputField;
+    [SerializeField] private GameObject LobbyList, PopupPrefab;
+    [SerializeField] private List<GameObject> LoadingAnimGO;
     private string _playerName;
+    private bool canTryToConnect;
 
     private OpenCloseUI _openCloseUI;
 
@@ -24,6 +27,7 @@ public class AuthenticateUI : MonoBehaviour {
 
     private void OnEnable()
     {
+        canTryToConnect = true;
         _playerNameInputField.onEndEdit.AddListener(UpdateInputName);
         _playerNameInputField.onDeselect.AddListener(UpdateInputName);
     }
@@ -35,9 +39,9 @@ public class AuthenticateUI : MonoBehaviour {
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Return))
+        if ((Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.KeypadEnter)) && canTryToConnect)
         {
-            _openCloseUI.ForceActivation();
+            Authenticate();
         }
     }
 
@@ -51,9 +55,32 @@ public class AuthenticateUI : MonoBehaviour {
         LobbyManager.Instance.UpdatePlayerName(_playerName);
     }
 
-    public void Authenticate()
+    public async void Authenticate()
     {
-        LobbyManager.Instance.Authenticate(_playerName);
-        _playerNameText.text += _playerName;
+        canTryToConnect = false;
+        _playerNameInputField.DeactivateInputField();
+        _playerNameInputField.interactable = false;
+        for (int i = 0; i < LoadingAnimGO.Count; i++) { LoadingAnimGO[i].SetActive(true); }
+        bool AuthentifactionSucess = await LobbyManager.Instance.Authenticate(_playerName);
+        for (int i = 0; i < LoadingAnimGO.Count; i++) { LoadingAnimGO[i].SetActive(false); }
+        if (AuthentifactionSucess)
+        {
+            _playerNameText.text += _playerName;
+            LobbyList.SetActive(true);
+            gameObject.SetActive(false);
+            canTryToConnect = true;
+        }
+        else
+        {
+            MessagePopUpUI PopupGO = Instantiate(PopupPrefab).GetComponent<MessagePopUpUI>();
+            PopupGO.Closebutton.onClick.AddListener(() => {
+                canTryToConnect = true;
+                _playerNameInputField.ActivateInputField();
+                _playerNameInputField.interactable = true;
+                _playerNameInputField.Select();
+                _playerNameInputField.caretPosition = _playerNameInputField.text.Length;
+            });
+            PopupGO.Message.text = "Authentification failed. Please check your internet connexion and retry.";
+        }
     }
 }

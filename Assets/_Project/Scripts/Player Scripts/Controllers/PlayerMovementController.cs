@@ -49,7 +49,7 @@ public class PlayerMovementController : NetworkBehaviour
     private Dictionary<string, AudioClip> _soundListDico = new Dictionary<string, AudioClip>();
 
 
-    private Animator _animator; 
+    [SerializeField] private Animator _animator; 
     #endregion
 
 
@@ -57,7 +57,6 @@ public class PlayerMovementController : NetworkBehaviour
     private void Awake()
     {
         _characterController = GetComponent<CharacterController>();
-        _animator = GetComponent<Animator>();
         for (int i = 0; i < soundList.Length; i++)
         {
             if (soundList[i].name != null && soundList[i].sound != null) _soundListDico.Add(soundList[i].name, soundList[i].sound);

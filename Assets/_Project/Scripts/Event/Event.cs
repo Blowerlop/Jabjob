@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace Project
 {
@@ -69,7 +70,7 @@ namespace Project
         {
             if (IsListenerAlreadySubscribe(action) == false)
             {
-                Debug.LogError($"Method - {action.Method.Name} - is not registered in the event");
+                Debug.LogWarning($"Method - {action.Method.Name} - is not registered in the event");
             }
             else
             {
@@ -156,7 +157,7 @@ namespace Project
         {
             if (IsListenerAlreadySubscribe(action) == false)
             {
-                Debug.LogError($"Method - {action.Method.Name} - is not registered in the event");
+                Debug.LogWarning($"Method - {action.Method.Name} - is not registered in the event");
             }
             else
             {
@@ -244,7 +245,7 @@ namespace Project
         {
             if (IsListenerAlreadySubscribe(action) == false)
             {
-                Debug.LogError($"Method - {action.Method.Name} - is not registered in the event");
+                Debug.LogWarning($"Method - {action.Method.Name} - is not registered in the event");
             }
             else
             {
