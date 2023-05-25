@@ -63,8 +63,12 @@ AudioMixerController:
   m_EnableSuspend: 1
   m_UpdateMode: 0
   m_ExposedParameters:
+  - guid: f035048fff58b7e4db3e44158b7dd4af
+    name: GameSounds
   - guid: 7959f37d68bbbf74b9fb71f47c1fd45f
-    name: volume
+    name: Master
+  - guid: c005fbc1effe71842b7c7f1ed376848b
+    name: Music
   m_AudioMixerGroupViews:
   - guids:
     - 0922a22938778484ebf298b3d9b3e0db
@@ -88,7 +92,6 @@ AudioMixerGroupController:
   m_Children:
   - {fileID: 3268200451716795460}
   - {fileID: 6788792887041681683}
-  - {fileID: 6131428555501098772}
   m_Volume: 7959f37d68bbbf74b9fb71f47c1fd45f
   m_Pitch: df5cad71f302ebb46b57c70992c158c5
   m_Send: 00000000000000000000000000000000
@@ -165,10 +168,11 @@ AudioMixerGroupController:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: UI Sound
+  m_Name: GameSounds
   m_AudioMixer: {fileID: 24100000}
   m_GroupID: f47f04d61a132504f9b07a9aac8ecc86
-  m_Children: []
+  m_Children:
+  - {fileID: 6131428555501098772}
   m_Volume: f035048fff58b7e4db3e44158b7dd4af
   m_Pitch: 0c6536574fb12ad468fcce286fe13175
   m_Send: 00000000000000000000000000000000
@@ -205,7 +209,7 @@ AudioMixerGroupController:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Background Music
+  m_Name: Music
   m_AudioMixer: {fileID: 24100000}
   m_GroupID: fad5de47f94ebdb4985dfbffeee6befd
   m_Children: []

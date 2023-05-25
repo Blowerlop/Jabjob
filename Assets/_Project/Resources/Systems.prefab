@@ -1,5 +1,50 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &707374182354849597
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 488024643940401560}
+  - component: {fileID: 3327927607105508449}
+  m_Layer: 0
+  m_Name: VolumeManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &488024643940401560
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 707374182354849597}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 8418912308833563418}
+  m_RootOrder: 7
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &3327927607105508449
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 707374182354849597}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3ed9eadfe3290dc46bb8a3af6969830f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _audioMixer: {fileID: 24100000, guid: 1f2645f52c4cb03489b78032895c1598, type: 2}
 --- !u!1 &1278542329567648724
 GameObject:
   m_ObjectHideFlags: 0
@@ -58,6 +103,7 @@ MonoBehaviour:
   isDashing: 0
   isConsoleOpened: 0
   isWeaponSelectionOpen: 0
+  TabPressed: 0
   _playerInput: {fileID: 0}
   keyToGoTheMenu: 109
 --- !u!114 &1114292191266661292
@@ -184,7 +230,7 @@ RectTransform:
   m_Children:
   - {fileID: 8739170814852295920}
   m_Father: {fileID: 8418912308833563418}
-  m_RootOrder: 7
+  m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -769,6 +815,7 @@ Transform:
   - {fileID: 7712347166347208133}
   - {fileID: 1210117739054389771}
   - {fileID: 1883069278874530026}
+  - {fileID: 488024643940401560}
   - {fileID: 8505187300495703771}
   m_Father: {fileID: 0}
   m_RootOrder: 0

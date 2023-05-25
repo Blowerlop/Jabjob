@@ -1418,7 +1418,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 200.31012, y: -11.05}
+  m_AnchoredPosition: {x: 333.85022, y: -11.05}
   m_SizeDelta: {x: 133.54008, y: 22.1}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &223906525
@@ -4451,7 +4451,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &804647288
 RectTransform:
   m_ObjectHideFlags: 0
@@ -7824,7 +7824,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 66.77004, y: -11.05}
+  m_AnchoredPosition: {x: 200.31012, y: -11.05}
   m_SizeDelta: {x: 133.54008, y: 22.1}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1298165291
@@ -10348,7 +10348,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1736217485
 RectTransform:
   m_ObjectHideFlags: 0
@@ -10447,32 +10447,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7e8c2ced828382a4985d5b4a13bbf94d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _baseImage: {fileID: 990119300}
-  _outlineImage: {fileID: 389212514}
-  _text: {fileID: 825856489}
-  _hasHighlightedState: 1
-  _hasClickedState: 1
-  _baseNormalSprite: {fileID: 21300000, guid: 84d1786e76e5cd345bd087dc590e8a93, type: 3}
-  _baseNormalColor: {r: 0, g: 0, b: 0, a: 1}
-  _baseHighlightedSprite: {fileID: 21300000, guid: 84d1786e76e5cd345bd087dc590e8a93,
-    type: 3}
-  _baseHighlightedColor: {r: 0, g: 0, b: 0, a: 1}
-  _baseSelectedSprite: {fileID: 21300000, guid: 84d1786e76e5cd345bd087dc590e8a93,
-    type: 3}
-  _baseSelectedColor: {r: 0.8117648, g: 0.86274517, b: 0.8941177, a: 1}
-  _outlineNormalSprite: {fileID: 21300000, guid: b56c2cca95ffbb448961373022820fac,
-    type: 3}
-  _outlineNormalColor: {r: 0.23529413, g: 0.2627451, b: 0.26666668, a: 1}
-  _outlineHighlightedSprite: {fileID: 21300000, guid: b56c2cca95ffbb448961373022820fac,
-    type: 3}
-  _outlineHighlightedColor: {r: 0.23529412, g: 0.2627451, b: 0.26666668, a: 1}
-  _outlineSelectedSprite: {fileID: 21300000, guid: b56c2cca95ffbb448961373022820fac,
-    type: 3}
-  _outlineSelectedColor: {r: 0, g: 0, b: 0, a: 1}
-  _textNormalColor: {r: 0.49411768, g: 0.5294118, b: 0.5372549, a: 1}
-  _textHighLightedColor: {r: 1, g: 1, b: 1, a: 1}
-  _textSelectedColor: {r: 1, g: 1, b: 1, a: 1}
-  _previewState: 4
 --- !u!114 &1736217490
 MonoBehaviour:
   m_ObjectHideFlags: 0
