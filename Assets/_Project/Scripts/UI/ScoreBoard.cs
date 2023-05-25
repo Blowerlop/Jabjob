@@ -71,7 +71,7 @@ public class ScoreBoard : MonoBehaviour
             UpdateAssistText(playerId, player.assists);
             UpdateDeathText(playerId, player.deaths);
             UpdateColorImage(playerId, player.playerColor);
-            UpdateScoreText(playerId, player.score);
+            UpdateScoreText(playerId, player.score); 
         }
     }
 

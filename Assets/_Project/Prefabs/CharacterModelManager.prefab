@@ -1,0 +1,119 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &4230257549970298875
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2018826873375592807}
+  - component: {fileID: 1339885931548496290}
+  m_Layer: 0
+  m_Name: CharacterModelManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2018826873375592807
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4230257549970298875}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1339885931548496290
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4230257549970298875}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 85c6a238995dfb4429807daf7eae6d79, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  PlayerModelList:
+  - name: Biker
+    meshModel: {fileID: -1461504888720640383, guid: 030d93698012ac745a98790420c75e05,
+      type: 3}
+    material: {fileID: 2100000, guid: 097c55e2855d5a34e85e3839fad30930, type: 2}
+  - name: FastFoodGuy
+    meshModel: {fileID: 6852751771675082760, guid: 030d93698012ac745a98790420c75e05,
+      type: 3}
+    material: {fileID: 2100000, guid: 097c55e2855d5a34e85e3839fad30930, type: 2}
+  - name: FireFighter
+    meshModel: {fileID: -6212482449116844686, guid: 030d93698012ac745a98790420c75e05,
+      type: 3}
+    material: {fileID: 2100000, guid: 097c55e2855d5a34e85e3839fad30930, type: 2}
+  - name: GamerGirl
+    meshModel: {fileID: 6914426601777049266, guid: 030d93698012ac745a98790420c75e05,
+      type: 3}
+    material: {fileID: 2100000, guid: 097c55e2855d5a34e85e3839fad30930, type: 2}
+  - name: Gangster
+    meshModel: {fileID: 7981062433941728970, guid: 030d93698012ac745a98790420c75e05,
+      type: 3}
+    material: {fileID: 2100000, guid: 097c55e2855d5a34e85e3839fad30930, type: 2}
+  - name: Grandma
+    meshModel: {fileID: -967011025527509772, guid: 030d93698012ac745a98790420c75e05,
+      type: 3}
+    material: {fileID: 2100000, guid: 097c55e2855d5a34e85e3839fad30930, type: 2}
+  - name: Grandpa
+    meshModel: {fileID: -225379923895947003, guid: 030d93698012ac745a98790420c75e05,
+      type: 3}
+    material: {fileID: 2100000, guid: 097c55e2855d5a34e85e3839fad30930, type: 2}
+  - name: HipsterGirl
+    meshModel: {fileID: -2877506998500238315, guid: 030d93698012ac745a98790420c75e05,
+      type: 3}
+    material: {fileID: 2100000, guid: 097c55e2855d5a34e85e3839fad30930, type: 2}
+  - name: Hobo
+    meshModel: {fileID: -4523804487674514686, guid: 030d93698012ac745a98790420c75e05,
+      type: 3}
+    material: {fileID: 2100000, guid: 097c55e2855d5a34e85e3839fad30930, type: 2}
+  - name: Hotdog
+    meshModel: {fileID: 2477700657399205020, guid: 030d93698012ac745a98790420c75e05,
+      type: 3}
+    material: {fileID: 2100000, guid: 097c55e2855d5a34e85e3839fad30930, type: 2}
+  - name: Jock
+    meshModel: {fileID: 4049222652203261206, guid: 030d93698012ac745a98790420c75e05,
+      type: 3}
+    material: {fileID: 2100000, guid: 097c55e2855d5a34e85e3839fad30930, type: 2}
+  - name: Paramedic
+    meshModel: {fileID: -2516412516682282444, guid: 030d93698012ac745a98790420c75e05,
+      type: 3}
+    material: {fileID: 2100000, guid: 097c55e2855d5a34e85e3839fad30930, type: 2}
+  - name: PunkGirl
+    meshModel: {fileID: -1382503702657818287, guid: 030d93698012ac745a98790420c75e05,
+      type: 3}
+    material: {fileID: 2100000, guid: 097c55e2855d5a34e85e3839fad30930, type: 2}
+  - name: PunkGuy
+    meshModel: {fileID: -3261998520281798832, guid: 030d93698012ac745a98790420c75e05,
+      type: 3}
+    material: {fileID: 2100000, guid: 097c55e2855d5a34e85e3839fad30930, type: 2}
+  - name: Roadworker
+    meshModel: {fileID: 1425761413970608179, guid: 030d93698012ac745a98790420c75e05,
+      type: 3}
+    material: {fileID: 2100000, guid: 097c55e2855d5a34e85e3839fad30930, type: 2}
+  - name: ShopKeeper
+    meshModel: {fileID: 1175187529548585758, guid: 030d93698012ac745a98790420c75e05,
+      type: 3}
+    material: {fileID: 2100000, guid: 097c55e2855d5a34e85e3839fad30930, type: 2}
+  - name: SummerGirl
+    meshModel: {fileID: 5212314323783555890, guid: 030d93698012ac745a98790420c75e05,
+      type: 3}
+    material: {fileID: 2100000, guid: 097c55e2855d5a34e85e3839fad30930, type: 2}
+  - name: Tourist
+    meshModel: {fileID: -4846338404436356200, guid: 030d93698012ac745a98790420c75e05,
+      type: 3}
+    material: {fileID: 2100000, guid: 097c55e2855d5a34e85e3839fad30930, type: 2}
