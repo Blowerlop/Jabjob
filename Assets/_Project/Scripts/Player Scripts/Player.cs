@@ -89,6 +89,10 @@ namespace Project
             UpdatePlayerColorServerRpc(LobbyManager.Instance.GetPlayerColor());
             UpdatePlayerNameServerRpc(LobbyManager.Instance.GetPlayerName());
             PlayerModelsManager.instance.UpdateAllPlayers(); //Vraiment pas ouf ici, à déplacer lorsqu'on aura synchroniser le load des joueurs et appeler juste avant le StartGame
+
+
+
+            Cursor.lockState = CursorLockMode.Locked;
         }
 
         private void Start()
