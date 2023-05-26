@@ -299,7 +299,7 @@ namespace Project
             Player player = GameManager.instance.GetPlayer(clientId);
             player.transform.position = Vector3.zero;
             player.gameObject.SetActive(true);
-            GameEvent.onplayerRespawnedEvent.Invoke(this, true, clientId);
+            GameEvent.onPlayerRespawnedEvent.Invoke(this, true, clientId);
         }
 
         private void OnKillValueChange(int previousValue, int nextValue) => GameEvent.onPlayerGetAKillEvent.Invoke(this, true, OwnerClientId, nextValue); 

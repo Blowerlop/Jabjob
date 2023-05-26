@@ -32,7 +32,7 @@ namespace Project
         public static readonly Event<ulong, ulong, int> onPlayerDiedEvent = new Event<ulong, ulong, int>(nameof(onPlayerDiedEvent));
         public static readonly Event<ulong, int> onPlayerGetAKillEvent = new Event<ulong, int>(nameof(onPlayerGetAKillEvent));
         public static readonly Event<ulong, int> onPlayerGetAssistEvent = new Event<ulong, int>(nameof(onPlayerGetAssistEvent));
-        public static readonly Event<ulong> onplayerRespawnedEvent = new Event<ulong>(nameof(onplayerRespawnedEvent));
+        public static readonly Event<ulong> onPlayerRespawnedEvent = new Event<ulong>(nameof(onPlayerRespawnedEvent));
         public static readonly Event<ulong, StringNetwork> onPlayerUpdateNameEvent = new Event<ulong, StringNetwork>(nameof(onPlayerUpdateNameEvent));
         public static readonly Event<ulong, StringNetwork> onPlayerUpdateModelEvent = new Event<ulong, StringNetwork>(nameof(onPlayerUpdateModelEvent));
         public static readonly Event<ulong, Color> onPlayerUpdateColorEvent = new Event<ulong, Color>(nameof(onPlayerUpdateColorEvent));

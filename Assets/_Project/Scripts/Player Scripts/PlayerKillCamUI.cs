@@ -19,7 +19,7 @@ namespace Project
             // SetSpectatedPlayerNameText(OwnerClientId, GameManager.instance.GetPlayer(OwnerClientId).playerName);
             // GameEvent.onPlayerUpdateNameEvent.Subscribe(SetSpectatedPlayerNameText, this);
             GameEvent.onPlayerDiedEvent.Subscribe(EnableKillCam, this);
-            GameEvent.onplayerRespawnedEvent.Subscribe(DisableKillCam, this);
+            GameEvent.onPlayerRespawnedEvent.Subscribe(DisableKillCam, this);
             
             gameObject.SetActive(false); 
         } 
@@ -28,7 +28,7 @@ namespace Project
         {
             // GameEvent.onPlayerUpdateNameEvent.Unsubscribe(SetSpectatedPlayerNameText);
             GameEvent.onPlayerDiedEvent.Unsubscribe(EnableKillCam);
-            GameEvent.onplayerRespawnedEvent.Unsubscribe(DisableKillCam);
+            GameEvent.onPlayerRespawnedEvent.Unsubscribe(DisableKillCam);
         }
          
 
