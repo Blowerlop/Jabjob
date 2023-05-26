@@ -69,7 +69,7 @@ public class PlayerMovementController : NetworkBehaviour
         if (IsOwner == false) enabled = false;
     }
 
-    private void Update()
+    private void FixedUpdate()
     {
 
         CheckGrounded();
@@ -119,7 +119,7 @@ public class PlayerMovementController : NetworkBehaviour
             if (_isSoonGrounded && _verticalVelocity < 0f) _animator.SetBool("JumpingDown", true);
             if (_verticalVelocity > _maximumVerticalVelocity)
             {
-                _verticalVelocity += _gravityForce * Time.deltaTime;
+                _verticalVelocity += _gravityForce * Time.fixedDeltaTime;
             }
         }
 
@@ -155,7 +155,7 @@ public class PlayerMovementController : NetworkBehaviour
 
         if (currentVelocity < targetVelocity - _speedOffset || currentVelocity > targetVelocity + _speedOffset)
         {
-            velocityToApply = Mathf.Lerp(currentVelocity, targetVelocity, Time.deltaTime * 10.0f);
+            velocityToApply = Mathf.Lerp(currentVelocity, targetVelocity, Time.fixedDeltaTime * 10.0f);
         }
         else
         {
@@ -172,7 +172,7 @@ public class PlayerMovementController : NetworkBehaviour
         _characterController.Move(
             (
             ((moveHorizontalVelocity.x * transform.right + moveHorizontalVelocity.y * transform.forward) + moveVerticalVelocity)
-            * Time.deltaTime
+            * Time.fixedDeltaTime
             ));
 
 

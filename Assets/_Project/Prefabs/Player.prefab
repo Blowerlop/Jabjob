@@ -1425,6 +1425,9 @@ MonoBehaviour:
   _networkName:
     m_InternalValue:
       value: 
+  _networkModel:
+    m_InternalValue:
+      value: 
   _networkColor:
     m_InternalValue: {r: 0, g: 0, b: 0, a: 0}
   _networkKills:
@@ -1433,11 +1436,14 @@ MonoBehaviour:
     m_InternalValue: 0
   _networkDeaths:
     m_InternalValue: 0
+  _networkKillerId:
+    m_InternalValue: 0
   _networkScore:
     m_InternalValue: 0
   _networkIsHost:
     m_InternalValue: 0
   _killer: {fileID: 0}
+  playerMesh: {fileID: 0}
 --- !u!114 &6322688210165290436
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3339,7 +3345,7 @@ SkinnedMeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: aeb8b21fe759cc84b91bb7492fd1464e, type: 2}
+  - {fileID: 2100000, guid: 0cff5c4da60603345a7782f54856ef6a, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
