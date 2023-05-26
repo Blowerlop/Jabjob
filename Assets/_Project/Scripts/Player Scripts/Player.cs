@@ -26,6 +26,7 @@ namespace Project
         [SerializeField] private NetworkVariable<int> _networkKills = new NetworkVariable<int>();
         [SerializeField] private NetworkVariable<int> _networkAssists = new NetworkVariable<int>();
         [SerializeField] private NetworkVariable<int> _networkDeaths = new NetworkVariable<int>();
+        [SerializeField] private NetworkVariable<ulong> _networkKillerId = new NetworkVariable<ulong>();
         [SerializeField] private NetworkVariable<int> _networkScore = new NetworkVariable<int>();
         [SerializeField] private NetworkVariable<bool> _networkIsHost = new NetworkVariable<bool>();
         [SerializeField] private Player _killer;
@@ -36,11 +37,11 @@ namespace Project
         public int kills { get => _networkKills.Value; private set => _networkKills.Value = value; }
         public int assists { get => _networkAssists.Value; private set => _networkAssists.Value = value; }
         public int deaths { get => _networkDeaths.Value; private set => _networkDeaths.Value = value; }
+        public ulong _killerId { get => _networkKillerId.Value; set => _networkKillerId.Value = value; }
         public int score { get => _networkScore.Value; private set => _networkScore.Value = value; }
         public bool isHost { get => _networkIsHost.Value; private set => _networkIsHost.Value = value; }
 
         private HashSet<ulong> _damagersId = new HashSet<ulong>();
-        private ulong _killerId;
 
         private PlayerShoot _playerShoot;
         [HideInInspector] public SkinnedMeshRenderer playerMesh; 
@@ -298,11 +299,12 @@ namespace Project
             Player player = GameManager.instance.GetPlayer(clientId);
             player.transform.position = Vector3.zero;
             player.gameObject.SetActive(true);
+            GameEvent.onplayerRespawnedEvent.Invoke(this, true, clientId);
         }
 
         private void OnKillValueChange(int previousValue, int nextValue) => GameEvent.onPlayerGetAKillEvent.Invoke(this, true, OwnerClientId, nextValue); 
         private void OnAssistValueChange(int previousValue, int nextValue) => GameEvent.onPlayerGetAssistEvent.Invoke(this, true, OwnerClientId, nextValue);  
-        private void OnDeathValueChange(int previousValue, int nextValue) => GameEvent.onPlayerDiedEvent.Invoke(this, true, OwnerClientId, nextValue);  
+        private void OnDeathValueChange(int previousValue, int nextValue) => GameEvent.onPlayerDiedEvent.Invoke(this, true, OwnerClientId, _killerId, nextValue);  
         private void OnScoreValueChange(int previousValue, int nextValue) => GameEvent.onPlayerScoreEvent.Invoke(this, true, OwnerClientId, nextValue);
         #endregion
         public int UpdateScore() // scoring de base pourri, peut être à changer

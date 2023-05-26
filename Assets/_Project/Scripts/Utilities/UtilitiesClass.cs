@@ -53,6 +53,13 @@ namespace Project.Utilities
             
             action.Invoke();
         }
+        
+        public static IEnumerator WaitForEndOfFrameAndDoActionCoroutine(Action action)
+        {
+            yield return new WaitForEndOfFrame()
+                ;            
+            action.Invoke();
+        }
 
         /// <summary>
         /// This script only works if there is only one layer selected

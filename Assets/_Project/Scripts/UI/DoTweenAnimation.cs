@@ -1,6 +1,4 @@
-using System;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
 using UnityEditor;
@@ -114,7 +112,7 @@ namespace Project
             _tween.Restart(false);
             _tween.Kill();
         }
-        
+
         private Vector3 GetPosition()
         {
             switch (_motionBehaviour)
@@ -145,6 +143,7 @@ namespace Project
 
             DoTweenAnimation t = target as DoTweenAnimation;
             if (t == null) return;
+            if (Application.isPlaying == false) return;
 
             if (GUILayout.Button("Play"))
             {

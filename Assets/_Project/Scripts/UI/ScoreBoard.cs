@@ -69,7 +69,7 @@ public class ScoreBoard : MonoBehaviour
             UpdateNameText(playerId, player.playerName);
             UpdateKillText(playerId, player.kills);
             UpdateAssistText(playerId, player.assists);
-            UpdateDeathText(playerId, player.deaths);
+            UpdateDeathText(playerId, player._killerId, player.deaths);
             UpdateColorImage(playerId, player.playerColor);
             UpdateScoreText(playerId, player.score); 
         }
@@ -125,7 +125,7 @@ public class ScoreBoard : MonoBehaviour
     }
 
     private void UpdateKillText(ulong playerId, int newValue) => playerScoreboard[playerId].UpdateKillText(newValue);
-    private void UpdateDeathText(ulong playerId, int newValue) => playerScoreboard[playerId].UpdateDeathText(newValue);
+    private void UpdateDeathText(ulong playerId, ulong killerId, int newValue) => playerScoreboard[playerId].UpdateDeathText(newValue);
     private void UpdateAssistText(ulong playerId, int newValue) => playerScoreboard[playerId].UpdateAssistText(newValue);
     private void UpdateColorImage(ulong playerId, Color newValue) => playerScoreboard[playerId].UpdateColorImage(newValue);
     private void UpdateScoreText(ulong playerId, int newValue) => playerScoreboard[playerId].UpdateScoreText(newValue);
