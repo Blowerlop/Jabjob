@@ -63,8 +63,12 @@ AudioMixerController:
   m_EnableSuspend: 1
   m_UpdateMode: 0
   m_ExposedParameters:
+  - guid: f035048fff58b7e4db3e44158b7dd4af
+    name: GameSounds
   - guid: 7959f37d68bbbf74b9fb71f47c1fd45f
-    name: volume
+    name: Master
+  - guid: c005fbc1effe71842b7c7f1ed376848b
+    name: Music
   m_AudioMixerGroupViews:
   - guids:
     - 0922a22938778484ebf298b3d9b3e0db
@@ -88,13 +92,12 @@ AudioMixerGroupController:
   m_Children:
   - {fileID: 3268200451716795460}
   - {fileID: 6788792887041681683}
-  - {fileID: 6131428555501098772}
   m_Volume: 7959f37d68bbbf74b9fb71f47c1fd45f
   m_Pitch: df5cad71f302ebb46b57c70992c158c5
   m_Send: 00000000000000000000000000000000
   m_Effects:
   - {fileID: 24400004}
-  m_UserColorIndex: 0
+  m_UserColorIndex: 3
   m_Mute: 0
   m_Solo: 0
   m_BypassEffects: 0
@@ -122,7 +125,7 @@ AudioMixerSnapshotController:
   m_AudioMixer: {fileID: 24100000}
   m_SnapshotID: f0b23f3f1e463ff4cb20569ac2f5ce61
   m_FloatValues:
-    c005fbc1effe71842b7c7f1ed376848b: 7.1984916
+    c005fbc1effe71842b7c7f1ed376848b: -39.703533
     7959f37d68bbbf74b9fb71f47c1fd45f: 0
     d9d605aef8d3de44bb4ff0d41cb38ecb: 0
   m_TransitionOverrides: {}
@@ -165,16 +168,17 @@ AudioMixerGroupController:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: UI Sound
+  m_Name: GameSounds
   m_AudioMixer: {fileID: 24100000}
   m_GroupID: f47f04d61a132504f9b07a9aac8ecc86
-  m_Children: []
+  m_Children:
+  - {fileID: 6131428555501098772}
   m_Volume: f035048fff58b7e4db3e44158b7dd4af
   m_Pitch: 0c6536574fb12ad468fcce286fe13175
   m_Send: 00000000000000000000000000000000
   m_Effects:
   - {fileID: -4302271593317173965}
-  m_UserColorIndex: 0
+  m_UserColorIndex: 1
   m_Mute: 0
   m_Solo: 0
   m_BypassEffects: 0
@@ -205,7 +209,7 @@ AudioMixerGroupController:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Background Music
+  m_Name: Music
   m_AudioMixer: {fileID: 24100000}
   m_GroupID: fad5de47f94ebdb4985dfbffeee6befd
   m_Children: []
@@ -214,7 +218,7 @@ AudioMixerGroupController:
   m_Send: 00000000000000000000000000000000
   m_Effects:
   - {fileID: -2269168745266332512}
-  m_UserColorIndex: 0
+  m_UserColorIndex: 8
   m_Mute: 0
   m_Solo: 0
   m_BypassEffects: 0

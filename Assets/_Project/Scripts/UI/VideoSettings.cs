@@ -37,7 +37,7 @@ namespace Project
 
         
         private List<Resolution> _screenResolutions = new List<Resolution>();
-        private Resolution _currentResolution => Screen.currentResolution;
+        private Resolution _currentResolution => new Resolution() { width = Screen.width, height = Screen.height };
         private Resolution _selectedResolution;
 
         private FullScreenMode _currentFullScreenMode => Screen.fullScreenMode;
@@ -55,12 +55,14 @@ namespace Project
         
         #if UNITY_EDITOR
         [Header("Debug")]
-        [SerializeField] private string selectedResolutionString;
+        [SerializeField] [ReadOnlyField] private string selectedResolutionString;
         #endif
         #endregion
         
-        private void Start()
+        private IEnumerator Start()
         {
+            yield return null;
+            
             CheckAllAspectRatioSupportedState();
             
             _screenSizeDropdown.onDropdownItemCreatedEvent.Subscribe(SetDropdownItemResolutionContainer, this);
@@ -68,26 +70,19 @@ namespace Project
 
             _screenDisplayDropdown.onDropdownItemCreatedEvent.Subscribe(SetDropdownItemFullScreenModeContainer, this);
             _screenDisplayDropdown.onAfterDropdownShowEvent.Subscribe(SelectCurrentFullScreenModeDropdownItem, this);
-
-
+            
             _screenSizeDropdown.captionText.text = ResolutionToString(_currentResolution);
             _screenDisplayDropdown.captionText.text = ConvertBuiltInFullScreenModeToMine(_currentFullScreenMode).ToString().SeparateContent();
-            
+
 
             _currentAspectRation = CalculateScreenAspectRationApproximation(_currentResolution);
-
-
+            
             _previousSelectedAspectRation = EAspectRation.None;
             _currentSelectedAspectRatio = _currentAspectRation;
 
             _selectedFullScreenMode = _currentFullScreenMode;
 
             SelectAspectRatio(_currentAspectRation);
-            
-            
-            Debug.Log(_currentResolution.ToString());
-            Debug.Log(Display.main.systemHeight);
-            Debug.Log(Display.main.renderingWidth);
         }
         
         public void ApplyResolutionRelativeSettings()
@@ -96,6 +91,8 @@ namespace Project
                 0);
             
             _currentAspectRation = _currentSelectedAspectRatio;
+            
+            Debug.Log("Apply resolution !");
         }
 
         #region Resolution
@@ -233,20 +230,40 @@ namespace Project
 
         public void UseNativeResolution()
         {
-            SelectResolution(GetResolution(Display.main.systemWidth, Display.main.systemHeight));
+            Debug.Log($"Native Resolution : {Display.main.systemWidth} x {Display.main.systemHeight}");
+            
+            SelectResolution(GetResolution(Display.main.systemWidth, Display.main.systemHeight, false));
+            _screenSizeDropdown.captionText.text = ResolutionToString(_selectedResolution);
+
             SelectAspectRatio(CalculateScreenAspectRationApproximation(_selectedResolution));
+            
             SelectFullScreenMode(FullScreenMode.ExclusiveFullScreen);
+            _screenDisplayDropdown.captionText.text = ConvertBuiltInFullScreenModeToMine(_selectedFullScreenMode).ToString();
         }
 
-        private Resolution GetResolution(int width, int height)
+        private Resolution GetResolution(int width, int height, bool onlyFromTheCurrentResolutions = true)
         {
-            foreach (var resolution in _screenResolutions)
+            if (onlyFromTheCurrentResolutions)
             {
-                if (resolution.width == width && resolution.height == height)
+                foreach (var resolution in _screenResolutions)
                 {
-                    return resolution;
+                    if (resolution.width == width && resolution.height == height)
+                    {
+                        return resolution;
+                    }
                 }
             }
+            else
+            {
+                foreach (var resolution in Screen.resolutions)
+                {
+                    if (resolution.width == width && resolution.height == height)
+                    {
+                        return resolution;
+                    }
+                }
+            }
+            
 
             Debug.Log("This screen does not support the selected width and height");
             return new Resolution();

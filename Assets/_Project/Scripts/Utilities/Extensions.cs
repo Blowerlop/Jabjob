@@ -2,7 +2,9 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using UnityEngine;
+using UnityEngine.Events;
 using Object = UnityEngine.Object;
 
 namespace Project.Utilities
@@ -104,9 +106,74 @@ namespace Project.Utilities
                 }
             }
 
-            public static String SeparateContent(this String @string)
+            public static string SeparateContent(this string text)
             {
-                return string.Concat(@string.Select(x => Char.IsUpper(x) ? " " + x : x.ToString())).TrimStart(' ');
+                return string.Concat(text.Select(x => Char.IsUpper(x) ? " " + x : x.ToString())).TrimStart(' ');
+            }
+            
+            #region UnityEvent
+            /// <summary>
+            /// This extension will permit to add automatically a persistant listener when in editor and add a non-persistant listener when non in editor
+            /// </summary>
+            public static void AddListenerExtended(this UnityEvent unityEvent, UnityAction call)
+            {
+#if UNITY_EDITOR
+                UnityEditor.Events.UnityEventTools.AddPersistentListener(unityEvent, call);
+#else
+                unityEvent.AddListener(call);
+#endif
+            }
+            
+            /// <summary>
+            /// This extension will permit to remove automatically a persistant listener when in editor and add a non-persistant listener when non in editor
+            /// </summary>
+            public static void RemoveListenerExtended(this UnityEvent unityEvent, UnityAction call)
+            {
+#if UNITY_EDITOR
+                UnityEditor.Events.UnityEventTools.RemovePersistentListener(unityEvent, call);
+#else
+                unityEvent.RemoveListener(call);
+#endif
+            }
+            
+            /// <summary>
+            /// This extension will permit to add automatically a persistant listener when in editor and add a non-persistant listener when non in editor
+            /// </summary>
+            public static void AddListenerExtended<T>(this UnityEvent<T> unityEvent, UnityAction<T> call)
+            {
+#if UNITY_EDITOR
+                UnityEditor.Events.UnityEventTools.AddPersistentListener<T>(unityEvent, call);
+#else
+                unityEvent.AddListener(call);
+#endif
+            }
+            
+            /// <summary>
+            /// This extension will permit to remove automatically a persistant listener when in editor and add a non-persistant listener when non in editor
+            /// </summary>
+            public static void RemoveListenerExtended<T>(this UnityEvent<T> unityEvent, UnityAction<T> call)
+            {
+#if UNITY_EDITOR
+                UnityEditor.Events.UnityEventTools.RemovePersistentListener(unityEvent, call);
+#else
+                unityEvent.RemoveListener(call);
+#endif
+            }
+            #endregion
+
+            public static string ExtractNumber(this string text)
+            {
+                StringBuilder textWithDigitsOnly = new StringBuilder();
+                
+                for (int i = 0; i < text.Length; i++)
+                {
+                    if (char.IsDigit(text[i]))
+                    {
+                        textWithDigitsOnly.Append(text[i]);
+                    }
+                }
+
+                return textWithDigitsOnly.ToString();
             }
         }
 }

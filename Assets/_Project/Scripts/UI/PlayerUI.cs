@@ -18,7 +18,7 @@ public class PlayerUI : MonoBehaviour
     //     for (int i = 0; i < nbPlayer; i++)
     //     {
     //         Instantiate(playerStatsPrefab, playerStatsList.transform);
-    //     }
+    //     } 
     // }
 
     // Update is called once per frame
