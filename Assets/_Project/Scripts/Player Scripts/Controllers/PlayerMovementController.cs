@@ -5,6 +5,7 @@ using Project;
 using Unity.Netcode;
 using UnityEngine;
 using _Project.Scripts.Managers;
+using UnityEngine.VFX;
 
 public class PlayerMovementController : NetworkBehaviour
 {
@@ -48,9 +49,12 @@ public class PlayerMovementController : NetworkBehaviour
     public SoundList[] soundList;
     private Dictionary<string, AudioClip> _soundListDico = new Dictionary<string, AudioClip>();
 
-
+    [Header("Visuals")]
     [SerializeField] private Animator _animatorMain;
     [SerializeField] private Animator _fakeWeaponAnim;
+    [SerializeField] private Transform _DashVFX;
+    [SerializeField] private ParticleSystem _dashParticles; 
+    private Player _player ;
     #endregion
 
 
@@ -58,8 +62,9 @@ public class PlayerMovementController : NetworkBehaviour
     private void Awake()
     {
         _characterController = GetComponent<CharacterController>();
+        _player = GetComponent<Player>(); 
         for (int i = 0; i < soundList.Length; i++)
-        {
+        { 
             if (soundList[i].name != null && soundList[i].sound != null) _soundListDico.Add(soundList[i].name, soundList[i].sound);
         }
     }
@@ -67,7 +72,10 @@ public class PlayerMovementController : NetworkBehaviour
     private void Start()
     {
         if (_isMultiplayer == false) return;
-        if (IsOwner == false) enabled = false;
+        UpdateDashColor(_player.playerColor);
+        if (IsOwner == false) { enabled = false; return; }
+        InitializeDashVFX();
+
     }
 
     private void FixedUpdate()
@@ -81,7 +89,6 @@ public class PlayerMovementController : NetworkBehaviour
         {
             AddForce(transform.forward * 2.0f);
             _animatorMain.SetTrigger("Dash");
-            PlaySound("Dash");
             InputManager.instance.isDashing = false;
         }
     }
@@ -265,11 +272,8 @@ public class PlayerMovementController : NetworkBehaviour
         }
     }
 
-    public void PlaySound(string name)
-    {
-        if (!_soundListDico.ContainsKey(name)) Debug.LogError("Mauvais string pour le son : " + name);
-        else bodySourceSound.PlayOneShot(_soundListDico[name]);
-    }
+
+
     private void OnDrawGizmos()
     {
         if (Application.isPlaying == false) return;
@@ -283,6 +287,45 @@ public class PlayerMovementController : NetworkBehaviour
         // Draw Jump state
         Gizmos.color = _jumpCount == 0 ? Color.green : _jumpCount == 1 ? Color.yellow : Color.red;
         Gizmos.DrawSphere(new Vector3(playerPosition.x + _characterController.radius, playerPosition.y, playerPosition.z), 0.5f);
+    }
+    #endregion
+
+    #region Visuals and Sound
+    public void PlaySound(string name)
+    {
+        if (!_soundListDico.ContainsKey(name)) Debug.LogError("Mauvais string pour le son : " + name);
+        else bodySourceSound.PlayOneShot(_soundListDico[name]);
+    }
+
+    private void InitializeDashVFX()
+    {
+        _DashVFX.SetParent(Camera.main.transform);
+        _DashVFX.localPosition = new Vector3(0, 0, 2.5f);
+        _DashVFX.localRotation = Quaternion.identity;
+        VisualEffect dashEffect = _DashVFX.GetComponent<VisualEffect>();
+        //Gradient GradientColor = ColorHelpersUtilities.GetGradient(_player.playerColor);    //Je trouve qu'en blanc c'est mieux pour tout le monde
+        //dashEffect.SetGradient("ColorGradient", GradientColor);
+
+    }
+    public void UpdateDashColor(Color color)
+    {
+        Gradient GradientColor = ColorHelpersUtilities.GetGradient(color);
+        ParticleSystem.ColorOverLifetimeModule col = _dashParticles.colorOverLifetime;
+        col.color = GradientColor;
+    }
+    public void DashEffectStart()
+    {
+        PlaySound("Dash");
+        if(IsOwner) _DashVFX.gameObject.SetActive(true); 
+        _dashParticles.Play();
+    }
+    public void EndOfDashTrail()
+    {
+        _dashParticles.Stop();
+    }
+    public void EndOfDashVFX()
+    {
+        if (IsOwner) _DashVFX.gameObject.SetActive(false);
     }
     #endregion
 }

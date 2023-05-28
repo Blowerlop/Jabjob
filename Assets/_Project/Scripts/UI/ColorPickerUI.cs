@@ -12,7 +12,13 @@ namespace Project
         [SerializeField] Texture2D _refSprite;
         [SerializeField] CanvasScaler canvasScaler;
         Color _currentColor;
+        RectTransform _canvasRectTransform; 
+        Vector3 _scaleFactor;
 
+        private void Start()
+        {
+            _canvasRectTransform = canvasScaler.GetComponent<RectTransform>();
+        }
         public void OnClickColorPickerButton()
         {
             SetColor(GetColor()); 
@@ -24,13 +30,14 @@ namespace Project
         }
         private Color GetColor()
         {
-            Vector3 palettePos = _paletteRectTransform.position;
-            float globalPosX = Input.mousePosition.x - palettePos.x ;
-            float globalPosY = Input.mousePosition.y - palettePos.y ;
+            _scaleFactor = _canvasRectTransform.localScale;
+            Vector3 palettePos = _paletteRectTransform.position ;
+            float globalPosX = (Input.mousePosition.x - palettePos.x) / _scaleFactor.x;
+            float globalPosY = (Input.mousePosition.y  - palettePos.y) / _scaleFactor.y;
             
             int localPosX = (int)Mathf.Clamp((globalPosX + (_refSprite.width /   _paletteRectTransform.rect.width  )), 0, _refSprite.width - 1);
             int localPosY = (int)Mathf.Clamp((globalPosY + (_refSprite.height / _paletteRectTransform.rect.height  )) , 0, _refSprite.height - 1);
-             
+
             return _refSprite.GetPixel(localPosX, localPosY);
         }
 
