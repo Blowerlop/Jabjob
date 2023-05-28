@@ -22,6 +22,11 @@ namespace Project
                 materialDictionary.Add(PlayerModelList[i].name, PlayerModelList[i].material);
             }
         }
+
+        private void Start()
+        {
+            Application.targetFrameRate = 60; 
+        }
         public void ChangeCharacterModelIg(SkinnedMeshRenderer playerMeshRenderer, string modelName)
         {
             playerMeshRenderer.sharedMesh = meshDictionary[modelName];

@@ -49,7 +49,8 @@ public class PlayerMovementController : NetworkBehaviour
     private Dictionary<string, AudioClip> _soundListDico = new Dictionary<string, AudioClip>();
 
 
-    [SerializeField] private Animator _animator; 
+    [SerializeField] private Animator _animatorMain;
+    [SerializeField] private Animator _fakeWeaponAnim;
     #endregion
 
 
@@ -79,7 +80,7 @@ public class PlayerMovementController : NetworkBehaviour
         if (InputManager.instance.isDashing)
         {
             AddForce(transform.forward * 2.0f);
-            _animator.SetTrigger("Dash");
+            _animatorMain.SetTrigger("Dash");
             PlaySound("Dash");
             InputManager.instance.isDashing = false;
         }
@@ -93,7 +94,7 @@ public class PlayerMovementController : NetworkBehaviour
         Vector3 position = transform.position;
         Vector3 spherePosition = new Vector3(position.x, position.y - _groundedOffset, position.z);
         _isGrounded = Physics.CheckSphere(spherePosition, _groundedRadius, _groundLayerMask, QueryTriggerInteraction.Ignore);
-        _animator.SetBool("isGrounded", _isGrounded);
+        _animatorMain.SetBool("isGrounded", _isGrounded);
         _isSoonGrounded = Physics.CheckSphere(spherePosition, _soonGroundedRadius, _groundLayerMask, QueryTriggerInteraction.Ignore);
     }
 
@@ -110,13 +111,13 @@ public class PlayerMovementController : NetworkBehaviour
             if (_jumpCount != 0)
             {
                 ResetJump();
-                _animator.SetBool("JumpingDown", false);
+                _animatorMain.SetBool("JumpingDown", false);
                 PlaySound("StepLanding");
             }
         }
         else
         {
-            if (_isSoonGrounded && _verticalVelocity < 0f) _animator.SetBool("JumpingDown", true);
+            if (_isSoonGrounded && _verticalVelocity < 0f) _animatorMain.SetBool("JumpingDown", true);
             if (_verticalVelocity > _maximumVerticalVelocity)
             {
                 _verticalVelocity += _gravityForce * Time.fixedDeltaTime;
@@ -180,15 +181,17 @@ public class PlayerMovementController : NetworkBehaviour
 
         if (_isGrounded)
         {
-            NoRunningAnimBool();
-            if (moveHorizontalVelocity.y > 0 && moveHorizontalVelocity.x > 0) _animator.SetBool("isRunningFRight", true);
-            else if (moveHorizontalVelocity.y > 0 && moveHorizontalVelocity.x < 0) _animator.SetBool("isRunningFLeft", true);
-            else if (moveHorizontalVelocity.y > 0 && moveHorizontalVelocity.x == 0) _animator.SetBool("isRunningF", true);
-            else if (moveHorizontalVelocity.y < 0 && moveHorizontalVelocity.x < 0) _animator.SetBool("isRunningBLeft", true);
-            else if (moveHorizontalVelocity.y < 0 && moveHorizontalVelocity.x > 0) _animator.SetBool("isRunningBright", true);
-            else if (moveHorizontalVelocity.y < 0 && moveHorizontalVelocity.x == 0) _animator.SetBool("isRunningB", true);
-            else if (moveHorizontalVelocity.y == 0 && moveHorizontalVelocity.x < 0) _animator.SetBool("isRunningLeft", true);
-            else if (moveHorizontalVelocity.y == 0 && moveHorizontalVelocity.x > 0) _animator.SetBool("isRunningRight", true);
+            NoMainRunningAnimBool();
+            if (moveHorizontalVelocity.y > 0 && moveHorizontalVelocity.x > 0) _animatorMain.SetBool("isRunningFRight", true);
+            else if (moveHorizontalVelocity.y > 0 && moveHorizontalVelocity.x < 0) _animatorMain.SetBool("isRunningFLeft", true);
+            else if (moveHorizontalVelocity.y > 0 && moveHorizontalVelocity.x == 0) _animatorMain.SetBool("isRunningF", true);
+            else if (moveHorizontalVelocity.y < 0 && moveHorizontalVelocity.x < 0) _animatorMain.SetBool("isRunningBLeft", true);
+            else if (moveHorizontalVelocity.y < 0 && moveHorizontalVelocity.x > 0) _animatorMain.SetBool("isRunningBright", true);
+            else if (moveHorizontalVelocity.y < 0 && moveHorizontalVelocity.x == 0) _animatorMain.SetBool("isRunningB", true);
+            else if (moveHorizontalVelocity.y == 0 && moveHorizontalVelocity.x < 0) _animatorMain.SetBool("isRunningLeft", true);
+            else if (moveHorizontalVelocity.y == 0 && moveHorizontalVelocity.x > 0) _animatorMain.SetBool("isRunningRight", true);
+
+            _fakeWeaponAnim.SetBool("isRunning", moveHorizontalVelocity.y != 0 || moveHorizontalVelocity.x != 0);
         }
 
         /*
@@ -239,7 +242,7 @@ public class PlayerMovementController : NetworkBehaviour
         {
             _verticalVelocity = Mathf.Sqrt(-2.0f * _gravityForce * _jumpHeight);
             PlaySound("Jump");
-            _animator.SetTrigger("Jumped");
+            _animatorMain.SetTrigger("Jumped");
             _jumpCount++;
         }
 
@@ -253,12 +256,12 @@ public class PlayerMovementController : NetworkBehaviour
         _canJump = true;
     }
 
-    public void NoRunningAnimBool()
+    public void NoMainRunningAnimBool()
     {
-        foreach (AnimatorControllerParameter parameter in _animator.parameters)
+        foreach (AnimatorControllerParameter parameter in _animatorMain.parameters)
         {
             if (parameter.type == AnimatorControllerParameterType.Bool && (parameter.name.Length > 9 && parameter.name.Remove(9) == "isRunning"))
-                _animator.SetBool(parameter.name, false);
+                _animatorMain.SetBool(parameter.name, false);
         }
     }
 

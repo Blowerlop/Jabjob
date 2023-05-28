@@ -36,7 +36,7 @@ namespace Project
         [SerializeField] private bool _showDebug;
         [SerializeField] private AudioSource _audioSource;
 
-
+        [SerializeField] private Animator _fakeWeaponAnim; 
         public GameObject projectile;
         #endregion
 
@@ -57,14 +57,14 @@ namespace Project
 
         public void OnEnable()
         {
-            InputManager.instance.reload.AddListener(Reload);
+            InputManager.instance.reload.AddListener(StartReload);
             GameEvent.onPlayerWeaponChangedLocalEvent.Subscribe(UpdateCurrentWeapon, this);
             GameEvent.onPlayerWeaponChangedServerEvent.Subscribe(UpdateCurrentWeapon, this);
         }
 
         public void OnDisable()
         {
-            InputManager.instance.reload.RemoveListener(Reload);
+            InputManager.instance.reload.RemoveListener(StartReload);
             GameEvent.onPlayerWeaponChangedLocalEvent.Unsubscribe(UpdateCurrentWeapon);
             GameEvent.onPlayerWeaponChangedServerEvent.Unsubscribe(UpdateCurrentWeapon);
         }
@@ -121,6 +121,8 @@ namespace Project
                         LocalShoot(true, weaponHolderPosition, rootCameraPosition, direction, false);
                         ShootServerRpc(weaponHolderPosition, rootCameraPosition, direction, false);
                     }
+
+                    _fakeWeaponAnim.SetTrigger("Fire");
                 }
             }
             if (!InputManager.instance.isShooting)
@@ -206,17 +208,23 @@ namespace Project
             _audioSource.PlayOneShot(_weaponData.FiringSound); 
         }
         
-        public void Reload()
+        public void StartReload()
         {
             if (_weapon.ammo == _weaponData.maxAmmo) return;
-
-            StartCoroutine(ReloadCoroutine());
+            _fakeWeaponAnim.SetTrigger("Reload");
+            //_canShoot = false;
+            //StartCoroutine(ReloadCoroutine());
         }
 
+        public void EndOfReload() //Use by Animation
+        {
+            _weapon.ammo = _weaponData.maxAmmo;
+            GameEvent.onPlayerWeaponAmmoChangedEvent.Invoke(this, true, _weapon.ammo);
+        }
         public IEnumerator ReloadCoroutine()
         {
             _canShoot = false;
-            // Start animation
+            _fakeWeaponAnim.SetTrigger("Reload");
             yield return new WaitForSeconds(_weaponData.reloadDuration);
             _weapon.ammo = _weaponData.maxAmmo;
             GameEvent.onPlayerWeaponAmmoChangedEvent.Invoke(this, true, _weapon.ammo);
