@@ -99,8 +99,9 @@ public class LobbyUI : MonoBehaviour {
     }
 
     private void ClearLobby() {
+        if (container == null) return;
         foreach (Transform child in container) {
-            if (child == playerSingleTemplate) continue;
+            if (child == playerSingleTemplate || child == null) continue;
             Destroy(child.gameObject); 
         }
     }

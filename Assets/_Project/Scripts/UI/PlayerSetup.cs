@@ -13,8 +13,7 @@ namespace Project
         public override void OnNetworkSpawn()
         {
             if (IsOwner) return;
-
-
+            
             foreach (var componentToDestroy in _componentsToDisableIfNotTheOwner)
             {
                 componentToDestroy.enabled = false;

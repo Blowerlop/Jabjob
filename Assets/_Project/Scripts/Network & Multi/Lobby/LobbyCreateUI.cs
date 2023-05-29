@@ -69,7 +69,12 @@ public class LobbyCreateUI : MonoBehaviour {
 
         Hide();
     }
-    
+
+
+    private void OnDestroy()
+    {
+        _gameMaps.RemoveListeners(map => gameMapSceneName = map._gameMap.sceneName);
+    }
 
 
     private void UpdateText() {

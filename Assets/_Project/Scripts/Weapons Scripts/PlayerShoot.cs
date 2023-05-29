@@ -3,6 +3,7 @@ using System.Collections;
 using System.Reflection;
 using Unity.Netcode;
 using UnityEngine;
+using UnityEngine.Animations.Rigging;
 using Object = UnityEngine.Object;
 
 
@@ -36,7 +37,10 @@ namespace Project
         [SerializeField] private bool _showDebug;
         [SerializeField] private AudioSource _audioSource;
 
-
+        [Header("Animation")]
+        [SerializeField] private Animator _fakeWeaponAnim;
+        [SerializeField] private Animator _weaponAnim;
+        [SerializeField] private Rig _rig; 
         public GameObject projectile;
         #endregion
 
@@ -59,14 +63,14 @@ namespace Project
 
         public void OnEnable()
         {
-            InputManager.instance.reload.AddListener(Reload);
+            InputManager.instance.reload.AddListener(StartReload);
             GameEvent.onPlayerWeaponChangedLocalEvent.Subscribe(UpdateCurrentWeapon, this);
             GameEvent.onPlayerWeaponChangedServerEvent.Subscribe(UpdateCurrentWeapon, this);
         }
 
         public void OnDisable()
         {
-            InputManager.instance.reload.RemoveListener(Reload);
+            InputManager.instance.reload.RemoveListener(StartReload);
             GameEvent.onPlayerWeaponChangedLocalEvent.Unsubscribe(UpdateCurrentWeapon);
             GameEvent.onPlayerWeaponChangedServerEvent.Unsubscribe(UpdateCurrentWeapon);
         }
@@ -123,6 +127,10 @@ namespace Project
                         LocalShoot(true, weaponHolderPosition, rootCameraPosition, direction, false);
                         ShootServerRpc(weaponHolderPosition, rootCameraPosition, direction, false);
                     }
+
+                    _fakeWeaponAnim.SetTrigger("Fire");
+                    _rig.weight = 1;
+                    _weaponAnim.SetTrigger("Fire");
                 }
             }
             if (!InputManager.instance.isShooting)
@@ -208,17 +216,29 @@ namespace Project
             _audioSource.PlayOneShot(_weaponData.FiringSound); 
         }
         
-        public void Reload()
+        public void StartReload()
         {
-            if (_weapon.ammo == _weaponData.maxAmmo) return;
-
-            StartCoroutine(ReloadCoroutine());
+            if (_weapon.ammo == _weaponData.maxAmmo || _fakeWeaponAnim.GetCurrentAnimatorStateInfo(0).IsName("Reload")) return;
+            _rig.weight = 0; 
+            _weaponAnim.SetTrigger("Reload");
+            _fakeWeaponAnim.SetTrigger("Reload");
+            //_canShoot = false;
+            //StartCoroutine(ReloadCoroutine());
         }
 
+        public void AutoReload() //Use by Animation, end of fire POV
+        {
+            if (_weapon.ammo <= 0) StartReload();
+        }
+        public void EndOfReload() //Use by Animation
+        {
+            _weapon.ammo = _weaponData.maxAmmo;
+            _rig.weight = 1; 
+            GameEvent.onPlayerWeaponAmmoChangedEvent.Invoke(this, true, _weapon.ammo);
+        }
         public IEnumerator ReloadCoroutine()
         {
             _canShoot = false;
-            // Start animation
             yield return new WaitForSeconds(_weaponData.reloadDuration);
             _weapon.ammo = _weaponData.maxAmmo;
             GameEvent.onPlayerWeaponAmmoChangedEvent.Invoke(this, true, _weapon.ammo);

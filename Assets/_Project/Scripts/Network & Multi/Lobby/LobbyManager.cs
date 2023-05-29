@@ -11,6 +11,8 @@ using Unity.Services.Lobbies;
 using Unity.Services.Lobbies.Models;
 using UnityEngine;
 
+
+
 public class LobbyManager : MonoBehaviour {
 
 
@@ -49,13 +51,7 @@ public class LobbyManager : MonoBehaviour {
         GameMode2,
         GameMode3 
     }
-    public enum PlayerCharacter
-    {
-        Hotdog,
-        Hobo,
-        Geekette,
-        Office,
-    }
+
 
     public GameObject PopUpPrefab; 
 
@@ -67,7 +63,8 @@ public class LobbyManager : MonoBehaviour {
     private float refreshLobbyListTimer = 5f;
     private Lobby joinedLobby;
     private string playerName;
-    private Color playerColor;
+    private string playerModel = "Hotdog"; 
+    private Color playerColor = Color.white; 
     #endregion
 
     private void Awake() {
@@ -190,16 +187,16 @@ public class LobbyManager : MonoBehaviour {
     public Player GetPlayer() {
         return new Player(AuthenticationService.Instance.PlayerId, null, new Dictionary<string, PlayerDataObject> {
             { KEY_PLAYER_NAME, new PlayerDataObject(PlayerDataObject.VisibilityOptions.Public, playerName) },
-             { KEY_PLAYER_CHARACTER, new PlayerDataObject(PlayerDataObject.VisibilityOptions.Public, PlayerCharacter.Hotdog.ToString()) },
-            { KEY_PLAYER_COLOR, new PlayerDataObject(PlayerDataObject.VisibilityOptions.Public, Color.blue.ToString()) },
+             { KEY_PLAYER_CHARACTER, new PlayerDataObject(PlayerDataObject.VisibilityOptions.Public, "Hotdog") },
+            { KEY_PLAYER_COLOR, new PlayerDataObject(PlayerDataObject.VisibilityOptions.Public, Color.white.ToString()) },
         });
     }
     
     public Player GetPlayer(string playerId) {
         return new Player(playerId, null, new Dictionary<string, PlayerDataObject> {
             { KEY_PLAYER_NAME, new PlayerDataObject(PlayerDataObject.VisibilityOptions.Public, playerName) },
-             { KEY_PLAYER_CHARACTER, new PlayerDataObject(PlayerDataObject.VisibilityOptions.Public, PlayerCharacter.Hotdog.ToString()) },
-            { KEY_PLAYER_COLOR, new PlayerDataObject(PlayerDataObject.VisibilityOptions.Public, Color.blue.ToString()) },
+             { KEY_PLAYER_CHARACTER, new PlayerDataObject(PlayerDataObject.VisibilityOptions.Public, "Hotdog") },
+            { KEY_PLAYER_COLOR, new PlayerDataObject(PlayerDataObject.VisibilityOptions.Public, Color.white.ToString()) },
         });
     }
 
@@ -353,8 +350,9 @@ public class LobbyManager : MonoBehaviour {
         }
     }
 
-    public async void UpdatePlayerCharacter(PlayerCharacter playerCharacter)
+    public async void UpdatePlayerCharacter(string playerCharacter)
     {
+        this.playerModel = playerCharacter;
         if (joinedLobby != null)
         {
             try
@@ -365,7 +363,7 @@ public class LobbyManager : MonoBehaviour {
                     {
                         KEY_PLAYER_CHARACTER, new PlayerDataObject(
                             visibility: PlayerDataObject.VisibilityOptions.Public,
-                            value: playerCharacter.ToString())
+                            value: playerCharacter)
                     }
                 };
 
@@ -505,5 +503,6 @@ public class LobbyManager : MonoBehaviour {
 
     public string GetPlayerName() => playerName;
     public Color GetPlayerColor() => playerColor;
+    public string GetPlayerModel() => playerModel;
     #endregion
 }

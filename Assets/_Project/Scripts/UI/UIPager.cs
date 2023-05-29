@@ -211,7 +211,9 @@ namespace Project
                 if (Application.isPlaying == false)
                 {
                     GetPage(_previousPageIndex).canvasGroup.alpha = 0.0f;
+                    GetPage(_previousPageIndex).canvasGroup.gameObject.SetActive(false);
                     GetPage(_currentPageIndex).canvasGroup.alpha = 1.0f;
+                    GetPage(_currentPageIndex).canvasGroup.gameObject.SetActive(true);
                 }
                 else
                 {

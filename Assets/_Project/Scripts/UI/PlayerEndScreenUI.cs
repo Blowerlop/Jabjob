@@ -14,9 +14,9 @@ namespace Project
 
         public Color[] placeColor;
         public RenderTexture[] cameraTextureList; 
+        public SinglePlayerEndStatsUI playerSingleTemplate;
 
         [SerializeField] private Image imageBackground;
-        [SerializeField] private SinglePlayerEndStatsUI playerSingleTemplate;
         private Dictionary<int, VertexGradient> colorDictionnary = new Dictionary<int, VertexGradient>();
         private List<SinglePlayerEndStatsUI> playerList = new List<SinglePlayerEndStatsUI>();
         private Vector3 positionPlayerOffset = new Vector3(0, -1.22f, 2.06f);
@@ -51,8 +51,7 @@ namespace Project
             for (int i = 0; i < players.Length; i++)
             {
                 Player player = players[i];
-                SinglePlayerEndStatsUI singlePlayer = Instantiate(playerSingleTemplate).GetComponent<SinglePlayerEndStatsUI>();
-                singlePlayer.transform.SetParent(this.transform);
+                SinglePlayerEndStatsUI singlePlayer = Instantiate(playerSingleTemplate, this.transform).GetComponent<SinglePlayerEndStatsUI>();
                 singlePlayer.transform.localEulerAngles = Vector3.zero;
                 int finalPlace = GetCelebrationNumber(i, players);
                 singlePlayer.SetPlayerSingleUI(player.playerName, player.playerColor, finalPlace, colorDictionnary[finalPlace], player.kills, player.deaths, player.assists, player.score);
@@ -118,9 +117,10 @@ namespace Project
             PlayerEndScreenUI script = (PlayerEndScreenUI)target;
             DrawDefaultInspector();
             GUILayoutOption[] GUIDOptionsShort = { GUILayout.Width(60) };
-            if (GUILayout.Button("Simulate EndGame"))
+            if (GUILayout.Button("Generate random Card"))
             {
-                script.Initialize();
+                SinglePlayerEndStatsUI singlePlayer = Instantiate(script.playerSingleTemplate, script.transform).GetComponent<SinglePlayerEndStatsUI>();
+                singlePlayer.gameObject.SetActive(true);
             }
 
         }

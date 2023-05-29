@@ -39,7 +39,7 @@ public class SoundManager2D : MonoBehaviour
             backgroundMusic.clip = _soundListDicoBackground[name];
             backgroundMusic.Play();
         }
-    }
+    } 
 
     public void PlayUISound(string name)
     {
