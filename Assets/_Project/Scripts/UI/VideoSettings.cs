@@ -1,11 +1,13 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using Project.Utilities;
 using TMPro;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
@@ -32,6 +34,8 @@ namespace Project
     public class VideoSettings : MonoBehaviour
     {
         #region Variables
+        
+        #region Resolution Relative
         [SerializeField] private DropDownExtended _screenSizeDropdown;
         [SerializeField] private DropDownExtended _screenDisplayDropdown;
 
@@ -52,28 +56,42 @@ namespace Project
 
         public static Event<EAspectRation> onAspectRatioNotSupportedEvent =
             new Event<EAspectRation>(nameof(onAspectRatioNotSupportedEvent));
+
+        public UnityEvent _onUseCurrentResolution = new UnityEvent();
+        public UnityEvent _onUseAdvancedSettings = new UnityEvent();
         
-        #if UNITY_EDITOR
-        [Header("Debug")]
-        [SerializeField] [ReadOnlyField] private string selectedResolutionString;
-        #endif
         #endregion
         
+        #region Rendering
+        [SerializeField] private UnityEvent _onLowQualityEvent = new UnityEvent();
+        [SerializeField] private UnityEvent _onMediumQualityEvent = new UnityEvent();
+        [SerializeField] private UnityEvent _onHighQualityEvent = new UnityEvent();
+        
+        [SerializeField] private TMP_InputField _maxFrameRateInputField;
+        [SerializeField] private Slider _maxFrameRateSlider;
+        #endregion
+        
+        
+#if UNITY_EDITOR
+        [Header("Debug")]
+        [SerializeField] [ReadOnlyField] private string selectedResolutionString;
+#endif
+        #endregion
+        
+        
+        #region Updates
         private IEnumerator Start()
         {
             yield return null;
             
             CheckAllAspectRatioSupportedState();
             
-            _screenSizeDropdown.onDropdownItemCreatedEvent.Subscribe(SetDropdownItemResolutionContainer, this);
-            _screenSizeDropdown.onAfterDropdownShowEvent.Subscribe(SelectCurrentResolutionDropdownItem, this);
-
-            _screenDisplayDropdown.onDropdownItemCreatedEvent.Subscribe(SetDropdownItemFullScreenModeContainer, this);
-            _screenDisplayDropdown.onAfterDropdownShowEvent.Subscribe(SelectCurrentFullScreenModeDropdownItem, this);
+            
             
             _screenSizeDropdown.captionText.text = ResolutionToString(_currentResolution);
             _screenDisplayDropdown.captionText.text = ConvertBuiltInFullScreenModeToMine(_currentFullScreenMode).ToString().SeparateContent();
 
+            
 
             _currentAspectRation = CalculateScreenAspectRationApproximation(_currentResolution);
             
@@ -82,13 +100,81 @@ namespace Project
 
             _selectedFullScreenMode = _currentFullScreenMode;
 
+
+            switch (VideoManager.instance.currentQualityIndex)
+            {
+                case 0:
+                    SetLowQuality();
+                    Debug.Log("aaaaaaaaaaaaaaaaa");
+
+                    break;
+                    
+                case 1:
+                    SetMediumQuality();
+                    Debug.Log("aaaaaaaaaaaaaaaaa");
+
+                    break;
+                
+                case 2:
+                    SetHighQuality();
+                    Debug.Log("aaaaaaaaaaaaaaaaa");
+                    break;
+                
+                case 3:
+                    break;
+            }
+
+            SetMaximumFrameRate(VideoManager.instance.GetFrameRate);
+            SetMaximumFrameRateSlider(VideoManager.instance.GetFrameRate.ToString());
+            
             SelectAspectRatio(_currentAspectRation);
+
+
+            if (AreResolutionsEqual(_currentResolution.height, Display.main.systemHeight, _currentResolution.width,
+                    Display.main.systemWidth) && _currentFullScreenMode == FullScreenMode.ExclusiveFullScreen)
+            {
+                _onUseCurrentResolution.Invoke();
+            }
+            else
+            {
+                _onUseAdvancedSettings.Invoke();
+            }
+            
+            #endregion
+        }
+
+
+        private void OnEnable()
+        {
+            _screenSizeDropdown.onDropdownItemCreatedEvent.Subscribe(SetDropdownItemResolutionContainer, this);
+            _screenSizeDropdown.onAfterDropdownShowEvent.Subscribe(SelectCurrentResolutionDropdownItem, this);
+
+            _screenDisplayDropdown.onDropdownItemCreatedEvent.Subscribe(SetDropdownItemFullScreenModeContainer, this);
+            _screenDisplayDropdown.onAfterDropdownShowEvent.Subscribe(SelectCurrentFullScreenModeDropdownItem, this);
+            
+            _maxFrameRateInputField.onDeselect.AddListenerExtended(SetMaximumFrameRate);
+            _maxFrameRateInputField.onEndEdit.AddListenerExtended(SetMaximumFrameRateSlider);
         }
         
+        private void OnDisable()
+        {
+            _screenSizeDropdown.onDropdownItemCreatedEvent.Unsubscribe(SetDropdownItemResolutionContainer);
+            _screenSizeDropdown.onAfterDropdownShowEvent.Unsubscribe(SelectCurrentResolutionDropdownItem);
+
+            _screenDisplayDropdown.onDropdownItemCreatedEvent.Unsubscribe(SetDropdownItemFullScreenModeContainer);
+            _screenDisplayDropdown.onAfterDropdownShowEvent.Unsubscribe(SelectCurrentFullScreenModeDropdownItem);
+            
+            _maxFrameRateInputField.onDeselect.RemoveListenerExtended(SetMaximumFrameRate);
+            _maxFrameRateInputField.onEndEdit.RemoveListenerExtended(SetMaximumFrameRateSlider);
+        }
+
+        
+        
+        #region Methods
+        #region Resolutions Relative
         public void ApplyResolutionRelativeSettings()
         {
-            Screen.SetResolution(_selectedResolution.width, _selectedResolution.height, _selectedFullScreenMode,
-                0);
+            Screen.SetResolution(_selectedResolution.width, _selectedResolution.height, _selectedFullScreenMode);
             
             _currentAspectRation = _currentSelectedAspectRatio;
             
@@ -210,7 +296,10 @@ namespace Project
         }
 
         private bool AreResolutionsEqual(Resolution resolution1, Resolution resolution2) 
-            => resolution1.height == resolution2.height && resolution1.width == resolution2.width;
+            => AreResolutionsEqual(resolution1.height, resolution2.height, resolution1.width, resolution2.width);
+        
+        private bool AreResolutionsEqual(int height1, int height2, int width1, int width2) 
+            => height1 == height2 && width1 == width2;
             
         
         private List<string> ResolutionsToString(List<Resolution> resolutions)
@@ -238,7 +327,8 @@ namespace Project
             SelectAspectRatio(CalculateScreenAspectRationApproximation(_selectedResolution));
             
             SelectFullScreenMode(FullScreenMode.ExclusiveFullScreen);
-            _screenDisplayDropdown.captionText.text = ConvertBuiltInFullScreenModeToMine(_selectedFullScreenMode).ToString();
+            // _screenDisplayDropdown.captionText.text = ConvertBuiltInFullScreenModeToMine(_selectedFullScreenMode).ToString().SeparateContent();
+            _screenDisplayDropdown.captionText.text = "Exclusive FullScreen";
         }
 
         private Resolution GetResolution(int width, int height, bool onlyFromTheCurrentResolutions = true)
@@ -277,16 +367,16 @@ namespace Project
         {
             if (index == 0)
             {
-                rectTransform.GetComponent<FullScreenModeContainer>().fullScreenMode =
+                rectTransform.GetComponent<DisplayModeContainer>().fullScreenMode =
                     FullScreenMode.ExclusiveFullScreen;
             }
             else if (index == 1)
             {
-                rectTransform.GetComponent<FullScreenModeContainer>().fullScreenMode = FullScreenMode.FullScreenWindow;
+                rectTransform.GetComponent<DisplayModeContainer>().fullScreenMode = FullScreenMode.FullScreenWindow;
             }
             else if (index == 2)
             {
-                rectTransform.GetComponent<FullScreenModeContainer>().fullScreenMode = FullScreenMode.Windowed;
+                rectTransform.GetComponent<DisplayModeContainer>().fullScreenMode = FullScreenMode.Windowed;
             }
             else
             {
@@ -298,7 +388,7 @@ namespace Project
         {
             for (int i = 0; i < _screenDisplayDropdown.dropdownItems.Count; i++)
             {
-                if (_screenDisplayDropdown.dropdownItems[i].GetComponent<FullScreenModeContainer>().fullScreenMode ==
+                if (_screenDisplayDropdown.dropdownItems[i].GetComponent<DisplayModeContainer>().fullScreenMode ==
                     _currentFullScreenMode)
                 {
                     _screenDisplayDropdown.dropdownItems[0].GetComponent<Toggle>().SetIsOnWithoutNotify(false);
@@ -314,9 +404,9 @@ namespace Project
             _screenDisplayDropdown.onAfterDropdownShowEvent.Unsubscribe(SelectCurrentFullScreenModeDropdownItem);
         }
         
-        public void SelectFullScreenMode(FullScreenModeContainer fullScreenModeContainer)
+        public void SelectFullScreenMode(DisplayModeContainer displayModeContainer)
         {
-            SelectFullScreenMode(fullScreenModeContainer.fullScreenMode);
+            SelectFullScreenMode(displayModeContainer.fullScreenMode);
         }
         public void SelectFullScreenMode(FullScreenMode fullScreenMode)
         {
@@ -439,6 +529,49 @@ namespace Project
                 return EAspectRation.AspectOther;
             }
         }
+        #endregion
+        #endregion
+
+        #region  Rendering
+
+        public void SetLowQuality()
+        {
+            _onLowQualityEvent.Invoke();
+            VideoManager.instance.SetLowQuality();
+        }
+
+        public void SetMediumQuality()
+        {
+            VideoManager.instance.SetMediumQuality();
+            _onMediumQualityEvent.Invoke();
+        }
+
+        public void SetHighQuality()
+        {
+            VideoManager.instance.SetHighQuality();
+            _onHighQualityEvent.Invoke();
+        }
+
+        public void SetCustomQuality() => VideoManager.instance.SetCustomQuality();
+
+        public void SetMaximumFrameRateSlider(string targetFrameRate)
+        {
+            _maxFrameRateSlider.value = float.Parse(targetFrameRate);
+        }
+        
+        private void SetMaximumFrameRate(string targetFrameRate)
+        {
+            SetMaximumFrameRate(float.Parse(targetFrameRate));
+        }
+
+        private void SetMaximumFrameRate(float targetFrameRate)
+        {
+            VideoManager.instance.SetMaximumFrameRate((int)targetFrameRate);
+            _maxFrameRateInputField.text = targetFrameRate.ToString(CultureInfo.InvariantCulture);
+        }
+
+        #endregion
+
         #endregion
     }
 }

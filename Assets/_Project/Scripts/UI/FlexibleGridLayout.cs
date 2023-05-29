@@ -71,7 +71,7 @@ using UnityEngine.UI;
 
             cellSize.x = fitX ? cellWidth : cellSize.x;
             cellSize.y = fitY ? cellHeight : cellSize.y;
-
+            
             int columnCount = 0;
             int rowCount = 0;
 
