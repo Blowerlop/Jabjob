@@ -28,6 +28,8 @@ public class VivoxManager : MonoBehaviour
         _lobbyManager.VivoxOnCreateLobby += VivoxOnCreateLobby;
         _lobbyManager.VivoxOnJoinLobby += VivoxOnJoinLobby;
         _lobbyManager.VivoxOnLeaveLobby += VivoxOnLobbyLeave;
+
+
     }
 
     private void VivoxOnLobbyLeave()
@@ -117,6 +119,8 @@ public class VivoxManager : MonoBehaviour
 
         var channelId = LoginSession?.ChannelSessions.FirstOrDefault(ac => ac.Channel.Name == ChannelName).Key;
         var channelSession = LoginSession.GetChannelSession(channelId);
+
+
 
         channelSession.BeginSendText(message, ar =>
         {

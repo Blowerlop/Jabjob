@@ -158,7 +158,7 @@ public class LobbyManager : MonoBehaviour {
                     Debug.Log("Kicked from Lobby ");
 
                     OnKickedFromLobby?.Invoke(this, new LobbyEventArgs { lobby = joinedLobby });
-
+                    VivoxOnLeaveLobby?.Invoke();
                     joinedLobby = null;
                 }
 
