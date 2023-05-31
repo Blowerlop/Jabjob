@@ -26,6 +26,7 @@ public class LobbyManager : MonoBehaviour {
     public const string KEY_GAME_MODE = "GameMode";
     public const string KEY_RELAY_GAME = "RelayGameCode";
     public const string KEY_GAMEMAP_NAME = "GameMapName";
+    public const string KEY_VIVOX_CHAN_NAME = "VivoxChanName";
     public int maxPlayerLobby = 4;
 
 
@@ -64,7 +65,16 @@ public class LobbyManager : MonoBehaviour {
     private Lobby joinedLobby;
     private string playerName;
     private string playerModel = "Hotdog"; 
-    private Color playerColor = Color.white; 
+    private Color playerColor = Color.white;
+    #endregion
+
+    #region Event Vivox
+
+    public event Action<string> VivoxOnAuthenticate;
+    public event Action<string> VivoxOnCreateLobby;
+    public event Action<string> VivoxOnJoinLobby;
+    public event Action VivoxOnLeaveLobby;
+
     #endregion
 
     private void Awake() {
@@ -98,7 +108,9 @@ public class LobbyManager : MonoBehaviour {
             RefreshLobbyList();
         };
 
-        try { await AuthenticationService.Instance.SignInAnonymouslyAsync(); return true; }
+        try { await AuthenticationService.Instance.SignInAnonymouslyAsync();
+            VivoxOnAuthenticate?.Invoke(playerName);
+            return true; }
         catch (Exception e)
         {
             Debug.LogError(e);
@@ -217,6 +229,7 @@ public class LobbyManager : MonoBehaviour {
         try
         {
             Player player = GetPlayer();
+            string vivoxChanName = Guid.NewGuid().ToString();
             CreateLobbyOptions options = new CreateLobbyOptions
             {
                 Player = player,
@@ -224,13 +237,15 @@ public class LobbyManager : MonoBehaviour {
                 Data = new Dictionary<string, DataObject> {
                 { KEY_GAME_MODE, new DataObject(DataObject.VisibilityOptions.Public, gameMode.ToString()) },
                 { KEY_RELAY_GAME, new DataObject(DataObject.VisibilityOptions.Member, "0") },
-                { KEY_GAMEMAP_NAME, new DataObject(DataObject.VisibilityOptions.Public, gameMapSceneName)}
+                { KEY_GAMEMAP_NAME, new DataObject(DataObject.VisibilityOptions.Public, gameMapSceneName)},
+                { KEY_VIVOX_CHAN_NAME, new DataObject(DataObject.VisibilityOptions.Member,vivoxChanName )},
             }
             };
             Lobby lobby = await LobbyService.Instance.CreateLobbyAsync(string.Concat(playerName, "'s Lobby"), maxPlayerLobby, options);
             Debug.Log("Created " + lobby.Name);
             joinedLobby = lobby;
             OnJoinedLobby?.Invoke(this, new LobbyEventArgs { lobby = lobby });
+            VivoxOnCreateLobby?.Invoke(vivoxChanName);
         }
         catch(Exception e)
         {
@@ -298,8 +313,9 @@ public class LobbyManager : MonoBehaviour {
         });
 
         joinedLobby = lobby;
-
+        
         OnJoinedLobby?.Invoke(this, new LobbyEventArgs { lobby = lobby });
+        VivoxOnJoinLobby?.Invoke(lobby.Data[KEY_VIVOX_CHAN_NAME].Value);
     }
 
     public async void JoinLobby(Lobby lobby) {
@@ -321,6 +337,7 @@ public class LobbyManager : MonoBehaviour {
         }
 
         OnJoinedLobby?.Invoke(this, new LobbyEventArgs { lobby = lobby });
+        VivoxOnJoinLobby?.Invoke(lobby.Data[KEY_VIVOX_CHAN_NAME].Value);
     }
 
     public async void UpdatePlayerName(string playerName) {
@@ -364,6 +381,7 @@ public class LobbyManager : MonoBehaviour {
                         KEY_PLAYER_CHARACTER, new PlayerDataObject(
                             visibility: PlayerDataObject.VisibilityOptions.Public,
                             value: playerCharacter)
+
                     }
                 };
 
@@ -434,6 +452,7 @@ public class LobbyManager : MonoBehaviour {
                 joinedLobby = null;
 
                 OnLeftLobby?.Invoke(this, EventArgs.Empty);
+                VivoxOnLeaveLobby?.Invoke();
             } catch (LobbyServiceException e) {
                 Debug.Log(e);
                 GameObject PopupGO = Instantiate(PopUpPrefab);

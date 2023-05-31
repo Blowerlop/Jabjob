@@ -7,7 +7,6 @@ using UnityEngine;
 using UnityEngine.UI;
 public class LobbyUI : MonoBehaviour {
 
-
     public static LobbyUI Instance { get; private set; }
 
 

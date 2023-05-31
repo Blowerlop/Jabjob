@@ -14,23 +14,61 @@ public class VivoxManager : MonoBehaviour
     private const string ChannelName = "My_super_channel";
     public ILoginSession LoginSession;
     private Client _client => VivoxService.Instance.Client;
-
+    private IChannelSession _currentChannelSession;
     public event UnityAction OnUserLoggedIn;
     public event UnityAction<string, IChannelTextMessage> OnTextMessageLogReceived;
-    private async void Start()
+    private string displayName;
+
+    private LobbyManager _lobbyManager;
+
+    private void Awake()
     {
-        InitializationOptions options = new InitializationOptions();
-        options.SetProfile("Getet" + UnityEngine.Random.Range(0, 650));
-        await UnityServices.InitializeAsync(options);
-        await AuthenticationService.Instance.SignInAnonymouslyAsync();
-        VivoxService.Instance.Initialize();
+        _lobbyManager = FindObjectOfType<LobbyManager>();
+        _lobbyManager.VivoxOnAuthenticate += InitAndLoginVivox;
+        _lobbyManager.VivoxOnCreateLobby += VivoxOnCreateLobby;
+        _lobbyManager.VivoxOnJoinLobby += VivoxOnJoinLobby;
+        _lobbyManager.VivoxOnLeaveLobby += VivoxOnLobbyLeave;
     }
+
+    private void VivoxOnLobbyLeave()
+    {
+        LeaveChannel();
+    }
+
+    private void VivoxOnJoinLobby(string channelName)
+    {
+        JoinChannel(channelName);
+    }
+
+    private void VivoxOnCreateLobby(string channelName)
+    {
+        JoinChannel(channelName);
+    }
+
+    private void InitAndLoginVivox(string playerName)
+    {
+        VivoxService.Instance.Initialize();
+        Login(playerName);
+    }
+
+
+    //private async void Start()
+    //{
+    //    InitializationOptions options = new InitializationOptions();
+    //    options.SetProfile("Getet" + UnityEngine.Random.Range(0, 650));
+    //    await UnityServices.InitializeAsync(options);
+    //    await AuthenticationService.Instance.SignInAnonymouslyAsync();
+    //    VivoxService.Instance.Initialize();
+
+    //}
+
 
     public void Login(string displayName)
     {
         Account account = new Account(displayName);
         LoginSession = _client.GetLoginSession(account);
         LoginSession.PropertyChanged += LoginSession_PropertyChanged;
+        this.displayName = displayName;
         LoginSession.BeginLogin(LoginSession.GetLoginToken(), SubscriptionMode.Accept, null, null, null, ar =>
         {
             try
@@ -39,6 +77,7 @@ public class VivoxManager : MonoBehaviour
             }
             catch (Exception e)
             {
+                Debug.LogException(e);
                 return;
             }
         });
@@ -47,15 +86,18 @@ public class VivoxManager : MonoBehaviour
 
     private void LoginSession_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
     {
+        
+
         var logginSession = (ILoginSession)sender;
         switch (logginSession.State)
         {
             case LoginState.LoggedOut:
+                VivoxLog("Logged Out");
                 break;
             case LoginState.LoggedIn:
                 VivoxLog("Logged in");
                 OnUserLoggedIn?.Invoke();
-                JoinChannel(ChannelName);
+                //JoinChannel(ChannelName);
                 break;
             case LoginState.LoggingIn:
                 VivoxLog("Loggin in");
@@ -63,6 +105,7 @@ public class VivoxManager : MonoBehaviour
             case LoginState.LoggingOut:
                 break;
             default:
+                VivoxLog("Default");
                 break;
         }
     }
@@ -89,20 +132,21 @@ public class VivoxManager : MonoBehaviour
 
     }
 
+
     public void JoinChannel(string channelName)
     {
         if(LoginSession.State == LoginState.LoggedIn)
         {
             Channel channel = new Channel(channelName);
+            
+            _currentChannelSession = LoginSession.GetChannelSession(channel);
+            _currentChannelSession.MessageLog.AfterItemAdded += OnMessageLogReceive;
 
-            IChannelSession channelSession = LoginSession.GetChannelSession(channel);
-            channelSession.MessageLog.AfterItemAdded += OnMessageLogReceive;
-
-            channelSession.BeginConnect(false, true, true, channelSession.GetConnectToken(), ar =>
+            _currentChannelSession.BeginConnect(false, true, true, _currentChannelSession.GetConnectToken(), ar =>
             {
                 try
                 {
-                    channelSession.EndConnect(ar);
+                    _currentChannelSession.EndConnect(ar);
                 }
                 catch (Exception e )
                 {
@@ -110,7 +154,18 @@ public class VivoxManager : MonoBehaviour
                     throw;
                 }
             });
+            VivoxLog("ChannelJoined : " + channelName);
         }
+    }
+
+    public void LeaveChannel()
+    {
+        if (_currentChannelSession == null)
+            return;
+
+        _currentChannelSession.Disconnect();
+        _currentChannelSession = null;
+        VivoxLog("Channel quit");
     }
 
     private void OnMessageLogReceive(object sender, QueueItemAddedEventArgs<IChannelTextMessage> textMessage)
@@ -120,9 +175,9 @@ public class VivoxManager : MonoBehaviour
         OnTextMessageLogReceived?.Invoke(message.Sender.DisplayName, message);
     }
 
-    private void VivoxLog(string msg = null) { 
-    
-        Debug.Log(msg);
+    private void VivoxLog(object message) { 
+        Debug.Log("<color=yellow>Vivox : " + message+"</color>");
     }
 
+  
 }

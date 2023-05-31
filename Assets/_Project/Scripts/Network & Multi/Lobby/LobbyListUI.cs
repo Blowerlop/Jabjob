@@ -12,7 +12,6 @@ public class LobbyListUI : MonoBehaviour {
     public static LobbyListUI Instance { get; private set; }
 
 
-
     [SerializeField] private Transform lobbySingleTemplate;
     [SerializeField] private Transform container;
     [SerializeField] private Button refreshButton;
