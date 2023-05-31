@@ -22,11 +22,7 @@ namespace Project
                 materialDictionary.Add(PlayerModelList[i].name, PlayerModelList[i].material);
             }
         }
-
-        private void Start()
-        {
-            Application.targetFrameRate = 60; 
-        }
+        
         public void ChangeCharacterModelIg(SkinnedMeshRenderer playerMeshRenderer, string modelName)
         {
             playerMeshRenderer.sharedMesh = meshDictionary[modelName];
@@ -36,7 +32,7 @@ namespace Project
         }
         public void ChangeCharacterModelMenu(SkinnedMeshRenderer playerMeshRenderer, TextMeshProUGUI modelNameTMPRO, bool isNext) 
         {
-            //Si isNext == on veut le prochain skin, sinon on veut le précédent
+            //Si isNext == on veut le prochain skin, sinon on veut le prï¿½cï¿½dent
             string modelName = modelNameTMPRO.text;
             int index = isNext ? (GetCurrentIndexInList(modelName) + 1) % PlayerModelList.Length : (GetCurrentIndexInList(modelName) - 1 + PlayerModelList.Length) % PlayerModelList.Length;
             playerMeshRenderer.sharedMesh = meshDictionary[PlayerModelList[index].name];

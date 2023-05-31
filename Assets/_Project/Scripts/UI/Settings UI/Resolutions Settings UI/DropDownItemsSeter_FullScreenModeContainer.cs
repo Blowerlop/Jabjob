@@ -29,11 +29,11 @@ namespace Project
         {
             if (index == 0)
             {
-                rectTransform.GetComponent<FullScreenModeContainer>().fullScreenMode = FullScreenMode.ExclusiveFullScreen;
+                rectTransform.GetComponent<DisplayModeContainer>().fullScreenMode = FullScreenMode.ExclusiveFullScreen;
             }
             else if (index == 1)
             {
-                rectTransform.GetComponent<FullScreenModeContainer>().fullScreenMode = FullScreenMode.FullScreenWindow;
+                rectTransform.GetComponent<DisplayModeContainer>().fullScreenMode = FullScreenMode.FullScreenWindow;
             }
             else
             {

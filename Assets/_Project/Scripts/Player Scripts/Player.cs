@@ -63,6 +63,8 @@ namespace Project
 
         public override void OnNetworkSpawn()
         {
+            Cursor.lockState = CursorLockMode.Locked;
+            
             GameEvent.onPlayerJoinGameEvent.Invoke(this, true, OwnerClientId);
             GameManager.instance.AddPlayerLocal(OwnerClientId, this);
 
@@ -94,7 +96,7 @@ namespace Project
 
 
 
-            Cursor.lockState = CursorLockMode.Locked;
+            
         }
 
         private void Start()

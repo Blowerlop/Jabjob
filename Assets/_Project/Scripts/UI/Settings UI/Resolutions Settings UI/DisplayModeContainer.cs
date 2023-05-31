@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Project
 {
-    public class FullScreenModeContainer : MonoBehaviour
+    public class DisplayModeContainer : MonoBehaviour
     {
         public FullScreenMode fullScreenMode;
     }
