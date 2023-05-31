@@ -17,9 +17,9 @@ namespace Project
             playerMesh.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.On;
             weaponRenderer = weaponHandler.GetComponentInChildren<MeshRenderer>();
             weaponRenderer.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.On;
-        }
+        } 
     }
-
+     
 
 #if UNITY_EDITOR
     [CustomEditor(typeof(BaoHelpSoloTest)), CanEditMultipleObjects]
