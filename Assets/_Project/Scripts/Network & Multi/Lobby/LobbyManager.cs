@@ -68,7 +68,7 @@ public class LobbyManager : MonoBehaviour {
     #endregion
 
     private void Awake() {
-        Instance = this;
+        Instance = this; 
     }
 
     private void Start()
