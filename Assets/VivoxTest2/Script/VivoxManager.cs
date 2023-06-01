@@ -8,18 +8,21 @@ using Unity.Services.Vivox;
 using System;
 using UnityEngine.Events;
 using System.Linq;
+using Project;
 
 public class VivoxManager : MonoBehaviour
 {
     private const string ChannelName = "My_super_channel";
-    public ILoginSession LoginSession;
+    private ILoginSession LoginSession;
     private Client _client => VivoxService.Instance.Client;
     private IChannelSession _currentChannelSession;
-    public event UnityAction OnUserLoggedIn;
-    public event UnityAction<string, IChannelTextMessage> OnTextMessageLogReceived;
     private string displayName;
-
     private LobbyManager _lobbyManager;
+
+
+    public event Action OnUserLoggedIn;
+    public event Action<string, IChannelTextMessage> OnTextMessageLogReceived;
+
 
     private void Awake()
     {
@@ -29,8 +32,8 @@ public class VivoxManager : MonoBehaviour
         _lobbyManager.VivoxOnJoinLobby += VivoxOnJoinLobby;
         _lobbyManager.VivoxOnLeaveLobby += VivoxOnLobbyLeave;
 
-
     }
+
 
     private void VivoxOnLobbyLeave()
     {
@@ -117,16 +120,16 @@ public class VivoxManager : MonoBehaviour
         if (string.IsNullOrEmpty(message))
             return;
 
-        var channelId = LoginSession?.ChannelSessions.FirstOrDefault(ac => ac.Channel.Name == ChannelName).Key;
-        var channelSession = LoginSession.GetChannelSession(channelId);
+        //var channelId = LoginSession?.ChannelSessions.FirstOrDefault(ac => ac.Channel.Name == ChannelName).Key;
+        //var channelSession = LoginSession.GetChannelSession(channelId);
 
 
-
-        channelSession.BeginSendText(message, ar =>
+        VivoxLog(name);
+        _currentChannelSession.BeginSendText(message, ar =>
         {
             try
             {
-                channelSession.EndSendText(ar);
+                _currentChannelSession.EndSendText(ar);
             }
             catch (Exception)
             {
@@ -174,7 +177,7 @@ public class VivoxManager : MonoBehaviour
 
     private void OnMessageLogReceive(object sender, QueueItemAddedEventArgs<IChannelTextMessage> textMessage)
     {
-        Debug.Log("Message received");
+        
         IChannelTextMessage message = textMessage.Value;
         OnTextMessageLogReceived?.Invoke(message.Sender.DisplayName, message);
     }

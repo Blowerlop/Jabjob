@@ -30,7 +30,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 8418912308833563418}
-  m_RootOrder: 10
+  m_RootOrder: 11
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &8004714087221055445
 MonoBehaviour:
@@ -311,7 +311,6 @@ RectTransform:
   - {fileID: 8739170814852295920}
   - {fileID: 5355196007176735493}
   m_Father: {fileID: 8418912308833563418}
-  m_RootOrder: 9
   m_RootOrder: 10
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -722,8 +721,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d8e93c51ca3e3d144b7a154541b0eebd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _customRenderPipelineAsset: {fileID: 11400000, guid: 1167de8c3bb0cd94e9fd0c12886df81c,
-    type: 2}
   _lowQualityIndex: 0
   _mediumQualityIndex: 1
   _highQualityIndex: 2
@@ -846,7 +843,6 @@ MonoBehaviour:
   rows: 1
   columns: 1
   cellSize: {x: 120, y: 32.400024}
-  cellSize: {x: 120, y: 32.397705}
   spacing: {x: 34.7, y: 0}
   fitX: 0
   fitY: 1
