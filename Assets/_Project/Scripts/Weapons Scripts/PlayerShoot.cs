@@ -159,7 +159,7 @@ namespace Project
         private void LocalShoot(bool isTheShooter, Vector3 weaponHolderPosition, Vector3 rootCameraPosition, Vector3 hitPoint, bool isRaycast)
         {
             Weapon currentWeapon = _weaponManager.GetFakeWeapon();
-            Weapon fakeWeapon = _weaponManager.GetFakeWeapon();
+            Weapon fakeWeapon = _weaponManager.GetFakeWeapon(); 
 
             if (isRaycast)
             {
@@ -223,7 +223,6 @@ namespace Project
             //_canShoot = false;
             //StartCoroutine(ReloadCoroutine());
         }
-
         public void AutoReload() //Use by Animation, end of fire POV
         {
             if (_weapon.ammo <= 0) StartReload();
