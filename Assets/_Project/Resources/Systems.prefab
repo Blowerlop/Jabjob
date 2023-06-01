@@ -233,6 +233,50 @@ MonoBehaviour:
   m_DefaultActionMap: Player
   m_SplitScreenIndex: -1
   m_Camera: {fileID: 0}
+--- !u!1 &3206836668499331045
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3924172279744571276}
+  - component: {fileID: 748662037191338942}
+  m_Layer: 0
+  m_Name: VivoxManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &3924172279744571276
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3206836668499331045}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 544.5, y: 274, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 8418912308833563418}
+  m_RootOrder: 11
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &748662037191338942
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3206836668499331045}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 44eb4ac26a64ed84e9764373f1fcf7c8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &4036282367307485833
 GameObject:
   m_ObjectHideFlags: 0
@@ -677,8 +721,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d8e93c51ca3e3d144b7a154541b0eebd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _customRenderPipelineAsset: {fileID: 11400000, guid: 1167de8c3bb0cd94e9fd0c12886df81c,
-    type: 2}
   _lowQualityIndex: 0
   _mediumQualityIndex: 1
   _highQualityIndex: 2
@@ -800,7 +842,7 @@ MonoBehaviour:
   fitType: 3
   rows: 1
   columns: 1
-  cellSize: {x: 120, y: 32.397705}
+  cellSize: {x: 120, y: 32.400024}
   spacing: {x: 34.7, y: 0}
   fitX: 0
   fitY: 1
@@ -906,6 +948,7 @@ Transform:
   - {fileID: 488024643940401560}
   - {fileID: 6881242542543461850}
   - {fileID: 8505187300495703771}
+  - {fileID: 3924172279744571276}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
