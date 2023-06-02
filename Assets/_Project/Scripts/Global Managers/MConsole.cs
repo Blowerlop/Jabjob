@@ -33,11 +33,10 @@ namespace Managers
 
         void OpenConsole()
         {
+            Cursor.lockState = actualConsole.activeSelf? CursorLockMode.Locked: CursorLockMode.None;
+            Cursor.visible = !actualConsole.activeSelf;
             actualConsole.SetActive(!actualConsole.activeSelf);
-            if (actualConsole.activeSelf) InputManager.instance.SwitchPlayerInputMap("UI");
-            else InputManager.instance.SwitchPlayerInputMap("Player"); 
-            
-            
+            InputManager.instance.SwitchPlayerInputMap(actualConsole.activeSelf ? "UI" : "Player");
         }
         void OnApplicationQuit()
         {

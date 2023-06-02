@@ -1,6 +1,8 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+using Project;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -35,6 +37,8 @@ namespace Utils
         {
             RegisterCommand(Example, "example");
             RegisterCommand(ShowDebug, "show_debug");
+            RegisterCommand(Damage, "damage");
+            RegisterCommand(KillPlayer, "kill_player");
         }
 
         void RegisterCommand(Action<string[]> newCommandAction, string commandName)
@@ -66,6 +70,46 @@ namespace Utils
         private static readonly Action<string[]> ShowDebug = (args) =>
         {
             Console.Instance.ToggleUnityDebug(Convert.ToBoolean(args[1]));
+        };
+        
+        private static readonly Action<string[]> Damage = (args) =>
+        {
+            try
+            {
+                
+                Player pla = GameManager.instance.GetPlayers().First(x => x.playerName == args[1]);
+                if (pla != null)
+                {
+                    pla.Damage(Convert.ToInt32(args[2]),pla.OwnerClientId);
+                }
+                else
+                {
+                    Debug.LogError("No such player " + args[1]);
+                }
+            }
+            catch (Exception e)
+            {
+                Debug.LogError(e.Message);
+            }
+        };private static readonly Action<string[]> KillPlayer = (args) =>
+        {
+            try
+            {
+                
+                Player pla = GameManager.instance.GetPlayers().First(x => x.playerName == args[1]);
+                if (pla != null)
+                {
+                    pla.Damage(1000,pla.OwnerClientId);
+                }
+                else
+                {
+                    Debug.LogError("No such player " + args[1]);
+                }
+            }
+            catch (Exception e)
+            {
+                Debug.LogError(e.Message);
+            }
         };
     }
 }
