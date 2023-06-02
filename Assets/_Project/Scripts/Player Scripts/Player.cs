@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using _Project.Scripts.Managers;
 using Project.Utilities;
 using Unity.Collections;
 using Unity.Netcode;
@@ -320,6 +321,35 @@ namespace Project
             score = 3 * kills - 1 * deaths + 1 * assists; 
             return score; 
         }
+
+        #region Admin
+
+        public void Kick()
+        {
+            KickServerRpc();
+        }
+        
+        [ServerRpc(RequireOwnership = false)]
+        public void KickServerRpc()
+        {
+            ulong ownerId = OwnerClientId;
+            KickClientRpc();
+        }
+        
+        [ClientRpc]
+        public void KickClientRpc()
+        {
+            KickLocalClient();
+        }
+        
+        public void KickLocalClient()
+        {
+            NetworkManager.Singleton.Shutdown();
+            SceneManager.LoadSceneAsyncLocal(SceneManager.EScene.MenuScene);
+        }
+
+        #endregion
+        
         #endregion
     }
 }

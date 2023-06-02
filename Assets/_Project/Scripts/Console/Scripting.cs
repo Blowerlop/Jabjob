@@ -39,6 +39,7 @@ namespace Utils
             RegisterCommand(ShowDebug, "show_debug");
             RegisterCommand(Damage, "damage");
             RegisterCommand(KillPlayer, "kill_player");
+            RegisterCommand(KickPlayer, "kick_player");
         }
 
         void RegisterCommand(Action<string[]> newCommandAction, string commandName)
@@ -76,7 +77,6 @@ namespace Utils
         {
             try
             {
-                
                 Player pla = GameManager.instance.GetPlayers().First(x => x.playerName == args[1]);
                 if (pla != null)
                 {
@@ -91,11 +91,12 @@ namespace Utils
             {
                 Debug.LogError(e.Message);
             }
-        };private static readonly Action<string[]> KillPlayer = (args) =>
+        };
+        
+        private static readonly Action<string[]> KillPlayer = (args) =>
         {
             try
             {
-                
                 Player pla = GameManager.instance.GetPlayers().First(x => x.playerName == args[1]);
                 if (pla != null)
                 {
@@ -105,6 +106,19 @@ namespace Utils
                 {
                     Debug.LogError("No such player " + args[1]);
                 }
+            }
+            catch (Exception e)
+            {
+                Debug.LogError(e.Message);
+            }
+        };
+        
+        private static readonly Action<string[]> KickPlayer = (args) =>
+        {
+            try
+            {
+                Player pla = GameManager.instance.GetPlayers().First(x => x.playerName == args[1]);
+                pla.Kick();
             }
             catch (Exception e)
             {
