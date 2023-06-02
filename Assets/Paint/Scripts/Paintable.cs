@@ -13,6 +13,7 @@ public class Paintable : MonoBehaviour {
     Renderer rend;
 
     int maskTextureID = Shader.PropertyToID("_MaskTexture");
+    int alphaID = Shader.PropertyToID("_alpha");
 
     public RenderTexture getMask() => maskRenderTexture;
     public RenderTexture getUVIslands() => uvIslandsRenderTexture;
@@ -49,5 +50,13 @@ public class Paintable : MonoBehaviour {
         uvIslandsRenderTexture.Release();
         extendIslandsRenderTexture.Release();
         supportTexture.Release();
+    }
+    
+
+    public void SetAlpha(float alpha)
+    {
+        Debug.Log(GetComponent<SkinnedMeshRenderer>().material.GetFloat(alphaID));
+        GetComponent<SkinnedMeshRenderer>().material.SetFloat(alphaID,alpha);
+        Debug.Log(GetComponent<SkinnedMeshRenderer>().material.GetFloat(alphaID));
     }
 }

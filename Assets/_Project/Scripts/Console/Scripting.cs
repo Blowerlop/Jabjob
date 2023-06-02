@@ -40,6 +40,7 @@ namespace Utils
             RegisterCommand(Damage, "damage");
             RegisterCommand(KillPlayer, "kill_player");
             RegisterCommand(KickPlayer, "kick_player");
+            RegisterCommand(ShowPlayer, "show_player");
         }
 
         void RegisterCommand(Action<string[]> newCommandAction, string commandName)
@@ -119,6 +120,20 @@ namespace Utils
             {
                 Player pla = GameManager.instance.GetPlayers().First(x => x.playerName == args[1]);
                 pla.Kick();
+            }
+            catch (Exception e)
+            {
+                Debug.LogError(e.Message);
+            }
+        };
+        
+        private static readonly Action<string[]> ShowPlayer = (args) =>
+        {
+            float alpha = args.Length < 2 ? 0.45f :Convert.ToInt32(args[2]) / 100f;
+            try
+            {
+                Player pla = GameManager.instance.GetPlayers().First(x => x.playerName == args[1]);
+                pla.gameObject.GetComponentInChildren<Paintable>().SetAlpha(alpha);
             }
             catch (Exception e)
             {
