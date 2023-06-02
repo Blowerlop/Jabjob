@@ -27,7 +27,7 @@ namespace Project
         [SerializeField] private NetworkVariable<int> _networkKills = new NetworkVariable<int>();
         [SerializeField] private NetworkVariable<int> _networkAssists = new NetworkVariable<int>();
         [SerializeField] private NetworkVariable<int> _networkDeaths = new NetworkVariable<int>();
-        [SerializeField] private NetworkVariable<ulong> _networkKillerId = new NetworkVariable<ulong>();
+        [SerializeField] private NetworkVariable<ulong> _networkKillerId = new NetworkVariable<ulong>(writePerm: NetworkVariableWritePermission.Owner); 
         [SerializeField] private NetworkVariable<int> _networkScore = new NetworkVariable<int>();
         [SerializeField] private NetworkVariable<bool> _networkIsHost = new NetworkVariable<bool>();
         [SerializeField] private Player _killer;
@@ -93,7 +93,7 @@ namespace Project
             UpdatePlayerCharacterServerRpc(LobbyManager.Instance.GetPlayerModel());
             UpdatePlayerColorServerRpc(LobbyManager.Instance.GetPlayerColor());
             UpdatePlayerNameServerRpc(LobbyManager.Instance.GetPlayerName());
-            PlayerModelsManager.instance.UpdateAllPlayers(); //Vraiment pas ouf ici, à déplacer lorsqu'on aura synchroniser le load des joueurs et appeler juste avant le StartGame
+            PlayerModelsManager.instance.UpdateAllPlayers(); //Vraiment pas ouf ici, Ã  dÃ©placer lorsqu'on aura synchroniser le load des joueurs et appeler juste avant le StartGame
 
 
 
@@ -316,7 +316,7 @@ namespace Project
         private void OnDeathValueChange(int previousValue, int nextValue) => GameEvent.onPlayerDiedEvent.Invoke(this, true, OwnerClientId, _killerId, nextValue);  
         private void OnScoreValueChange(int previousValue, int nextValue) => GameEvent.onPlayerScoreEvent.Invoke(this, true, OwnerClientId, nextValue);
         #endregion
-        public int UpdateScore() // scoring de base pourri, peut être à changer
+        public int UpdateScore() // scoring de base pourri, peut Ãªtre Ã  changer
         {
             score = 3 * kills - 1 * deaths + 1 * assists; 
             return score; 
