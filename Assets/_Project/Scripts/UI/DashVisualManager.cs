@@ -14,12 +14,12 @@ namespace Project
         private int dashNumber = 3;
         private int dashCoolDown = 3;
 
-        private bool isAnimationPlaying = false;
         private Slider currentSlider = null;
         private float beginTime = 0;
         private float endTime = 0;
+        private float currentProgression = 0;
 
-
+        private bool playAnimation = false;
 
         private void Start()
         {
@@ -31,43 +31,51 @@ namespace Project
 
         private void Update()
         {
-            if (Input.GetKeyDown(KeyCode.LeftShift))
+            if (playAnimation)
             {
-                RemoveOneDash();
-            }
+                currentSlider.value = Mathf.InverseLerp(beginTime, endTime, Time.realtimeSinceStartup) + currentProgression;
 
-            if (isAnimationPlaying)
-            {
-                if (currentSlider == null) { return; }
-                currentSlider.value = Mathf.InverseLerp(beginTime, endTime, Time.realtimeSinceStartup);
-
-                if (currentSlider.value == 1 && dashNumber < 3)
+                if (currentSlider.value == 1)
                 {
-                    dashNumber ++;
-                    currentSlider = dashSlot[dashNumber - 1];
-                    MakeDashReloadAnimation();
+                    AnimationFinish();
                 }
             }
         }
 
         public void RemoveOneDash()
         {
-            if (currentSlider != null) { currentSlider.value = 0; }
+            if (currentSlider != null) 
+            {
+                currentProgression = currentSlider.value;
+                currentSlider.value = 0;
+            }
 
             currentSlider = dashSlot[dashNumber - 1];
 
             currentSlider.value = 0;
-            dashNumber --;
+            dashNumber -= 1;
             MakeDashReloadAnimation();
         }
 
         private void MakeDashReloadAnimation()
         {
-            if (isAnimationPlaying && dashNumber == 3) { isAnimationPlaying = false; }
-
             beginTime = Time.realtimeSinceStartup;
             endTime = Time.realtimeSinceStartup + dashCoolDown;
-            isAnimationPlaying = true;
+            playAnimation = true;
+        }
+
+        private void AnimationFinish()
+        {
+            dashNumber += 1;
+            playAnimation = false;
+            currentSlider = null;
+            currentProgression = 0;
+
+            if (dashNumber < 3)
+            {
+                currentSlider = dashSlot[dashNumber];
+                MakeDashReloadAnimation();
+            }
         }
     }
 }
