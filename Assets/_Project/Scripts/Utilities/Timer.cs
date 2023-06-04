@@ -85,7 +85,7 @@ namespace Project.Utilities
             return UtilitiesClass.instance.StartCoroutine(TimerWithCallbackStaticScaledTime(timeInSeconds, callback));
         }
         
-        public Coroutine StartTimerWithCallbackRealTime(float timeInSeconds, Action callback)
+        public static Coroutine StartTimerWithCallbackRealTime(float timeInSeconds, Action callback)
         {
             // int timeInMilliseconds = (int)(timeInSeconds * 1000);
             // await Task.Delay(timeInMilliseconds);
