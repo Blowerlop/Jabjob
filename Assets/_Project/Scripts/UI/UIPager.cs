@@ -37,31 +37,20 @@ namespace Project
         [SerializeField] private float _crossFadeDuration = 0.25f;
         private Coroutine _crossFadeCoroutineCurrentPage = null;
         private Coroutine _crossFadeCoroutinePreviousPage = null;
-
-
-        private void Awake()
-        {
-            _rectTransform = GetComponent<RectTransform>();
-        }
-
-        private void Start()
-        {
-            RefreshPager();
-        }
+        
 
         public void NextPage()
         {
-            if (crossFadePages)
-            {
-                CancelCrossPages();
-            }
-
-            if (_currentPageIndex + 1 >= _pages.Count)
+            if (_currentPageIndex + 1 > _pages.Count - 1)
             {
                 if (pageLoop)
                 {
                     _previousPageIndex = _currentPageIndex;
                     _currentPageIndex = 0;
+                }
+                else
+                {
+                    return;
                 }
             }
             else
@@ -70,31 +59,40 @@ namespace Project
                 _currentPageIndex++;
             }
             
+            if (crossFadePages)
+            {
+                CancelCrossPages();
+            }
+            
             GetPage(_currentPageIndex).onPageSelectedEvent.Invoke();
             ChangePageVisualBehaviour();
         }
 
         public void PreviousPage()
         {
-            if (crossFadePages)
-            {
-                CancelCrossPages();
-            }
-            
             if (_currentPageIndex - 1 < 0)
-            {
-                _previousPageIndex = _currentPageIndex;
-                _currentPageIndex = _pages.Count - 1;
-            }
-            else
             {
                 if (pageLoop)
                 {
                     _previousPageIndex = _currentPageIndex;
-                    _currentPageIndex--;
+                    _currentPageIndex = _pages.Count - 1;
+                }
+                else
+                {
+                    return;
                 }
             }
+            else
+            {
+                _previousPageIndex = _currentPageIndex;
+                _currentPageIndex--;
+            }
 
+            
+            if (crossFadePages)
+            {
+                CancelCrossPages();
+            }
             
             GetPage(_currentPageIndex).onPageSelectedEvent.Invoke();
             ChangePageVisualBehaviour();

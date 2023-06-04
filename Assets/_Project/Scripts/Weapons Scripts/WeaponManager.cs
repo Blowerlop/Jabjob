@@ -15,6 +15,7 @@ public class WeaponManager : NetworkBehaviour
     [SerializeField] [ReadOnlyField] private Weapon _currentWeapon, _fakeWeapon;
     private readonly NetworkVariable<byte> _weaponID = new NetworkVariable<byte>(writePerm: NetworkVariableWritePermission.Owner);
     public Transform fakeWeaponHandler;
+    public Transform ArmsRoot;
     public SkinnedMeshRenderer humanMesh;
     public RigBuilder aimRig; 
 
@@ -70,8 +71,8 @@ public class WeaponManager : NetworkBehaviour
         UnEquipWeapon();
         _currentWeapon = Instantiate(weapon, weaponHandler);
         _fakeWeapon = Instantiate(weapon, fakeWeaponHandler);
-        SetLayerRecursively(_fakeWeapon.gameObject, IsOwner ? 0 :  8);
-        SetLayerRecursively(_currentWeapon.gameObject, IsOwner ? 8 : 0);
+        SetWeaponVisibility(ArmsRoot.gameObject, UnityEngine.Rendering.ShadowCastingMode.Off, IsOwner ? 0 : 8);
+        SetWeaponVisibility(_currentWeapon.gameObject, IsOwner ? UnityEngine.Rendering.ShadowCastingMode.ShadowsOnly : UnityEngine.Rendering.ShadowCastingMode.On, 0);
         _weaponID.Value = _currentWeapon.weaponData.ID;
         GameEvent.onPlayerWeaponChangedLocalEvent.Invoke(this, true, _currentWeapon);
         
@@ -86,8 +87,8 @@ public class WeaponManager : NetworkBehaviour
         UnEquipWeapon();
         _currentWeapon = Instantiate(SOWeapon.GetWeaponPrefab(weaponID), weaponHandler);
         _fakeWeapon = Instantiate(SOWeapon.GetWeaponPrefab(weaponID), fakeWeaponHandler);
-        SetLayerRecursively(_fakeWeapon.gameObject, IsOwner ? 0 : 8);
-        SetLayerRecursively(_currentWeapon.gameObject, IsOwner ? 8 : 0);
+        SetWeaponVisibility(ArmsRoot.gameObject, UnityEngine.Rendering.ShadowCastingMode.Off, IsOwner ? 0 : 8);
+        SetWeaponVisibility(_currentWeapon.gameObject, IsOwner ? UnityEngine.Rendering.ShadowCastingMode.ShadowsOnly : UnityEngine.Rendering.ShadowCastingMode.On, 0);
         GameEvent.onPlayerWeaponChangedServerEvent.Invoke(this, true, weaponID);
 
         Debug.Log("Equipping Weapon !");
@@ -105,13 +106,21 @@ public class WeaponManager : NetworkBehaviour
     }
 
     public Weapon GetCurrentWeapon() => _currentWeapon;
-    public Weapon GetFakeWeapon() => _fakeWeapon; 
+    public Weapon GetFakeWeapon() => _fakeWeapon;
 
-    public static void SetLayerRecursively(GameObject go, int layerNumber)
+    public static void SetWeaponVisibility(GameObject go, UnityEngine.Rendering.ShadowCastingMode shadowMode, int layer)
     {
-        foreach (Transform trans in go.GetComponentsInChildren<Transform>(true))
+        foreach (Transform transform in go.GetComponentsInChildren<Transform>(true))
         {
-            trans.gameObject.layer = layerNumber;
+            transform.gameObject.layer = layer;
+        }
+        foreach (MeshRenderer meshRenderer in go.GetComponentsInChildren<MeshRenderer>(true))
+        {
+            meshRenderer.shadowCastingMode = shadowMode; 
+        }
+        foreach (SkinnedMeshRenderer meshRenderer in go.GetComponentsInChildren<SkinnedMeshRenderer>(true))
+        {
+            meshRenderer.shadowCastingMode = shadowMode; 
         }
     }
     #endregion
@@ -152,55 +161,56 @@ public class WeaponManagerEditor : Editor
 
 
 
-public static class AddressHelper
-{
-    private static object mutualObject;
-    private static ObjectReinterpreter reinterpreter;
-
-    static AddressHelper()
+    public static class AddressHelper
     {
-        AddressHelper.mutualObject = new object();
-        AddressHelper.reinterpreter = new ObjectReinterpreter();
-        AddressHelper.reinterpreter.AsObject = new ObjectWrapper();
-    }
+        private static object mutualObject;
+        private static ObjectReinterpreter reinterpreter;
 
-    public static IntPtr GetAddress(object obj)
-    {
-        lock (AddressHelper.mutualObject)
+        static AddressHelper()
         {
-            AddressHelper.reinterpreter.AsObject.Object = obj;
-            IntPtr address = AddressHelper.reinterpreter.AsIntPtr.Value;
-            AddressHelper.reinterpreter.AsObject.Object = null;
-            return address;
+            AddressHelper.mutualObject = new object();
+            AddressHelper.reinterpreter = new ObjectReinterpreter();
+            AddressHelper.reinterpreter.AsObject = new ObjectWrapper();
         }
-    }
 
-    public static T GetInstance<T>(IntPtr address)
-    {
-        lock (AddressHelper.mutualObject)
+        public static IntPtr GetAddress(object obj)
         {
-            AddressHelper.reinterpreter.AsIntPtr.Value = address;
-            T obj = (T)AddressHelper.reinterpreter.AsObject.Object;
-            AddressHelper.reinterpreter.AsObject.Object = null;
-            return obj;
+            lock (AddressHelper.mutualObject)
+            {
+                AddressHelper.reinterpreter.AsObject.Object = obj;
+                IntPtr address = AddressHelper.reinterpreter.AsIntPtr.Value;
+                AddressHelper.reinterpreter.AsObject.Object = null;
+                return address;
+            }
         }
-    }
 
-    // I bet you thought C# was type-safe.
-    [StructLayout(LayoutKind.Explicit)]
-    private struct ObjectReinterpreter
-    {
-        [FieldOffset(0)] public ObjectWrapper AsObject;
-        [FieldOffset(0)] public IntPtrWrapper AsIntPtr;
-    }
+        public static T GetInstance<T>(IntPtr address)
+        {
+            lock (AddressHelper.mutualObject)
+            {
+                AddressHelper.reinterpreter.AsIntPtr.Value = address;
+                T obj = (T)AddressHelper.reinterpreter.AsObject.Object;
+                AddressHelper.reinterpreter.AsObject.Object = null;
+                return obj;
+            }
+        }
 
-    private class ObjectWrapper
-    {
-        public object Object;
-    }
+        // I bet you thought C# was type-safe.
+        [StructLayout(LayoutKind.Explicit)]
+        private struct ObjectReinterpreter
+        {
+            [FieldOffset(0)] public ObjectWrapper AsObject;
+            [FieldOffset(0)] public IntPtrWrapper AsIntPtr;
+        }
 
-    private class IntPtrWrapper
-    {
-        public IntPtr Value;
-    }
+        private class ObjectWrapper
+        {
+            public object Object;
+        }
+
+        private class IntPtrWrapper
+        {
+            public IntPtr Value;
+        }
+    
 }

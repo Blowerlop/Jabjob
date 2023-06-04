@@ -7,7 +7,7 @@ namespace Project
     public class ResolutionContainer : MonoBehaviour
     {
         #if UNITY_EDITOR
-        [SerializeField] private string _resolutionString;
+        [SerializeField] [ReadOnlyField] private string _resolutionString;
         private Resolution _resolution;
         
         public Resolution resolution

@@ -53,13 +53,14 @@ namespace Project
                 Player player = players[i];
                 SinglePlayerEndStatsUI singlePlayer = Instantiate(playerSingleTemplate, this.transform).GetComponent<SinglePlayerEndStatsUI>();
                 singlePlayer.transform.localEulerAngles = Vector3.zero;
-                int finalPlace = GetCelebrationNumber(i, players);
+                int celebrationNumber = GetCelebrationNumber(i, players);
+                int finalPlace = i > 0 && players[i].score == players[i - 1].score ? playerList[i - 1].endingPlace : i + 1; 
                 singlePlayer.SetPlayerSingleUI(player.playerName, player.playerColor, finalPlace, colorDictionnary[finalPlace], player.kills, player.deaths, player.assists, player.score);
                 singlePlayer.ConfigureCamera(Vector3.zero + i * new Vector3(0, CAMERA_DISPLACE,0), cameraTextureList[i]);
                 singlePlayer.gameObject.SetActive(true);
                 singlePlayer.GetComponent<RectTransform>().localPosition = new Vector3(0, 0, 0);
                 playerList.Add(singlePlayer);
-                SetPlayerVisualandAnim(player, finalPlace , i);
+                SetPlayerVisualandAnim(player, celebrationNumber , i);
             }
         }
 

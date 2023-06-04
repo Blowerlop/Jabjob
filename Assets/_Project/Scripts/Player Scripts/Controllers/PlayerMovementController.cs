@@ -6,6 +6,7 @@ using Unity.Netcode;
 using UnityEngine;
 using _Project.Scripts.Managers;
 using Timer = Project.Utilities.Timer;
+using UnityEngine.VFX;
 
 public class PlayerMovementController : NetworkBehaviour
 {
@@ -55,8 +56,12 @@ public class PlayerMovementController : NetworkBehaviour
     public SoundList[] soundList;
     private Dictionary<string, AudioClip> _soundListDico = new Dictionary<string, AudioClip>();
 
-
-    [SerializeField] private Animator _animator; 
+    [Header("Visuals")]
+    [SerializeField] private Animator _animatorMain;
+    [SerializeField] private Animator _fakeWeaponAnim;
+    [SerializeField] private Transform _DashVFX;
+    [SerializeField] private ParticleSystem _dashParticles; 
+    private Player _player ;
     #endregion
 
 
@@ -64,8 +69,9 @@ public class PlayerMovementController : NetworkBehaviour
     private void Awake()
     {
         _characterController = GetComponent<CharacterController>();
+        _player = GetComponent<Player>(); 
         for (int i = 0; i < soundList.Length; i++)
-        {
+        { 
             if (soundList[i].name != null && soundList[i].sound != null) _soundListDico.Add(soundList[i].name, soundList[i].sound);
         }
     }
@@ -73,7 +79,10 @@ public class PlayerMovementController : NetworkBehaviour
     private void Start()
     {
         if (_isMultiplayer == false) return;
-        if (IsOwner == false) enabled = false;
+        UpdateDashColor(_player.playerColor);
+        if (IsOwner == false) { enabled = false; return; }
+        InitializeDashVFX();
+
     }
 
     private void FixedUpdate()
@@ -92,7 +101,7 @@ public class PlayerMovementController : NetworkBehaviour
         Vector3 position = transform.position;
         Vector3 spherePosition = new Vector3(position.x, position.y - _groundedOffset, position.z);
         _isGrounded = Physics.CheckSphere(spherePosition, _groundedRadius, _groundLayerMask, QueryTriggerInteraction.Ignore);
-        _animator.SetBool("isGrounded", _isGrounded);
+        _animatorMain.SetBool("isGrounded", _isGrounded);
         _isSoonGrounded = Physics.CheckSphere(spherePosition, _soonGroundedRadius, _groundLayerMask, QueryTriggerInteraction.Ignore);
     }
 
@@ -109,13 +118,13 @@ public class PlayerMovementController : NetworkBehaviour
             if (_jumpCount != 0)
             {
                 ResetJump();
-                _animator.SetBool("JumpingDown", false);
+                _animatorMain.SetBool("JumpingDown", false);
                 PlaySound("StepLanding");
             }
         }
         else
         {
-            if (_isSoonGrounded && _verticalVelocity < 0f) _animator.SetBool("JumpingDown", true);
+            if (_isSoonGrounded && _verticalVelocity < 0f) _animatorMain.SetBool("JumpingDown", true);
             if (_verticalVelocity > _maximumVerticalVelocity)
             {
                 _verticalVelocity += _gravityForce * Time.fixedDeltaTime;
@@ -179,15 +188,17 @@ public class PlayerMovementController : NetworkBehaviour
 
         if (_isGrounded)
         {
-            NoRunningAnimBool();
-            if (moveHorizontalVelocity.y > 0 && moveHorizontalVelocity.x > 0) _animator.SetBool("isRunningFRight", true);
-            else if (moveHorizontalVelocity.y > 0 && moveHorizontalVelocity.x < 0) _animator.SetBool("isRunningFLeft", true);
-            else if (moveHorizontalVelocity.y > 0 && moveHorizontalVelocity.x == 0) _animator.SetBool("isRunningF", true);
-            else if (moveHorizontalVelocity.y < 0 && moveHorizontalVelocity.x < 0) _animator.SetBool("isRunningBLeft", true);
-            else if (moveHorizontalVelocity.y < 0 && moveHorizontalVelocity.x > 0) _animator.SetBool("isRunningBright", true);
-            else if (moveHorizontalVelocity.y < 0 && moveHorizontalVelocity.x == 0) _animator.SetBool("isRunningB", true);
-            else if (moveHorizontalVelocity.y == 0 && moveHorizontalVelocity.x < 0) _animator.SetBool("isRunningLeft", true);
-            else if (moveHorizontalVelocity.y == 0 && moveHorizontalVelocity.x > 0) _animator.SetBool("isRunningRight", true);
+            NoMainRunningAnimBool();
+            if (moveHorizontalVelocity.y > 0 && moveHorizontalVelocity.x > 0) _animatorMain.SetBool("isRunningFRight", true);
+            else if (moveHorizontalVelocity.y > 0 && moveHorizontalVelocity.x < 0) _animatorMain.SetBool("isRunningFLeft", true);
+            else if (moveHorizontalVelocity.y > 0 && moveHorizontalVelocity.x == 0) _animatorMain.SetBool("isRunningF", true);
+            else if (moveHorizontalVelocity.y < 0 && moveHorizontalVelocity.x < 0) _animatorMain.SetBool("isRunningBLeft", true);
+            else if (moveHorizontalVelocity.y < 0 && moveHorizontalVelocity.x > 0) _animatorMain.SetBool("isRunningBright", true);
+            else if (moveHorizontalVelocity.y < 0 && moveHorizontalVelocity.x == 0) _animatorMain.SetBool("isRunningB", true);
+            else if (moveHorizontalVelocity.y == 0 && moveHorizontalVelocity.x < 0) _animatorMain.SetBool("isRunningLeft", true);
+            else if (moveHorizontalVelocity.y == 0 && moveHorizontalVelocity.x > 0) _animatorMain.SetBool("isRunningRight", true);
+
+            _fakeWeaponAnim.SetBool("isRunning", moveHorizontalVelocity.y != 0 || moveHorizontalVelocity.x != 0);
         }
 
         /*
@@ -260,7 +271,7 @@ public class PlayerMovementController : NetworkBehaviour
         {
             _verticalVelocity = Mathf.Sqrt(-2.0f * _gravityForce * _jumpHeight);
             PlaySound("Jump");
-            _animator.SetTrigger("Jumped");
+            _animatorMain.SetTrigger("Jumped");
             _jumpCount++;
         }
 
@@ -274,20 +285,17 @@ public class PlayerMovementController : NetworkBehaviour
         _canJump = true;
     }
 
-    public void NoRunningAnimBool()
+    public void NoMainRunningAnimBool()
     {
-        foreach (AnimatorControllerParameter parameter in _animator.parameters)
+        foreach (AnimatorControllerParameter parameter in _animatorMain.parameters)
         {
             if (parameter.type == AnimatorControllerParameterType.Bool && (parameter.name.Length > 9 && parameter.name.Remove(9) == "isRunning"))
-                _animator.SetBool(parameter.name, false);
+                _animatorMain.SetBool(parameter.name, false);
         }
     }
 
-    public void PlaySound(string name)
-    {
-        if (!_soundListDico.ContainsKey(name)) Debug.LogError("Mauvais string pour le son : " + name);
-        else bodySourceSound.PlayOneShot(_soundListDico[name]);
-    }
+
+
     private void OnDrawGizmos()
     {
         if (Application.isPlaying == false) return;
@@ -306,6 +314,45 @@ public class PlayerMovementController : NetworkBehaviour
     private void ReloadDash()
     {
         currentDashNumber += 1;
+    }
+    #endregion
+
+    #region Visuals and Sound
+    public void PlaySound(string name)
+    {
+        if (!_soundListDico.ContainsKey(name)) Debug.LogError("Mauvais string pour le son : " + name);
+        else bodySourceSound.PlayOneShot(_soundListDico[name]);
+    }
+
+    private void InitializeDashVFX()
+    {
+        _DashVFX.SetParent(Camera.main.transform);
+        _DashVFX.localPosition = new Vector3(0, 0, 2.5f);
+        _DashVFX.localRotation = Quaternion.identity;
+        VisualEffect dashEffect = _DashVFX.GetComponent<VisualEffect>();
+        //Gradient GradientColor = ColorHelpersUtilities.GetGradient(_player.playerColor);    //Je trouve qu'en blanc c'est mieux pour tout le monde
+        //dashEffect.SetGradient("ColorGradient", GradientColor);
+
+    }
+    public void UpdateDashColor(Color color)
+    {
+        Gradient GradientColor = ColorHelpersUtilities.GetGradient(color);
+        ParticleSystem.ColorOverLifetimeModule col = _dashParticles.colorOverLifetime;
+        col.color = GradientColor;
+    }
+    public void DashEffectStart()
+    {
+        PlaySound("Dash");
+        if(IsOwner) _DashVFX.gameObject.SetActive(true); 
+        _dashParticles.Play();
+    }
+    public void EndOfDashTrail()
+    {
+        _dashParticles.Stop();
+    }
+    public void EndOfDashVFX()
+    {
+        if (IsOwner) _DashVFX.gameObject.SetActive(false);
     }
     #endregion
 }

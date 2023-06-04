@@ -63,12 +63,12 @@ public class LobbyManager : MonoBehaviour {
     private float refreshLobbyListTimer = 5f;
     private Lobby joinedLobby;
     private string playerName;
-    private string playerModel; 
-    private Color playerColor;
+    private string playerModel = "Hotdog"; 
+    private Color playerColor = Color.white; 
     #endregion
 
     private void Awake() {
-        Instance = this;
+        Instance = this; 
     }
 
     private void Start()
@@ -188,7 +188,7 @@ public class LobbyManager : MonoBehaviour {
         return new Player(AuthenticationService.Instance.PlayerId, null, new Dictionary<string, PlayerDataObject> {
             { KEY_PLAYER_NAME, new PlayerDataObject(PlayerDataObject.VisibilityOptions.Public, playerName) },
              { KEY_PLAYER_CHARACTER, new PlayerDataObject(PlayerDataObject.VisibilityOptions.Public, "Hotdog") },
-            { KEY_PLAYER_COLOR, new PlayerDataObject(PlayerDataObject.VisibilityOptions.Public, Color.blue.ToString()) },
+            { KEY_PLAYER_COLOR, new PlayerDataObject(PlayerDataObject.VisibilityOptions.Public, Color.white.ToString()) },
         });
     }
     
@@ -196,7 +196,7 @@ public class LobbyManager : MonoBehaviour {
         return new Player(playerId, null, new Dictionary<string, PlayerDataObject> {
             { KEY_PLAYER_NAME, new PlayerDataObject(PlayerDataObject.VisibilityOptions.Public, playerName) },
              { KEY_PLAYER_CHARACTER, new PlayerDataObject(PlayerDataObject.VisibilityOptions.Public, "Hotdog") },
-            { KEY_PLAYER_COLOR, new PlayerDataObject(PlayerDataObject.VisibilityOptions.Public, Color.blue.ToString()) },
+            { KEY_PLAYER_COLOR, new PlayerDataObject(PlayerDataObject.VisibilityOptions.Public, Color.white.ToString()) },
         });
     }
 

@@ -25,9 +25,6 @@ namespace Project
 
         private void Start()
         {
-            
-            
-            
             SetMasterVolumeSliderValue((AudioManager.instance.ConvertVolumeToValue01(AudioManager.instance.GetMasterVolume) * _masterVolumeSlider.maxValue).ToString(CultureInfo.InvariantCulture));
             SetMusicVolumeSliderValue((AudioManager.instance.ConvertVolumeToValue01(AudioManager.instance.GetMusicVolume) * _musicVolumeSlider.maxValue).ToString(CultureInfo.InvariantCulture));
             SetGameSoundsVolumeSliderValue((AudioManager.instance.ConvertVolumeToValue01(AudioManager.instance.GetGameSoundsVolume) * _gameSoundsVolumeSlider.maxValue).ToString(CultureInfo.InvariantCulture));
