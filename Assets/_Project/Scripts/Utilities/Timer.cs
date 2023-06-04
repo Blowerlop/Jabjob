@@ -77,20 +77,20 @@ namespace Project.Utilities
         public float GetTimeRemaining() => timer;
 
 
-        public static void StartTimerWithCallbackScaledTime(float timeInSeconds, Action callback)
+        public static Coroutine StartTimerWithCallbackScaledTime(float timeInSeconds, Action callback)
         {
             // int timeInMilliseconds = (int)(timeInSeconds * 1000);
             // await Task.Delay(timeInMilliseconds);
             // callback.Invoke();
-            UtilitiesClass.instance.StartCoroutine(TimerWithCallbackStaticScaledTime(timeInSeconds, callback));
+            return UtilitiesClass.instance.StartCoroutine(TimerWithCallbackStaticScaledTime(timeInSeconds, callback));
         }
         
-        public static void StartTimerWithCallbackRealTime(float timeInSeconds, Action callback)
+        public Coroutine StartTimerWithCallbackRealTime(float timeInSeconds, Action callback)
         {
             // int timeInMilliseconds = (int)(timeInSeconds * 1000);
             // await Task.Delay(timeInMilliseconds);
             // callback.Invoke();
-            UtilitiesClass.instance.StartCoroutine(TimerWithCallbackStaticRealTime(timeInSeconds, callback));
+            return UtilitiesClass.instance.StartCoroutine(TimerWithCallbackStaticRealTime(timeInSeconds, callback));
         }
 
         private static IEnumerator TimerWithCallbackStaticScaledTime(float timeInSeconds, Action callback)

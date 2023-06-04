@@ -11,6 +11,13 @@ using Object = UnityEngine.Object;
 
 namespace Project.Utilities
 {
+    public enum ETime
+    {
+        Milliseconds,
+        Seconds,
+        Minutes
+    }
+    
     public class UtilitiesClass : MonoBehaviour
     {
         public static UtilitiesClass instance;
@@ -19,6 +26,8 @@ namespace Project.Utilities
         private void Awake()
         {
             instance = this;
+            
+            Debug.Log("Convert : " + ConvertSecondsToMinutes(1));
         }
         
 
@@ -80,7 +89,50 @@ namespace Project.Utilities
                 children[i].gameObject.layer = LayerToInt(layerMask);
             }
         }
-        
+
+
+        public static float ConvertSecondsToMinutes(float timeInSeconds) => Mathf.FloorToInt(timeInSeconds * 0.0166f);
+        // public float ConvertTime(float time, ETime from, ETime to)
+        // {
+        //     if (from == to) return time;
+        //     
+        //     if (from == ETime.Milliseconds)
+        //     {
+        //         if (to == ETime.Seconds)
+        //         {
+        //             return time * 0.001f;
+        //         }
+        //         else if (to == ETime.Minutes)
+        //         {
+        //             return time * 0.000016f;
+        //         }
+        //     }
+        //
+        //     if (from == ETime.Seconds)
+        //     {
+        //         if (to == ETime.Milliseconds)
+        //         {
+        //         
+        //         }
+        //         else if (to == ETime.Minutes)
+        //         {
+        //         
+        //         }
+        //     }
+        //     
+        //     if (from == ETime.Minutes)
+        //     {
+        //         if (to == ETime.Milliseconds)
+        //         {
+        //         
+        //         }
+        //         else if (to == ETime.Seconds)
+        //         {
+        //         
+        //         }
+        //     }
+        // }
+
         #endregion
     }
 }
