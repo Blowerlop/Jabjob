@@ -18,7 +18,6 @@ namespace Project
         // Movement relative
         public static readonly Event<Vector3> onPlayerVelocityChangedEvent = new Event<Vector3>(nameof(onPlayerVelocityChangedEvent));
         public static readonly Event<float> onPlayerSpeedChangedEvent = new Event<float>(nameof(onPlayerSpeedChangedEvent));
-        public static readonly Event onPlayerDashEvent = new Event(nameof(onPlayerDashEvent));
 
 
         // Weapon relative
