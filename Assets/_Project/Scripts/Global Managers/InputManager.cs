@@ -38,11 +38,6 @@ public class InputManager : Singleton<InputManager>
     public bool TabPressed;
     public PlayerInput _playerInput;
     
-    #if UNITY_EDITOR
-    [Header("EDITOR ONLY")] [SerializeField]
-    private KeyCode keyToGoTheMenu = KeyCode.M; 
-    #endif
-
     #endregion
 
 
@@ -122,16 +117,4 @@ public class InputManager : Singleton<InputManager>
     
 
     #endregion
-    
-    
-    
-    #if UNITY_EDITOR
-    private void Update()
-    {
-        if (Input.GetKeyDown(keyToGoTheMenu))
-        {
-            SceneManager.LoadSceneAsyncLocal(SceneManager.EScene.MenuScene);
-        }
-    }
-#endif
 }

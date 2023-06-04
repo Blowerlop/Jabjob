@@ -39,29 +39,24 @@ namespace Project
         private Coroutine _crossFadeCoroutinePreviousPage = null;
 
 
-        private void Awake()
-        {
-            _rectTransform = GetComponent<RectTransform>();
-        }
-
         private void Start()
         {
-            RefreshPager();
+            GoToPage(_currentPageIndex, true);
         }
+
 
         public void NextPage()
         {
-            if (crossFadePages)
-            {
-                CancelCrossPages();
-            }
-
-            if (_currentPageIndex + 1 >= _pages.Count)
+            if (_currentPageIndex + 1 > _pages.Count - 1)
             {
                 if (pageLoop)
                 {
                     _previousPageIndex = _currentPageIndex;
                     _currentPageIndex = 0;
+                }
+                else
+                {
+                    return;
                 }
             }
             else
@@ -70,31 +65,40 @@ namespace Project
                 _currentPageIndex++;
             }
             
+            if (crossFadePages)
+            {
+                CancelCrossPages();
+            }
+            
             GetPage(_currentPageIndex).onPageSelectedEvent.Invoke();
             ChangePageVisualBehaviour();
         }
 
         public void PreviousPage()
         {
-            if (crossFadePages)
-            {
-                CancelCrossPages();
-            }
-            
             if (_currentPageIndex - 1 < 0)
-            {
-                _previousPageIndex = _currentPageIndex;
-                _currentPageIndex = _pages.Count - 1;
-            }
-            else
             {
                 if (pageLoop)
                 {
                     _previousPageIndex = _currentPageIndex;
-                    _currentPageIndex--;
+                    _currentPageIndex = _pages.Count - 1;
+                }
+                else
+                {
+                    return;
                 }
             }
+            else
+            {
+                _previousPageIndex = _currentPageIndex;
+                _currentPageIndex--;
+            }
 
+            
+            if (crossFadePages)
+            {
+                CancelCrossPages();
+            }
             
             GetPage(_currentPageIndex).onPageSelectedEvent.Invoke();
             ChangePageVisualBehaviour();
@@ -134,6 +138,24 @@ namespace Project
             for (int i = 0; i < _pages.Count; i++)
             {
                 if (GetPage(i).canvasGroup == canvasGroup)
+                {
+                    _previousPageIndex = _currentPageIndex;
+                    _currentPageIndex = i;
+                    
+                    GetPage(_currentPageIndex).onPageSelectedEvent.Invoke();
+                    ChangePageVisualBehaviour();
+                    break;
+                }
+            }
+        }
+        
+        private void GoToPage(int pageIndex, bool forceGoToPage)
+        {
+            if (GetPage(pageIndex).pageIndex == _currentPageIndex && forceGoToPage == false) return;
+            
+            for (int i = 0; i < _pages.Count; i++)
+            {
+                if (GetPage(i).pageIndex == pageIndex)
                 {
                     _previousPageIndex = _currentPageIndex;
                     _currentPageIndex = i;

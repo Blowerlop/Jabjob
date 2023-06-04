@@ -18,8 +18,7 @@ namespace Project
 
         //[Header("Game Settings")]
         // [SerializeField] private SOGameSettings _gameSettings --> Preview changement futur
-        [field: SerializeField] public float _respawnDuration { get; private set; } = 2.0f;
-        [field: SerializeField] public float _gameDuration { get; private set; }
+        [field: SerializeField] public GameMode gameMode { get; private set; }
         [field: SerializeField] public NetworkTimer _networkTimer { get; private set; }
             
         #endregion
@@ -30,6 +29,18 @@ namespace Project
         private void Awake()
         {
             instance = this;
+        }
+
+        private void Start()
+        {
+            gameMode.Start();
+        }
+
+        public override void OnDestroy()
+        {
+            base.OnDestroy();
+            
+            gameMode.OnDestroy();
         }
 
         public override void OnNetworkSpawn()
@@ -62,7 +73,7 @@ namespace Project
         public void AddPlayerLocal(ulong playerNetworkId, Player player) => _players.Add(playerNetworkId, player);
 
         public Player GetPlayer(ulong playerNetworkId) => _players[playerNetworkId];
-
+        
         public Player[] GetPlayers()
         {
             Player[] players = new Player[_players.Count];
@@ -76,6 +87,20 @@ namespace Project
             
             return players;
         }
+
+        public ulong GetPlayerId(string playerName)
+        {
+            foreach (var kvp in _players)
+            {
+                if (kvp.Value.playerName == playerName)
+                {
+                    return kvp.Key;
+                }
+            }
+
+            Debug.LogError($"No player with the name {playerName} has been found");
+            return ulong.MaxValue;
+        }
         
         #endregion
         
@@ -87,7 +112,13 @@ namespace Project
             _networkTimer = Instantiate(_networkTimer);
             _networkTimer.GetComponent<NetworkObject>().Spawn();
             
-            _networkTimer.StartTimerWithCallback(_gameDuration, () => GameEvent.onGameFinishedEvent.Invoke(this, true), true);
+            _networkTimer.StartTimerWithCallback(gameMode.gameDurationInSeconds, EndGameClientRpc);
+        }
+
+        [ClientRpc]
+        private void EndGameClientRpc()
+        {
+            GameEvent.onGameFinishedEvent.Invoke(this, true);
         }
         #endregion
     }

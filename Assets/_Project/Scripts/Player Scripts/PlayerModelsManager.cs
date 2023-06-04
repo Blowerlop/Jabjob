@@ -24,9 +24,25 @@ namespace Project
         }
         public void ChangeCharacterModelIg(SkinnedMeshRenderer playerMeshRenderer, string modelName)
         {
-            playerMeshRenderer.sharedMesh = meshDictionary[modelName];
-            playerMeshRenderer.GetComponent<MeshCollider>().sharedMesh = meshDictionary[modelName];
-            playerMeshRenderer.material = materialDictionary[modelName];
+            if (meshDictionary.TryGetValue(modelName, out Mesh mesh))
+            {
+                playerMeshRenderer.sharedMesh = mesh;
+                playerMeshRenderer.GetComponent<MeshCollider>().sharedMesh = mesh;
+            }
+            else
+            {
+                Debug.LogError($"There is no mesh attributed to the {modelName} model name");
+            }
+
+            if (materialDictionary.TryGetValue(modelName, out Material material))
+            {
+                playerMeshRenderer.material = material;
+            }
+            else
+            {
+                Debug.LogError($"There is no material attributed to the {modelName} model name");
+            }
+
             playerMeshRenderer.GetComponent<Paintable>().Initialize();  
         }
         public void ChangeCharacterModelMenu(SkinnedMeshRenderer playerMeshRenderer, TextMeshProUGUI modelNameTMPRO, bool isNext) 

@@ -7,8 +7,8 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Paintable_Magazine_PebbleDebble 1
-  m_Shader: {fileID: -6465566751694194690, guid: d720082e5b71004498653db605c207b2,
+  m_Name: Paintable_Character_Alchemyst
+  m_Shader: {fileID: -6465566751694194690, guid: 32b7fa48495e1974b9e02cf6b7841192,
     type: 3}
   m_ValidKeywords: []
   m_InvalidKeywords: []
@@ -22,7 +22,7 @@ Material:
     serializedVersion: 3
     m_TexEnvs:
     - Texture2D_01612b2f09a24a9c9879c83799445b96:
-        m_Texture: {fileID: 0}
+        m_Texture: {fileID: 2800000, guid: 90fa52e833fedfb4b8b3dbe10e96a30e, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - Texture2D_1e8bf045296a4f2fa636cd34c4384e49:
@@ -34,7 +34,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - Texture2D_41271c3c5f484ca2a435c65087a81705:
-        m_Texture: {fileID: 2800000, guid: a865c9a808f017943b052d5c7d9df9f8, type: 3}
+        m_Texture: {fileID: 2800000, guid: 15f2dd508fc148e4bb7e1b09e446a97a, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - Texture2D_9b6a369b9e8747268b99217d44bc2166:
@@ -63,14 +63,15 @@ Material:
     - Vector1_0de750b9c41b4a5daef844a1599f5ac7: 0
     - Vector1_2871f666316541908d110962eef07f02: 110
     - Vector1_2c6f3ce4bba145b09c0a22fced0d7f85: 0
-    - Vector1_7bf270fe91494824b4209d2dc1faae23: 1.8
+    - Vector1_7bf270fe91494824b4209d2dc1faae23: 0
     - Vector1_8e760635099b4147956bb9600d13cac2: 0
-    - Vector1_b160a6374fb04a77b114bb611b8c55e4: 1
+    - Vector1_b160a6374fb04a77b114bb611b8c55e4: 0
     - Vector1_b5cc7f6f25194a778cb438f45fbbce66: 5
     - Vector1_dcd729e4cd23406784678484c17def53: 1
     - Vector1_f6677799b193415b8be7686b658a6e85: 0
     - _QueueControl: 0
     - _QueueOffset: 0
+    - _alpha: 0.59
     m_Colors:
     - Color_1bf9c5e6f5c34360a490da1c94e6a7c1: {r: 0, g: 0, b: 0, a: 0}
     - Color_24a50704e3864d6797516f661edd7e3e: {r: 1, g: 0, b: 0, a: 0}

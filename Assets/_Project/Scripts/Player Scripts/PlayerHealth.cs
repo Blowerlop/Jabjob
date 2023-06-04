@@ -10,10 +10,12 @@ public class PlayerHealth : MonoBehaviour
 
     private void Update()
     {
+#if UNITY_EDITOR
         if (Input.GetKeyDown(KeyCode.E))
         {
             Damage(5);
         }
+#endif
     }
 
     public void Damage(float damage)

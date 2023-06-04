@@ -54,12 +54,19 @@ public class LobbyListUI : MonoBehaviour {
 
     private void UpdateLobbyList(List<Lobby> lobbyList) {
         foreach (Transform child in container) {
-            if (child == lobbySingleTemplate) continue;
+            if (child == lobbySingleTemplate || child == null) continue;
 
             Destroy(child.gameObject);
         }
 
-        emptyText.gameObject.SetActive(lobbyList.Count == 0);
+        if (emptyText != null)
+        {
+            emptyText.gameObject.SetActive(lobbyList.Count == 0);
+        }
+        else
+        {
+            Debug.LogError("EmptyText is null");
+        }
 
         foreach (Lobby lobby in lobbyList) {
             Transform lobbySingleTransform = Instantiate(lobbySingleTemplate, container);

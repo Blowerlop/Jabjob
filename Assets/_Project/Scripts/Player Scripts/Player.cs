@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using _Project.Scripts.Managers;
 using Project.Utilities;
 using Unity.Collections;
 using Unity.Netcode;
@@ -26,7 +27,7 @@ namespace Project
         [SerializeField] private NetworkVariable<int> _networkKills = new NetworkVariable<int>();
         [SerializeField] private NetworkVariable<int> _networkAssists = new NetworkVariable<int>();
         [SerializeField] private NetworkVariable<int> _networkDeaths = new NetworkVariable<int>();
-        [SerializeField] private NetworkVariable<ulong> _networkKillerId = new NetworkVariable<ulong>();
+        [SerializeField] private NetworkVariable<ulong> _networkKillerId = new NetworkVariable<ulong>(writePerm: NetworkVariableWritePermission.Owner); 
         [SerializeField] private NetworkVariable<int> _networkScore = new NetworkVariable<int>();
         [SerializeField] private NetworkVariable<bool> _networkIsHost = new NetworkVariable<bool>();
         [SerializeField] private Player _killer;
@@ -88,7 +89,7 @@ namespace Project
             UpdatePlayerCharacterServerRpc(LobbyManager.Instance.GetPlayerModel());
             UpdatePlayerColorServerRpc(LobbyManager.Instance.GetPlayerColor());
             UpdatePlayerNameServerRpc(LobbyManager.Instance.GetPlayerName());
-            PlayerModelsManager.instance.UpdateAllPlayers(); //Vraiment pas ouf ici, à déplacer lorsqu'on aura synchroniser le load des joueurs et appeler juste avant le StartGame
+            PlayerModelsManager.instance.UpdateAllPlayers(); //Vraiment pas ouf ici, Ã  dÃ©placer lorsqu'on aura synchroniser le load des joueurs et appeler juste avant le StartGame
 
 
 
@@ -263,7 +264,7 @@ namespace Project
                 assistPlayer.UpdateScore();
             }
             PlayerDeathBehaviourClientRpc();
-            Timer.StartTimerWithCallback(GameManager.instance._respawnDuration, (() => PlayerRespawnClientRpc(clientId)));
+            Timer.StartTimerWithCallbackRealTime(GameManager.instance.gameMode.respawnDurationInSeconds, (() => PlayerRespawnClientRpc(clientId)));
 
             ulong[] _damagersIdArray = new ulong[_damagersId.Count];
             _damagersId.CopyTo(_damagersIdArray);
@@ -311,11 +312,42 @@ namespace Project
         private void OnDeathValueChange(int previousValue, int nextValue) => GameEvent.onPlayerDiedEvent.Invoke(this, true, OwnerClientId, _killerId, nextValue);  
         private void OnScoreValueChange(int previousValue, int nextValue) => GameEvent.onPlayerScoreEvent.Invoke(this, true, OwnerClientId, nextValue);
         #endregion
-        public int UpdateScore() // scoring de base pourri, peut être à changer
+        public int UpdateScore() // scoring de base pourri, peut Ãªtre Ã  changer
         {
             score = 3 * kills - 1 * deaths + 1 * assists; 
             return score; 
         }
+
+        #region Admin
+
+        public void Kick()
+        {
+            KickServerRpc();
+        }
+        
+        [ServerRpc(RequireOwnership = false)]
+        public void KickServerRpc()
+        {
+            ulong ownerId = OwnerClientId;
+            KickClientRpc();
+        }
+        
+        [ClientRpc]
+        public void KickClientRpc()
+        {
+            KickLocalClient();
+        }
+        
+        public void KickLocalClient()
+        {
+            NetworkManager.Singleton.Shutdown();
+            SceneManager.LoadSceneAsyncLocal(SceneManager.EScene.MenuScene);
+        }
+
+        public void SetKills(int killNumber) => kills = killNumber;
+
+        #endregion
+
         #endregion
     }
 }
