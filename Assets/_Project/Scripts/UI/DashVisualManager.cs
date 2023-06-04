@@ -23,10 +23,17 @@ namespace Project
 
         private void Start()
         {
+            GameEvent.onPlayerDashEvent.Subscribe(RemoveOneDash, this);
+
             foreach (Slider g in transform.GetComponentsInChildren<Slider>())
             {
                 dashSlot.Add(g);
             }
+        }
+
+        private void OnDestroy()
+        {
+            GameEvent.onPlayerDashEvent.Unsubscribe(RemoveOneDash);
         }
 
         private void Update()
