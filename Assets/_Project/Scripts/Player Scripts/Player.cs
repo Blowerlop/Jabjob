@@ -268,7 +268,7 @@ namespace Project
                 assistPlayer.UpdateScore();
             }
             PlayerDeathBehaviourClientRpc();
-            Timer.StartTimerWithCallback(GameManager.instance._respawnDuration, (() => PlayerRespawnClientRpc(clientId)));
+            Timer.StartTimerWithCallbackRealTime(GameManager.instance.gameMode.respawnDurationInSeconds, (() => PlayerRespawnClientRpc(clientId)));
 
             ulong[] _damagersIdArray = new ulong[_damagersId.Count];
             _damagersId.CopyTo(_damagersIdArray);
@@ -348,8 +348,10 @@ namespace Project
             SceneManager.LoadSceneAsyncLocal(SceneManager.EScene.MenuScene);
         }
 
+        public void SetKills(int killNumber) => kills = killNumber;
+
         #endregion
-        
+
         #endregion
     }
 }

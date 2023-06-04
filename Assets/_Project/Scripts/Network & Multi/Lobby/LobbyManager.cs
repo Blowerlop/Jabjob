@@ -478,9 +478,14 @@ public class LobbyManager : MonoBehaviour {
                 });
                 joinedLobby = lobby;
                 OnStartGame?.Invoke(this, EventArgs.Empty);
+
+                
                 // SceneManager.LoadSceneAsyncNetworkServerRpc(SceneManager.EScene.Multi_Lobby); 
                 // SceneManager.LoadSceneNetwork(SceneManager.EScene.Multi_Lobby);ù
                 SceneManager.LoadSceneNetwork(joinedLobby.Data[KEY_GAMEMAP_NAME].Value);
+                
+                
+                Debug.Log("Instant log : " + Time.timeSinceLevelLoad);
             }
             catch (LobbyServiceException e)
             {

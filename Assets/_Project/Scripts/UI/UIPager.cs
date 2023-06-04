@@ -37,7 +37,13 @@ namespace Project
         [SerializeField] private float _crossFadeDuration = 0.25f;
         private Coroutine _crossFadeCoroutineCurrentPage = null;
         private Coroutine _crossFadeCoroutinePreviousPage = null;
-        
+
+
+        private void Start()
+        {
+            GoToPage(_currentPageIndex, true);
+        }
+
 
         public void NextPage()
         {
@@ -132,6 +138,24 @@ namespace Project
             for (int i = 0; i < _pages.Count; i++)
             {
                 if (GetPage(i).canvasGroup == canvasGroup)
+                {
+                    _previousPageIndex = _currentPageIndex;
+                    _currentPageIndex = i;
+                    
+                    GetPage(_currentPageIndex).onPageSelectedEvent.Invoke();
+                    ChangePageVisualBehaviour();
+                    break;
+                }
+            }
+        }
+        
+        private void GoToPage(int pageIndex, bool forceGoToPage)
+        {
+            if (GetPage(pageIndex).pageIndex == _currentPageIndex && forceGoToPage == false) return;
+            
+            for (int i = 0; i < _pages.Count; i++)
+            {
+                if (GetPage(i).pageIndex == pageIndex)
                 {
                     _previousPageIndex = _currentPageIndex;
                     _currentPageIndex = i;

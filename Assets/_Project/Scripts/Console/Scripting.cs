@@ -3,8 +3,11 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Project;
+using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.SceneManagement;
+using SceneManager = _Project.Scripts.Managers.SceneManager;
 
 namespace Utils
 {
@@ -41,6 +44,8 @@ namespace Utils
             RegisterCommand(KillPlayer, "kill_player");
             RegisterCommand(KickPlayer, "kick_player");
             RegisterCommand(ShowPlayer, "show_player");
+            RegisterCommand(SetKills, "set_kills");
+            RegisterCommand(ChangeLevel, "change_level");
         }
 
         void RegisterCommand(Action<string[]> newCommandAction, string commandName)
@@ -134,6 +139,46 @@ namespace Utils
             {
                 Player pla = GameManager.instance.GetPlayers().First(x => x.playerName == args[1]);
                 pla.gameObject.GetComponentInChildren<Paintable>().SetAlpha(alpha);
+            }
+            catch (Exception e)
+            {
+                Debug.LogError(e.Message);
+            }
+        };
+        
+        private static readonly Action<string[]> SetKills = (args) =>
+        {
+            try
+            {
+                Player pla = GameManager.instance.GetPlayers().First(x => x.playerName == args[1]);
+                if (int.TryParse(args[2], out int result))
+                {
+                    pla.SetKills(result);
+                }
+            }
+            catch (Exception e)
+            {
+                Debug.LogError(e.Message);
+            }
+        };
+
+        private static readonly Action<string[]> ChangeLevel = (args) =>
+        {
+            try
+            {
+                if (int.TryParse(args[1], out int result))
+                {
+                    // Local level change
+                    if (result == 0)
+                    {
+                        NetworkManager.Singleton.Shutdown(); 
+                        SceneManager.LoadSceneAsyncLocal(args[2]);
+                    }
+                    else if (result == 1)
+                    {
+                        NetworkManager.Singleton.SceneManager.LoadScene(args[2], LoadSceneMode.Single);
+                    }
+                }
             }
             catch (Exception e)
             {
