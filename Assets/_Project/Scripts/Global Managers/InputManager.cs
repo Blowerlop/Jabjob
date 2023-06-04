@@ -25,20 +25,7 @@ public class InputManager : Singleton<InputManager>
 
     #endregion
 
-
-    // private PlayerInput _playerInput;
-    // private PlayerInputAction _playerInputAction;
-    //
-    // private InputAction _move;
-    //
-    // private void OnEnable()
-    // {
-    //     _move = _playerInputAction.Player.Move;
-    //     _move.Enable();
-    //
-    // }
-
-        #region Variables
+    #region Variables
 
     public Vector2 move;
     public Vector2 look;
@@ -123,7 +110,7 @@ public class InputManager : Singleton<InputManager>
         isWeaponSelectionOpen = true;
     }
 
-    public void OnEscape(InputValue inputValue)
+    public void OnEscape()
     {
         onEscapePressed.Invoke(this, false);
     }

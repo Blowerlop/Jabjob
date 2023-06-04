@@ -43,7 +43,6 @@ namespace Project
 
         private HashSet<ulong> _damagersId = new HashSet<ulong>();
 
-        private PlayerMovementController _playerMovementController; 
         private PlayerShoot _playerShoot;
         [HideInInspector] public SkinnedMeshRenderer playerMesh; 
         private FeedbackManagerUI _feedbackManager; 
@@ -56,15 +55,12 @@ namespace Project
         {
             _networkObject = GetComponent<NetworkObject>();
             _playerShoot = GetComponent<PlayerShoot>();
-            _playerMovementController = GetComponent<PlayerMovementController>();
             playerMesh = GetComponent<WeaponManager>().humanMesh; 
             _feedbackManager = FindObjectOfType<FeedbackManagerUI>();
         }
 
         public override void OnNetworkSpawn()
         {
-            Cursor.lockState = CursorLockMode.Locked;
-            
             GameEvent.onPlayerJoinGameEvent.Invoke(this, true, OwnerClientId);
             GameManager.instance.AddPlayerLocal(OwnerClientId, this);
 
@@ -96,7 +92,7 @@ namespace Project
 
 
 
-            
+            Cursor.lockState = CursorLockMode.Locked;
         }
 
         private void Start()
@@ -191,7 +187,7 @@ namespace Project
 
 
         private void OnNameValueChange(StringNetwork previousValue, StringNetwork nextValue) => GameEvent.onPlayerUpdateNameEvent.Invoke(this, true, OwnerClientId, nextValue);
-        private void OnColorValueChange(Color previousValue, Color nextValue) { GameEvent.onPlayerUpdateColorEvent.Invoke(this, true, OwnerClientId, nextValue); _playerShoot.paintColor = nextValue; _playerMovementController.UpdateDashColor(nextValue); }
+        private void OnColorValueChange(Color previousValue, Color nextValue) { GameEvent.onPlayerUpdateColorEvent.Invoke(this, true, OwnerClientId, nextValue); _playerShoot.paintColor = nextValue; }
         private void OnModelValueChange(StringNetwork previousValue, StringNetwork nextValue) { GameEvent.onPlayerUpdateModelEvent.Invoke(this, true, OwnerClientId, nextValue); PlayerModelsManager.instance.ChangeCharacterModelIg(playerMesh, nextValue.value); }
         #endregion
 
