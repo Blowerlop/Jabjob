@@ -237,14 +237,14 @@ public class PlayerMovementController : NetworkBehaviour
                 PlaySound("Dash");
                 currentDashNumber -= 1;
                 GameEvent.onPlayerDashEvent.Invoke(this);
-                _timer.StartTimerWithCallback(_dashCooldown, ReloadDash);
+                _timer.StartTimerWithCallbackScaledTime(_dashCooldown, ReloadDash);
             }
             InputManager.instance.isDashing = false;
         }
 
         if (currentDashNumber < _dashNumber)
         {
-            _timer.StartTimerWithCallback(_dashCooldown, ReloadDash);
+            _timer.StartTimerWithCallbackScaledTime(_dashCooldown, ReloadDash);
         }
     }
 
