@@ -7,11 +7,11 @@ using UnityEngine;
 
 public class PlayerUI : MonoBehaviour
 {
-    // [SerializeField] GameObject scoreBoard;
-    // [SerializeField] GameObject playerStatsList;
-    // [SerializeField] GameObject playerStatsPrefab;
-    // [SerializeField] GameObject testCube;
-    // [SerializeField] int nbPlayer = 1;
+    [SerializeField] GameObject scoreBoard;
+    [SerializeField] GameObject playerStatsList;
+    [SerializeField] GameObject playerStatsPrefab;
+    [SerializeField] GameObject testCube;
+    [SerializeField] int nbPlayer = 1;
 
     // private void Awake()
     // {
