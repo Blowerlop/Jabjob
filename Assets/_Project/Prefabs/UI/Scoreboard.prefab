@@ -593,7 +593,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5593103300309145829}
-  - component: {fileID: 888531762867130840}
   - component: {fileID: 7317458149849868133}
   m_Layer: 3
   m_Name: PlayerUI_Template
@@ -629,31 +628,6 @@ RectTransform:
   m_AnchoredPosition: {x: 480, y: 0}
   m_SizeDelta: {x: 960, y: 48.36}
   m_Pivot: {x: 0.5, y: 1}
---- !u!114 &888531762867130840
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1233654885913329720}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0f09a17d476d5124f91f80583b38a176, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Padding:
-    m_Left: 0
-    m_Right: 0
-    m_Top: 0
-    m_Bottom: 0
-  m_ChildAlignment: 0
-  fitType: 3
-  rows: 1
-  columns: 7
-  cellSize: {x: 137.14285, y: 48.36}
-  spacing: {x: 0, y: 0}
-  fitX: 1
-  fitY: 1
 --- !u!114 &7317458149849868133
 MonoBehaviour:
   m_ObjectHideFlags: 0
