@@ -5,6 +5,8 @@ using Unity.Netcode;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using SceneManager = _Project.Scripts.Managers.SceneManager;
+using Timer = Project.Utilities.Timer;
 
 namespace Project
 {
@@ -40,9 +42,26 @@ namespace Project
         {
             base.OnDestroy();
             
+            if (IsServer)
+            {
+                NetworkManager.Singleton.SceneManager.OnLoadComplete -= SpawnClientServerRpc;
+                
+                NetworkManager.Singleton.OnClientDisconnectCallback -= OnClientDisconnect;
+            }
+            
             gameMode.OnDestroy();
         }
 
+        private void OnEnable()
+        {
+            GameEvent.onGameFinishedEvent.Subscribe(EndGameBehaviour, this);
+        }
+        
+        private void OnDisable()
+        {
+            GameEvent.onGameFinishedEvent.Unsubscribe(EndGameBehaviour);
+        }
+        
         public override void OnNetworkSpawn()
         {
             if (IsServer)
@@ -53,7 +72,17 @@ namespace Project
                 NetworkManager.Singleton.OnClientDisconnectCallback += OnClientDisconnect;
             }
         }
-        
+
+        public override void OnNetworkDespawn()
+        {
+            if (IsServer)
+            {
+                NetworkManager.Singleton.SceneManager.OnLoadComplete -= SpawnClientServerRpc;
+                
+                NetworkManager.Singleton.OnClientDisconnectCallback -= OnClientDisconnect;
+            }
+        }
+
         #endregion 
 
 
@@ -120,6 +149,21 @@ namespace Project
         {
             GameEvent.onGameFinishedEvent.Invoke(this, true);
         }
+
+        
+        private void EndGameBehaviour()
+        {
+            if (IsServer)
+            {
+                Timer.StartTimerWithCallbackRealTime(10.0f, () =>
+                {
+                    NetworkManager.Singleton.SceneManager.OnLoadEventCompleted += (sceneName, mode, completed, @out) =>
+                        NetworkManager.Singleton.Shutdown();
+                    SceneManager.LoadSceneNetwork("MenuScene");
+                });
+            }
+        }
+
         #endregion
     }
 }

@@ -37,6 +37,16 @@ namespace Project
         }
 
 
+        private void OnEnable()
+        {
+            GameEvent.onGameFinishedEvent.Subscribe(Initialize, this);
+        }
+
+        private void OnDisable()
+        {
+            GameEvent.onGameFinishedEvent.Unsubscribe(Initialize);
+        }
+
         private void Update()
         {
             if(Input.GetKeyDown(KeyCode.F10)) { Initialize(); }
