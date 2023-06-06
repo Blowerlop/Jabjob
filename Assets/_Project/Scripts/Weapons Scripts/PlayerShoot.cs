@@ -21,7 +21,7 @@ namespace Project
         //private Vector3 _hitPointClient = Vector3.zero;
         private bool _canShoot = true;
         //[SerializeField] private LayerMask _layerToAim;
-
+        bool hasGunEquipped = true; 
         [Header("Other References")]
         private Player _player;
         private Weapon _weapon;
@@ -136,6 +136,18 @@ namespace Project
                 _canShoot = true;
             }    
             
+            if(Input.GetKeyDown(KeyCode.T))
+            {
+                if(hasGunEquipped)
+                {
+                    _fakeWeaponAnim.SetTrigger("EquipKnife");
+                }
+                else
+                {
+                    _fakeWeaponAnim.SetTrigger("EquipGun");
+                }
+                hasGunEquipped = !hasGunEquipped; 
+            }
         }
 
         #endregion

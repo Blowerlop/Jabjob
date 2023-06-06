@@ -49,14 +49,14 @@ public class LobbyUI : MonoBehaviour {
         //LobbyManager.Instance.OnLobbyGameModeChanged += UpdateLobby_Event;
         LobbyManager.Instance.OnLeftLobby += LobbyManager_OnLeftLobby;
         LobbyManager.Instance.OnKickedFromLobby += LobbyManager_OnLeftLobby;
-        LobbyManager.Instance.OnStartGame += LobbyManager_OnStartGame;
+        LobbyManager.Instance.OnStartGame += LobbyManager_OnStartGame; 
         Hide();
     }
 
     private void LobbyManager_OnStartGame(object sender, System.EventArgs e)
     {
         ClearLobby();
-        SoundManager2D.instance.PlayBackgroundMusic("Heads Will Roll");
+        //SoundManager2D.instance.PlayBackgroundMusic("Heads Will Roll");
         transform.root.gameObject.SetActive(false);
     }
     private void LobbyManager_OnLeftLobby(object sender, System.EventArgs e) {
