@@ -17,14 +17,16 @@ namespace Project
         [Header("Shoot state")] 
         public Color paintColor;
         private float _nextShoot;
+        private float _nextKnife; 
         private float _shootRate;
+        [SerializeField] private float _knifeRate; 
         //private Vector3 _hitPointClient = Vector3.zero;
         private bool _canShoot = true;
         //[SerializeField] private LayerMask _layerToAim;
-        bool hasGunEquipped = true; 
+        bool hasKnifeEquipped = false; 
         [Header("Other References")]
         private Player _player;
-        private Weapon _weapon;
+        private Weapon _weapon, _fakeWeapon;
         private SOWeapon _weaponData;
         private WeaponManager _weaponManager;
         private Transform _weaponHolder;
@@ -38,9 +40,10 @@ namespace Project
         [SerializeField] private AudioSource _audioSource;
 
         [Header("Animation")]
+        [SerializeField] EventAnimHelpers bodyAnimHelpers; 
         [SerializeField] private Animator _fakeWeaponAnim;
         [SerializeField] private Animator _weaponAnim;
-        [SerializeField] private Rig _rig; 
+        [SerializeField] GameObject _fakeKnife, _knife; 
         public GameObject projectile;
         #endregion
 
@@ -80,57 +83,65 @@ namespace Project
 
         private void Update()
         {
-            if (InputManager.instance.isShooting && (_weaponData.automatic || _canShoot))
+            if (!hasKnifeEquipped)
             {
-                if(Time.time >= _nextShoot && _weapon.ammo >0)
+                if (InputManager.instance.isShooting && (_weaponData.automatic || _canShoot))
                 {
-                    if (!_weaponData.automatic)
+                    if (Time.time >= _nextShoot && _weapon.ammo > 0)
                     {
-                        _canShoot = false;
-                    }
-                    _nextShoot = Time.time + _weaponData.shootRate;
-                    _weapon.ammo--;
-                    GameEvent.onPlayerWeaponAmmoChangedEvent.Invoke(this, false, _weapon.ammo);
-                    
-                    Vector3 weaponHolderPosition = _weaponHolder.position;
-                    Vector3 rootCameraPosition = _rootCamera.position;
-                    
-                    if (_weaponData.raycast)
-                    {
-                        if (Physics.Raycast(_rootCamera.position, _rootCamera.forward, out RaycastHit hit,
-                                Mathf.Infinity, _shootLayerMaskNoPhysics))
+                        if (!_weaponData.automatic)
                         {
+                            _canShoot = false;
+                        }
+                        _nextShoot = Time.time + _weaponData.shootRate;
+                        _weapon.ammo--;
+                        GameEvent.onPlayerWeaponAmmoChangedEvent.Invoke(this, false, _weapon.ammo);
+
+                        Vector3 weaponHolderPosition = _weaponHolder.position;
+                        Vector3 rootCameraPosition = _rootCamera.position;
+                        if (_weaponData.raycast)
+                        {
+                            if (Physics.Raycast(_rootCamera.position, _rootCamera.forward, out RaycastHit hit,
+                                    Mathf.Infinity, _shootLayerMaskNoPhysics))
+                            {
                                 var id = hit.colliderInstanceID;
                                 LocalShoot(true, weaponHolderPosition, rootCameraPosition, hit.point, true);
                                 ShootServerRpc(weaponHolderPosition, rootCameraPosition, hit.point, true);
-                            if (hit.transform.TryGetComponent(out IHealthManagement healthManagement))
-                            {
-                                Debug.Log("Hit");
-                                healthManagement.Damage(_weaponData.damage, OwnerClientId);
+                                if (hit.transform.TryGetComponent(out IHealthManagement healthManagement))
+                                {
+                                    Debug.Log("Hit");
+                                    healthManagement.Damage(_weaponData.damage, OwnerClientId);
+                                }
                             }
-                            
-                            
-                            
                         }
-                    }
-                    else
-                    {
-                        Vector3 direction = Vector3.zero;
-                        if (Physics.Raycast(_rootCamera.position, _rootCamera.forward, out RaycastHit hit,
-                                Mathf.Infinity, _shootLayerMaskPhysics))
+                        else
                         {
-                            direction = hit.point;
-                        }
-                        
-                        LocalShoot(true, weaponHolderPosition, rootCameraPosition, direction, false);
-                        ShootServerRpc(weaponHolderPosition, rootCameraPosition, direction, false);
-                    }
+                            Vector3 direction = Vector3.zero;
+                            if (Physics.Raycast(_rootCamera.position, _rootCamera.forward, out RaycastHit hit,
+                                    Mathf.Infinity, _shootLayerMaskPhysics))
+                            {
+                                direction = hit.point;
+                            }
 
-                    _fakeWeaponAnim.SetTrigger("Fire");
-                    _rig.weight = 1;
-                    _weaponAnim.SetTrigger("Fire");
+                            LocalShoot(true, weaponHolderPosition, rootCameraPosition, direction, false);
+                            ShootServerRpc(weaponHolderPosition, rootCameraPosition, direction, false);
+                        }
+                    }
                 }
             }
+            else
+            {
+                if (InputManager.instance.isShooting)
+                {
+                    if (Time.time >= _nextKnife)
+                    {
+                        _nextKnife = Time.time + _knifeRate;
+                        _fakeWeaponAnim.SetTrigger("Fire");
+                        _weaponAnim.SetTrigger("Fire");
+                    }
+                }
+            }
+                
             if (!InputManager.instance.isShooting)
             {
                 _canShoot = true;
@@ -138,16 +149,9 @@ namespace Project
             
             if(Input.GetKeyDown(KeyCode.T))
             {
-                if(hasGunEquipped)
-                {
-                    _fakeWeaponAnim.SetTrigger("EquipKnife");
-                }
-                else
-                {
-                    _fakeWeaponAnim.SetTrigger("EquipGun");
-                }
-                hasGunEquipped = !hasGunEquipped; 
+                EquipKnife(hasKnifeEquipped);
             }
+            
         }
 
         #endregion
@@ -171,7 +175,7 @@ namespace Project
         private void LocalShoot(bool isTheShooter, Vector3 weaponHolderPosition, Vector3 rootCameraPosition, Vector3 hitPoint, bool isRaycast)
         {
             Weapon currentWeapon = _weaponManager.GetFakeWeapon();
-            Weapon fakeWeapon = _weaponManager.GetFakeWeapon(); 
+            _fakeWeapon = _weaponManager.GetFakeWeapon(); 
 
             if (isRaycast)
             {
@@ -184,7 +188,7 @@ namespace Project
                         break;
                     }
                 }
-                CreateBulletTrail(currentWeapon.bulletStartPoint, fakeWeapon.bulletStartPoint, hitPoint);
+                CreateBulletTrail(currentWeapon.bulletStartPoint, _fakeWeapon.bulletStartPoint, hitPoint);
                 if (paintable == null) return;
                 
                 if (_weaponData.spray)
@@ -220,16 +224,42 @@ namespace Project
                 }
             }
 
+            bodyAnimHelpers.SetRigWeight(1f);
+            _fakeWeaponAnim.SetTrigger("Fire");
+            _weaponAnim.SetTrigger("Fire");
 
-            if (isTheShooter) { fakeWeapon.SetFiringColorPart(paintColor); fakeWeapon.PlayFiringPart(); }
+            if (isTheShooter) { _fakeWeapon.SetFiringColorPart(paintColor); _fakeWeapon.PlayFiringPart(); }
             else { currentWeapon.SetFiringColorPart(paintColor);  currentWeapon.PlayFiringPart();  }
             _audioSource.PlayOneShot(_weaponData.FiringSound); 
         }
         
+        private void EquipKnife(bool hasKnife)
+        {
+            if (!hasKnife) //Si on a pas le couteaux on l'équipe
+            {
+                _weaponAnim.ResetTrigger("Fire");
+                _weaponAnim.SetBool("isGunEquipped", false);
+                _weaponAnim.SetTrigger("EquipKnife");
+                _fakeWeaponAnim.SetTrigger("EquipKnife");
+                _fakeWeapon.gameObject.SetActive(false);
+                _fakeKnife.SetActive(true);
+            }
+            else
+            {
+                _weaponAnim.ResetTrigger("Fire");
+                bodyAnimHelpers.SetRigWeight(1f);
+                _fakeWeaponAnim.SetTrigger("EquipGun");
+                _weaponAnim.SetTrigger("EquipGun");
+                _weaponAnim.SetBool("isGunEquipped", true);
+                _fakeKnife.SetActive(false);
+                _fakeWeapon.gameObject.SetActive(true);
+            }
+            hasKnifeEquipped = !hasKnife;
+        }
         public void StartReload()
         {
-            if (_weapon.ammo == _weaponData.maxAmmo || _fakeWeaponAnim.GetCurrentAnimatorStateInfo(0).IsName("Reload")) return;
-            _rig.weight = 0; 
+            if (hasKnifeEquipped || _weapon.ammo == _weaponData.maxAmmo || _fakeWeaponAnim.GetCurrentAnimatorStateInfo(0).IsName("Reload")) return;
+            _weaponAnim.ResetTrigger("Fire");
             _weaponAnim.SetTrigger("Reload");
             _fakeWeaponAnim.SetTrigger("Reload");
             //_canShoot = false;
@@ -237,12 +267,11 @@ namespace Project
         }
         public void AutoReload() //Use by Animation, end of fire POV
         {
-            if (_weapon.ammo <= 0) StartReload();
+            if (_weapon != null && _weapon.ammo <= 0) StartReload();
         }
         public void EndOfReload() //Use by Animation
         {
             _weapon.ammo = _weaponData.maxAmmo;
-            _rig.weight = 1; 
             GameEvent.onPlayerWeaponAmmoChangedEvent.Invoke(this, true, _weapon.ammo);
         }
         public IEnumerator ReloadCoroutine()
@@ -260,6 +289,7 @@ namespace Project
             _weaponData = weapon.weaponData;
 
             GameEvent.onPlayerWeaponAmmoChangedEvent.Invoke(this, true, _weapon.ammo);
+            _fakeWeapon = _weaponManager.GetFakeWeapon();
         }
         
         private void UpdateCurrentWeapon(byte weaponID)

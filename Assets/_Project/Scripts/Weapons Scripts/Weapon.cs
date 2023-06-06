@@ -34,7 +34,6 @@ namespace Project
         {
             firingParticle.Play();
         }
-
         public void SetFiringColorPart(Color color)
         {
             var firingPart = firingParticle.main; 

@@ -1,19 +1,19 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Animations.Rigging;
 
 namespace Project
 {
     public class EventAnimHelpers : MonoBehaviour
     {
-
-        
         public AudioSource bodySourceSound;
         public SoundList[] soundList;
+        public float fuckingRigWeight = 1f; 
         private Dictionary<string, AudioClip> _soundListDico = new Dictionary<string, AudioClip>();
         [SerializeField] PlayerShoot _playerShoot;
         [SerializeField] PlayerMovementController _playerMovement;
-
+        [SerializeField]  Rig bodyRig; 
 
         private void Awake()
         {
@@ -29,6 +29,15 @@ namespace Project
             else bodySourceSound.PlayOneShot(_soundListDico[name]);
         }
 
+        private void Update()
+        {
+            if(bodyRig != null) bodyRig.weight = fuckingRigWeight;
+        }
+
+        public void SetRigWeight(float weight) 
+        {
+            fuckingRigWeight = weight;
+        }
         #region Dash
         public void StartOfDash()
         {
@@ -55,5 +64,7 @@ namespace Project
             _playerShoot.EndOfReload();
         }
         #endregion
+
+        
     }
 }
