@@ -12,7 +12,7 @@ namespace Project
 
         public override void Start()
         {
-            GameEvent.onPlayerGetAKillEvent.Subscribe(WinCondition, true);
+            GameEvent.onPlayerGetAKillEvent.Subscribe(WinCondition, this);
         }
 
         public override void OnDestroy()

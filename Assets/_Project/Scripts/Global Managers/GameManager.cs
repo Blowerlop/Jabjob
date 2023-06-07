@@ -44,9 +44,11 @@ namespace Project
             
             if (IsServer)
             {
-                NetworkManager.Singleton.SceneManager.OnLoadComplete -= SpawnClientServerRpc;
-                
-                NetworkManager.Singleton.OnClientDisconnectCallback -= OnClientDisconnect;
+                if (NetworkManager.Singleton != null)
+                {
+                    NetworkManager.Singleton.SceneManager.OnLoadComplete -= SpawnClientServerRpc;
+                    NetworkManager.Singleton.OnClientDisconnectCallback -= OnClientDisconnect;
+                }
             }
             
             gameMode.OnDestroy();
