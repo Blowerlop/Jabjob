@@ -6,6 +6,7 @@ using Unity.Netcode;
 using UnityEngine;
 using _Project.Scripts.Managers;
 using UnityEngine.VFX;
+using Timer = Project.Utilities.Timer;
 
 public class PlayerMovementController : NetworkBehaviour
 {
@@ -15,6 +16,12 @@ public class PlayerMovementController : NetworkBehaviour
     [SerializeField] private float _moveSpeed = 6.0f;
     private float _speedOffset = 0.1f;
     private Vector3 characterControllerLastVelocity;
+
+    [Header("Dash")]
+    [SerializeField] private int _dashNumber = 3;
+    [SerializeField] private int _dashCooldown = 3;
+    private int currentDashNumber = 3;
+    private Timer _timer = new Timer();
 
     [Header("Gravity")]
     [SerializeField] private bool _gravityEnabled = true;
@@ -85,12 +92,7 @@ public class PlayerMovementController : NetworkBehaviour
         PerformJumpAndGravity();
         PerformMovement();
 
-        if (InputManager.instance.isDashing)
-        {
-            AddForce(transform.forward * 2.0f);
-            _animatorMain.SetTrigger("Dash");
-            InputManager.instance.isDashing = false;
-        }
+        PerformDash();
     }
     #endregion
 
@@ -237,6 +239,28 @@ public class PlayerMovementController : NetworkBehaviour
         */
     }
 
+    private void PerformDash()
+    {
+        if (InputManager.instance.isDashing)
+        {
+            if (currentDashNumber > 0)
+            {
+                AddForce(transform.forward * 2.0f);
+                _animatorMain.SetTrigger("Dash");
+                PlaySound("Dash");
+                currentDashNumber -= 1;
+                GameEvent.onPlayerDashEvent.Invoke(this);
+                _timer.StartTimerWithCallbackScaledTime(_dashCooldown, ReloadDash);
+            }
+            InputManager.instance.isDashing = false;
+        }
+
+        if (currentDashNumber < _dashNumber)
+        {
+            _timer.StartTimerWithCallbackScaledTime(_dashCooldown, ReloadDash);
+        }
+    }
+
     private void AddForce(Vector3 force)
     {
         _characterController.Move(force);
@@ -273,6 +297,10 @@ public class PlayerMovementController : NetworkBehaviour
     }
 
 
+    private void ReloadDash()
+    {
+        currentDashNumber += 1;
+    }
 
     private void OnDrawGizmos()
     {
