@@ -34,11 +34,19 @@ namespace Project
             if(bodyRig != null) bodyRig.weight = fuckingRigWeight;
         }
 
+        // RIG
         public void SetRigWeight(float weight) 
         {
             fuckingRigWeight = weight;
         }
-        #region Dash
+
+        // KNIFE
+
+        public void PerformKnife()
+        {
+            _playerShoot.PerformKnifeCalculation();
+        }
+        // DASH
         public void StartOfDash()
         {
             _playerMovement.DashEffectStart();
@@ -52,9 +60,8 @@ namespace Project
         {
             _playerMovement.EndOfDashTrail();
         }
-        #endregion
 
-        #region Reload
+        // RELOAD
         public void AutoReload()
         {
             _playerShoot.AutoReload();
@@ -63,7 +70,6 @@ namespace Project
         {
             _playerShoot.EndOfReload();
         }
-        #endregion
 
         
     }

@@ -16,6 +16,8 @@ namespace Project
 
         [Header("Shoot state")] 
         public Color paintColor;
+        [SerializeField] private float knifeHitDistance;
+        [SerializeField] private int knifeDamage; 
         private float _nextShoot;
         private float _nextKnife; 
         private float _shootRate;
@@ -40,11 +42,15 @@ namespace Project
         [SerializeField] private AudioSource _audioSource;
 
         [Header("Animation")]
-        [SerializeField] EventAnimHelpers bodyAnimHelpers; 
+        [SerializeField] EventAnimHelpers bodyAnimHelpers;
+        [SerializeField] EventAnimHelpers ArmsAnimHelper;
         [SerializeField] private Animator _fakeWeaponAnim;
         [SerializeField] private Animator _weaponAnim;
         [SerializeField] GameObject _fakeKnife, _knife; 
         public GameObject projectile;
+
+        [Header("Sound")]
+        public AudioClip knifeSlash; 
         #endregion
 
 
@@ -67,6 +73,8 @@ namespace Project
             InputManager.instance.reload.AddListener(StartReload);
             GameEvent.onPlayerWeaponChangedLocalEvent.Subscribe(UpdateCurrentWeapon, this);
             GameEvent.onPlayerWeaponChangedServerEvent.Subscribe(UpdateCurrentWeapon, this);
+            LocalEquipKnife(true);
+            EquipKnifeServerRpc(true);
         }
 
         public void OnDisable()
@@ -136,24 +144,24 @@ namespace Project
                     if (Time.time >= _nextKnife)
                     {
                         _nextKnife = Time.time + _knifeRate;
-                        _fakeWeaponAnim.SetTrigger("Fire");
-                        _weaponAnim.SetTrigger("Fire");
+                        LocalAnimOnlyKnife();
+                        AnimOnlyKnifeServerRpc();
                     }
                 }
             }
                 
-            if (!InputManager.instance.isShooting)
+            if (!InputManager.instance.isShooting && !hasKnifeEquipped)
             {
                 _canShoot = true;
             }    
             
             if(Input.GetKeyDown(KeyCode.T))
             {
-                EquipKnife(hasKnifeEquipped);
-            }
-            
+                LocalEquipKnife(hasKnifeEquipped);
+                EquipKnifeServerRpc(hasKnifeEquipped);
+                hasKnifeEquipped = !hasKnifeEquipped;
+            } 
         }
-
         #endregion
         
 
@@ -189,7 +197,7 @@ namespace Project
                     }
                 }
                 CreateBulletTrail(currentWeapon.bulletStartPoint, _fakeWeapon.bulletStartPoint, hitPoint);
-                if (paintable == null) return;
+                if (paintable == null) goto AnimationAndSound;
                 
                 if (_weaponData.spray)
                 {
@@ -224,25 +232,81 @@ namespace Project
                 }
             }
 
-            bodyAnimHelpers.SetRigWeight(1f);
+            AnimationAndSound:
+            {
+                bodyAnimHelpers.SetRigWeight(1f);
+                _fakeWeaponAnim.SetTrigger("Fire");
+                _weaponAnim.SetTrigger("Fire");
+
+                if (isTheShooter) { _fakeWeapon.SetFiringColorPart(paintColor); _fakeWeapon.PlayFiringPart(); }
+                else { currentWeapon.SetFiringColorPart(paintColor); currentWeapon.PlayFiringPart(); }
+                _audioSource.PlayOneShot(_weaponData.FiringSound);
+            }
+        }
+        [ServerRpc]
+        private void KnifeServerRpc(Vector3 weaponHolderPosition, Vector3 rootCameraPosition, Vector3 hitPoint)
+        {
+            KnifeClientRpc(weaponHolderPosition, rootCameraPosition, hitPoint);
+        }
+        [ClientRpc]
+        private void KnifeClientRpc(Vector3 weaponHolderPosition, Vector3 rootCameraPosition, Vector3 hitPoint)
+        {
+            if (IsOwner == false) LocalKnife(false, weaponHolderPosition, rootCameraPosition, hitPoint);
+        }
+        private void LocalKnife(bool isTheShooter, Vector3 weaponHolderPosition, Vector3 rootCameraPosition, Vector3 hitPoint)
+        {
+            Paintable paintable = null;
+            var a = Physics.OverlapSphere(hitPoint, 0.25f);
+            for (int i = 0; i < a.Length; i++)
+            {
+                if (a[i].TryGetComponent(out paintable))
+                {
+                    break;
+                }
+            }
+            if (paintable != null)  PaintManager.instance.Paint(paintable, hitPoint, _weaponData.paintRadius, _weaponData.paintHardness, _weaponData.paintStrength, paintColor);
+        }
+        [ServerRpc]
+        private void AnimOnlyKnifeServerRpc()
+        {
+            AnimOnlyKnifeClientRpc();
+        }
+        [ClientRpc]
+        private void AnimOnlyKnifeClientRpc()
+        {
+            if (IsOwner == false) LocalAnimOnlyKnife();
+        }
+        private void LocalAnimOnlyKnife()
+        {
             _fakeWeaponAnim.SetTrigger("Fire");
             _weaponAnim.SetTrigger("Fire");
-
-            if (isTheShooter) { _fakeWeapon.SetFiringColorPart(paintColor); _fakeWeapon.PlayFiringPart(); }
-            else { currentWeapon.SetFiringColorPart(paintColor);  currentWeapon.PlayFiringPart();  }
-            _audioSource.PlayOneShot(_weaponData.FiringSound); 
+            _audioSource.PlayOneShot(knifeSlash);
         }
-        
-        private void EquipKnife(bool hasKnife)
+
+        [ServerRpc]
+        private void EquipKnifeServerRpc(bool hasKnife)
         {
+            EquipKnifeClientRpc(hasKnife);
+        }
+        [ClientRpc]
+        private void EquipKnifeClientRpc(bool hasKnife)
+        {
+            if (IsOwner == false) LocalEquipKnife(hasKnife);
+        }
+        private void LocalEquipKnife(bool hasKnife)
+        {
+            if (_weapon == null) _weapon = _weaponManager.GetCurrentWeapon();
+            if (_fakeWeapon == null) _fakeWeapon = _weaponManager.GetFakeWeapon();
             if (!hasKnife) //Si on a pas le couteaux on l'équipe
             {
                 _weaponAnim.ResetTrigger("Fire");
                 _weaponAnim.SetBool("isGunEquipped", false);
                 _weaponAnim.SetTrigger("EquipKnife");
                 _fakeWeaponAnim.SetTrigger("EquipKnife");
+                _weapon.gameObject.SetActive(false);
                 _fakeWeapon.gameObject.SetActive(false);
                 _fakeKnife.SetActive(true);
+                _knife.SetActive(true);
             }
             else
             {
@@ -252,9 +316,26 @@ namespace Project
                 _weaponAnim.SetTrigger("EquipGun");
                 _weaponAnim.SetBool("isGunEquipped", true);
                 _fakeKnife.SetActive(false);
+                _knife.SetActive(false);
                 _fakeWeapon.gameObject.SetActive(true);
+                _weapon.gameObject.SetActive(true);
             }
-            hasKnifeEquipped = !hasKnife;
+        }
+        public void PerformKnifeCalculation()
+        {
+            Vector3 weaponHolderPosition = _weaponHolder.position;
+            Vector3 rootCameraPosition = _rootCamera.position;
+            if (Physics.Raycast(_rootCamera.position, _rootCamera.forward, out RaycastHit hit,
+                      knifeHitDistance, _shootLayerMaskNoPhysics))
+            {
+                var id = hit.colliderInstanceID;
+                LocalKnife(true, weaponHolderPosition, rootCameraPosition, hit.point);
+                KnifeServerRpc(weaponHolderPosition, rootCameraPosition, hit.point);
+                if (hit.transform.TryGetComponent(out IHealthManagement healthManagement))
+                {
+                    healthManagement.Damage(knifeDamage, OwnerClientId);
+                }
+            }
         }
         public void StartReload()
         {
@@ -271,6 +352,7 @@ namespace Project
         }
         public void EndOfReload() //Use by Animation
         {
+            if (_weapon == null) return;
             _weapon.ammo = _weaponData.maxAmmo;
             GameEvent.onPlayerWeaponAmmoChangedEvent.Invoke(this, true, _weapon.ammo);
         }
@@ -298,6 +380,7 @@ namespace Project
         }
 
         #region Trail effects
+        [Header("VFX")]
         [SerializeField] private GameObject bulletTrail;
 
         public void CreateBulletTrail(Transform spawnPoint, Transform fakeSpawnPoint, Vector3 hitpoint)

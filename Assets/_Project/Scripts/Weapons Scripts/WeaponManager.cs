@@ -71,8 +71,8 @@ public class WeaponManager : NetworkBehaviour
         UnEquipWeapon();
         _currentWeapon = Instantiate(weapon, weaponHandler);
         _fakeWeapon = Instantiate(weapon, fakeWeaponHandler);
-        SetWeaponVisibility(ArmsRoot.gameObject, UnityEngine.Rendering.ShadowCastingMode.Off, IsOwner ? 0 : 8);
-        SetWeaponVisibility(_currentWeapon.gameObject, IsOwner ? UnityEngine.Rendering.ShadowCastingMode.ShadowsOnly : UnityEngine.Rendering.ShadowCastingMode.On, 0);
+        SetWeaponVisibility(ArmsRoot.gameObject, UnityEngine.Rendering.ShadowCastingMode.Off, IsOwner ? 0 : 8); 
+        SetWeaponVisibility(weaponHandler.gameObject, IsOwner ? UnityEngine.Rendering.ShadowCastingMode.ShadowsOnly : UnityEngine.Rendering.ShadowCastingMode.On, 0);
         _weaponID.Value = _currentWeapon.weaponData.ID;
         GameEvent.onPlayerWeaponChangedLocalEvent.Invoke(this, true, _currentWeapon);
         
@@ -88,7 +88,7 @@ public class WeaponManager : NetworkBehaviour
         _currentWeapon = Instantiate(SOWeapon.GetWeaponPrefab(weaponID), weaponHandler);
         _fakeWeapon = Instantiate(SOWeapon.GetWeaponPrefab(weaponID), fakeWeaponHandler);
         SetWeaponVisibility(ArmsRoot.gameObject, UnityEngine.Rendering.ShadowCastingMode.Off, IsOwner ? 0 : 8);
-        SetWeaponVisibility(_currentWeapon.gameObject, IsOwner ? UnityEngine.Rendering.ShadowCastingMode.ShadowsOnly : UnityEngine.Rendering.ShadowCastingMode.On, 0);
+        SetWeaponVisibility(weaponHandler.gameObject, IsOwner ? UnityEngine.Rendering.ShadowCastingMode.ShadowsOnly : UnityEngine.Rendering.ShadowCastingMode.On, 0);
         GameEvent.onPlayerWeaponChangedServerEvent.Invoke(this, true, weaponID);
 
         Debug.Log("Equipping Weapon !");
