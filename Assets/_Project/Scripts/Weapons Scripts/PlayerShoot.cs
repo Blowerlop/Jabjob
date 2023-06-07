@@ -75,6 +75,7 @@ namespace Project
             GameEvent.onPlayerWeaponChangedServerEvent.Subscribe(UpdateCurrentWeapon, this);
             LocalEquipKnife(true);
             EquipKnifeServerRpc(true);
+            hasKnifeEquipped = false;
         }
 
         public void OnDisable()
@@ -350,7 +351,7 @@ namespace Project
         {
             if (_weapon != null && _weapon.ammo <= 0) StartReload();
         }
-        public void EndOfReload() //Use by Animation
+        public void EndOfReload() //Use by Animation, mid-end of Reload POV
         {
             if (_weapon == null) return;
             _weapon.ammo = _weaponData.maxAmmo;
