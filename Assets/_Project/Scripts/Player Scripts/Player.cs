@@ -52,6 +52,7 @@ namespace Project
         private FeedbackManagerUI _feedbackManager;
         private Paintable _paintable;
         private float _gameDuration = 300;
+        [SerializeField]private AnimationCurve _alphaCurve;
         #endregion
 
 
@@ -336,7 +337,7 @@ namespace Project
             _paintable.SetAlpha(GetAlphaValueToApply(_gameDuration - timer));
         }
 
-        float GetAlphaValueToApply(float value) => value / (_gameDuration / 3);
+        float GetAlphaValueToApply(float value) => _alphaCurve.Evaluate(value / (_gameDuration / 3));
 
         #endregion
         
