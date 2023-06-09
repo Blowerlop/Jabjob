@@ -37,7 +37,7 @@ namespace Project
         public static readonly Event<ulong, StringNetwork> onPlayerUpdateModelEvent = new Event<ulong, StringNetwork>(nameof(onPlayerUpdateModelEvent));
         public static readonly Event<ulong, Color> onPlayerUpdateColorEvent = new Event<ulong, Color>(nameof(onPlayerUpdateColorEvent));
         public static readonly Event<ulong, int> onPlayerScoreEvent = new Event<ulong, int>(nameof(onPlayerScoreEvent));
-        public static readonly Event onPlayerDashEvent = new Event(nameof(onPlayerDashEvent));
+        public static readonly Event<float> onPlayerDashEvent = new Event<float>(nameof(onPlayerDashEvent));
 
         #endregion
 
