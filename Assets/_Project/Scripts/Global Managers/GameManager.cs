@@ -95,8 +95,9 @@ namespace Project
         [ServerRpc]
         private void SpawnClientServerRpc(ulong clientId, string sceneName, LoadSceneMode loadSceneMode)
         {
-            Transform playerTransform = Instantiate((_playerPrefab)); 
+            Transform playerTransform = Instantiate((_playerPrefab));
             playerTransform.GetComponent<NetworkObject>().SpawnAsPlayerObject(clientId, true);
+            GameEvent.onPlayerSpawnEvent.Invoke(this, false, clientId);
         }
 
         private void OnClientDisconnect(ulong clientId) => GameEvent.onPlayerLeaveGameEvent.Invoke(this, true, clientId);

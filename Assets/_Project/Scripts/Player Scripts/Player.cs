@@ -33,6 +33,8 @@ namespace Project
         [SerializeField] private NetworkVariable<bool> _networkIsHost = new NetworkVariable<bool>();
         [SerializeField] private Player _killer;
 
+        [SerializeField] private List<Vector3> spawnPostions = new List<Vector3>();
+
         public string playerName { get => _networkName.Value.value; private set => _networkName.Value = new StringNetwork() { value = value }; }
         public Color playerColor { get => _networkColor.Value; private set => _networkColor.Value = value; }
         public string modelName { get => _networkModel.Value.value; private set => _networkModel.Value = new StringNetwork() { value = value }; }
@@ -110,6 +112,12 @@ namespace Project
         private void OnEnable()
         {
             SetHealth(_defaultHealth);
+            GameEvent.onPlayerSpawnEvent.Subscribe(SpawnPlayerRandomly, this);
+        }
+
+        private void OnDisable()
+        {
+            GameEvent.onPlayerSpawnEvent.Unsubscribe(SpawnPlayerRandomly);
         }
 
         public override void OnNetworkDespawn()
@@ -308,9 +316,16 @@ namespace Project
         private void PlayerRespawnLocal(ulong clientId)
         {
             Player player = GameManager.instance.GetPlayer(clientId);
-            player.transform.position = Vector3.zero;
+            SpawnPlayerRandomly(clientId);
             player.gameObject.SetActive(true);
             GameEvent.onPlayerRespawnedEvent.Invoke(this, true, clientId);
+        }
+
+        private void SpawnPlayerRandomly(ulong clientId)
+        {
+            Player player = GameManager.instance.GetPlayer(clientId);
+            player.transform.position = spawnPostions[UnityEngine.Random.Range(0, spawnPostions.Count)];
+            Debug.Log(player.transform.position + "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
         }
 
         private void OnKillValueChange(int previousValue, int nextValue) => GameEvent.onPlayerGetAKillEvent.Invoke(this, true, OwnerClientId, nextValue); 
