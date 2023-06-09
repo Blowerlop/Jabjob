@@ -1771,6 +1771,7 @@ MonoBehaviour:
   _fakeWeaponAnim: {fileID: 4547365463003007279}
   _DashVFX: {fileID: 7188909021366639815}
   _dashParticles: {fileID: 4117564791447792635}
+  _smokeParticles: {fileID: 1393851736148558888}
 --- !u!114 &2755970706688381933
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -14295,6 +14296,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_IsActive
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2864434051079391800, guid: 56a727b5cdc349f4aaeabdf71c43d31d,
+        type: 3}
+      propertyPath: m_fontSize
+      value: 27.05
       objectReference: {fileID: 0}
     - target: {fileID: 3016183279462453667, guid: 56a727b5cdc349f4aaeabdf71c43d31d,
         type: 3}

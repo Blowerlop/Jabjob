@@ -51,7 +51,10 @@ namespace Project
         private PlayerMovementController _playerMovementController; 
         private PlayerShoot _playerShoot;
         [HideInInspector] public SkinnedMeshRenderer playerMesh; 
-        private FeedbackManagerUI _feedbackManager; 
+        private FeedbackManagerUI _feedbackManager;
+        private Paintable _paintable;
+        private float _gameDuration = 300;
+        [SerializeField]private AnimationCurve _alphaCurve;
         #endregion
 
 
@@ -80,6 +83,7 @@ namespace Project
             _networkAssists.OnValueChanged += OnAssistValueChange;
             _networkDeaths.OnValueChanged += OnDeathValueChange;
             _networkScore.OnValueChanged += OnScoreValueChange;
+            GameEvent.onGameTimerUpdated.Subscribe(UpdateAlpha,this);
 
 #if UNITY_EDITOR
             _networkName.OnValueChanged += UpdatePlayersGameObjectNameLocal;
@@ -99,9 +103,9 @@ namespace Project
             UpdatePlayerNameServerRpc(LobbyManager.Instance.GetPlayerName());
             PlayerModelsManager.instance.UpdateAllPlayers(); //Vraiment pas ouf ici, à déplacer lorsqu'on aura synchroniser le load des joueurs et appeler juste avant le StartGame
 
+            _gameDuration = GameManager.instance.gameMode.gameDurationInSeconds;
 
 
-            
         }
 
         private void Start()
@@ -129,6 +133,7 @@ namespace Project
             _networkAssists.OnValueChanged -= OnAssistValueChange;
             _networkDeaths.OnValueChanged -= OnDeathValueChange;
             _networkScore.OnValueChanged -= OnScoreValueChange;
+            GameEvent.onGameTimerUpdated.Unsubscribe(UpdateAlpha);
 
 #if UNITY_EDITOR
             _networkName.OnValueChanged -= UpdatePlayersGameObjectNameLocal;
@@ -339,6 +344,18 @@ namespace Project
             return score; 
         }
 
+        #region Visual
+
+        void UpdateAlpha (float timer)
+        {
+            _paintable ??= gameObject.GetComponentInChildren<Paintable>();
+            _paintable.SetAlpha(GetAlphaValueToApply(_gameDuration - timer));
+        }
+
+        float GetAlphaValueToApply(float value) => _alphaCurve.Evaluate(value / (_gameDuration / 3));
+
+        #endregion
+        
         #region Admin
 
         public void Kick()
