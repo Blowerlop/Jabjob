@@ -19,7 +19,7 @@ namespace Project
             for (int i = 0; i < PlayerModelList.Length; i++)
             {
                 meshDictionary.Add(PlayerModelList[i].name, PlayerModelList[i].meshModel);
-                materialDictionary.Add(PlayerModelList[i].name, PlayerModelList[i].material);
+                materialDictionary.Add(PlayerModelList[i].name, PlayerModelList[i].materialModel);
             }
         }
         
@@ -72,8 +72,7 @@ namespace Project
                 if (PlayerModelList[i].name == modelName) return i;
             }
             return -1;
-        }
-        
+        }  
         public void UpdateAllPlayers()
         {
             Player[] players = GameManager.instance.GetPlayers();
@@ -98,7 +97,7 @@ namespace Project
             PlayerModelsManager script = (PlayerModelsManager)target;
             DrawDefaultInspector();
             GUILayoutOption[] GUIDOptionsShort = { GUILayout.Width(60) };
-            //if (GUILayout.Button("Test button"))
+            //if (GUILayout.Button("button"))
             //{
             //}
 

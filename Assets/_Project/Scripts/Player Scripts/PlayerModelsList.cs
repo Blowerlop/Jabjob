@@ -9,6 +9,8 @@ namespace Project
     {
         public string name;
         public Mesh meshModel;
-        public Material material; 
+        public Material materialModel;
+        public Material materialHands;
+        public Sprite portrait; 
     }
 }

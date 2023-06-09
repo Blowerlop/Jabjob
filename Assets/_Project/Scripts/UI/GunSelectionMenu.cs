@@ -27,21 +27,19 @@ namespace Project
         // Update is called once per frame
         private void Update()
         {
-            if (InputManager.instance.isWeaponSelectionOpen)
-            {
-                InputManager.instance.isWeaponSelectionOpen = false;
-                scriptableObjectChanger.ActivateWeaponPreview();
-                gunSelectionVirtualCamera.Priority = 10;
-                player.GetComponent<PlayerUIManager>().HidePlayerUI();
-                gameObject.GetComponent<Canvas>().enabled = true;
-            }
+            //if (InputManager.instance.isWeaponSelectionOpen)
+            //{
+            //    InputManager.instance.isWeaponSelectionOpen = false;
+            //    scriptableObjectChanger.ActivateWeaponPreview();
+            //    gunSelectionVirtualCamera.Priority = 10;
+            //    gameObject.GetComponent<Canvas>().enabled = true;
+            //}
         }
 
         public void CloseSelection()
         {
             gunSelectionVirtualCamera.Priority = 0;
             gameObject.GetComponent<Canvas>().enabled = false;
-            player.GetComponent<PlayerUIManager>().ShowPlayerUI();
         }
 
         public void ChooseNewWeapon()

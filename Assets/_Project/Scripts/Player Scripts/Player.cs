@@ -18,6 +18,7 @@ namespace Project
         #region Variables
 
         [SerializeField] private int _defaultHealth = 100;
+        public int maxHealth { get => _defaultHealth; private set => _defaultHealth = value; }
         [SerializeField] [ReadOnlyField] private int _currentHealth = 100;
         private NetworkObject _networkObject;
 
@@ -35,6 +36,7 @@ namespace Project
         public string playerName { get => _networkName.Value.value; private set => _networkName.Value = new StringNetwork() { value = value }; }
         public Color playerColor { get => _networkColor.Value; private set => _networkColor.Value = value; }
         public string modelName { get => _networkModel.Value.value; private set => _networkModel.Value = new StringNetwork() { value = value }; }
+        public StringNetwork modelNameNetwork { get => _networkModel.Value; private set => _networkModel.Value = value; } 
         public int kills { get => _networkKills.Value; private set => _networkKills.Value = value; }
         public int assists { get => _networkAssists.Value; private set => _networkAssists.Value = value; }
         public int deaths { get => _networkDeaths.Value; private set => _networkDeaths.Value = value; }
@@ -232,7 +234,7 @@ namespace Project
         private void SetHealth(int newHealth)
         {
             _currentHealth = newHealth;
-            GameEvent.onPlayerHealthChangedEvent.Invoke(this, false, _currentHealth);
+            GameEvent.onPlayerHealthChangedEvent.Invoke(this, false, OwnerClientId, _currentHealth);
 
             if (_currentHealth <= 0)
             {

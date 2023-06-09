@@ -28,7 +28,7 @@ namespace Project
         public static readonly Event<int> onPlayerWeaponAmmoChangedEvent = new Event<int>(nameof(onPlayerWeaponAmmoChangedEvent));
 
         // Stats relative
-        public static readonly Event<int> onPlayerHealthChangedEvent = new Event<int>(nameof(onPlayerHealthChangedEvent));
+        public static readonly Event<ulong , int> onPlayerHealthChangedEvent = new Event<ulong , int>(nameof(onPlayerHealthChangedEvent));
         public static readonly Event<ulong, ulong, int> onPlayerDiedEvent = new Event<ulong, ulong, int>(nameof(onPlayerDiedEvent));
         public static readonly Event<ulong, int> onPlayerGetAKillEvent = new Event<ulong, int>(nameof(onPlayerGetAKillEvent));
         public static readonly Event<ulong, int> onPlayerGetAssistEvent = new Event<ulong, int>(nameof(onPlayerGetAssistEvent));

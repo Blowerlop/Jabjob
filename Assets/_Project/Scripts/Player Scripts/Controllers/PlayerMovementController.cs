@@ -19,7 +19,7 @@ public class PlayerMovementController : NetworkBehaviour
 
     [Header("Dash")]
     [SerializeField] private int _dashNumber = 3;
-    [SerializeField] private int _dashCooldown = 3;
+    [SerializeField] private float _dashCooldown = 3;
     private int currentDashNumber = 3;
     private Timer _timer = new Timer();
 

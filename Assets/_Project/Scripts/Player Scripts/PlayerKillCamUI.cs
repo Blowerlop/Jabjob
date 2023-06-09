@@ -45,7 +45,7 @@ namespace Project
 
         private void EnableKillCam(ulong playerKilledId, ulong playerKillerId, int playerDeaths)
         {
-            if (playerKillerId != OwnerClientId) return;
+            if (playerKillerId != OwnerClientId || GameManager.instance.GetPlayer(playerKilledId).enabled == false) return;
             
             _spectatedPlayerNameText.text = $"Spectating : {GameManager.instance.GetPlayer(playerKillerId).name}";
             
