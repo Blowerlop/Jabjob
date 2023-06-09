@@ -26,6 +26,7 @@ namespace Project
         public static readonly Event<byte> onPlayerWeaponChangedServerEvent = new Event<byte>(nameof(onPlayerWeaponChangedServerEvent));
 
         public static readonly Event<int> onPlayerWeaponAmmoChangedEvent = new Event<int>(nameof(onPlayerWeaponAmmoChangedEvent));
+        public static readonly Event<int> onPlayerWeaponTotalAmmoChangedEvent = new Event<int>(nameof(onPlayerWeaponTotalAmmoChangedEvent));
 
         // Stats relative
         public static readonly Event<ulong , int> onPlayerHealthChangedEvent = new Event<ulong , int>(nameof(onPlayerHealthChangedEvent));

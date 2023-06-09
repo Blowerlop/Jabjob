@@ -105,6 +105,7 @@ namespace Project
                         _nextShoot = Time.time + _weaponData.shootRate;
                         _weapon.ammo--;
                         GameEvent.onPlayerWeaponAmmoChangedEvent.Invoke(this, false, _weapon.ammo);
+                        GameEvent.onPlayerWeaponTotalAmmoChangedEvent.Invoke(this, false, _weapon.totalAmmo);
 
                         Vector3 weaponHolderPosition = _weaponHolder.position;
                         Vector3 rootCameraPosition = _rootCamera.position;
@@ -340,7 +341,7 @@ namespace Project
         }
         public void StartReload()
         {
-            if (hasKnifeEquipped || _weapon.ammo == _weaponData.maxAmmo || _fakeWeaponAnim.GetCurrentAnimatorStateInfo(0).IsName("Reload")) return;
+            if (hasKnifeEquipped || _weapon.ammo == _weaponData.maxAmmo || _fakeWeaponAnim.GetCurrentAnimatorStateInfo(0).IsName("Reload") || _weapon.totalAmmo <= 0) return;
             _weaponAnim.ResetTrigger("Fire");
             _weaponAnim.SetTrigger("Reload");
             _fakeWeaponAnim.SetTrigger("Reload");
@@ -354,16 +355,46 @@ namespace Project
         public void EndOfReload() //Use by Animation, mid-end of Reload POV
         {
             if (_weapon == null) return;
-            _weapon.ammo = _weaponData.maxAmmo;
+
+            if (_weapon.totalAmmo - (_weaponData.maxAmmo - _weapon.ammo) < 0)
+            {
+
+                _weapon.ammo += _weapon.totalAmmo;
+                _weapon.totalAmmo = 0;
+            }
+            else
+            {
+                _weapon.totalAmmo -= _weaponData.maxAmmo - _weapon.ammo;
+                _weapon.ammo = _weaponData.maxAmmo;
+            }
             GameEvent.onPlayerWeaponAmmoChangedEvent.Invoke(this, true, _weapon.ammo);
+            GameEvent.onPlayerWeaponTotalAmmoChangedEvent.Invoke(this, true, _weapon.totalAmmo);
         }
         public IEnumerator ReloadCoroutine()
         {
             _canShoot = false;
             yield return new WaitForSeconds(_weaponData.reloadDuration);
-            _weapon.ammo = _weaponData.maxAmmo;
+
+            if (_weapon.totalAmmo - (_weaponData.maxAmmo - _weapon.ammo) < 0)
+            {
+                
+                _weapon.ammo += _weapon.totalAmmo;
+                _weapon.totalAmmo = 0;
+            }
+            else
+            {
+                _weapon.totalAmmo -= _weaponData.maxAmmo - _weapon.ammo;
+                _weapon.ammo = _weaponData.maxAmmo;
+            }
             GameEvent.onPlayerWeaponAmmoChangedEvent.Invoke(this, true, _weapon.ammo);
+            GameEvent.onPlayerWeaponTotalAmmoChangedEvent.Invoke(this, true, _weapon.totalAmmo);
             _canShoot = true;
+        }
+
+        public void ReloadTotalAmmo()
+        {
+            _weapon.totalAmmo = _weaponData.totalAmmo;
+            GameEvent.onPlayerWeaponTotalAmmoChangedEvent.Invoke(this, false, _weapon.totalAmmo);
         }
 
         private void UpdateCurrentWeapon(Weapon weapon)
@@ -372,6 +403,7 @@ namespace Project
             _weaponData = weapon.weaponData;
 
             GameEvent.onPlayerWeaponAmmoChangedEvent.Invoke(this, true, _weapon.ammo);
+            GameEvent.onPlayerWeaponTotalAmmoChangedEvent.Invoke(this, false, _weapon.totalAmmo);
             _fakeWeapon = _weaponManager.GetFakeWeapon();
         }
         
