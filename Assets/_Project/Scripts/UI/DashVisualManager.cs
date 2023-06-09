@@ -12,7 +12,7 @@ namespace Project
         private List<Slider> dashSlot = new List<Slider>();
 
         private int dashNumber = 3;
-        private int dashCoolDown = 3;
+        private float dashCoolDown;
 
         private Slider currentSlider = null;
         private float beginTime = 0;
@@ -49,8 +49,10 @@ namespace Project
             }
         }
 
-        public void RemoveOneDash()
+        public void RemoveOneDash(float dashCoolDown)
         {
+            this.dashCoolDown = dashCoolDown;
+
             if (currentSlider != null) 
             {
                 currentProgression = currentSlider.value;
@@ -61,10 +63,10 @@ namespace Project
 
             currentSlider.value = 0;
             dashNumber -= 1;
-            MakeDashReloadAnimation();
+            MakeDashReloadAnimation(dashCoolDown);
         }
 
-        private void MakeDashReloadAnimation()
+        private void MakeDashReloadAnimation(float dashCoolDown)
         {
             beginTime = Time.realtimeSinceStartup;
             endTime = Time.realtimeSinceStartup + dashCoolDown;
@@ -81,7 +83,7 @@ namespace Project
             if (dashNumber < 3)
             {
                 currentSlider = dashSlot[dashNumber];
-                MakeDashReloadAnimation();
+                MakeDashReloadAnimation(dashCoolDown);
             }
         }
     }

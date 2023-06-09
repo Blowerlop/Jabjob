@@ -13,11 +13,13 @@ namespace Project
         [field: SerializeField] public SOWeapon weaponData;
         public Transform bulletStartPoint;
         public int ammo;
+        public int totalAmmo;
 
         private ParticleSystem firingParticle;
         private void Awake()
         {
             ammo = weaponData.maxAmmo;
+            totalAmmo = weaponData.totalAmmo;
             firingParticle = bulletStartPoint.GetComponent<ParticleSystem>();
         }
 
