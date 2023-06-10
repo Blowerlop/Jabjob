@@ -489,7 +489,7 @@ public class LobbyManager : MonoBehaviour {
                 
                   
                 Debug.Log("Instant log : " + Time.timeSinceLevelLoad);
-            }
+            } 
             catch (LobbyServiceException e)
             {
                 Debug.Log(e);
