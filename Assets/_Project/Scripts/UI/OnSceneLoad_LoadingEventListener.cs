@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -24,7 +25,7 @@ namespace Project
             SceneManager.onSceneLoadCompleteEvent.Unsubscribe(DisableGameObject);
         }
 
-        private void EnabledGameObject(ulong clientId, string sceneName, LoadSceneMode loadSceneMode, AsyncOperation asyncOperation) => transform.GetChild(0).gameObject.SetActive(true);
+        private void EnabledGameObject(ulong clientId, string sceneName, LoadSceneMode loadSceneMode, AsyncOperation asyncOperation) { transform.GetChild(0).gameObject.SetActive(true); }
 
         private void DisableGameObject(ulong id, string sceneName, LoadSceneMode mode) =>
             transform.GetChild(0).gameObject.SetActive(false);
