@@ -73,7 +73,7 @@ namespace Project
             InputManager.instance.reload.AddListener(StartReload);
             GameEvent.onPlayerWeaponChangedLocalEvent.Subscribe(UpdateCurrentWeapon, this);
             GameEvent.onPlayerWeaponChangedServerEvent.Subscribe(UpdateCurrentWeapon, this);
-            LocalEquipKnife(true,true);
+            LocalEquipKnife(true);
             EquipKnifeServerRpc(true);
             hasKnifeEquipped = false;
         }
@@ -319,9 +319,8 @@ namespace Project
                 _weaponAnim.SetBool("isGunEquipped", true);
                 _fakeKnife.SetActive(false);
                 _knife.SetActive(false);
-                if (firstEquip) return; 
-                _fakeWeapon.gameObject.SetActive(true);
-                _weapon.gameObject.SetActive(true);
+                if(_fakeWeapon != null) _fakeWeapon.gameObject.SetActive(true);
+                if (_weapon != null) _weapon.gameObject.SetActive(true);
             }
         }
         public void PerformKnifeCalculation()
@@ -336,7 +335,7 @@ namespace Project
                 KnifeServerRpc(weaponHolderPosition, rootCameraPosition, hit.point);
                 if (hit.transform.TryGetComponent(out IHealthManagement healthManagement))
                 {
-                    healthManagement.Damage(knifeDamage, OwnerClientId);
+                    healthManagement.Damage(knifeDamage, OwnerClientId); 
                 }
             }
         }
