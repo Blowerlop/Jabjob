@@ -48,6 +48,7 @@ MonoBehaviour:
   weaponData: {fileID: 11400000, guid: 90492ddd2fb0f7f418432cbc72291976, type: 2}
   bulletStartPoint: {fileID: 5899156835596391583}
   ammo: 0
+  totalAmmo: 0
 --- !u!1 &5535359507964690891
 GameObject:
   m_ObjectHideFlags: 0
@@ -59,6 +60,7 @@ GameObject:
   - component: {fileID: 5159538068782406513}
   - component: {fileID: 8085517263646381268}
   - component: {fileID: 6327962462595227678}
+  - component: {fileID: 1759727249676885689}
   m_Layer: 0
   m_Name: ArcadeGun
   m_TagString: Untagged
@@ -132,6 +134,19 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &1759727249676885689
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5535359507964690891}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0c3ea44eef20b0b4396ebe666c9a6eeb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  extendsIslandOffset: 1
 --- !u!1 &8942562989591827016
 GameObject:
   m_ObjectHideFlags: 0

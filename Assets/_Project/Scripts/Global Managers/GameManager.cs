@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Project.Utilities;
+using TMPro;
 using Unity.Netcode;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -23,6 +25,8 @@ namespace Project
         // [SerializeField] private SOGameSettings _gameSettings --> Preview changement futur
         [field: SerializeField] public GameMode gameMode { get; private set; }
         [field: SerializeField] public NetworkTimer _networkTimer { get; private set; }
+
+        [SerializeField] private TMP_Text _warmUp;
             
         #endregion
 
@@ -33,11 +37,7 @@ namespace Project
         {
             instance = this;
         }
-
-        private void Start()
-        {
-            gameMode.Start();
-        }
+        
 
         public override void OnDestroy()
         {
@@ -70,16 +70,29 @@ namespace Project
             if (IsServer)
             {
                 SpawnNetworkTimerServerRpc();
+                
+                GameEvent.onPlayerJoinGameEvent.Subscribe(ALlPlayerJoinEventHandler, this);
+                GameEvent.onAllPlayersJoinEvent.Subscribe(EndWarmUpBehaviour, this);
+                
                 NetworkManager.Singleton.SceneManager.OnLoadComplete += SpawnClientServerRpc;
                 
                 NetworkManager.Singleton.OnClientDisconnectCallback += OnClientDisconnect;
+                
+                StartWarmup();
+
+                // NetworkManager.Singleton.SceneManager.OnLoadEventCompleted += EndWarmUpBehaviour;
+                
             }
         }
+
 
         public override void OnNetworkDespawn()
         {
             if (IsServer)
             {
+                GameEvent.onPlayerJoinGameEvent.Unsubscribe(ALlPlayerJoinEventHandler);
+                GameEvent.onAllPlayersJoinEvent.Unsubscribe(EndWarmUpBehaviour);
+                
                 NetworkManager.Singleton.SceneManager.OnLoadComplete -= SpawnClientServerRpc;
                 
                 NetworkManager.Singleton.OnClientDisconnectCallback -= OnClientDisconnect;
@@ -143,8 +156,6 @@ namespace Project
         {
             _networkTimer = Instantiate(_networkTimer);
             _networkTimer.GetComponent<NetworkObject>().Spawn();
-            
-            _networkTimer.StartTimerWithCallback(gameMode.gameDurationInSeconds, EndGameClientRpc);
         }
 
         [ClientRpc]
@@ -161,16 +172,120 @@ namespace Project
                 Timer.StartTimerWithCallbackRealTime(10.0f, () =>
                 {
                     NetworkManager.Singleton.SceneManager.OnLoadEventCompleted += (sceneName, mode, completed, @out) =>
+                    {
                         NetworkManager.Singleton.Shutdown();
+                        Cursor.lockState = CursorLockMode.None;
+                        Cursor.visible = true;
+                    };
+                        
                     SceneManager.LoadSceneNetwork("MenuScene");
                 });
             }
 
-            Cursor.lockState = CursorLockMode.None;
-            Cursor.visible = true;
+            
+        }
+        
+        private void StartWarmup()
+        {
+            Debug.Log("WarmUp starting up !");
+            Debug.Log("Players in lobby : " + LobbyManager.Instance.joinedLobby.Players.Count);
+            UpdateWarmUpTextClientRpc(null);
+            
+            _networkTimer.StartTimerWithCallback(120.0f, () => Debug.Log("Time's up ! Not all the players had been able to join the server !"));
+        }
+        
+        private void EndWarmUpBehaviour()
+        {
+            if (IsServer)
+            {
+                Debug.Log("WarmUp is finishing in 30 seconds !");
+                UpdateWarmUpTextClientRpc("All players has connected, be ready !");
+                
+                _networkTimer.StartTimerWithCallback(30.0f, () =>
+                {
+                    StartGameClientRpc();
+                }, true);
+
+                
+            }
         }
 
+        PlayerMovementController therealone;
+        PlayerCameraController therealoneother;
+        [ClientRpc]
+        public void StartGameClientRpc()
+        {
+            _players.ForEach((key, value) =>
+            {
+                if (value.GetComponent<PlayerMovementController>().enabled == true)
+                {
+                    therealone = value.GetComponent<PlayerMovementController>();
+                    therealone.enabled = false;
+                    therealoneother = value.GetComponent<PlayerCameraController>();
+                    therealoneother.enabled = false;
+
+                    therealone.transform.position = Vector3.zero;
+                }
+            });
+
+
+            if (IsServer == false) return;
+            
+
+            _networkTimer.StopTimer();
+            
+            _networkTimer.StartTimerWithCallback(3.0f + 1.0f, () =>
+                {
+                    UpdateWarmUpTextClientRpc("Fight !");
+                    _networkTimer.StartTimerWithCallback(gameMode.gameDurationInSeconds, EndGameClientRpc,
+                        true);
+
+                    gameMode.Start();
+                    azdazdClientRpc();
+
+                }, true, true, timer =>
+                {
+                    UpdateWarmUpTextClientRpc($"Game starting in {timer}... !");
+                });
+            
+            
+        }
+
+        [ClientRpc]
+        private void UpdateWarmUpTextClientRpc(string text)
+        {
+            _warmUp.gameObject.SetActive(true);
+
+            if (text.IsNullOrEmpty()) return;
+            _warmUp.text = text;
+        }
+            
+
+        [ClientRpc]
+        private void azdazdClientRpc()
+        {
+            DesactiveWarpUpTextClientRpc();
+
+            therealone.enabled = true;
+            therealoneother.enabled = true;
+        }
+        
         #endregion
+
+        [ClientRpc]
+        private void DesactiveWarpUpTextClientRpc()
+        {
+            Timer.StartTimerWithCallbackRealTime(3.0f, () => _warmUp.gameObject.SetActive(false));
+        }
+
+        private void ALlPlayerJoinEventHandler(ulong playerId)
+        {
+            
+            if (_players.Keys.Count == LobbyManager.Instance.joinedLobby.Players.Count)
+            {
+                GameEvent.onAllPlayersJoinEvent.Invoke(this);
+            }
+        }
     }
 }
 
