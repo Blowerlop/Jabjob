@@ -4,6 +4,7 @@ using System.Text;
 using Unity.Netcode;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 using SceneManager = _Project.Scripts.Managers.SceneManager;
 using Timer = Project.Utilities.Timer;
@@ -164,6 +165,9 @@ namespace Project
                     SceneManager.LoadSceneNetwork("MenuScene");
                 });
             }
+
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
         }
 
         #endregion

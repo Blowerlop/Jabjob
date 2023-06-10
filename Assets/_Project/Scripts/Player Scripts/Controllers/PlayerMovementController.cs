@@ -60,7 +60,8 @@ public class PlayerMovementController : NetworkBehaviour
     [SerializeField] private Animator _animatorMain;
     [SerializeField] private Animator _fakeWeaponAnim;
     [SerializeField] private Transform _DashVFX;
-    [SerializeField] private ParticleSystem _dashParticles; 
+    [SerializeField] private ParticleSystem _dashParticles;
+    [SerializeField] private ParticleSystem _smokeParticles;
     private Player _player ;
     #endregion
 
@@ -82,7 +83,7 @@ public class PlayerMovementController : NetworkBehaviour
         UpdateDashColor(_player.playerColor);
         if (IsOwner == false) { enabled = false; return; }
         InitializeDashVFX();
-
+        _smokeParticles.Stop();
     }
 
     private void FixedUpdate()
