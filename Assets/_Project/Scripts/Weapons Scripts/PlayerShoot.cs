@@ -73,7 +73,7 @@ namespace Project
             InputManager.instance.reload.AddListener(StartReload);
             GameEvent.onPlayerWeaponChangedLocalEvent.Subscribe(UpdateCurrentWeapon, this);
             GameEvent.onPlayerWeaponChangedServerEvent.Subscribe(UpdateCurrentWeapon, this);
-            LocalEquipKnife(true);
+            LocalEquipKnife(true,true);
             EquipKnifeServerRpc(true);
             hasKnifeEquipped = false;
         }
@@ -295,7 +295,7 @@ namespace Project
         {
             if (IsOwner == false) LocalEquipKnife(hasKnife);
         }
-        private void LocalEquipKnife(bool hasKnife)
+        private void LocalEquipKnife(bool hasKnife, bool firstEquip = false)
         {
             if (_weapon == null) _weapon = _weaponManager.GetCurrentWeapon();
             if (_fakeWeapon == null) _fakeWeapon = _weaponManager.GetFakeWeapon();
@@ -319,6 +319,7 @@ namespace Project
                 _weaponAnim.SetBool("isGunEquipped", true);
                 _fakeKnife.SetActive(false);
                 _knife.SetActive(false);
+                if (firstEquip) return; 
                 _fakeWeapon.gameObject.SetActive(true);
                 _weapon.gameObject.SetActive(true);
             }

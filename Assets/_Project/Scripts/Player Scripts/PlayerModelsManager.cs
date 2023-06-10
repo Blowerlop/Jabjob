@@ -27,26 +27,20 @@ namespace Project
             }
         }
         
-        public void ChangeCharacterModelIg(SkinnedMeshRenderer playerMeshRenderer, string modelName)
+        public void ChangeCharacterModelIg(SkinnedMeshRenderer playerMeshRenderer, SkinnedMeshRenderer playerHandsMeshRenderer, string modelName)
         {
             if (meshDictionary.TryGetValue(modelName, out Mesh mesh))
             {
                 playerMeshRenderer.sharedMesh = mesh;
                 playerMeshRenderer.GetComponent<MeshCollider>().sharedMesh = mesh;
             }
-            else
-            {
-                Debug.LogError($"There is no mesh attributed to the {modelName} model name");
-            }
-
-            if (materialDictionary.TryGetValue(modelName, out Material material))
-            {
-                playerMeshRenderer.material = material;
-            }
-            else
-            {
-                Debug.LogError($"There is no material attributed to the {modelName} model name");
-            }
+            else  Debug.LogError($"There is no mesh attributed to the {modelName} model name"); 
+            if (materialDictionary.TryGetValue(modelName, out Material material))  playerMeshRenderer.material = material; 
+            else   Debug.LogError($"There is no material attributed to the {modelName} model name");
+            if (handsMeshDictionary.TryGetValue(modelName, out Mesh handsMesh))  playerHandsMeshRenderer.sharedMesh = handsMesh; 
+            else Debug.LogError($"There is no hands mesh attributed to the {modelName} model name");
+            if (handsMaterialDictionary.TryGetValue(modelName, out Material handsMaterial)) playerHandsMeshRenderer.material = handsMaterial;
+            else Debug.LogError($"There is no hands material attributed to the {modelName} model name");
 
             playerMeshRenderer.GetComponent<Paintable>().Initialize();  
         }
@@ -82,7 +76,7 @@ namespace Project
             Player[] players = GameManager.instance.GetPlayers();
             for(int i = 0; i < players.Length; i++)
             {
-                ChangeCharacterModelIg(players[i].playerMesh, players[i].modelName);
+                ChangeCharacterModelIg(players[i].playerMesh, players[i].handsMesh, players[i].modelName);
             }
         }
     }
