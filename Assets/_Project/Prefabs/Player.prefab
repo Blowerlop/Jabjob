@@ -1683,6 +1683,30 @@ MonoBehaviour:
     m_InternalValue: 0
   _killer: {fileID: 0}
   playerMesh: {fileID: 0}
+  _alphaCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 1
+      outSlope: 1
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 1
+      outSlope: 1
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!114 &6322688210165290436
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -14284,7 +14308,7 @@ PrefabInstance:
     - target: {fileID: 2864434051079391800, guid: 56a727b5cdc349f4aaeabdf71c43d31d,
         type: 3}
       propertyPath: m_fontSize
-      value: 27.05
+      value: 18
       objectReference: {fileID: 0}
     - target: {fileID: 3016183279462453667, guid: 56a727b5cdc349f4aaeabdf71c43d31d,
         type: 3}

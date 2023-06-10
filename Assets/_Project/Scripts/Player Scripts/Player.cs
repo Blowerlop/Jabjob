@@ -50,7 +50,7 @@ namespace Project
         private PlayerShoot _playerShoot;
         [HideInInspector] public SkinnedMeshRenderer playerMesh; 
         private FeedbackManagerUI _feedbackManager;
-        private Paintable _paintable;
+        private Paintable[] _paintable;
         private float _gameDuration = 300;
         [SerializeField]private AnimationCurve _alphaCurve;
         #endregion
@@ -71,9 +71,11 @@ namespace Project
         {
             Cursor.lockState = CursorLockMode.Locked;
             
-            GameEvent.onPlayerJoinGameEvent.Invoke(this, true, OwnerClientId);
             GameManager.instance.AddPlayerLocal(OwnerClientId, this);
+            GameEvent.onPlayerJoinGameEvent.Invoke(this, true, OwnerClientId);
 
+            
+            
             _networkName.OnValueChanged += OnNameValueChange;
             _networkColor.OnValueChanged += OnColorValueChange;
             _networkModel.OnValueChanged += OnModelValueChange; 
@@ -103,7 +105,9 @@ namespace Project
 
             _gameDuration = GameManager.instance.gameMode.gameDurationInSeconds;
 
-
+            GetComponent<CharacterController>().enabled = false;
+            transform.position = new Vector3(OwnerClientId * 100, -500.0f, 0.0f);
+            GetComponent<CharacterController>().enabled = true;
         }
 
         private void Start()
@@ -333,10 +337,13 @@ namespace Project
 
         void UpdateAlpha (float timer)
         {
-            _paintable ??= gameObject.GetComponentInChildren<Paintable>();
-            _paintable.SetAlpha(GetAlphaValueToApply(_gameDuration - timer));
-        }
+            _paintable ??= gameObject.GetComponentsInChildren<Paintable>();
 
+            if (IsOwner) return;
+            
+            _paintable.ForEach(x => x.SetAlpha(GetAlphaValueToApply(_gameDuration - timer)));
+        }
+ 
         float GetAlphaValueToApply(float value) => _alphaCurve.Evaluate(value / (_gameDuration / 3));
 
         #endregion

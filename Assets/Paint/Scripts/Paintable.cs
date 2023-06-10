@@ -51,12 +51,12 @@ public class Paintable : MonoBehaviour {
         extendIslandsRenderTexture.Release();
         supportTexture.Release();
     }
-    
+
 
     public void SetAlpha(float alpha)
     {
-        Debug.Log(GetComponent<SkinnedMeshRenderer>().material.GetFloat(alphaID));
-        GetComponent<SkinnedMeshRenderer>().material.SetFloat(alphaID,alpha);
-        Debug.Log(GetComponent<SkinnedMeshRenderer>().material.GetFloat(alphaID));
+        Debug.Log(GetComponent<Renderer>().material.GetFloat(alphaID));
+        GetComponent<Renderer>().material.SetFloat(alphaID, alpha);
+        Debug.Log(GetComponent<Renderer>().material.GetFloat(alphaID));
     }
 }

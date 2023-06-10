@@ -141,6 +141,8 @@ public class PlayerMovementController : NetworkBehaviour
         InputManager.instance.isJumping = false;
     }
 
+    // public void Tp(Vector3 position) => _characterController.
+    
     private void PerformMovement()
     {
         float targetVelocity;

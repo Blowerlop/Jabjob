@@ -299,7 +299,7 @@ namespace Project
         {
             if (_weapon == null) _weapon = _weaponManager.GetCurrentWeapon();
             if (_fakeWeapon == null) _fakeWeapon = _weaponManager.GetFakeWeapon();
-            if (!hasKnife) //Si on a pas le couteaux on l'équipe
+            if (!hasKnife) //Si on a pas le couteaux on l'ï¿½quipe
             {
                 _weaponAnim.ResetTrigger("Fire");
                 _weaponAnim.SetBool("isGunEquipped", false);
@@ -319,8 +319,8 @@ namespace Project
                 _weaponAnim.SetBool("isGunEquipped", true);
                 _fakeKnife.SetActive(false);
                 _knife.SetActive(false);
-                _fakeWeapon.gameObject.SetActive(true);
-                _weapon.gameObject.SetActive(true);
+                if (_fakeWeapon != null) _fakeWeapon.gameObject.SetActive(true);
+                if (_weapon != null) _weapon.gameObject.SetActive(true);
             }
         }
         public void PerformKnifeCalculation()

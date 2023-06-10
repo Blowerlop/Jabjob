@@ -49,6 +49,7 @@ namespace Project
         public static readonly Event<ulong> onPlayerJoinGameEvent = new Event<ulong>(nameof(onPlayerJoinGameEvent));
         public static readonly Event<ulong> onPlayerLeaveGameEvent = new Event<ulong>(nameof(onPlayerLeaveGameEvent));
         public static readonly Event<float> onGameTimerUpdated = new Event<float>(nameof(onGameTimerUpdated));
+        public static readonly Event onAllPlayersJoinEvent = new Event(nameof(onAllPlayersJoinEvent));
 
         #endregion
 

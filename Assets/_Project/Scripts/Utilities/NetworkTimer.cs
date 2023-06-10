@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Threading.Tasks;
+using Project.Utilities;
 using Unity.Netcode;
 using UnityEngine;
 
@@ -14,7 +15,7 @@ namespace Project
             private float _timer;
             [SerializeField] private float _tickRate = 1.0f;
             private readonly NetworkVariable<bool> _hasATimerStarted = new NetworkVariable<bool>(false);
-            private Coroutine _coroutine;
+            private Coroutine _timerCoroutine;
             
 
 
@@ -40,7 +41,7 @@ namespace Project
 
             public void StartSimpleTimer(float timeInSeconds, bool forceStart = false) => StartTimerWithCallback(timeInSeconds, null, true);
             
-            public void StartTimerWithCallback(float timeInSeconds, Action callback, bool forceStart = false)
+            public void StartTimerWithCallback(float timeInSeconds, Action callback, bool forceStart = false, bool sendEventEveryTick = false, Action<float> azdazbd = null)
             {
                 if (_hasATimerStarted.Value && forceStart == false)
                 {
@@ -50,17 +51,25 @@ namespace Project
 
                 if (_hasATimerStarted.Value)
                 {
-                    Utilities.UtilitiesClass.instance.StopCoroutine(_coroutine);
+                    StopTimer();
                 }
 
-                _coroutine = Utilities.UtilitiesClass.instance.StartCoroutine(TimerWithCallback(timeInSeconds, callback));
+                _timerCoroutine = StartCoroutine(TimerWithCallback(timeInSeconds, callback, sendEventEveryTick, azdazbd));
             }
             
-            private IEnumerator TimerWithCallback(float timeInSeconds, Action callback)
+            private IEnumerator TimerWithCallback(float timeInSeconds, Action callback, bool sendEventEveryTick = false, Action<float> azdazbd = null)
             {
                 _hasATimerStarted.Value = true;
                 _timer = timeInSeconds;
-                float tickRateTimer = _tickRate;
+                float tickRateTimer = 0;
+                
+                _networkTimer.Value = _timer;
+                
+                
+                azdazbd?.Invoke(Mathf.FloorToInt(_timer % 60));
+                
+                
+                
                 
                 while (_timer > 0.0f)
                 {
@@ -71,6 +80,11 @@ namespace Project
                     {
                         tickRateTimer = _tickRate;
                         _networkTimer.Value = _timer;
+
+                        if (sendEventEveryTick)
+                        {
+                            azdazbd?.Invoke(Mathf.FloorToInt(_timer % 60));
+                        }
                     }
                     
                     yield return null;
@@ -78,23 +92,16 @@ namespace Project
                 
                 callback?.Invoke();
                 _hasATimerStarted.Value = false;
-                
-                
-                
-                // _hasATimerStarted.Value = true;
-                // _networkTimer.Value = timeInSeconds;
-                // while (_networkTimer.Value > 0.0f)
-                // {
-                //     _networkTimer.Value -= Time.deltaTime;
-                //     yield return null;
-                // }
-                //
-                // callback?.Invoke();
-                // _hasATimerStarted.Value = false;
             }
+
+        
 
             public float GetElapsedTime() => _networkTimer.Value;
             
+            public void StopTimer()
+            {
+                if (_timerCoroutine != null) StopCoroutine(_timerCoroutine);
+            }
 
             // public static async void StartTimerWithCallback(float timeInSeconds, Action callback)
             // {
