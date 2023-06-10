@@ -10,6 +10,7 @@ namespace Project
         public string name;
         public Mesh meshModel;
         public Material materialModel;
+        public Mesh meshHands;
         public Material materialHands;
         public Sprite portrait; 
     }

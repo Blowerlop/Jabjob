@@ -12,7 +12,7 @@ namespace Project
         [SerializeField] TextMeshProUGUI playerName;
         [SerializeField] TextMeshProUGUI modelName;
         [SerializeField] Image playerColor;
-
+        [SerializeField] Image playerModel; 
         public void SetName(string playerName)
         {
             this.playerName.text = playerName;
@@ -20,6 +20,8 @@ namespace Project
         public void SetModel(string modelName)
         {
             this.modelName.text = modelName;
+            int modelIndex = PlayerModelsManager.instance.GetCurrentIndexInList(modelName);
+            this.playerModel.sprite = PlayerModelsManager.instance.PlayerModelList[modelIndex].portrait;
         }
         public void SetColor(Color color)
         {
@@ -30,6 +32,8 @@ namespace Project
             playerColor.color = color;
             this.playerName.text = playerName;
             this.modelName.text = modelName;
+            int modelIndex = PlayerModelsManager.instance.GetCurrentIndexInList(modelName);
+            this.playerModel.sprite = PlayerModelsManager.instance.PlayerModelList[modelIndex].portrait; 
         }
     }
 }

@@ -13,6 +13,8 @@ namespace Project
         public PlayerModelsList[] PlayerModelList;
         private Dictionary<string, Mesh> meshDictionary = new Dictionary<string, Mesh>();
         private Dictionary<string, Material> materialDictionary = new Dictionary<string, Material>();
+        private Dictionary<string, Mesh> handsMeshDictionary = new Dictionary<string, Mesh>();
+        private Dictionary<string, Material> handsMaterialDictionary = new Dictionary<string, Material>();
         private void Awake()
         {
             instance = this;
@@ -20,6 +22,8 @@ namespace Project
             {
                 meshDictionary.Add(PlayerModelList[i].name, PlayerModelList[i].meshModel);
                 materialDictionary.Add(PlayerModelList[i].name, PlayerModelList[i].materialModel);
+                handsMeshDictionary.Add(PlayerModelList[i].name, PlayerModelList[i].meshHands);
+                handsMaterialDictionary.Add(PlayerModelList[i].name, PlayerModelList[i].materialHands);
             }
         }
         
