@@ -338,7 +338,6 @@ namespace Project
         {
             Player player = GameManager.instance.GetPlayer(clientId);
             player.transform.position = spawnPostions[UnityEngine.Random.Range(0, spawnPostions.Count)];
-            Debug.Log(player.transform.position + "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
         }
 
         private void OnKillValueChange(int previousValue, int nextValue) => GameEvent.onPlayerGetAKillEvent.Invoke(this, true, OwnerClientId, nextValue); 
