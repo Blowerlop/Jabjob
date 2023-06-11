@@ -391,9 +391,16 @@ namespace Project
             _canShoot = true;
         }
 
-        public void ReloadTotalAmmo()
+        public void ReloadTotalAmmo(int amount)
         {
-            _weapon.totalAmmo = _weaponData.totalAmmo;
+            if (_weapon.totalAmmo + amount > _weaponData.totalAmmo) 
+            {
+                _weapon.totalAmmo = _weaponData.totalAmmo;
+            }
+            else
+            {
+                _weapon.totalAmmo += amount;
+            }
             GameEvent.onPlayerWeaponTotalAmmoChangedEvent.Invoke(this, false, _weapon.totalAmmo);
         }
 
