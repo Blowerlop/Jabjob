@@ -50,7 +50,10 @@ namespace Project
         public GameObject projectile;
 
         [Header("Sound")]
-        public AudioClip knifeSlash; 
+        public AudioClip[] knifeEquipSounds;
+        public AudioClip[] gunEquipSounds;
+        private int knifeLoop = 0;
+        private int gunLoop = 0; 
         #endregion
 
 
@@ -73,6 +76,7 @@ namespace Project
             InputManager.instance.reload.AddListener(StartReload);
             GameEvent.onPlayerWeaponChangedLocalEvent.Subscribe(UpdateCurrentWeapon, this);
             GameEvent.onPlayerWeaponChangedServerEvent.Subscribe(UpdateCurrentWeapon, this);
+            ReloadTotalAmmo();
             LocalEquipKnife(true);
             EquipKnifeServerRpc(true);
             hasKnifeEquipped = false;
@@ -120,6 +124,7 @@ namespace Project
                                 if (hit.transform.TryGetComponent(out IHealthManagement healthManagement))
                                 {
                                     Debug.Log("Hit");
+                                    _player.damageDealt += _weaponData.damage; 
                                     healthManagement.Damage(_weaponData.damage, OwnerClientId);
                                 }
                             }
@@ -159,6 +164,7 @@ namespace Project
             
             if(Input.GetKeyDown(KeyCode.T))
             {
+                PlayEquipKnifeSound(hasKnifeEquipped);
                 LocalEquipKnife(hasKnifeEquipped);
                 EquipKnifeServerRpc(hasKnifeEquipped);
                 hasKnifeEquipped = !hasKnifeEquipped;
@@ -282,7 +288,6 @@ namespace Project
         {
             _fakeWeaponAnim.SetTrigger("Fire");
             _weaponAnim.SetTrigger("Fire");
-            _audioSource.PlayOneShot(knifeSlash);
         }
 
         [ServerRpc]
@@ -323,6 +328,21 @@ namespace Project
                 if (_weapon != null) _weapon.gameObject.SetActive(true);
             }
         }
+        private void PlayEquipKnifeSound(bool hasKnife) // ON LE PLAY UNIQUEMENT EN LOCAL
+        {
+            _audioSource.Stop();
+            if (hasKnife) {
+                _audioSource.clip = gunEquipSounds[gunLoop];
+                _audioSource.Play();
+                gunLoop = (gunLoop + 1) % gunEquipSounds.Length; 
+             }
+            else
+            {
+                _audioSource.clip = knifeEquipSounds[knifeLoop];
+                _audioSource.Play();
+                knifeLoop = (knifeLoop + 1) % knifeEquipSounds.Length;
+            }
+        }
         public void PerformKnifeCalculation()
         {
             Vector3 weaponHolderPosition = _weaponHolder.position;
@@ -335,6 +355,7 @@ namespace Project
                 KnifeServerRpc(weaponHolderPosition, rootCameraPosition, hit.point);
                 if (hit.transform.TryGetComponent(out IHealthManagement healthManagement))
                 {
+                    _player.damageDealt += knifeDamage; 
                     healthManagement.Damage(knifeDamage, OwnerClientId); 
                 }
             }
@@ -393,6 +414,8 @@ namespace Project
 
         public void ReloadTotalAmmo()
         {
+            _weapon = _weaponManager.GetCurrentWeapon();
+            if (_weapon == null) return; 
             _weapon.totalAmmo = _weaponData.totalAmmo;
             GameEvent.onPlayerWeaponTotalAmmoChangedEvent.Invoke(this, false, _weapon.totalAmmo);
         }

@@ -1679,6 +1679,8 @@ MonoBehaviour:
     m_InternalValue: 0
   _networkScore:
     m_InternalValue: 0
+  _networkDamageDealt:
+    m_InternalValue: 0
   _networkIsHost:
     m_InternalValue: 0
   _killer: {fileID: 0}
@@ -1851,7 +1853,11 @@ MonoBehaviour:
   _fakeKnife: {fileID: 6663113862696078369}
   _knife: {fileID: 544786085285379401}
   projectile: {fileID: 0}
-  knifeSlash: {fileID: 0}
+  knifeEquipSounds:
+  - {fileID: 8300000, guid: a2293533e9059fc4d8a1348310117a2b, type: 3}
+  gunEquipSounds:
+  - {fileID: 8300000, guid: 22d166cdc430c6b4082aa8e6e5acb932, type: 3}
+  - {fileID: 8300000, guid: 495b02c2e19d96c45b8f0477705e55ed, type: 3}
   bulletTrail: {fileID: 122335204853139034, guid: f955bf13a83d4f140b53069d14ad51f3,
     type: 3}
 --- !u!82 &112438483417887341
@@ -1863,9 +1869,10 @@ AudioSource:
   m_GameObject: {fileID: 4408861272393954034}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
+  OutputAudioMixerGroup: {fileID: 1099280651373218669, guid: 1f2645f52c4cb03489b78032895c1598,
+    type: 2}
   m_audioClip: {fileID: 0}
-  m_PlayOnAwake: 1
+  m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1
   Loop: 0
@@ -2498,7 +2505,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: -1819380455838448394, guid: 1f2645f52c4cb03489b78032895c1598,
     type: 2}
   m_audioClip: {fileID: 0}
-  m_PlayOnAwake: 1
+  m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1
   Loop: 0
@@ -14279,7 +14286,7 @@ PrefabInstance:
     - target: {fileID: 2864434051079391800, guid: 56a727b5cdc349f4aaeabdf71c43d31d,
         type: 3}
       propertyPath: m_fontSize
-      value: 27.05
+      value: 27
       objectReference: {fileID: 0}
     - target: {fileID: 3016183279462453667, guid: 56a727b5cdc349f4aaeabdf71c43d31d,
         type: 3}
@@ -14589,6 +14596,76 @@ PrefabInstance:
       propertyPath: _playerShoot
       value: 
       objectReference: {fileID: -2871981651348838108}
+    - target: {fileID: 7469768906474389985, guid: 07b5054aeba37b54fae700a9f710cc55,
+        type: 3}
+      propertyPath: bodySourceSound
+      value: 
+      objectReference: {fileID: 6419659046427540035}
+    - target: {fileID: 7469768906474389985, guid: 07b5054aeba37b54fae700a9f710cc55,
+        type: 3}
+      propertyPath: soundList.Array.size
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 7469768906474389985, guid: 07b5054aeba37b54fae700a9f710cc55,
+        type: 3}
+      propertyPath: soundList.Array.data[0].name
+      value: PaintBrush0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7469768906474389985, guid: 07b5054aeba37b54fae700a9f710cc55,
+        type: 3}
+      propertyPath: soundList.Array.data[1].name
+      value: PaintBrush1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7469768906474389985, guid: 07b5054aeba37b54fae700a9f710cc55,
+        type: 3}
+      propertyPath: soundList.Array.data[2].name
+      value: PaintBrush2
+      objectReference: {fileID: 0}
+    - target: {fileID: 7469768906474389985, guid: 07b5054aeba37b54fae700a9f710cc55,
+        type: 3}
+      propertyPath: soundList.Array.data[3].name
+      value: Reload
+      objectReference: {fileID: 0}
+    - target: {fileID: 7469768906474389985, guid: 07b5054aeba37b54fae700a9f710cc55,
+        type: 3}
+      propertyPath: soundList.Array.data[4].name
+      value: KnifeOut2
+      objectReference: {fileID: 0}
+    - target: {fileID: 7469768906474389985, guid: 07b5054aeba37b54fae700a9f710cc55,
+        type: 3}
+      propertyPath: soundList.Array.data[5].name
+      value: KnifeOut2
+      objectReference: {fileID: 0}
+    - target: {fileID: 7469768906474389985, guid: 07b5054aeba37b54fae700a9f710cc55,
+        type: 3}
+      propertyPath: soundList.Array.data[0].sound
+      value: 
+      objectReference: {fileID: 8300000, guid: b68c9b05b70ce6446a557933bdb9a797, type: 3}
+    - target: {fileID: 7469768906474389985, guid: 07b5054aeba37b54fae700a9f710cc55,
+        type: 3}
+      propertyPath: soundList.Array.data[1].sound
+      value: 
+      objectReference: {fileID: 8300000, guid: 7f9500c52546a5b489da581e156d4409, type: 3}
+    - target: {fileID: 7469768906474389985, guid: 07b5054aeba37b54fae700a9f710cc55,
+        type: 3}
+      propertyPath: soundList.Array.data[2].sound
+      value: 
+      objectReference: {fileID: 8300000, guid: 3d80ee4a1ba007141bb900357e407fe8, type: 3}
+    - target: {fileID: 7469768906474389985, guid: 07b5054aeba37b54fae700a9f710cc55,
+        type: 3}
+      propertyPath: soundList.Array.data[3].sound
+      value: 
+      objectReference: {fileID: 8300000, guid: bf14d4ae9b8f50d4aa7a41d1799ef50b, type: 3}
+    - target: {fileID: 7469768906474389985, guid: 07b5054aeba37b54fae700a9f710cc55,
+        type: 3}
+      propertyPath: soundList.Array.data[4].sound
+      value: 
+      objectReference: {fileID: 8300000, guid: c7908c40e9a6ef24d98e8020eb321083, type: 3}
+    - target: {fileID: 7469768906474389985, guid: 07b5054aeba37b54fae700a9f710cc55,
+        type: 3}
+      propertyPath: soundList.Array.data[5].sound
+      value: 
+      objectReference: {fileID: 8300000, guid: c7908c40e9a6ef24d98e8020eb321083, type: 3}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 07b5054aeba37b54fae700a9f710cc55, type: 3}
 --- !u!4 &644242601440174796 stripped

@@ -169,13 +169,14 @@ namespace Project
         {
             if (IsServer)
             {
-                Timer.StartTimerWithCallbackRealTime(10.0f, () =>
+                Timer.StartTimerWithCallbackRealTime(30.0f, () =>
                 {
                     NetworkManager.Singleton.SceneManager.OnLoadEventCompleted += (sceneName, mode, completed, @out) =>
                     {
                         NetworkManager.Singleton.Shutdown();
                         Cursor.lockState = CursorLockMode.None;
                         Cursor.visible = true;
+                        SoundManager2D.instance.PlayBackgroundMusic("Start Scene Background Music");
                     };
                         
                     SceneManager.LoadSceneNetwork("MenuScene");
@@ -189,7 +190,7 @@ namespace Project
         {
             Debug.Log("WarmUp starting up !");
             Debug.Log("Players in lobby : " + LobbyManager.Instance.joinedLobby.Players.Count);
-            UpdateWarmUpTextClientRpc(null);
+            UpdateWarmUpTextClientRpc(null); 
             
             _networkTimer.StartTimerWithCallback(120.0f, () => Debug.Log("Time's up ! Not all the players had been able to join the server !"));
         }
