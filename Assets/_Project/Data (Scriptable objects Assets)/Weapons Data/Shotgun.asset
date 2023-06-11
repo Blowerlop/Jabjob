@@ -17,6 +17,7 @@ MonoBehaviour:
   model: {fileID: 919132149155446097, guid: 02a0fb548f71fbd4793e99c8e0a7667d, type: 3}
   prefab: {fileID: 0}
   maxAmmo: 7
+  totalAmmo: 250
   damage: 25
   shootRate: 0.17
   dispersion: 0
@@ -26,6 +27,7 @@ MonoBehaviour:
   raycast: 0
   spray: 1
   bulletNumber: 11
+  bulletTrailMaterial: {fileID: 0}
   FiringSound: {fileID: 0}
   paintRadius: 0.76
   paintStrength: 0.48

@@ -30,7 +30,7 @@ namespace Project.Utilities
             _coroutine = UtilitiesClass.instance.StartCoroutine(SimpleTimer(timeInSeconds));
         }
 
-        public void StartTimerWithCallback(float timeInSeconds, Action callback, bool forceStart = false)
+        public void StartTimerWithCallbackScaledTime(float timeInSeconds, Action callback, bool forceStart = false)
         {
             if (_hasATimerStarted && forceStart == false)
             {
@@ -77,17 +77,31 @@ namespace Project.Utilities
         public float GetTimeRemaining() => timer;
 
 
-        public static void StartTimerWithCallback(float timeInSeconds, Action callback)
+        public static Coroutine StartTimerWithCallbackScaledTime(float timeInSeconds, Action callback)
         {
             // int timeInMilliseconds = (int)(timeInSeconds * 1000);
             // await Task.Delay(timeInMilliseconds);
             // callback.Invoke();
-            UtilitiesClass.instance.StartCoroutine(TimerWithCallbackStatic(timeInSeconds, callback));
+            return UtilitiesClass.instance.StartCoroutine(TimerWithCallbackStaticScaledTime(timeInSeconds, callback));
+        }
+        
+        public static Coroutine StartTimerWithCallbackRealTime(float timeInSeconds, Action callback)
+        {
+            // int timeInMilliseconds = (int)(timeInSeconds * 1000);
+            // await Task.Delay(timeInMilliseconds);
+            // callback.Invoke();
+            return UtilitiesClass.instance.StartCoroutine(TimerWithCallbackStaticRealTime(timeInSeconds, callback));
         }
 
-        private static IEnumerator TimerWithCallbackStatic(float timeInSeconds, Action callback)
+        private static IEnumerator TimerWithCallbackStaticScaledTime(float timeInSeconds, Action callback)
         {
             yield return new WaitForSeconds(timeInSeconds);
+            callback.Invoke();
+        }
+        
+        private static IEnumerator TimerWithCallbackStaticRealTime(float timeInSeconds, Action callback)
+        {
+            yield return new WaitForSecondsRealtime(timeInSeconds);
             callback.Invoke();
         }
     }

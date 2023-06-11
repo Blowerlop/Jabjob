@@ -27,6 +27,9 @@ public class SOWeapon : ScriptableObject
     [Header("Properties"),Tooltip(@"Weapon max ammo in a loader"), Range(0, 50)]
     public int maxAmmo;
 
+    [Header("Properties"), Tooltip(@"The maximum number of bullets the player can shoot before having to reload at a terminal")]
+    public int totalAmmo;
+
     [Min(1)] public int damage;
 
     [Tooltip(@"Weapon shooting rate (bullets per sec)"), Range(0, 2)]

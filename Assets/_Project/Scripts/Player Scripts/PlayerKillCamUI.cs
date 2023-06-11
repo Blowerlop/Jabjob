@@ -5,6 +5,7 @@ using Cinemachine;
 using TMPro;
 using Unity.Netcode;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace Project
 {
@@ -13,7 +14,9 @@ namespace Project
         [SerializeField] private TMP_Text _spectatedPlayerNameText;
 
         [SerializeField] private CinemachineVirtualCamera _cinemachineVirtualCamera;
-         
+
+        [SerializeField] private UnityEvent _onKillCamEnableEvent = new UnityEvent();
+        [SerializeField] private UnityEvent _onKillCamDisableEvent = new UnityEvent();
         private void Awake()
         {
             // SetSpectatedPlayerNameText(OwnerClientId, GameManager.instance.GetPlayer(OwnerClientId).playerName);
@@ -21,8 +24,15 @@ namespace Project
             GameEvent.onPlayerDiedEvent.Subscribe(EnableKillCam, this);
             GameEvent.onPlayerRespawnedEvent.Subscribe(DisableKillCam, this);
             
-            gameObject.SetActive(false); 
-        } 
+            // gameObject.SetActive(false); 
+        }
+
+        public override void OnNetworkSpawn()
+        {
+            base.OnNetworkSpawn();
+            
+            if (IsOwner) Destroy(this);
+        }
 
         public override void OnDestroy()
         {
@@ -31,31 +41,25 @@ namespace Project
             GameEvent.onPlayerRespawnedEvent.Unsubscribe(DisableKillCam);
         }
          
-
-        private void SetSpectatedPlayerNameText(ulong clientId, StringNetwork playerName) => SetSpectatedPlayerNameText(clientId, playerName.ToString());
-        private void SetSpectatedPlayerNameText(ulong clientId, string playerName)
-        {
-            if (clientId == OwnerClientId)
-            {
-                _spectatedPlayerNameText.text = playerName.ToString();
-            }
-        }
+        
 
         private void EnableKillCam(ulong playerKilledId, ulong playerKillerId, int playerDeaths)
         {
-            _spectatedPlayerNameText.text = GameManager.instance.GetPlayer(playerKillerId).name;
+            if (playerKillerId != OwnerClientId || GameManager.instance.GetPlayer(playerKilledId).enabled == false) return;
             
-            gameObject.SetActive(true);
-            // _cinemachineVirtualCamera.Priority = 2;
-            GameManager.instance.GetPlayer(playerKillerId).GetComponentInChildren<CinemachineVirtualCamera>().Priority =
-                3;
+            _spectatedPlayerNameText.text = $"Spectating : {GameManager.instance.GetPlayer(playerKillerId).name}";
+            
+            transform.GetChild(0).gameObject.SetActive(true);
+            _cinemachineVirtualCamera.Priority = 3;
+            _onKillCamEnableEvent.Invoke();
         }
 
         private void DisableKillCam(ulong playerKilledId)
         {
-            gameObject.SetActive(false);
-            // _cinemachineVirtualCamera.Priority = -1;
-
+            if (playerKilledId == OwnerClientId) return;
+            transform.GetChild(0).gameObject.SetActive(false);
+            _cinemachineVirtualCamera.Priority = -1;
+            _onKillCamDisableEvent.Invoke();  
         }
     }
 }

@@ -27,6 +27,8 @@ public class VivoxManager : MonoBehaviour
     private void Awake()
     {
         _lobbyManager = FindObjectOfType<LobbyManager>();
+        if (_lobbyManager == null) return;
+        
         _lobbyManager.VivoxOnAuthenticate += InitAndLoginVivox;
         _lobbyManager.VivoxOnCreateLobby += VivoxOnCreateLobby;
         _lobbyManager.VivoxOnJoinLobby += VivoxOnJoinLobby;

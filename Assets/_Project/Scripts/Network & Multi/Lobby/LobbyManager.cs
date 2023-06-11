@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using _Project.Scripts.Managers;
+using Project.Utilities;
 using TMPro;
 using Unity.Netcode;
 using Unity.Services.Authentication;
@@ -28,6 +29,7 @@ public class LobbyManager : MonoBehaviour {
     public const string KEY_GAMEMAP_NAME = "GameMapName";
     public const string KEY_VIVOX_CHAN_NAME = "VivoxChanName";
     public int maxPlayerLobby = 4;
+
 
 
     public event EventHandler OnLeftLobby;
@@ -62,7 +64,7 @@ public class LobbyManager : MonoBehaviour {
     private float heartbeatTimer;
     private float lobbyPollTimer;
     private float refreshLobbyListTimer = 5f;
-    private Lobby joinedLobby;
+    public Lobby joinedLobby { get; private set; }
     private string playerName;
     private string playerModel = "Hotdog"; 
     private Color playerColor = Color.white;
@@ -84,7 +86,6 @@ public class LobbyManager : MonoBehaviour {
     private void Start()
     {
         OnJoinedLobby += (sender, args) =>         Debug.Log("Player id in lobby : " + AuthenticationService.Instance.PlayerId);
-
     }
     
     private void Update() {
@@ -169,7 +170,8 @@ public class LobbyManager : MonoBehaviour {
                         RelayWithLobby.Instance.JoinRelay(joinedLobby.Data[KEY_RELAY_GAME].Value);
                         OnStartGame?.Invoke(this, EventArgs.Empty);
                     }
-                    joinedLobby = null;
+
+                    Timer.StartTimerWithCallbackRealTime(10.0f, () => joinedLobby = null);
 
                 }
             }
@@ -203,7 +205,7 @@ public class LobbyManager : MonoBehaviour {
             { KEY_PLAYER_COLOR, new PlayerDataObject(PlayerDataObject.VisibilityOptions.Public, Color.white.ToString()) },
         });
     }
-    
+
     public Player GetPlayer(string playerId) {
         return new Player(playerId, null, new Dictionary<string, PlayerDataObject> {
             { KEY_PLAYER_NAME, new PlayerDataObject(PlayerDataObject.VisibilityOptions.Public, playerName) },
@@ -339,6 +341,8 @@ public class LobbyManager : MonoBehaviour {
         }
 
         OnJoinedLobby?.Invoke(this, new LobbyEventArgs { lobby = lobby });
+        
+
     }
 
     public async void UpdatePlayerName(string playerName) {
@@ -466,7 +470,7 @@ public class LobbyManager : MonoBehaviour {
         if (IsLobbyHost())
         {
             try
-            { 
+            {
                 Debug.Log("Start Game");
                 string relayCode = await RelayWithLobby.Instance.CreateRelay();
                 Lobby lobby = await Lobbies.Instance.UpdateLobbyAsync(joinedLobby.Id, new UpdateLobbyOptions
@@ -477,11 +481,17 @@ public class LobbyManager : MonoBehaviour {
                     }
                 });
                 joinedLobby = lobby;
+                Debug.Log(joinedLobby);
                 OnStartGame?.Invoke(this, EventArgs.Empty);
+
+                
                 // SceneManager.LoadSceneAsyncNetworkServerRpc(SceneManager.EScene.Multi_Lobby); 
                 // SceneManager.LoadSceneNetwork(SceneManager.EScene.Multi_Lobby);ù
                 SceneManager.LoadSceneNetwork(joinedLobby.Data[KEY_GAMEMAP_NAME].Value);
-            }
+                
+                  
+                Debug.Log("Instant log : " + Time.timeSinceLevelLoad);
+            } 
             catch (LobbyServiceException e)
             {
                 Debug.Log(e);
@@ -513,6 +523,7 @@ public class LobbyManager : MonoBehaviour {
             });
 
             joinedLobby = lobby;
+            
 
             OnLobbyGameModeChanged?.Invoke(this, new LobbyEventArgs { lobby = joinedLobby });
         } catch (LobbyServiceException e) {

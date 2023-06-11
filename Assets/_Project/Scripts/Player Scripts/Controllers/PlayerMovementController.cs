@@ -6,6 +6,7 @@ using Unity.Netcode;
 using UnityEngine;
 using _Project.Scripts.Managers;
 using UnityEngine.VFX;
+using Timer = Project.Utilities.Timer;
 
 public class PlayerMovementController : NetworkBehaviour
 {
@@ -15,6 +16,12 @@ public class PlayerMovementController : NetworkBehaviour
     [SerializeField] private float _moveSpeed = 6.0f;
     private float _speedOffset = 0.1f;
     private Vector3 characterControllerLastVelocity;
+
+    [Header("Dash")]
+    [SerializeField] private int _dashNumber = 3;
+    [SerializeField] private float _dashCooldown = 3;
+    private int currentDashNumber = 3;
+    private Timer _timer = new Timer();
 
     [Header("Gravity")]
     [SerializeField] private bool _gravityEnabled = true;
@@ -53,7 +60,8 @@ public class PlayerMovementController : NetworkBehaviour
     [SerializeField] private Animator _animatorMain;
     [SerializeField] private Animator _fakeWeaponAnim;
     [SerializeField] private Transform _DashVFX;
-    [SerializeField] private ParticleSystem _dashParticles; 
+    [SerializeField] private ParticleSystem _dashParticles;
+    [SerializeField] private ParticleSystem _smokeParticles;
     private Player _player ;
     #endregion
 
@@ -75,7 +83,7 @@ public class PlayerMovementController : NetworkBehaviour
         UpdateDashColor(_player.playerColor);
         if (IsOwner == false) { enabled = false; return; }
         InitializeDashVFX();
-
+        _smokeParticles.Stop();
     }
 
     private void FixedUpdate()
@@ -85,12 +93,7 @@ public class PlayerMovementController : NetworkBehaviour
         PerformJumpAndGravity();
         PerformMovement();
 
-        if (InputManager.instance.isDashing)
-        {
-            AddForce(transform.forward * 2.0f);
-            _animatorMain.SetTrigger("Dash");
-            InputManager.instance.isDashing = false;
-        }
+        PerformDash();
     }
     #endregion
 
@@ -138,6 +141,8 @@ public class PlayerMovementController : NetworkBehaviour
         InputManager.instance.isJumping = false;
     }
 
+    // public void Tp(Vector3 position) => _characterController.
+    
     private void PerformMovement()
     {
         float targetVelocity;
@@ -237,6 +242,28 @@ public class PlayerMovementController : NetworkBehaviour
         */
     }
 
+    private void PerformDash()
+    {
+        if (InputManager.instance.isDashing)
+        {
+            if (currentDashNumber > 0)
+            {
+                AddForce(transform.forward * 2.0f);
+                _animatorMain.SetTrigger("Dash");
+                PlaySound("Dash");
+                currentDashNumber -= 1;
+                GameEvent.onPlayerDashEvent.Invoke(this, false, _dashCooldown);
+                _timer.StartTimerWithCallbackScaledTime(_dashCooldown+0.05f, ReloadDash);
+            }
+            InputManager.instance.isDashing = false;
+        }
+
+        if (currentDashNumber < _dashNumber)
+        {
+            _timer.StartTimerWithCallbackScaledTime(_dashCooldown+0.05f, ReloadDash);
+        }
+    }
+
     private void AddForce(Vector3 force)
     {
         _characterController.Move(force);
@@ -273,6 +300,10 @@ public class PlayerMovementController : NetworkBehaviour
     }
 
 
+    private void ReloadDash()
+    {
+        currentDashNumber += 1;
+    }
 
     private void OnDrawGizmos()
     {
@@ -287,6 +318,13 @@ public class PlayerMovementController : NetworkBehaviour
         // Draw Jump state
         Gizmos.color = _jumpCount == 0 ? Color.green : _jumpCount == 1 ? Color.yellow : Color.red;
         Gizmos.DrawSphere(new Vector3(playerPosition.x + _characterController.radius, playerPosition.y, playerPosition.z), 0.5f);
+    }
+
+    public void Teleport(Vector3 position)
+    {
+        _characterController.enabled = false;
+        _characterController.transform.position = position;
+        _characterController.enabled = true;
     }
     #endregion
 

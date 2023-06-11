@@ -15,7 +15,6 @@ public class PlayerCameraController : NetworkBehaviour
     [SerializeField] private float _sensitivity = 0.2f;
     [SerializeField] private float _threshold = 0.001f;
     float _rotateVerticalVelocity;
-    public float offset; 
     [Header("References")]
     // [SerializeField] private GameObject _playerCamera;
     private CinemachineVirtualCamera _cinemachineCamera;
@@ -71,7 +70,7 @@ public class PlayerCameraController : NetworkBehaviour
             _rotateVerticalVelocity = ClampAngle(this._rotateVerticalVelocity, -60.0f, 60.0f);
 
             transform.Rotate(rotateHorizontalVelocity * Vector3.up);
-            _cameraTarget.localRotation = Quaternion.Euler(this._rotateVerticalVelocity, offset, 0.0f);
+            _cameraTarget.localRotation = Quaternion.Euler(this._rotateVerticalVelocity, 0.0f, 0.0f);
             //if (rotateHorizontalVelocity > 0) _animator.SetBool("isRotatingLeft", true);
             //else if (rotateHorizontalVelocity < 0) _animator.SetBool("isRotatingRight", true);
         }

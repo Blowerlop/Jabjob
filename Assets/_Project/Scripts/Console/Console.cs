@@ -25,7 +25,7 @@ namespace Utils
             "Painting",
             "Physics Projectile (Project.OnTriggerEnterEventClass) invoked event",
             "Init",
-            "Shoot",
+            "Shoot", 
             "Method - OnTriggerEnter - has subscribed",
         };
 

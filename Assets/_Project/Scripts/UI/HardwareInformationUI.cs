@@ -7,7 +7,7 @@ namespace Project
     public class HardwareInformationUI : MonoBehaviour
     {
         [Header("Fps")]
-        [SerializeField] private bool _showFps = false;
+        [SerializeField] [ReadOnlyField] private bool _showFps = false;
         public bool showFps
         {
             get => _showFps;

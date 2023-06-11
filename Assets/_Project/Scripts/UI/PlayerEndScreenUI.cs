@@ -37,10 +37,22 @@ namespace Project
         }
 
 
+        private void OnEnable()
+        {
+            GameEvent.onGameFinishedEvent.Subscribe(Initialize, this);
+        }
+
+        private void OnDisable()
+        {
+            GameEvent.onGameFinishedEvent.Unsubscribe(Initialize);
+        }
+
+#if UNITY_EDITOR
         private void Update()
         {
             if(Input.GetKeyDown(KeyCode.F10)) { Initialize(); }
         }
+#endif
         public void Initialize()
         {
             imageBackground.enabled = true;
@@ -55,13 +67,18 @@ namespace Project
                 singlePlayer.transform.localEulerAngles = Vector3.zero;
                 int celebrationNumber = GetCelebrationNumber(i, players);
                 int finalPlace = i > 0 && players[i].score == players[i - 1].score ? playerList[i - 1].endingPlace : i + 1; 
-                singlePlayer.SetPlayerSingleUI(player.playerName, player.playerColor, finalPlace, colorDictionnary[finalPlace], player.kills, player.deaths, player.assists, player.score);
+                singlePlayer.SetPlayerSingleUI(player.playerName, player.playerColor, finalPlace, colorDictionnary[finalPlace], player.kills, player.deaths, player.assists, player.score, player.damageDealt);
                 singlePlayer.ConfigureCamera(Vector3.zero + i * new Vector3(0, CAMERA_DISPLACE,0), cameraTextureList[i]);
                 singlePlayer.gameObject.SetActive(true);
                 singlePlayer.GetComponent<RectTransform>().localPosition = new Vector3(0, 0, 0);
                 playerList.Add(singlePlayer);
                 SetPlayerVisualandAnim(player, celebrationNumber , i);
-            }
+                if(player.IsOwner)
+                {
+                    if (celebrationNumber == 4) SoundManager2D.instance.PlayBackgroundMusic("LoserSong");
+                    else SoundManager2D.instance.PlayBackgroundMusic("WinnerSong");
+                }
+            }           
         }
 
         private int GetCelebrationNumber(int indexPos, Player[] players)

@@ -86,6 +86,14 @@ namespace Project
             }
             return null;
         }
+        public Sprite GetMiniMapSprite(string keyGameMap)
+        {
+            for (int i = 0; i < _gameMaps.Length; i++)
+            {
+                if (_gameMaps[i].sceneName == keyGameMap) return _gameMaps[i].minimap;
+            }
+            return null;
+        }
     }
     
     #if UNITY_EDITOR

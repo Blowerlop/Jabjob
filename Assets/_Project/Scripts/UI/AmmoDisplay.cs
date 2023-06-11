@@ -13,6 +13,7 @@ public class AmmoDisplay : MonoBehaviour, IGameEventListener
 
 
     [SerializeField] private TextMeshProUGUI _ammoDisplay;
+    [SerializeField] private TextMeshProUGUI _totalAmmoDisplay;
     [SerializeField] private Image _lowAmmoImage;
     Color _lowAmmoColor;
     float _lowAmmoAlpha;
@@ -29,17 +30,19 @@ public class AmmoDisplay : MonoBehaviour, IGameEventListener
     {
         _lowAmmoColor = _lowAmmoImage.color; 
         GameEvent.onPlayerWeaponAmmoChangedEvent.Subscribe(UpdateAmmoDisplayText, this);
+        GameEvent.onPlayerWeaponTotalAmmoChangedEvent.Subscribe(UpdateTotalAmmoDisplayText, this);
     }
 
     public void OnDisable()
     {
         GameEvent.onPlayerWeaponAmmoChangedEvent.Unsubscribe(UpdateAmmoDisplayText);
-
+        GameEvent.onPlayerWeaponTotalAmmoChangedEvent.Unsubscribe(UpdateTotalAmmoDisplayText);
     }
 
     private void Update()
     {
-        if(_ammoDisplay.text == "0" ) BlinkingState();
+        if (_ammoDisplay.text != "0") return;
+        BlinkingState();
     }
     private void UpdateAmmoDisplayText(int ammo)
     {
@@ -48,6 +51,11 @@ public class AmmoDisplay : MonoBehaviour, IGameEventListener
         _lowAmmoAlpha = (ammo * (120f - 250) / 5f + 250f) /255f;
         _lowAmmoColor = new Color(_lowAmmoColor.r, _lowAmmoColor.g, _lowAmmoColor.b, _lowAmmoAlpha);
         _lowAmmoImage.color = _lowAmmoColor; 
+    }
+
+    private void UpdateTotalAmmoDisplayText(int totalAmmo)
+    {
+        _totalAmmoDisplay.text = totalAmmo.ToString();
     }
 
 

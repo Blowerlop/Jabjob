@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using _Project.Scripts.Managers;
 using Project.Utilities;
 using Unity.Collections;
 using Unity.Netcode;
@@ -17,6 +18,7 @@ namespace Project
         #region Variables
 
         [SerializeField] private int _defaultHealth = 100;
+        public int maxHealth { get => _defaultHealth; private set => _defaultHealth = value; }
         [SerializeField] [ReadOnlyField] private int _currentHealth = 100;
         private NetworkObject _networkObject;
 
@@ -26,27 +28,36 @@ namespace Project
         [SerializeField] private NetworkVariable<int> _networkKills = new NetworkVariable<int>();
         [SerializeField] private NetworkVariable<int> _networkAssists = new NetworkVariable<int>();
         [SerializeField] private NetworkVariable<int> _networkDeaths = new NetworkVariable<int>();
-        [SerializeField] private NetworkVariable<ulong> _networkKillerId = new NetworkVariable<ulong>();
+        [SerializeField] private NetworkVariable<ulong> _networkKillerId = new NetworkVariable<ulong>(writePerm: NetworkVariableWritePermission.Owner); 
         [SerializeField] private NetworkVariable<int> _networkScore = new NetworkVariable<int>();
+        [SerializeField] private NetworkVariable<int> _networkDamageDealt = new NetworkVariable<int>();
         [SerializeField] private NetworkVariable<bool> _networkIsHost = new NetworkVariable<bool>();
         [SerializeField] private Player _killer;
+
+        [SerializeField] private List<Vector3> spawnPostions = new List<Vector3>();
 
         public string playerName { get => _networkName.Value.value; private set => _networkName.Value = new StringNetwork() { value = value }; }
         public Color playerColor { get => _networkColor.Value; private set => _networkColor.Value = value; }
         public string modelName { get => _networkModel.Value.value; private set => _networkModel.Value = new StringNetwork() { value = value }; }
+        public StringNetwork modelNameNetwork { get => _networkModel.Value; private set => _networkModel.Value = value; } 
         public int kills { get => _networkKills.Value; private set => _networkKills.Value = value; }
         public int assists { get => _networkAssists.Value; private set => _networkAssists.Value = value; }
         public int deaths { get => _networkDeaths.Value; private set => _networkDeaths.Value = value; }
         public ulong _killerId { get => _networkKillerId.Value; set => _networkKillerId.Value = value; }
         public int score { get => _networkScore.Value; private set => _networkScore.Value = value; }
+        public int damageDealt { get => _networkDamageDealt.Value; set => _networkDamageDealt.Value = value; }
         public bool isHost { get => _networkIsHost.Value; private set => _networkIsHost.Value = value; }
 
         private HashSet<ulong> _damagersId = new HashSet<ulong>();
 
         private PlayerMovementController _playerMovementController; 
         private PlayerShoot _playerShoot;
-        [HideInInspector] public SkinnedMeshRenderer playerMesh; 
-        private FeedbackManagerUI _feedbackManager; 
+        [HideInInspector] public SkinnedMeshRenderer playerMesh;
+        [HideInInspector] public SkinnedMeshRenderer handsMesh; 
+        private FeedbackManagerUI _feedbackManager;
+        private Paintable[] _paintable;
+        private float _gameDuration = 300;
+        [SerializeField]private AnimationCurve _alphaCurve;
         #endregion
 
 
@@ -57,7 +68,8 @@ namespace Project
             _networkObject = GetComponent<NetworkObject>();
             _playerShoot = GetComponent<PlayerShoot>();
             _playerMovementController = GetComponent<PlayerMovementController>();
-            playerMesh = GetComponent<WeaponManager>().humanMesh; 
+            playerMesh = GetComponent<WeaponManager>().humanMesh;
+            handsMesh = GetComponent<WeaponManager>().handsMesh;
             _feedbackManager = FindObjectOfType<FeedbackManagerUI>();
         }
 
@@ -65,9 +77,11 @@ namespace Project
         {
             Cursor.lockState = CursorLockMode.Locked;
             
-            GameEvent.onPlayerJoinGameEvent.Invoke(this, true, OwnerClientId);
             GameManager.instance.AddPlayerLocal(OwnerClientId, this);
+            GameEvent.onPlayerJoinGameEvent.Invoke(this, true, OwnerClientId);
 
+            
+            
             _networkName.OnValueChanged += OnNameValueChange;
             _networkColor.OnValueChanged += OnColorValueChange;
             _networkModel.OnValueChanged += OnModelValueChange; 
@@ -75,6 +89,8 @@ namespace Project
             _networkAssists.OnValueChanged += OnAssistValueChange;
             _networkDeaths.OnValueChanged += OnDeathValueChange;
             _networkScore.OnValueChanged += OnScoreValueChange;
+            _networkDamageDealt.OnValueChanged += OnDamageDealtValueChange;
+            GameEvent.onGameTimerUpdated.Subscribe(UpdateAlpha,this);
 
 #if UNITY_EDITOR
             _networkName.OnValueChanged += UpdatePlayersGameObjectNameLocal;
@@ -92,11 +108,11 @@ namespace Project
             UpdatePlayerCharacterServerRpc(LobbyManager.Instance.GetPlayerModel());
             UpdatePlayerColorServerRpc(LobbyManager.Instance.GetPlayerColor());
             UpdatePlayerNameServerRpc(LobbyManager.Instance.GetPlayerName());
-            PlayerModelsManager.instance.UpdateAllPlayers(); //Vraiment pas ouf ici, à déplacer lorsqu'on aura synchroniser le load des joueurs et appeler juste avant le StartGame
+            PlayerModelsManager.instance.UpdateAllPlayers(); //Vraiment pas ouf ici, Ã  dÃ©placer lorsqu'on aura synchroniser le load des joueurs et appeler juste avant le StartGame
 
+            _gameDuration = GameManager.instance.gameMode.gameDurationInSeconds;
 
-
-            
+            GetComponent<PlayerMovementController>().Teleport(new Vector3(OwnerClientId * 100, -500.0f, 0.0f));
         }
 
         private void Start()
@@ -107,6 +123,12 @@ namespace Project
         private void OnEnable()
         {
             SetHealth(_defaultHealth);
+            GameEvent.onPlayerSpawnEvent.Subscribe(SpawnPlayerRandomly, this);
+        }
+
+        private void OnDisable()
+        {
+            GameEvent.onPlayerSpawnEvent.Unsubscribe(SpawnPlayerRandomly);
         }
 
         public override void OnNetworkDespawn()
@@ -118,6 +140,8 @@ namespace Project
             _networkAssists.OnValueChanged -= OnAssistValueChange;
             _networkDeaths.OnValueChanged -= OnDeathValueChange;
             _networkScore.OnValueChanged -= OnScoreValueChange;
+            _networkDamageDealt.OnValueChanged -= OnDamageDealtValueChange;
+            GameEvent.onGameTimerUpdated.Unsubscribe(UpdateAlpha);
 
 #if UNITY_EDITOR
             _networkName.OnValueChanged -= UpdatePlayersGameObjectNameLocal;
@@ -192,7 +216,7 @@ namespace Project
 
         private void OnNameValueChange(StringNetwork previousValue, StringNetwork nextValue) => GameEvent.onPlayerUpdateNameEvent.Invoke(this, true, OwnerClientId, nextValue);
         private void OnColorValueChange(Color previousValue, Color nextValue) { GameEvent.onPlayerUpdateColorEvent.Invoke(this, true, OwnerClientId, nextValue); _playerShoot.paintColor = nextValue; _playerMovementController.UpdateDashColor(nextValue); }
-        private void OnModelValueChange(StringNetwork previousValue, StringNetwork nextValue) { GameEvent.onPlayerUpdateModelEvent.Invoke(this, true, OwnerClientId, nextValue); PlayerModelsManager.instance.ChangeCharacterModelIg(playerMesh, nextValue.value); }
+        private void OnModelValueChange(StringNetwork previousValue, StringNetwork nextValue) { GameEvent.onPlayerUpdateModelEvent.Invoke(this, true, OwnerClientId, nextValue); PlayerModelsManager.instance.ChangeCharacterModelIg(playerMesh, handsMesh, nextValue.value); }
         #endregion
 
         #region  Health Relative
@@ -231,7 +255,7 @@ namespace Project
         private void SetHealth(int newHealth)
         {
             _currentHealth = newHealth;
-            GameEvent.onPlayerHealthChangedEvent.Invoke(this, false, _currentHealth);
+            GameEvent.onPlayerHealthChangedEvent.Invoke(this, false, OwnerClientId, _currentHealth);
 
             if (_currentHealth <= 0)
             {
@@ -267,7 +291,7 @@ namespace Project
                 assistPlayer.UpdateScore();
             }
             PlayerDeathBehaviourClientRpc();
-            Timer.StartTimerWithCallback(GameManager.instance._respawnDuration, (() => PlayerRespawnClientRpc(clientId)));
+            Timer.StartTimerWithCallbackRealTime(GameManager.instance.gameMode.respawnDurationInSeconds, (() => PlayerRespawnClientRpc(clientId)));
 
             ulong[] _damagersIdArray = new ulong[_damagersId.Count];
             _damagersId.CopyTo(_damagersIdArray);
@@ -305,21 +329,75 @@ namespace Project
         private void PlayerRespawnLocal(ulong clientId)
         {
             Player player = GameManager.instance.GetPlayer(clientId);
-            player.transform.position = Vector3.zero;
+            SpawnPlayerRandomly(clientId);
             player.gameObject.SetActive(true);
             GameEvent.onPlayerRespawnedEvent.Invoke(this, true, clientId);
+        }
+
+        private void SpawnPlayerRandomly(ulong clientId)
+        {
+            Player player = GameManager.instance.GetPlayer(clientId);
+            player.transform.position = spawnPostions[UnityEngine.Random.Range(0, spawnPostions.Count)];
+            Debug.Log(player.transform.position + "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
         }
 
         private void OnKillValueChange(int previousValue, int nextValue) => GameEvent.onPlayerGetAKillEvent.Invoke(this, true, OwnerClientId, nextValue); 
         private void OnAssistValueChange(int previousValue, int nextValue) => GameEvent.onPlayerGetAssistEvent.Invoke(this, true, OwnerClientId, nextValue);  
         private void OnDeathValueChange(int previousValue, int nextValue) => GameEvent.onPlayerDiedEvent.Invoke(this, true, OwnerClientId, _killerId, nextValue);  
         private void OnScoreValueChange(int previousValue, int nextValue) => GameEvent.onPlayerScoreEvent.Invoke(this, true, OwnerClientId, nextValue);
+        private void OnDamageDealtValueChange(int previousValue, int nextValue) => GameEvent.onPlayerDamageDealtEvent.Invoke(this, true, OwnerClientId, nextValue);
         #endregion
-        public int UpdateScore() // scoring de base pourri, peut être à changer
+        public int UpdateScore() // scoring de base pourri, peut Ãªtre Ã  changer
         {
             score = 3 * kills - 1 * deaths + 1 * assists; 
             return score; 
         }
+
+        #region Visual
+
+        void UpdateAlpha (float timer)
+        {
+            _paintable ??= gameObject.GetComponentsInChildren<Paintable>();
+
+            if (IsOwner) return;
+            
+            _paintable.ForEach(x => x.SetAlpha(GetAlphaValueToApply(_gameDuration - timer)));
+        }
+ 
+        float GetAlphaValueToApply(float value) => _alphaCurve.Evaluate(value / (_gameDuration / 3));
+
+        #endregion
+        
+        #region Admin
+
+        public void Kick()
+        {
+            KickServerRpc();
+        }
+        
+        [ServerRpc(RequireOwnership = false)]
+        public void KickServerRpc()
+        {
+            ulong ownerId = OwnerClientId;
+            KickClientRpc();
+        }
+        
+        [ClientRpc]
+        public void KickClientRpc()
+        {
+            KickLocalClient();
+        }
+        
+        public void KickLocalClient()
+        {
+            NetworkManager.Singleton.Shutdown();
+            SceneManager.LoadSceneAsyncLocal(SceneManager.EScene.MenuScene);
+        }
+
+        public void SetKills(int killNumber) => kills = killNumber;
+
+        #endregion
+
         #endregion
     }
 }

@@ -98,14 +98,14 @@ namespace Project.Utilities
                 }
             }
             
-            public static void ForInRange<T>(this IList<T> target, Action<int, T> action)
+            public static void ForEach<T1, T2>(this Dictionary<T1, T2> target, Action<T1, T2> action)
             {
-                for (int i = 0; i < target.Count; i++)
+                foreach (KeyValuePair<T1, T2> kvp in target)
                 {
-                    action.Invoke(i, target[i]);
+                    action.Invoke(kvp.Key, kvp.Value);
                 }
             }
-
+            
             public static string SeparateContent(this string text)
             {
                 return string.Concat(text.Select(x => Char.IsUpper(x) ? " " + x : x.ToString())).TrimStart(' ');
@@ -175,6 +175,8 @@ namespace Project.Utilities
 
                 return textWithDigitsOnly.ToString();
             }
+
+            public static bool IsNullOrEmpty(this string @string) => string.IsNullOrEmpty(@string);
         }
 }
 

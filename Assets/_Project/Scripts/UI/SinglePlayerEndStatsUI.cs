@@ -16,11 +16,11 @@ namespace Project
         [SerializeField] private TextMeshProUGUI pseudoText;
         [SerializeField] private TextMeshProUGUI endingPlaceText;
 
+        [SerializeField] private TextMeshProUGUI killsText, assistsText, deathTexts, damageDealtText, scoreText; 
         private Camera celebratingCamera; 
         public int endingPlace { get; set; }
 
-
-        public void SetPlayerSingleUI(string Pseudo, Color color, int finalPlace, VertexGradient colorGrad, int kill, int death, int assist, int score)
+        public void SetPlayerSingleUI(string Pseudo, Color color, int finalPlace, VertexGradient colorGrad, int kill, int death, int assist, int score, int damages)
         {
             pseudoText.text = Pseudo;
             backgroundImage.color = color;
@@ -28,6 +28,11 @@ namespace Project
             endingPlaceText.text = finalPlace.ToString();
             endingPlaceText.colorGradient = colorGrad;
             celebratingCamera = Instantiate(cameraPrefab);
+            killsText.text = kill.ToString();
+            deathTexts.text = death.ToString();
+            assistsText.text = assist.ToString();
+            damageDealtText.text = damages.ToString("N0");
+            scoreText.text = score.ToString();
         }
 
         public void ConfigureCamera(Vector3 position, RenderTexture cameraTexture)
