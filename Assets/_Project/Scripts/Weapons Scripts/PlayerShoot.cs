@@ -76,7 +76,7 @@ namespace Project
             InputManager.instance.reload.AddListener(StartReload);
             GameEvent.onPlayerWeaponChangedLocalEvent.Subscribe(UpdateCurrentWeapon, this);
             GameEvent.onPlayerWeaponChangedServerEvent.Subscribe(UpdateCurrentWeapon, this);
-            ReloadTotalAmmo();
+            ReloadTotalAmmo(_weaponData.totalAmmo);
             LocalEquipKnife(true);
             EquipKnifeServerRpc(true);
             hasKnifeEquipped = false;
