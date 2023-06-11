@@ -33,7 +33,7 @@ namespace Project
                 _vivoxManager.OnTextMessageLogReceived = null;
                 _vivoxManager.OnTextMessageLogReceived += OnMessageReceive;
                 
-                _sendBTN.onClick.AddListener(SendMessage);
+                _sendBTN.onClick.AddListener(()=>SendMessage());
                 ShrinkTextArea(true);
 
 
@@ -41,14 +41,29 @@ namespace Project
                 {
                     _shrinkState = !_shrinkState;
                     ShrinkTextArea(_shrinkState);
-                    Debug.Log(_shrinkState);
                 });
 
+                _inputAction = new PlayerInputAction();
+                if (!_inputAction.UI.enabled)
+                    _inputAction.UI.Enable();
+                _inputAction.UI.Enter.performed += Enter_performed;
             }
-
 
         }
 
+        private void Enter_performed(UnityEngine.InputSystem.InputAction.CallbackContext obj)
+        {
+            if (!_textField.isFocused)
+            {
+                _textField.Select();
+            }
+
+            if(_textField.text != string.Empty)
+            {
+                SendMessage();
+                _textField.Select();
+            }
+        }
 
         private void OnDestroy()
         {
@@ -64,21 +79,24 @@ namespace Project
                 }
                 _messages.Clear();
                 ShrinkTextArea(false);
-                
+                _inputAction = null;
             }
         }
 
-        private void SendMessage()
+        private void SendMessage(bool sendWithEnter = false)
         {
             _vivoxManager.SendMessageVivox(_textField.text);
-            _textField.text = string.Empty;
+            _textField.text = "";
+
+            if (sendWithEnter)
+                _textField.Select();
         }
 
         private void OnMessageReceive(string playerName, VivoxUnity.IChannelTextMessage messageText, string color)
         {
             var colo = $"<color=#{color}>";
             var endColo = "</color>";
-            var value = $"{colo}{playerName}{endColo}: {messageText.Message}";
+            var value = $"{colo}{playerName}{endColo} : {messageText.Message}";
 
             TextMeshProUGUI TMP = Instantiate(_textPrefab, _textPoint);
             TMP.text = value;

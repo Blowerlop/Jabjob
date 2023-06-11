@@ -95,7 +95,6 @@ public class VivoxManager : MonoBehaviour
 
     private void LoginSession_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
     {
-        
 
         var logginSession = (ILoginSession)sender;
         switch (logginSession.State)

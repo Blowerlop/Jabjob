@@ -34,13 +34,13 @@ public class UiManager : MonoBehaviour
 
         _logginButon.onClick.AddListener(() =>{
             _vivoxManager.Login(DisplayField.text);
+
         });
 
         _sendButon.onClick.AddListener(() => {
             _vivoxManager.SendMessageVivox(_messageField.text);
             _messageField.text = string.Empty;
         });
-
 
     }
 
