@@ -111,7 +111,6 @@ namespace Project
         {
             Transform playerTransform = Instantiate((_playerPrefab));
             playerTransform.GetComponent<NetworkObject>().SpawnAsPlayerObject(clientId, true);
-            GameEvent.onPlayerSpawnEvent.Invoke(this, false, clientId);
         }
 
         private void OnClientDisconnect(ulong clientId) => GameEvent.onPlayerLeaveGameEvent.Invoke(this, true, clientId);
@@ -226,7 +225,7 @@ namespace Project
                     therealoneother = value.GetComponent<PlayerCameraController>();
                     therealoneother.enabled = false;
 
-                    therealone.transform.position = Vector3.zero;
+                    GameEvent.onPlayerSpawnEvent.Invoke(this, false, OwnerClientId);
                 }
             });
 
