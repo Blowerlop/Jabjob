@@ -53,15 +53,19 @@ namespace Project
 
         private void Enter_performed(UnityEngine.InputSystem.InputAction.CallbackContext obj)
         {
-            if (!_textField.isFocused)
+            if(_inputAction != null)
             {
-                _textField.Select();
-            }
+                if (!_textField.isFocused)
+                {
+                    _textField.Select();
+                }
 
-            if(_textField.text != string.Empty)
-            {
-                SendMessage();
-                _textField.Select();
+                if(_textField.text != string.Empty)
+                {
+                    SendMessage();
+                    _textField.Select();
+                }
+
             }
         }
 
