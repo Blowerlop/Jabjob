@@ -319,6 +319,13 @@ public class PlayerMovementController : NetworkBehaviour
         Gizmos.color = _jumpCount == 0 ? Color.green : _jumpCount == 1 ? Color.yellow : Color.red;
         Gizmos.DrawSphere(new Vector3(playerPosition.x + _characterController.radius, playerPosition.y, playerPosition.z), 0.5f);
     }
+
+    public void Teleport(Vector3 position)
+    {
+        _characterController.enabled = false;
+        _characterController.transform.position = position;
+        _characterController.enabled = true;
+    }
     #endregion
 
     #region Visuals and Sound

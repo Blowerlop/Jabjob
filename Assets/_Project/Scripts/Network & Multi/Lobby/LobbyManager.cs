@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using _Project.Scripts.Managers;
+using Project.Utilities;
 using TMPro;
 using Unity.Netcode;
 using Unity.Services.Authentication;
@@ -169,7 +170,8 @@ public class LobbyManager : MonoBehaviour {
                         RelayWithLobby.Instance.JoinRelay(joinedLobby.Data[KEY_RELAY_GAME].Value);
                         OnStartGame?.Invoke(this, EventArgs.Empty);
                     }
-                    joinedLobby = null;
+
+                    Timer.StartTimerWithCallbackRealTime(10.0f, () => joinedLobby = null);
 
                 }
             }

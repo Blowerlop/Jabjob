@@ -112,9 +112,7 @@ namespace Project
 
             _gameDuration = GameManager.instance.gameMode.gameDurationInSeconds;
 
-            GetComponent<CharacterController>().enabled = false;
-            transform.position = new Vector3(OwnerClientId * 100, -500.0f, 0.0f);
-            GetComponent<CharacterController>().enabled = true;
+            GetComponent<PlayerMovementController>().Teleport(new Vector3(OwnerClientId * 100, -500.0f, 0.0f));
         }
 
         private void Start()
