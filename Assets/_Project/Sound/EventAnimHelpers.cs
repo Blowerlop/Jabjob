@@ -13,8 +13,9 @@ namespace Project
         private Dictionary<string, AudioClip> _soundListDico = new Dictionary<string, AudioClip>();
         [SerializeField] PlayerShoot _playerShoot;
         [SerializeField] PlayerMovementController _playerMovement;
-        [SerializeField]  Rig bodyRig; 
+        [SerializeField]  Rig bodyRig;
 
+        int knifeRotation = 1; 
         private void Awake()
         {
             for (int i = 0; i < soundList.Length; i++)
@@ -23,10 +24,20 @@ namespace Project
             }
         }
 
-        public void PlaySound(string name)
+        public void PlayOneShotSound(string name)
         {
             if (!_soundListDico.ContainsKey(name)) Debug.LogError("Mauvais string pour le son : " + name);
             else bodySourceSound.PlayOneShot(_soundListDico[name]);
+        }
+        public void PlaySound(string name)
+        {
+            if (!_soundListDico.ContainsKey(name)) Debug.LogError("Mauvais string pour le son : " + name);
+            else
+            {
+                bodySourceSound.Stop();
+                bodySourceSound.clip = _soundListDico[name]; 
+                bodySourceSound.Play();
+            }
         }
 
         private void Update()
@@ -45,6 +56,8 @@ namespace Project
         public void PerformKnife()
         {
             _playerShoot.PerformKnifeCalculation();
+            PlayOneShotSound("PaintBrush" + knifeRotation);
+            knifeRotation = (knifeRotation + 1) % 3; 
         }
         // DASH
         public void StartOfDash()
@@ -62,6 +75,10 @@ namespace Project
         }
 
         // RELOAD
+        public void StartOfReload()
+        {
+            PlaySound("Reload");
+        }
         public void AutoReload()
         {
             _playerShoot.AutoReload();

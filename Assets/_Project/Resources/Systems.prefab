@@ -432,6 +432,10 @@ MonoBehaviour:
     sound: {fileID: 8300000, guid: 9ebbb401dc162ca40b4415e6ee110668, type: 3}
   - name: Heads Will Roll
     sound: {fileID: 8300000, guid: 3d450f38b161a1e4b92ee75f19533676, type: 3}
+  - name: WinnerSong
+    sound: {fileID: 8300000, guid: 10391eb82d425f946ba1b62cbdb76c72, type: 3}
+  - name: LoserSong
+    sound: {fileID: 8300000, guid: 5c996fe31f8963e4484578cebd7d9d62, type: 3}
   soundListUI:
   - name: Mouse Sound 1
     sound: {fileID: 8300000, guid: c976e64b7f591204d8f91fc8563013c3, type: 3}
@@ -1223,6 +1227,10 @@ PrefabInstance:
     - target: {fileID: 210534730, guid: c9ea6a8382075cb489399c1cb4ee7313, type: 3}
       propertyPath: m_AnchoredPosition.x
       value: -7.5000153
+      objectReference: {fileID: 0}
+    - target: {fileID: 252443526, guid: c9ea6a8382075cb489399c1cb4ee7313, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 626833146, guid: c9ea6a8382075cb489399c1cb4ee7313, type: 3}
       propertyPath: m_AnchorMax.y

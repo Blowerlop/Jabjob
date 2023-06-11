@@ -31,7 +31,8 @@ namespace Project
         // Stats relative
         public static readonly Event<ulong , int> onPlayerHealthChangedEvent = new Event<ulong , int>(nameof(onPlayerHealthChangedEvent));
         public static readonly Event<ulong, ulong, int> onPlayerDiedEvent = new Event<ulong, ulong, int>(nameof(onPlayerDiedEvent));
-        public static readonly Event<ulong, int> onPlayerGetAKillEvent = new Event<ulong, int>(nameof(onPlayerGetAKillEvent));
+        public static readonly Event<ulong, int> onPlayerGetAKillEvent = new Event<ulong, int>(nameof(onPlayerGetAKillEvent)); 
+        public static readonly Event<ulong, int> onPlayerDamageDealtEvent = new Event<ulong, int>(nameof(onPlayerDamageDealtEvent));
         public static readonly Event<ulong, int> onPlayerGetAssistEvent = new Event<ulong, int>(nameof(onPlayerGetAssistEvent));
         public static readonly Event<ulong> onPlayerRespawnedEvent = new Event<ulong>(nameof(onPlayerRespawnedEvent));
         public static readonly Event<ulong> onPlayerSpawnEvent = new Event<ulong>(nameof(onPlayerSpawnEvent));

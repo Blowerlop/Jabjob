@@ -30,6 +30,7 @@ namespace Project
         [SerializeField] private NetworkVariable<int> _networkDeaths = new NetworkVariable<int>();
         [SerializeField] private NetworkVariable<ulong> _networkKillerId = new NetworkVariable<ulong>(writePerm: NetworkVariableWritePermission.Owner); 
         [SerializeField] private NetworkVariable<int> _networkScore = new NetworkVariable<int>();
+        [SerializeField] private NetworkVariable<int> _networkDamageDealt = new NetworkVariable<int>();
         [SerializeField] private NetworkVariable<bool> _networkIsHost = new NetworkVariable<bool>();
         [SerializeField] private Player _killer;
 
@@ -44,6 +45,7 @@ namespace Project
         public int deaths { get => _networkDeaths.Value; private set => _networkDeaths.Value = value; }
         public ulong _killerId { get => _networkKillerId.Value; set => _networkKillerId.Value = value; }
         public int score { get => _networkScore.Value; private set => _networkScore.Value = value; }
+        public int damageDealt { get => _networkDamageDealt.Value; set => _networkDamageDealt.Value = value; }
         public bool isHost { get => _networkIsHost.Value; private set => _networkIsHost.Value = value; }
 
         private HashSet<ulong> _damagersId = new HashSet<ulong>();
@@ -87,6 +89,7 @@ namespace Project
             _networkAssists.OnValueChanged += OnAssistValueChange;
             _networkDeaths.OnValueChanged += OnDeathValueChange;
             _networkScore.OnValueChanged += OnScoreValueChange;
+            _networkDamageDealt.OnValueChanged += OnDamageDealtValueChange;
             GameEvent.onGameTimerUpdated.Subscribe(UpdateAlpha,this);
 
 #if UNITY_EDITOR
@@ -139,6 +142,7 @@ namespace Project
             _networkAssists.OnValueChanged -= OnAssistValueChange;
             _networkDeaths.OnValueChanged -= OnDeathValueChange;
             _networkScore.OnValueChanged -= OnScoreValueChange;
+            _networkDamageDealt.OnValueChanged -= OnDamageDealtValueChange;
             GameEvent.onGameTimerUpdated.Unsubscribe(UpdateAlpha);
 
 #if UNITY_EDITOR
@@ -343,6 +347,7 @@ namespace Project
         private void OnAssistValueChange(int previousValue, int nextValue) => GameEvent.onPlayerGetAssistEvent.Invoke(this, true, OwnerClientId, nextValue);  
         private void OnDeathValueChange(int previousValue, int nextValue) => GameEvent.onPlayerDiedEvent.Invoke(this, true, OwnerClientId, _killerId, nextValue);  
         private void OnScoreValueChange(int previousValue, int nextValue) => GameEvent.onPlayerScoreEvent.Invoke(this, true, OwnerClientId, nextValue);
+        private void OnDamageDealtValueChange(int previousValue, int nextValue) => GameEvent.onPlayerDamageDealtEvent.Invoke(this, true, OwnerClientId, nextValue);
         #endregion
         public int UpdateScore() // scoring de base pourri, peut être à changer
         {
