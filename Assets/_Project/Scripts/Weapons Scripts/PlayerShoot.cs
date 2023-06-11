@@ -76,7 +76,7 @@ namespace Project
             InputManager.instance.reload.AddListener(StartReload);
             GameEvent.onPlayerWeaponChangedLocalEvent.Subscribe(UpdateCurrentWeapon, this);
             GameEvent.onPlayerWeaponChangedServerEvent.Subscribe(UpdateCurrentWeapon, this);
-            ReloadTotalAmmo();
+            ReloadTotalAmmo(_weaponData.totalAmmo);
             LocalEquipKnife(true);
             EquipKnifeServerRpc(true);
             hasKnifeEquipped = false;
@@ -304,7 +304,7 @@ namespace Project
         {
             if (_weapon == null) _weapon = _weaponManager.GetCurrentWeapon();
             if (_fakeWeapon == null) _fakeWeapon = _weaponManager.GetFakeWeapon();
-            if (!hasKnife) //Si on a pas le couteaux on l'équipe
+            if (!hasKnife) //Si on a pas le couteaux on l'ï¿½quipe
             {
                 _weaponAnim.ResetTrigger("Fire");
                 _weaponAnim.SetBool("isGunEquipped", false);
@@ -412,11 +412,18 @@ namespace Project
             _canShoot = true;
         }
 
-        public void ReloadTotalAmmo()
+        public void ReloadTotalAmmo(int amount)
         {
             _weapon = _weaponManager.GetCurrentWeapon();
-            if (_weapon == null) return; 
-            _weapon.totalAmmo = _weaponData.totalAmmo;
+            if (_weapon == null) return;
+            if (_weapon.totalAmmo + amount > _weaponData.totalAmmo) 
+            {
+                _weapon.totalAmmo = _weaponData.totalAmmo;
+            }
+            else
+            {
+                _weapon.totalAmmo += amount;
+            }
             GameEvent.onPlayerWeaponTotalAmmoChangedEvent.Invoke(this, false, _weapon.totalAmmo);
         }
 
