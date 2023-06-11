@@ -165,6 +165,89 @@ SkinnedMeshRenderer:
     m_Center: {x: -0.14580601, y: 0.24087927, z: -0.37417984}
     m_Extent: {x: 0.33460614, y: 0.46627292, z: 0.2905562}
   m_DirtyAABB: 0
+--- !u!1 &785510692135784858
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 631254462190323494}
+  - component: {fileID: 210342556148388406}
+  - component: {fileID: 2437794514833534746}
+  m_Layer: 0
+  m_Name: fakeRouleau
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &631254462190323494
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 785510692135784858}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1775301837307537097}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!23 &210342556148388406
+MeshRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 785510692135784858}
+  m_Enabled: 1
+  m_CastShadows: 0
+  m_ReceiveShadows: 1
+  m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
+  m_RayTraceProcedural: 0
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: -3853779528987548237, guid: f510379cc5ba62340ba5814cd33adb2f, type: 3}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 3
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_AdditionalVertexStreams: {fileID: 0}
+--- !u!33 &2437794514833534746
+MeshFilter:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 785510692135784858}
+  m_Mesh: {fileID: -8149530097559955194, guid: 73d03a9b061f1f2448d6a931614adbcf, type: 3}
 --- !u!1 &823036938596822260
 GameObject:
   m_ObjectHideFlags: 0
@@ -291,7 +374,8 @@ Transform:
   m_LocalPosition: {x: -0.136, y: 0.03, z: -0.015}
   m_LocalScale: {x: 0.71, y: 0.71, z: 0.71}
   m_ConstrainProportionsScale: 1
-  m_Children: []
+  m_Children:
+  - {fileID: 631254462190323494}
   m_Father: {fileID: 3287860345570499938}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: -364.68027, y: -150.04, z: -26.1}
@@ -302,7 +386,7 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1434663877112511603}
-  m_Mesh: {fileID: 1330770266684760524, guid: f510379cc5ba62340ba5814cd33adb2f, type: 3}
+  m_Mesh: {fileID: 5584335740492700959, guid: 73d03a9b061f1f2448d6a931614adbcf, type: 3}
 --- !u!23 &641779722401848742
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -311,7 +395,7 @@ MeshRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1434663877112511603}
   m_Enabled: 1
-  m_CastShadows: 1
+  m_CastShadows: 0
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
   m_StaticShadowCaster: 0
@@ -324,7 +408,6 @@ MeshRenderer:
   m_RendererPriority: 0
   m_Materials:
   - {fileID: 5650376304965219397, guid: f510379cc5ba62340ba5814cd33adb2f, type: 3}
-  - {fileID: -3853779528987548237, guid: f510379cc5ba62340ba5814cd33adb2f, type: 3}
   - {fileID: -4968544081446275399, guid: f510379cc5ba62340ba5814cd33adb2f, type: 3}
   m_StaticBatchInfo:
     firstSubMesh: 0
