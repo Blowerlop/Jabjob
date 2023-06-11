@@ -295,7 +295,7 @@ namespace Project
         {
             if (IsOwner == false) LocalEquipKnife(hasKnife);
         }
-        private void LocalEquipKnife(bool hasKnife)
+        private void LocalEquipKnife(bool hasKnife, bool firstEquip = false)
         {
             if (_weapon == null) _weapon = _weaponManager.GetCurrentWeapon();
             if (_fakeWeapon == null) _fakeWeapon = _weaponManager.GetFakeWeapon();
@@ -319,8 +319,8 @@ namespace Project
                 _weaponAnim.SetBool("isGunEquipped", true);
                 _fakeKnife.SetActive(false);
                 _knife.SetActive(false);
-                _fakeWeapon.gameObject.SetActive(true);
-                _weapon.gameObject.SetActive(true);
+                if(_fakeWeapon != null) _fakeWeapon.gameObject.SetActive(true);
+                if (_weapon != null) _weapon.gameObject.SetActive(true);
             }
         }
         public void PerformKnifeCalculation()
@@ -335,7 +335,7 @@ namespace Project
                 KnifeServerRpc(weaponHolderPosition, rootCameraPosition, hit.point);
                 if (hit.transform.TryGetComponent(out IHealthManagement healthManagement))
                 {
-                    healthManagement.Damage(knifeDamage, OwnerClientId);
+                    healthManagement.Damage(knifeDamage, OwnerClientId); 
                 }
             }
         }

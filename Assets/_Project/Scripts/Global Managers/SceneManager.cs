@@ -87,7 +87,6 @@ namespace _Project.Scripts.Managers
                     await Task.Delay(100);
                     float loadingPercentage = newScene.progress / 0.9f * 100.0f;
                     if (loadSlider != null) loadSlider.value = loadingPercentage / 100f;
-
                 } while (newScene.progress < 0.9f);
 
                 await Task.Delay(100);
@@ -204,7 +203,7 @@ namespace _Project.Scripts.Managers
             // }
         }
 
-        [ServerRpc]
+        [ClientRpc]
         private static void LoadSceneAsyncClientRpc(EScene sceneName, LoadSceneMode loadSceneMode = LoadSceneMode.Single)
         {
             LoadSceneAsyncLocal(sceneName, loadSceneMode);

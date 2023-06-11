@@ -46,6 +46,7 @@ namespace Utils
             RegisterCommand(ShowPlayer, "show_player");
             RegisterCommand(SetKills, "set_kills");
             RegisterCommand(ChangeLevel, "change_level");
+            RegisterCommand(StartGame, "startGame");
         }
 
         void RegisterCommand(Action<string[]> newCommandAction, string commandName)
@@ -179,6 +180,18 @@ namespace Utils
                         NetworkManager.Singleton.SceneManager.LoadScene(args[2], LoadSceneMode.Single);
                     }
                 }
+            }
+            catch (Exception e)
+            {
+                Debug.LogError(e.Message);
+            }
+        };
+        
+        private static readonly Action<string[]> StartGame = (args) =>
+        {
+            try
+            {
+                GameManager.instance.StartGameClientRpc();
             }
             catch (Exception e)
             {

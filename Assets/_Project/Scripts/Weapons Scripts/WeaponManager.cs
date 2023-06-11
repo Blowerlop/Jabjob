@@ -17,6 +17,7 @@ public class WeaponManager : NetworkBehaviour
     public Transform fakeWeaponHandler;
     public Transform ArmsRoot;
     public SkinnedMeshRenderer humanMesh;
+    public SkinnedMeshRenderer handsMesh;
     public RigBuilder aimRig; 
 
     [field: SerializeField] public Transform weaponHandler { get; private set; }

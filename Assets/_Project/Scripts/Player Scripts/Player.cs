@@ -50,9 +50,10 @@ namespace Project
 
         private PlayerMovementController _playerMovementController; 
         private PlayerShoot _playerShoot;
-        [HideInInspector] public SkinnedMeshRenderer playerMesh; 
+        [HideInInspector] public SkinnedMeshRenderer playerMesh;
+        [HideInInspector] public SkinnedMeshRenderer handsMesh; 
         private FeedbackManagerUI _feedbackManager;
-        private Paintable _paintable;
+        private Paintable[] _paintable;
         private float _gameDuration = 300;
         [SerializeField]private AnimationCurve _alphaCurve;
         #endregion
@@ -65,7 +66,8 @@ namespace Project
             _networkObject = GetComponent<NetworkObject>();
             _playerShoot = GetComponent<PlayerShoot>();
             _playerMovementController = GetComponent<PlayerMovementController>();
-            playerMesh = GetComponent<WeaponManager>().humanMesh; 
+            playerMesh = GetComponent<WeaponManager>().humanMesh;
+            handsMesh = GetComponent<WeaponManager>().handsMesh;
             _feedbackManager = FindObjectOfType<FeedbackManagerUI>();
         }
 
@@ -73,9 +75,11 @@ namespace Project
         {
             Cursor.lockState = CursorLockMode.Locked;
             
-            GameEvent.onPlayerJoinGameEvent.Invoke(this, true, OwnerClientId);
             GameManager.instance.AddPlayerLocal(OwnerClientId, this);
+            GameEvent.onPlayerJoinGameEvent.Invoke(this, true, OwnerClientId);
 
+            
+            
             _networkName.OnValueChanged += OnNameValueChange;
             _networkColor.OnValueChanged += OnColorValueChange;
             _networkModel.OnValueChanged += OnModelValueChange; 
@@ -105,7 +109,9 @@ namespace Project
 
             _gameDuration = GameManager.instance.gameMode.gameDurationInSeconds;
 
-
+            GetComponent<CharacterController>().enabled = false;
+            transform.position = new Vector3(OwnerClientId * 100, -500.0f, 0.0f);
+            GetComponent<CharacterController>().enabled = true;
         }
 
         private void Start()
@@ -208,7 +214,7 @@ namespace Project
 
         private void OnNameValueChange(StringNetwork previousValue, StringNetwork nextValue) => GameEvent.onPlayerUpdateNameEvent.Invoke(this, true, OwnerClientId, nextValue);
         private void OnColorValueChange(Color previousValue, Color nextValue) { GameEvent.onPlayerUpdateColorEvent.Invoke(this, true, OwnerClientId, nextValue); _playerShoot.paintColor = nextValue; _playerMovementController.UpdateDashColor(nextValue); }
-        private void OnModelValueChange(StringNetwork previousValue, StringNetwork nextValue) { GameEvent.onPlayerUpdateModelEvent.Invoke(this, true, OwnerClientId, nextValue); PlayerModelsManager.instance.ChangeCharacterModelIg(playerMesh, nextValue.value); }
+        private void OnModelValueChange(StringNetwork previousValue, StringNetwork nextValue) { GameEvent.onPlayerUpdateModelEvent.Invoke(this, true, OwnerClientId, nextValue); PlayerModelsManager.instance.ChangeCharacterModelIg(playerMesh, handsMesh, nextValue.value); }
         #endregion
 
         #region  Health Relative
@@ -348,10 +354,13 @@ namespace Project
 
         void UpdateAlpha (float timer)
         {
-            _paintable ??= gameObject.GetComponentInChildren<Paintable>();
-            _paintable.SetAlpha(GetAlphaValueToApply(_gameDuration - timer));
-        }
+            _paintable ??= gameObject.GetComponentsInChildren<Paintable>();
 
+            if (IsOwner) return;
+            
+            _paintable.ForEach(x => x.SetAlpha(GetAlphaValueToApply(_gameDuration - timer)));
+        }
+ 
         float GetAlphaValueToApply(float value) => _alphaCurve.Evaluate(value / (_gameDuration / 3));
 
         #endregion
