@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using System.Runtime.CompilerServices;
+
 public class UiManager : MonoBehaviour
 {
     [SerializeField] private VivoxManager _vivoxManager;
@@ -42,7 +44,7 @@ public class UiManager : MonoBehaviour
 
     }
 
-    private void ReceiveMessage(string senderName, VivoxUnity.IChannelTextMessage textMessage)
+    private void ReceiveMessage(string senderName, VivoxUnity.IChannelTextMessage textMessage, string Color)
     {
         TextMeshProUGUI message = Instantiate(_textMessage, _textPoint);
         message.text = $"{senderName} : {textMessage.Message}";

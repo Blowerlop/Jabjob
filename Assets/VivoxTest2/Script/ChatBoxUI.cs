@@ -22,14 +22,20 @@ namespace Project
         private List<TextMeshProUGUI> _messages = new List<TextMeshProUGUI>();
         private string _previousTextReceived;
         private bool _shrinkState = true;
-        private void OnEnable()
+        private PlayerInputAction _inputAction;
+
+
+        private void Start()
         {
             if (!_vivoxManager)
             {
                 _vivoxManager = FindObjectOfType<VivoxManager>();
+                _vivoxManager.OnTextMessageLogReceived = null;
                 _vivoxManager.OnTextMessageLogReceived += OnMessageReceive;
+                
                 _sendBTN.onClick.AddListener(SendMessage);
                 ShrinkTextArea(true);
+
 
                 _extendShrinkBTN.onClick.AddListener(() =>
                 {
@@ -43,7 +49,8 @@ namespace Project
 
         }
 
-        private void OnDisable()
+
+        private void OnDestroy()
         {
             if(_vivoxManager)
             {
@@ -57,7 +64,7 @@ namespace Project
                 }
                 _messages.Clear();
                 ShrinkTextArea(false);
-
+                
             }
         }
 
@@ -67,11 +74,11 @@ namespace Project
             _textField.text = string.Empty;
         }
 
-        private void OnMessageReceive(string playerName, VivoxUnity.IChannelTextMessage messageText)
+        private void OnMessageReceive(string playerName, VivoxUnity.IChannelTextMessage messageText, string color)
         {
-            var value = $"{playerName} : {messageText.Message}";
-            if (_previousTextReceived == value)
-                return;
+            var colo = $"<color=#{color}>";
+            var endColo = "</color>";
+            var value = $"{colo}{playerName}{endColo}: {messageText.Message}";
 
             TextMeshProUGUI TMP = Instantiate(_textPrefab, _textPoint);
             TMP.text = value;

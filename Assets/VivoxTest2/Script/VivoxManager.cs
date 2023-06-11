@@ -9,6 +9,7 @@ using System;
 using UnityEngine.Events;
 using System.Linq;
 using Project;
+using System.Globalization;
 
 public class VivoxManager : MonoBehaviour
 {
@@ -21,14 +22,15 @@ public class VivoxManager : MonoBehaviour
 
 
     public event Action OnUserLoggedIn;
-    public event Action<string, IChannelTextMessage> OnTextMessageLogReceived;
+    public Action<string, IChannelTextMessage, string> OnTextMessageLogReceived;
 
-
+    
     private void Awake()
     {
         _lobbyManager = FindObjectOfType<LobbyManager>();
         if (_lobbyManager == null) return;
         
+
         _lobbyManager.VivoxOnAuthenticate += InitAndLoginVivox;
         _lobbyManager.VivoxOnCreateLobby += VivoxOnCreateLobby;
         _lobbyManager.VivoxOnJoinLobby += VivoxOnJoinLobby;
@@ -118,6 +120,9 @@ public class VivoxManager : MonoBehaviour
         }
     }
 
+
+    
+
     public void SendMessageVivox(string message)
     {
         if (string.IsNullOrEmpty(message))
@@ -182,7 +187,21 @@ public class VivoxManager : MonoBehaviour
     {
         
         IChannelTextMessage message = textMessage.Value;
-        OnTextMessageLogReceived?.Invoke(message.Sender.DisplayName, message);
+
+        //GetColor
+        string playerName = message.Sender.DisplayName;
+        string color = string.Empty;
+
+        foreach (var player in _lobbyManager.joinedLobby.Players)
+        {
+            if(playerName == player.Data[LobbyManager.KEY_PLAYER_NAME].Value)
+            {
+                color = player.Data[LobbyManager.KEY_PLAYER_COLOR].Value;
+                break;
+            }
+        }
+
+        OnTextMessageLogReceived?.Invoke(message.Sender.DisplayName, message, color);
     }
 
     private void VivoxLog(object message) { 
