@@ -127,6 +127,12 @@ namespace Project
                                     _player.damageDealt += _weaponData.damage; 
                                     healthManagement.Damage(_weaponData.damage, OwnerClientId);
                                 }
+                                else if (hit.transform.root.TryGetComponent(out IHealthManagement healthManagement2))
+                                {
+                                    Debug.Log("Hit");
+                                    _player.damageDealt += _weaponData.damage;
+                                    healthManagement2.Damage(_weaponData.damage, OwnerClientId);
+                                }
                             }
                         }
                         else
@@ -353,10 +359,15 @@ namespace Project
                 var id = hit.colliderInstanceID;
                 LocalKnife(true, weaponHolderPosition, rootCameraPosition, hit.point);
                 KnifeServerRpc(weaponHolderPosition, rootCameraPosition, hit.point);
-                if (hit.transform.TryGetComponent(out IHealthManagement healthManagement))
+                if (hit.transform.TryGetComponent(out IHealthManagement healthManagement)) 
                 {
                     _player.damageDealt += knifeDamage; 
                     healthManagement.Damage(knifeDamage, OwnerClientId); 
+                }
+                else if(hit.transform.root.TryGetComponent(out IHealthManagement healthManagement2)) 
+                {
+                    _player.damageDealt += knifeDamage;
+                    healthManagement2.Damage(knifeDamage, OwnerClientId);
                 }
             }
         }

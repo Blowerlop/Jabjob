@@ -356,6 +356,7 @@ namespace Project
 
         void UpdateAlpha (float timer)
         {
+            if (timer < (_gameDuration * 2f / 3f)) return; 
             _paintable ??= gameObject.GetComponentsInChildren<Paintable>();
 
             if (IsOwner) return;
