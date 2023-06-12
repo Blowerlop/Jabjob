@@ -52,7 +52,15 @@ namespace Project
         }
 
         // KNIFE
-
+        public void TakeOutKnife()
+        {
+            _playerShoot.PutClipToWeapon();
+        }
+        //GUN
+        public void StartFire()
+        {
+            _playerShoot.PutClipToWeapon();
+        }
         public void PerformKnife()
         {
             _playerShoot.PerformKnifeCalculation();
@@ -78,14 +86,19 @@ namespace Project
         public void StartOfReload()
         {
             PlaySound("Reload");
+            _playerShoot.PutClipToLeftHand();
         }
         public void AutoReload()
         {
             _playerShoot.AutoReload();
         }
+        public void ResetClipPosition()
+        {
+            _playerShoot.PutClipToWeapon();
+        }
         public void EndOfReload()
         {
-            _playerShoot.EndOfReload();
+            _playerShoot.EndOfReload(); 
         }
 
         

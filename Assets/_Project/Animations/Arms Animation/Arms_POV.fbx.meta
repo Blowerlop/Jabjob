@@ -158,6 +158,13 @@ ModelImporter:
         floatParameter: 0
         intParameter: 0
         messageOptions: 0
+      - time: 0.50775826
+        functionName: ResetClipPosition
+        data: 
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
       transformMask: []
       maskType: 3
       maskSource: {instanceID: 0}
@@ -247,6 +254,13 @@ ModelImporter:
       events:
       - time: 1
         functionName: AutoReload
+        data: 
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
+      - time: 0
+        functionName: StartFire
         data: 
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0

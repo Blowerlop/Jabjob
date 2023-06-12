@@ -1,11 +1,11 @@
 using System;
 using System.Collections;
 using System.Reflection;
+using System.Threading.Tasks;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.Animations.Rigging;
 using Object = UnityEngine.Object;
-
 
 namespace Project
 {
@@ -48,6 +48,7 @@ namespace Project
         [SerializeField] private Animator _weaponAnim;
         [SerializeField] GameObject _fakeKnife, _knife; 
         public GameObject projectile;
+        public Transform leftHandTransform;
 
         [Header("Sound")]
         public AudioClip[] knifeEquipSounds;
@@ -76,7 +77,7 @@ namespace Project
             InputManager.instance.reload.AddListener(StartReload);
             GameEvent.onPlayerWeaponChangedLocalEvent.Subscribe(UpdateCurrentWeapon, this);
             GameEvent.onPlayerWeaponChangedServerEvent.Subscribe(UpdateCurrentWeapon, this);
-            ReloadTotalAmmo(_weaponData.totalAmmo);
+            if(_weaponData != null) ReloadTotalAmmo(_weaponData.totalAmmo);
             LocalEquipKnife(true);
             EquipKnifeServerRpc(true);
             hasKnifeEquipped = false;
@@ -274,7 +275,7 @@ namespace Project
             for (int i = 0; i < a.Length; i++)
             {
                 if (a[i].TryGetComponent(out paintable))
-                {
+                { 
                     break;
                 }
             }
@@ -380,6 +381,14 @@ namespace Project
             //_canShoot = false;
             //StartCoroutine(ReloadCoroutine());
         }
+        public void PutClipToLeftHand()
+        {
+            _fakeWeapon.clipTransform.SetParent(leftHandTransform);
+        }
+        public void PutClipToWeapon()
+        {
+            _fakeWeapon.ResetClipPosition();
+        }
         public void AutoReload() //Use by Animation, end of fire POV
         {
             if (_weapon != null && _weapon.ammo <= 0) StartReload();
@@ -423,10 +432,9 @@ namespace Project
             _canShoot = true;
         }
 
-        public void ReloadTotalAmmo(int amount)
+        public async void ReloadTotalAmmo(int amount)
         {
-            _weapon = _weaponManager.GetCurrentWeapon();
-            if (_weapon == null) return;
+            while (!weaponInitialized()) await Task.Delay(25);
             if (_weapon.totalAmmo + amount > _weaponData.totalAmmo) 
             {
                 _weapon.totalAmmo = _weaponData.totalAmmo;
@@ -451,6 +459,22 @@ namespace Project
         private void UpdateCurrentWeapon(byte weaponID)
         {
             _weaponData = SOWeapon.GetWeaponPrefab(weaponID).weaponData;  
+        }
+        public async void UpdatePlayerShootColor(Color color)
+        {
+            paintColor = color;
+            while (!weaponInitialized())  await Task.Delay(25);
+            _fakeWeapon.clipTransform.GetComponent<Renderer>().material.SetColor("Color_863351f5ceea4c998ef51baab6dd758b", color);
+            _weapon.clipTransform.GetComponent<Renderer>().material.SetColor("Color_863351f5ceea4c998ef51baab6dd758b", color);
+
+            _knife.transform.GetChild(0).GetComponent<MeshRenderer>().material.color = color;
+            _fakeKnife.transform.GetChild(0).GetComponent<MeshRenderer>().material.color = color;
+        }
+        
+        bool weaponInitialized()
+        {
+            if (_fakeWeapon == null || _weapon == null) return false;
+            return  true; 
         }
 
         #region Trail effects

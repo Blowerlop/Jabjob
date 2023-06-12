@@ -12,8 +12,13 @@ namespace Project
     {
         [field: SerializeField] public SOWeapon weaponData;
         public Transform bulletStartPoint;
+        public Transform clipTransform;
         public int ammo;
         public int totalAmmo;
+
+        private Transform clipParent;
+        private Vector3 clipPosition;
+        private Quaternion clipRotation;
 
         private ParticleSystem firingParticle;
         private void Awake()
@@ -21,6 +26,10 @@ namespace Project
             ammo = weaponData.maxAmmo;
             totalAmmo = weaponData.totalAmmo;
             firingParticle = bulletStartPoint.GetComponent<ParticleSystem>();
+
+            clipParent = clipTransform.parent;
+            clipPosition = clipTransform.localPosition;
+            clipRotation = clipTransform.localRotation;
         }
 
 
@@ -46,6 +55,13 @@ namespace Project
             firingPart.startColor = randomColors;
             firingLeftOverPart.startColor = randomColors;
         }
+        public void ResetClipPosition()
+        {
+            clipTransform.SetParent(clipParent);
+            clipTransform.localPosition = clipPosition;
+            clipTransform.localRotation = clipRotation;
+        }
+
     }
 }
 
