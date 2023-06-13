@@ -9,6 +9,7 @@ using System;
 using UnityEngine.Events;
 using System.Linq;
 using Project;
+using System.Globalization;
 
 public class VivoxManager : MonoBehaviour
 {
@@ -21,14 +22,15 @@ public class VivoxManager : MonoBehaviour
 
 
     public event Action OnUserLoggedIn;
-    public event Action<string, IChannelTextMessage> OnTextMessageLogReceived;
+    public Action<string, IChannelTextMessage, string> OnTextMessageLogReceived;
 
 
     private void Awake()
     {
         _lobbyManager = FindObjectOfType<LobbyManager>();
         if (_lobbyManager == null) return;
-        
+
+
         _lobbyManager.VivoxOnAuthenticate += InitAndLoginVivox;
         _lobbyManager.VivoxOnCreateLobby += VivoxOnCreateLobby;
         _lobbyManager.VivoxOnJoinLobby += VivoxOnJoinLobby;
@@ -93,7 +95,6 @@ public class VivoxManager : MonoBehaviour
 
     private void LoginSession_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
     {
-        
 
         var logginSession = (ILoginSession)sender;
         switch (logginSession.State)
@@ -117,6 +118,9 @@ public class VivoxManager : MonoBehaviour
                 break;
         }
     }
+
+
+
 
     public void SendMessageVivox(string message)
     {
@@ -145,10 +149,10 @@ public class VivoxManager : MonoBehaviour
 
     public void JoinChannel(string channelName)
     {
-        if(LoginSession.State == LoginState.LoggedIn)
+        if (LoginSession.State == LoginState.LoggedIn)
         {
             Channel channel = new Channel(channelName);
-            
+
             _currentChannelSession = LoginSession.GetChannelSession(channel);
             _currentChannelSession.MessageLog.AfterItemAdded += OnMessageLogReceive;
 
@@ -158,7 +162,7 @@ public class VivoxManager : MonoBehaviour
                 {
                     _currentChannelSession.EndConnect(ar);
                 }
-                catch (Exception e )
+                catch (Exception e)
                 {
                     Debug.Log(e.Message);
                     throw;
@@ -180,14 +184,29 @@ public class VivoxManager : MonoBehaviour
 
     private void OnMessageLogReceive(object sender, QueueItemAddedEventArgs<IChannelTextMessage> textMessage)
     {
-        
+
         IChannelTextMessage message = textMessage.Value;
-        OnTextMessageLogReceived?.Invoke(message.Sender.DisplayName, message);
+
+        //GetColor
+        string playerName = message.Sender.DisplayName;
+        string color = string.Empty;
+
+        foreach (var player in _lobbyManager.joinedLobby.Players)
+        {
+            if (playerName == player.Data[LobbyManager.KEY_PLAYER_NAME].Value)
+            {
+                color = player.Data[LobbyManager.KEY_PLAYER_COLOR].Value;
+                break;
+            }
+        }
+
+        OnTextMessageLogReceived?.Invoke(message.Sender.DisplayName, message, color);
     }
 
-    private void VivoxLog(object message) { 
-        Debug.Log("<color=yellow>Vivox : " + message+"</color>");
+    private void VivoxLog(object message)
+    {
+        Debug.Log("<color=yellow>Vivox : " + message + "</color>");
     }
 
-  
+
 }

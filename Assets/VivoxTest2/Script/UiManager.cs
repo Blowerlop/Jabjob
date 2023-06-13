@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using System.Runtime.CompilerServices;
+
 public class UiManager : MonoBehaviour
 {
     [SerializeField] private VivoxManager _vivoxManager;
@@ -26,12 +28,13 @@ public class UiManager : MonoBehaviour
         {
             _logginPanel.SetActive(false);
             _messageBoxPanel.SetActive(true);
-        };
+        }; 
 
         _vivoxManager.OnTextMessageLogReceived += ReceiveMessage;
 
-        _logginButon.onClick.AddListener(() =>{
+        _logginButon.onClick.AddListener(() => {
             _vivoxManager.Login(DisplayField.text);
+
         });
 
         _sendButon.onClick.AddListener(() => {
@@ -39,10 +42,9 @@ public class UiManager : MonoBehaviour
             _messageField.text = string.Empty;
         });
 
-
     }
 
-    private void ReceiveMessage(string senderName, VivoxUnity.IChannelTextMessage textMessage)
+    private void ReceiveMessage(string senderName, VivoxUnity.IChannelTextMessage textMessage, string Color)
     {
         TextMeshProUGUI message = Instantiate(_textMessage, _textPoint);
         message.text = $"{senderName} : {textMessage.Message}";
