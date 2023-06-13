@@ -385,9 +385,12 @@ namespace Project
         {
             _fakeWeapon.clipTransform.SetParent(leftHandTransform);
         }
-        public void PutClipToWeapon()
+        public void PutClipToWeapon(bool isFilled = false)
         {
+            Material liquidMaterial = _fakeWeapon.clipLiquid.GetComponent<Renderer>().material; 
             _fakeWeapon.ResetClipPosition();
+            if (isFilled) _fakeWeapon.UpdateAmmoFillLiquid(_weaponData.maxAmmo);
+            else _fakeWeapon.UpdateAmmoFillLiquid(_weapon.ammo); 
         }
         public void AutoReload() //Use by Animation, end of fire POV
         {
@@ -464,7 +467,7 @@ namespace Project
         {
             paintColor = color;
             while (!weaponInitialized())  await Task.Delay(25);
-            _fakeWeapon.clipTransform.GetComponent<Renderer>().material.SetColor("Color_863351f5ceea4c998ef51baab6dd758b", color);
+            _fakeWeapon.clipLiquid.GetComponent<Renderer>().material.SetColor("_Color", color);
             _weapon.clipTransform.GetComponent<Renderer>().material.SetColor("Color_863351f5ceea4c998ef51baab6dd758b", color);
 
             _knife.transform.GetChild(0).GetComponent<MeshRenderer>().material.color = color;

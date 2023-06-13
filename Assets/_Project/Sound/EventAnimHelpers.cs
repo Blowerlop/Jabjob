@@ -94,7 +94,7 @@ namespace Project
         }
         public void ResetClipPosition()
         {
-            _playerShoot.PutClipToWeapon();
+            _playerShoot.PutClipToWeapon(true);
         }
         public void EndOfReload()
         {

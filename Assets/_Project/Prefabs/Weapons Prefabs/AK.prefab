@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 2730001161647584909}
   - component: {fileID: 3974842316111272140}
   - component: {fileID: 5808582809348465610}
+  - component: {fileID: 1014052137093429442}
   m_Layer: 0
   m_Name: Liquid
   m_TagString: Untagged
@@ -61,7 +62,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 0}
+  - {fileID: 2100000, guid: 8659de6163c0efe43b8d3660eb82f037, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -83,6 +84,19 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &1014052137093429442
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1297083200920350951}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0c3ea44eef20b0b4396ebe666c9a6eeb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  extendsIslandOffset: 1
 --- !u!1 &4396829007452461331
 GameObject:
   m_ObjectHideFlags: 0
@@ -131,8 +145,10 @@ MonoBehaviour:
   weaponData: {fileID: 11400000, guid: 90492ddd2fb0f7f418432cbc72291976, type: 2}
   bulletStartPoint: {fileID: 5899156835596391583}
   clipTransform: {fileID: 309957505144700173}
+  clipLiquid: {fileID: 2730001161647584909}
   ammo: 0
   totalAmmo: 0
+  fakeLiquidMaterial: {fileID: 0}
 --- !u!1 &5535359507964690891
 GameObject:
   m_ObjectHideFlags: 0
@@ -243,7 +259,7 @@ GameObject:
   - component: {fileID: 309957505144700173}
   - component: {fileID: 1043815433330357756}
   - component: {fileID: 7410649212997736481}
-  - component: {fileID: 5356993249015547481}
+  - component: {fileID: 3948450886937302688}
   m_Layer: 0
   m_Name: Clip
   m_TagString: Untagged
@@ -317,7 +333,7 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!114 &5356993249015547481
+--- !u!114 &3948450886937302688
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -329,7 +345,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0c3ea44eef20b0b4396ebe666c9a6eeb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  extendsIslandOffset: 0
+  extendsIslandOffset: 1
 --- !u!1 &8942562989591827016
 GameObject:
   m_ObjectHideFlags: 0
