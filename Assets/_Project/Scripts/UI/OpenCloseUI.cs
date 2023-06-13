@@ -17,12 +17,14 @@ namespace Project
         [SerializeField] private Button _button;
         
         public enum EOpenClose{Open, Close}
-        [SerializeField] private EOpenClose _stateToDo = EOpenClose.Open;
+        [field: SerializeField] public EOpenClose stateToDo { get; private set; } = EOpenClose.Open;
         private Action _stateToDoMethod;
 
         [SerializeField] private UnityEvent onOpenUIEvent;
         [SerializeField] private UnityEvent onCloseUIEvent;
 
+        [SerializeField] private bool _openOrCloseWithKey = false;
+        
         private void Awake()
         {
             if (_overrideButton == false && _dontUseButton == false) _button = GetComponent<Button>();
@@ -30,17 +32,24 @@ namespace Project
 
         private void OnEnable()
         {
-            switch (_stateToDo)
+            switch (stateToDo)
             {
                 case EOpenClose.Open:
                     if (_dontUseButton == false) _button.onClick.AddListener(OpenUI);  
+                    
+                    if (_openOrCloseWithKey)
+                        // InputManager.instance.onEscapePressed.Subscribe(OpenUI, this);
+                    OpenCloseManager.instance.Register(this);
+                    
                     _stateToDoMethod = OpenUI;
                     break;
                 
                 case EOpenClose.Close:
                     if (_dontUseButton == false) _button.onClick.AddListener(CloseUI);
                     
-                    InputManager.instance.onEscapePressed.Subscribe(CloseUI, this);
+                    if (_openOrCloseWithKey)
+                        // InputManager.instance.onEscapePressed.Subscribe(CloseUI, this);
+                        OpenCloseManager.instance.Register(this);
 
                     _stateToDoMethod = CloseUI;
                     break;
@@ -49,15 +58,23 @@ namespace Project
 
         private void OnDisable()
         {
-            switch (_stateToDo)
+            switch (stateToDo)
             {
                 case EOpenClose.Open:
+                    if (OpenCloseManager.IsInstanceAlive && _openOrCloseWithKey)
+                    {
+                        // InputManager.instance.onEscapePressed.Unsubscribe(OpenUI);
+                        OpenCloseManager.instance.Unregister(this);
+
+                    }
                     break;
                 
                 case EOpenClose.Close:
-                    if (InputManager.IsInstanceAlive)
+                    if (OpenCloseManager.IsInstanceAlive && _openOrCloseWithKey)
                     {
-                        InputManager.instance.onEscapePressed.Unsubscribe(CloseUI);
+                        // InputManager.instance.onEscapePressed.Unsubscribe(CloseUI);
+                        OpenCloseManager.instance.Unregister(this);
+
                     }
                     break;
             }
@@ -66,16 +83,24 @@ namespace Project
         }
 
 
-        private void OpenUI()
+        public void OpenUI()
         {
             onOpenUIEvent?.Invoke();
             _target.SetActive(true);
         }
         
-        private void CloseUI()
+        public void CloseUI()
         {
             onCloseUIEvent?.Invoke();
             _target.SetActive(false);
+        }
+
+        private void OpenOrCloseUI()
+        {
+            if (_target.activeSelf) 
+                CloseUI();
+            else 
+                OpenUI();
         }
 
         public void ForceActivation() => _stateToDoMethod?.Invoke();

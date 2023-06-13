@@ -17,7 +17,7 @@ namespace Project
         public const string FRAMERATE = "FrameRate";
         public int GetFrameRate => PlayerPrefs.GetInt(FRAMERATE, Screen.currentResolution.refreshRate); 
 
-        public override void Awake()
+        protected override void Awake()
         {
             keepAlive = false;
             base.Awake();
