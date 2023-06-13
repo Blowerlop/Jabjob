@@ -39,6 +39,8 @@ namespace Project
 
         private void OnEnable()
         {
+            Start();
+            
             _masterVolumeSlider.onValueChanged.AddListenerExtended(SetMasterVolume);
             _masterVolumeInputField.onEndEdit.AddListenerExtended(SetMasterVolumeSliderValue);
             

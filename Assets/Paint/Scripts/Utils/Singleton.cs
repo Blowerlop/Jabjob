@@ -28,7 +28,7 @@ public class Singleton<T> : MonoBehaviour where T: MonoBehaviour{
         get { return _instance != null; }
     }
 
-    public virtual void Awake(){
+    protected virtual void Awake(){
         if (_instance != null){
             if(verbose)
                 Debug.Log("SingleAccessPoint, Destroy duplicate instance " + name + " of " + instance.name);
