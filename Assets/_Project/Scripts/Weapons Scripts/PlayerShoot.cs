@@ -392,10 +392,12 @@ namespace Project
         }
         public void PutClipToLeftHand()
         {
+            if (!IsOwner) return;
             _fakeWeapon.clipTransform.SetParent(leftHandTransform);
         }
         public void PutClipToWeapon(bool isFilled = false)
         {
+            if (!IsOwner) return; 
             Material liquidMaterial = _fakeWeapon.clipLiquid.GetComponent<Renderer>().material; 
             _fakeWeapon.ResetClipPosition();
             if (isFilled) _fakeWeapon.UpdateAmmoFillLiquid(_weaponData.maxAmmo);
