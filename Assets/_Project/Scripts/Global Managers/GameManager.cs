@@ -225,7 +225,7 @@ namespace Project
                     therealoneother = value.GetComponent<PlayerCameraController>();
                     therealoneother.enabled = false;
 
-                    GameEvent.onPlayerSpawnEvent.Invoke(this, false, OwnerClientId);
+                    GameEvent.onPlayerSpawnEvent.Invoke(this, false, value.GetOwnerId());
                 }
             });
 
