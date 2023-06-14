@@ -457,6 +457,7 @@ namespace Project
             }
             GameEvent.onPlayerWeaponTotalAmmoChangedEvent.Invoke(this, false, _weapon.totalAmmo);
             HideBarloadingAmmoBox();
+            AutoReload();
         }
 
         public bool isMaxAmmo => _weapon.totalAmmo == _weaponData.totalAmmo;
