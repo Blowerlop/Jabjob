@@ -12,6 +12,7 @@ namespace Project
         [SerializeField] private RectTransform _textAreaRectTF;
         private readonly float baseTextAreaHeight = 147;
 
+        [SerializeField] private bool _chatGameplay;
 
         [Header("Visual element ref")]
         [SerializeField] private Transform _textPoint;
@@ -19,6 +20,8 @@ namespace Project
         [SerializeField] private Button _sendBTN;
         [SerializeField] private TMP_InputField _textField;
         [SerializeField] private Button _extendShrinkBTN;
+        [SerializeField] private CanvasGroup _canvasGroup;
+        [SerializeField] private Image _textAreaImage;
         private List<TextMeshProUGUI> _messages = new List<TextMeshProUGUI>();
         private string _previousTextReceived;
         private bool _shrinkState = true;
@@ -55,15 +58,44 @@ namespace Project
         {
             if (_inputAction != null)
             {
+                
                 if (!_textField.isFocused)
                 {
                     _textField.Select();
+                    if(_chatGameplay)
+                    {
+                        //Canvas group 1
+                        _canvasGroup.alpha = 1;
+
+                        //Color _textAreaPrefab a full
+                        Color color = _textAreaImage.color;
+                        color.a = .5f;
+                        _textAreaImage.color = color;
+
+                        //Color _extendsShrink
+
+                    }
                 }
 
                 if (_textField.text != string.Empty)
                 {
                     SendMessage();
                     _textField.Select();
+
+
+                    if(_chatGameplay)
+                    {
+                        //Canvas group 0
+                        _canvasGroup.alpha = 0;
+
+                        //Color _textAreaPrefab a empty
+                        Color color = _textAreaImage.color;
+                        color.a = 0;
+                        _textAreaImage.color = color;
+
+                        //Color _extendsShrink
+
+                    }
                 }
 
             }

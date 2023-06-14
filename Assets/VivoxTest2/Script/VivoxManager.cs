@@ -137,6 +137,7 @@ public class VivoxManager : MonoBehaviour
             try
             {
                 _currentChannelSession.EndSendText(ar);
+
             }
             catch (Exception)
             {
