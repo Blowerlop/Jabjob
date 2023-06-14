@@ -255,6 +255,7 @@ namespace Project
         [ClientRpc]
         private void UpdateWarmUpTextClientRpc(string text)
         {
+            if (_warmUp == null) return;
             _warmUp.gameObject.SetActive(true);
 
             if (text.IsNullOrEmpty()) return;
