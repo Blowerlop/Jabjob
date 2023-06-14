@@ -41,7 +41,11 @@ public class AmmoDisplay : MonoBehaviour, IGameEventListener
 
     private void Update()
     {
-        if (_ammoDisplay.text != "0") return;
+        if (_ammoDisplay.text != "0")
+        {
+            _ammoDisplay.color = Color.white ;
+            return;
+        }
         BlinkingState();
     }
     private void UpdateAmmoDisplayText(int ammo)
