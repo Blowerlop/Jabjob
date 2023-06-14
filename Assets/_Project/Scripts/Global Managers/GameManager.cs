@@ -281,11 +281,19 @@ namespace Project
 
         private void ALlPlayerJoinEventHandler(ulong playerId)
         {
-            
             if (_players.Keys.Count == LobbyManager.Instance.joinedLobby.Players.Count)
             {
                 GameEvent.onAllPlayersJoinEvent.Invoke(this);
             }
+        }
+
+
+        public void AskToBeDisconnected(ulong clientId) => DisconnectClientServerRpc(clientId);
+
+        [ServerRpc]
+        private void DisconnectClientServerRpc(ulong clientId)
+        {
+            NetworkManager.Singleton.DisconnectClient(clientId);
         }
     }
 }

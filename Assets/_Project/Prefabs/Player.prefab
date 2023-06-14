@@ -1869,6 +1869,7 @@ MonoBehaviour:
   _fakeKnife: {fileID: 6663113862696078369}
   _knife: {fileID: 544786085285379401}
   projectile: {fileID: 0}
+  leftHandTransform: {fileID: 9221340239705915360}
   knifeEquipSounds:
   - {fileID: 8300000, guid: a2293533e9059fc4d8a1348310117a2b, type: 3}
   gunEquipSounds:
@@ -1933,7 +1934,7 @@ AudioSource:
     m_Curve:
     - serializedVersion: 3
       time: 0
-      value: 0
+      value: 1
       inSlope: 0
       outSlope: 0
       tangentMode: 0
@@ -2566,7 +2567,7 @@ AudioSource:
     m_Curve:
     - serializedVersion: 3
       time: 0
-      value: 0
+      value: 1
       inSlope: 0
       outSlope: 0
       tangentMode: 0
@@ -14617,6 +14618,12 @@ GameObject:
 --- !u!137 &6849416664662513841 stripped
 SkinnedMeshRenderer:
   m_CorrespondingSourceObject: {fileID: 1197629683798288611, guid: 07b5054aeba37b54fae700a9f710cc55,
+    type: 3}
+  m_PrefabInstance: {fileID: 5733313156723978322}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &9221340239705915360 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 3488066394819694514, guid: 07b5054aeba37b54fae700a9f710cc55,
     type: 3}
   m_PrefabInstance: {fileID: 5733313156723978322}
   m_PrefabAsset: {fileID: 0}

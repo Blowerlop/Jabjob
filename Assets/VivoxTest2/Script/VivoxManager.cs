@@ -24,12 +24,12 @@ public class VivoxManager : MonoBehaviour
     public event Action OnUserLoggedIn;
     public Action<string, IChannelTextMessage, string> OnTextMessageLogReceived;
 
-    
+
     private void Awake()
     {
         _lobbyManager = FindObjectOfType<LobbyManager>();
         if (_lobbyManager == null) return;
-        
+
 
         _lobbyManager.VivoxOnAuthenticate += InitAndLoginVivox;
         _lobbyManager.VivoxOnCreateLobby += VivoxOnCreateLobby;
@@ -120,7 +120,7 @@ public class VivoxManager : MonoBehaviour
     }
 
 
-    
+
 
     public void SendMessageVivox(string message)
     {
@@ -149,10 +149,10 @@ public class VivoxManager : MonoBehaviour
 
     public void JoinChannel(string channelName)
     {
-        if(LoginSession.State == LoginState.LoggedIn)
+        if (LoginSession.State == LoginState.LoggedIn)
         {
             Channel channel = new Channel(channelName);
-            
+
             _currentChannelSession = LoginSession.GetChannelSession(channel);
             _currentChannelSession.MessageLog.AfterItemAdded += OnMessageLogReceive;
 
@@ -162,7 +162,7 @@ public class VivoxManager : MonoBehaviour
                 {
                     _currentChannelSession.EndConnect(ar);
                 }
-                catch (Exception e )
+                catch (Exception e)
                 {
                     Debug.Log(e.Message);
                     throw;
@@ -184,7 +184,7 @@ public class VivoxManager : MonoBehaviour
 
     private void OnMessageLogReceive(object sender, QueueItemAddedEventArgs<IChannelTextMessage> textMessage)
     {
-        
+
         IChannelTextMessage message = textMessage.Value;
 
         //GetColor
@@ -193,7 +193,7 @@ public class VivoxManager : MonoBehaviour
 
         foreach (var player in _lobbyManager.joinedLobby.Players)
         {
-            if(playerName == player.Data[LobbyManager.KEY_PLAYER_NAME].Value)
+            if (playerName == player.Data[LobbyManager.KEY_PLAYER_NAME].Value)
             {
                 color = player.Data[LobbyManager.KEY_PLAYER_COLOR].Value;
                 break;
@@ -203,9 +203,10 @@ public class VivoxManager : MonoBehaviour
         OnTextMessageLogReceived?.Invoke(message.Sender.DisplayName, message, color);
     }
 
-    private void VivoxLog(object message) { 
-        Debug.Log("<color=yellow>Vivox : " + message+"</color>");
+    private void VivoxLog(object message)
+    {
+        Debug.Log("<color=yellow>Vivox : " + message + "</color>");
     }
 
-  
+
 }

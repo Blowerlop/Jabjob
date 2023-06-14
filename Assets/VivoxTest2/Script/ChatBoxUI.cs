@@ -32,8 +32,8 @@ namespace Project
                 _vivoxManager = FindObjectOfType<VivoxManager>();
                 _vivoxManager.OnTextMessageLogReceived = null;
                 _vivoxManager.OnTextMessageLogReceived += OnMessageReceive;
-                
-                _sendBTN.onClick.AddListener(()=>SendMessage());
+
+                _sendBTN.onClick.AddListener(() => SendMessage());
                 ShrinkTextArea(true);
 
 
@@ -53,14 +53,14 @@ namespace Project
 
         private void Enter_performed(UnityEngine.InputSystem.InputAction.CallbackContext obj)
         {
-            if(_inputAction != null)
+            if (_inputAction != null)
             {
                 if (!_textField.isFocused)
                 {
                     _textField.Select();
                 }
 
-                if(_textField.text != string.Empty)
+                if (_textField.text != string.Empty)
                 {
                     SendMessage();
                     _textField.Select();
@@ -71,7 +71,7 @@ namespace Project
 
         private void OnDestroy()
         {
-            if(_vivoxManager)
+            if (_vivoxManager)
             {
                 _vivoxManager.OnTextMessageLogReceived -= OnMessageReceive;
                 _vivoxManager = null;
@@ -117,7 +117,7 @@ namespace Project
             }
             else
             {
-                _textAreaRectTF.sizeDelta = new Vector2(_textAreaRectTF.rect.width, baseTextAreaHeight* 2.2f);
+                _textAreaRectTF.sizeDelta = new Vector2(_textAreaRectTF.rect.width, baseTextAreaHeight * 2.2f);
             }
         }
     }

@@ -20,7 +20,7 @@ namespace Project
         public const string GAMESOUNDS = "GameSounds";
         public float GetGameSoundsVolume => PlayerPrefs.GetFloat(GAMESOUNDS, ConvertValue01ToVolume(1.0f));
 
-        public override void Awake()
+        protected override void Awake()
         {
             keepAlive = false;
             

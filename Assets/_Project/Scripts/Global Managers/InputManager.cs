@@ -15,7 +15,7 @@ public class InputManager : Singleton<InputManager>
 {
     #region Singleton
 
-    public override void Awake()
+    protected override void Awake()
     {
         keepAlive = false;
         base.Awake();

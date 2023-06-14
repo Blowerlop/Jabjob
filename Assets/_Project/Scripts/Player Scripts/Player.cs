@@ -96,7 +96,7 @@ namespace Project
             _networkName.OnValueChanged += UpdatePlayersGameObjectNameLocal;
 #endif
 
-            _playerShoot.paintColor = playerColor;
+            _playerShoot.UpdatePlayerShootColor(playerColor);
             if (IsOwner == false)
             {
                 enabled = false;
@@ -215,7 +215,7 @@ namespace Project
 
 
         private void OnNameValueChange(StringNetwork previousValue, StringNetwork nextValue) => GameEvent.onPlayerUpdateNameEvent.Invoke(this, true, OwnerClientId, nextValue);
-        private void OnColorValueChange(Color previousValue, Color nextValue) { GameEvent.onPlayerUpdateColorEvent.Invoke(this, true, OwnerClientId, nextValue); _playerShoot.paintColor = nextValue; _playerMovementController.UpdateDashColor(nextValue); }
+        private void OnColorValueChange(Color previousValue, Color nextValue) { GameEvent.onPlayerUpdateColorEvent.Invoke(this, true, OwnerClientId, nextValue); _playerShoot.UpdatePlayerShootColor(nextValue); _playerMovementController.UpdateDashColor(nextValue); }
         private void OnModelValueChange(StringNetwork previousValue, StringNetwork nextValue) { GameEvent.onPlayerUpdateModelEvent.Invoke(this, true, OwnerClientId, nextValue); PlayerModelsManager.instance.ChangeCharacterModelIg(playerMesh, handsMesh, nextValue.value); }
         #endregion
 

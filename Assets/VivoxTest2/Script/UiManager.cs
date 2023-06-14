@@ -28,11 +28,11 @@ public class UiManager : MonoBehaviour
         {
             _logginPanel.SetActive(false);
             _messageBoxPanel.SetActive(true);
-        };
+        }; 
 
         _vivoxManager.OnTextMessageLogReceived += ReceiveMessage;
 
-        _logginButon.onClick.AddListener(() =>{
+        _logginButon.onClick.AddListener(() => {
             _vivoxManager.Login(DisplayField.text);
 
         });
