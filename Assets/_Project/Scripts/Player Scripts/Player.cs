@@ -158,6 +158,7 @@ namespace Project
         private void IsPlayerHostServerRpc() => isHost = IsOwner && IsHost;
         private bool IsMyPlayer(ulong playerOwnerId) => OwnerClientId == playerOwnerId;
 
+        public ulong GetOwnerId() => OwnerClientId;
         #endregion
 
         #region Name
@@ -336,8 +337,7 @@ namespace Project
 
         private void SpawnPlayerRandomly(ulong clientId)
         {
-            Player player = GameManager.instance.GetPlayer(clientId);
-            player.transform.position = spawnPostions[UnityEngine.Random.Range(0, spawnPostions.Count)];
+            GetComponent<PlayerMovementController>().Teleport(spawnPostions[UnityEngine.Random.Range(0, spawnPostions.Count)]);
         }
 
         private void OnKillValueChange(int previousValue, int nextValue) => GameEvent.onPlayerGetAKillEvent.Invoke(this, true, OwnerClientId, nextValue); 
