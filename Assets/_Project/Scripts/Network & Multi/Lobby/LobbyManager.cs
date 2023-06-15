@@ -108,15 +108,38 @@ public class LobbyManager : MonoBehaviour {
             Debug.Log(playerName + " signed in. ID :  " + AuthenticationService.Instance.PlayerId);
             RefreshLobbyList();
         };
-
+        
         try { await AuthenticationService.Instance.SignInAnonymouslyAsync();
             VivoxOnAuthenticate?.Invoke(playerName);
-            return true; }
+            await Task.WhenAny(Task.Delay(TimeSpan.FromSeconds(10)), checkVivox());
+            return VivoxManager.Instance.isConnected; }
         catch (Exception e)
         {
             Debug.LogError(e);
             return false;
         }
+    }
+
+    public async Task<bool> AuthenticateOnlyVivox(string playerName)
+    {
+        this.playerName = playerName;
+        try
+        {
+            VivoxOnAuthenticate?.Invoke(playerName);
+            await Task.WhenAny(Task.Delay(TimeSpan.FromSeconds(10)), checkVivox());
+            return VivoxManager.Instance.isConnected;
+        }
+        catch (Exception e)
+        {
+            Debug.LogError(e);
+            return false;
+        }
+    }
+
+    public async Task<bool> checkVivox()
+    {
+        while (!VivoxManager.Instance.isConnected) await Task.Delay(25);
+        return true;
     }
 
     private void HandleRefreshLobbyList() {

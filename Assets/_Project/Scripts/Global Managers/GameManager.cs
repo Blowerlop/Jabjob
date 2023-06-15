@@ -169,7 +169,7 @@ namespace Project
         {
             if (IsServer)
             {
-                Timer.StartTimerWithCallbackRealTime(30.0f, () =>
+                Timer.StartTimerWithCallbackRealTime(20.0f, () =>
                 {
                     NetworkManager.Singleton.SceneManager.OnLoadEventCompleted += (sceneName, mode, completed, @out) =>
                     {
@@ -225,7 +225,7 @@ namespace Project
                     therealoneother = value.GetComponent<PlayerCameraController>();
                     therealoneother.enabled = false;
 
-                    GameEvent.onPlayerSpawnEvent.Invoke(this, false, OwnerClientId);
+                    GameEvent.onPlayerSpawnEvent.Invoke(this, false, value.GetOwnerId());
                 }
             });
 
@@ -255,6 +255,7 @@ namespace Project
         [ClientRpc]
         private void UpdateWarmUpTextClientRpc(string text)
         {
+            if (_warmUp == null) return;
             _warmUp.gameObject.SetActive(true);
 
             if (text.IsNullOrEmpty()) return;

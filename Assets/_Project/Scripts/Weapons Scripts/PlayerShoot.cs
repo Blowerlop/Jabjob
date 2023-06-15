@@ -6,6 +6,8 @@ using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.Animations.Rigging;
 using Object = UnityEngine.Object;
+using UnityEngine.UI;
+using TMPro; 
 
 namespace Project
 {
@@ -14,18 +16,19 @@ namespace Project
     {
         #region Variables
 
-        [Header("Shoot state")] 
+        [Header("Shoot state")]
         public Color paintColor;
         [SerializeField] private float knifeHitDistance;
-        [SerializeField] private int knifeDamage; 
+        [SerializeField] private int knifeDamage;
         private float _nextShoot;
-        private float _nextKnife; 
+        private float _nextKnife;
         private float _shootRate;
-        [SerializeField] private float _knifeRate; 
+        [SerializeField] private float _knifeRate;
         //private Vector3 _hitPointClient = Vector3.zero;
         private bool _canShoot = true;
         //[SerializeField] private LayerMask _layerToAim;
-        bool hasKnifeEquipped = false; 
+        bool hasKnifeEquipped = false;
+        public float ammoBoxReloadTimer = 0f;
         [Header("Other References")]
         private Player _player;
         private Weapon _weapon, _fakeWeapon;
@@ -36,10 +39,14 @@ namespace Project
         private Collider _collider;
         [SerializeField] private LayerMask _shootLayerMaskPhysics;
         [SerializeField] private LayerMask _shootLayerMaskNoPhysics;
- 
-        [Header("Debug")] 
+
+        [Header("Debug")]
         [SerializeField] private bool _showDebug;
         [SerializeField] private AudioSource _audioSource;
+
+        [Header("UI Feedback Display")]
+        [SerializeField] Slider reloadSlider;
+        [SerializeField] TextMeshProUGUI reloadText; 
 
         [Header("Animation")]
         [SerializeField] EventAnimHelpers bodyAnimHelpers;
@@ -55,6 +62,8 @@ namespace Project
         public AudioClip[] gunEquipSounds;
         private int knifeLoop = 0;
         private int gunLoop = 0; 
+
+        
         #endregion
 
 
@@ -383,10 +392,12 @@ namespace Project
         }
         public void PutClipToLeftHand()
         {
+            if (!IsOwner) return;
             _fakeWeapon.clipTransform.SetParent(leftHandTransform);
         }
         public void PutClipToWeapon(bool isFilled = false)
         {
+            if (!IsOwner) return; 
             Material liquidMaterial = _fakeWeapon.clipLiquid.GetComponent<Renderer>().material; 
             _fakeWeapon.ResetClipPosition();
             if (isFilled) _fakeWeapon.UpdateAmmoFillLiquid(_weaponData.maxAmmo);
@@ -444,11 +455,24 @@ namespace Project
             }
             else
             {
-                _weapon.totalAmmo += amount;
+                _weapon.totalAmmo += amount; 
             }
             GameEvent.onPlayerWeaponTotalAmmoChangedEvent.Invoke(this, false, _weapon.totalAmmo);
+            HideBarloadingAmmoBox();
+            AutoReload();
         }
 
+        public bool isMaxAmmo => _weapon.totalAmmo == _weaponData.totalAmmo;
+        public void ShowBarLoadingAmmoBox(float percentage)
+        {
+            reloadSlider.gameObject.SetActive(true);
+            reloadText.text = "Reloading total ammo..";
+            reloadSlider.value = percentage;
+        }
+        public void HideBarloadingAmmoBox()
+        {
+            reloadSlider.gameObject.SetActive(false);
+        }
         private void UpdateCurrentWeapon(Weapon weapon)
         {
             _weapon = weapon;
