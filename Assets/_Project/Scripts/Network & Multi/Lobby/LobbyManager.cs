@@ -194,7 +194,12 @@ public class LobbyManager : MonoBehaviour {
                         OnStartGame?.Invoke(this, EventArgs.Empty);
                     }
 
-                    Timer.StartTimerWithCallbackRealTime(10.0f, () => joinedLobby = null);
+                    // J'ai du enlevé le fait de rendre null le lobby
+                    // Si un joueur prenez plus de T seconds alors le server
+                    // qui avait besoins des infos lobby au moment de la connection avec une null ref ce qui poser des
+                    // soucis pour la suite du warmup
+                    
+                    // Timer.StartTimerWithCallbackRealTime(10.0f, () => joinedLobby = null);
 
                 }
             }

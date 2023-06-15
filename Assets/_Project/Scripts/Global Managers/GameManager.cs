@@ -78,7 +78,7 @@ namespace Project
                 
                 NetworkManager.Singleton.OnClientDisconnectCallback += OnClientDisconnect;
                 
-                StartWarmup();
+                Timer.StartTimerWithCallbackRealTime(1.0f, StartWarmup);
 
                 // NetworkManager.Singleton.SceneManager.OnLoadEventCompleted += EndWarmUpBehaviour;
                 
@@ -282,6 +282,12 @@ namespace Project
 
         private void ALlPlayerJoinEventHandler(ulong playerId)
         {
+            if (LobbyManager.Instance.joinedLobby == null)
+            {
+                Debug.LogError($"{this}: JoinedLobby is null");
+                return;
+            }
+            
             if (_players.Keys.Count == LobbyManager.Instance.joinedLobby.Players.Count)
             {
                 GameEvent.onAllPlayersJoinEvent.Invoke(this);

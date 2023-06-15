@@ -30,7 +30,7 @@ namespace Project
         [SerializeField] private NetworkVariable<int> _networkDeaths = new NetworkVariable<int>();
         [SerializeField] private NetworkVariable<ulong> _networkKillerId = new NetworkVariable<ulong>(writePerm: NetworkVariableWritePermission.Owner); 
         [SerializeField] private NetworkVariable<int> _networkScore = new NetworkVariable<int>();
-        [SerializeField] private NetworkVariable<int> _networkDamageDealt = new NetworkVariable<int>();
+        [SerializeField] private NetworkVariable<int> _networkDamageDealt = new NetworkVariable<int>(writePerm: NetworkVariableWritePermission.Owner);
         [SerializeField] private NetworkVariable<bool> _networkIsHost = new NetworkVariable<bool>();
         [SerializeField] private Player _killer;
 
