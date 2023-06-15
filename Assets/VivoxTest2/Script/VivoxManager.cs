@@ -10,6 +10,7 @@ using UnityEngine.Events;
 using System.Linq;
 using Project;
 using System.Globalization;
+using System.Threading.Tasks;
 
 public class VivoxManager : MonoBehaviour
 {
@@ -19,14 +20,15 @@ public class VivoxManager : MonoBehaviour
     private IChannelSession _currentChannelSession;
     private string displayName;
     private LobbyManager _lobbyManager;
-
+    public bool isConnected = false;
 
     public event Action OnUserLoggedIn;
     public Action<string, IChannelTextMessage, string> OnTextMessageLogReceived;
-
+    public static VivoxManager Instance { get; private set; }
 
     private void Awake()
     {
+        Instance = this;
         _lobbyManager = FindObjectOfType<LobbyManager>();
         if (_lobbyManager == null) return;
 
@@ -83,6 +85,7 @@ public class VivoxManager : MonoBehaviour
             try
             {
                 LoginSession.EndLogin(ar);
+                isConnected = true; 
             }
             catch (Exception e)
             {
