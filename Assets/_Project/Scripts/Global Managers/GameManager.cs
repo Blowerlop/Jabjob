@@ -169,7 +169,7 @@ namespace Project
         {
             if (IsServer)
             {
-                Timer.StartTimerWithCallbackRealTime(30.0f, () =>
+                Timer.StartTimerWithCallbackRealTime(20.0f, () =>
                 {
                     NetworkManager.Singleton.SceneManager.OnLoadEventCompleted += (sceneName, mode, completed, @out) =>
                     {
