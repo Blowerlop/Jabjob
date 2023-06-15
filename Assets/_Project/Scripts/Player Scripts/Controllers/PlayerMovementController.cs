@@ -83,12 +83,13 @@ public class PlayerMovementController : NetworkBehaviour
         UpdateDashColor(_player.playerColor);
         if (IsOwner == false) { enabled = false; return; }
         InitializeDashVFX();
+        var smokePart = _smokeParticles.main;
+        smokePart.playOnAwake = false;
         _smokeParticles.Stop();
     }
 
     private void FixedUpdate()
     {
-
         CheckGrounded();
         PerformJumpAndGravity();
         PerformMovement();
@@ -364,6 +365,12 @@ public class PlayerMovementController : NetworkBehaviour
     public void EndOfDashVFX()
     {
         if (IsOwner) _DashVFX.gameObject.SetActive(false);
+    }
+    public void DisableSmoke()
+    {
+        var smokePart = _smokeParticles.main;
+        smokePart.playOnAwake = false;
+        _smokeParticles.Stop();
     }
     #endregion
 }

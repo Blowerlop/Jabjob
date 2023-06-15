@@ -74,6 +74,7 @@ public class LobbyManager : MonoBehaviour {
     #region Event Vivox
 
     public Action<string> VivoxOnAuthenticate;
+    public Action<string> VivoxOnLoginOnly;
     public Action<string> VivoxOnCreateLobby;
     public Action<string> VivoxOnJoinLobby;
     public Action VivoxOnLeaveLobby;
@@ -93,7 +94,7 @@ public class LobbyManager : MonoBehaviour {
         HandleLobbyHeartbeat();
         HandleLobbyPolling();
         
-        if (Input.GetKey(KeyCode.I)) Debug.Log("Player id" + AuthenticationService.Instance.PlayerId);
+        //if (Input.GetKey(KeyCode.I)) Debug.Log("Player id" + AuthenticationService.Instance.PlayerId);
     }
 
     #region LobbyMethod
@@ -129,9 +130,10 @@ public class LobbyManager : MonoBehaviour {
         this.playerName = playerName;
         try
         {
-            VivoxOnAuthenticate?.Invoke(playerName);
+            VivoxOnLoginOnly?.Invoke(playerName);
             await Task.WhenAny(Task.Delay(TimeSpan.FromSeconds(10)), checkVivox());
-            return VivoxManager.Instance.isConnected;
+            HandleRefreshLobbyList();
+            return VivoxManager.Instance.isConnected; 
         }
         catch (Exception e)
         {

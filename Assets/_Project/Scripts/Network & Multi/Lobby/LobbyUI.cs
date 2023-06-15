@@ -24,6 +24,7 @@ using UnityEngine.UI;
         //[SerializeField] private Button changeGameModeButton;
         [SerializeField] private Button startGameButton;
         [SerializeField] private Project.GameMapsUI gameMapsUI;
+        [SerializeField] private Image ColorButton; 
         private void Awake()
         {
             Instance = this;
@@ -57,8 +58,12 @@ using UnityEngine.UI;
             Project.PlayerLoadingItemManager.Instance.gameMapsUI = gameMapsUI; 
             Hide();
         }
+    private void OnEnable()
+    {
+        ColorButton.color = Color.white; 
+    }
 
-        private void LobbyManager_OnStartGame(object sender, System.EventArgs e)
+    private void LobbyManager_OnStartGame(object sender, System.EventArgs e)
         {
             ClearLobby();
             SoundManager2D.instance.backgroundMusic.Stop();
@@ -124,7 +129,7 @@ using UnityEngine.UI;
         }
         private void Show()
         {
-            gameObject.SetActive(true);
+             if(gameObject != null) gameObject.SetActive(true);
         }
 
         private void SetStartButtonVisible(bool visible)

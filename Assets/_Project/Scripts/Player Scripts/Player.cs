@@ -48,6 +48,7 @@ namespace Project
         public int damageDealt { get => _networkDamageDealt.Value; set => _networkDamageDealt.Value = value; }
         public bool isHost { get => _networkIsHost.Value; private set => _networkIsHost.Value = value; }
 
+        bool isDead = false;
         private HashSet<ulong> _damagersId = new HashSet<ulong>();
 
         private PlayerMovementController _playerMovementController; 
@@ -112,7 +113,7 @@ namespace Project
 
             _gameDuration = GameManager.instance.gameMode.gameDurationInSeconds;
 
-            GetComponent<PlayerMovementController>().Teleport(new Vector3(OwnerClientId * 100, -500.0f, 0.0f));
+            _playerMovementController.Teleport(new Vector3(OwnerClientId * 100, -500.0f, 0.0f));
         }
 
         private void Start()
@@ -123,6 +124,7 @@ namespace Project
         private void OnEnable()
         {
             SetHealth(_defaultHealth);
+            isDead = false; 
             GameEvent.onPlayerSpawnEvent.Subscribe(SpawnPlayerRandomly, this);
         }
 
@@ -242,6 +244,7 @@ namespace Project
 
         public void DamageLocalClient(int damage, ulong damagerId)
         {
+            if (isDead) return;
             Debug.Log("You've taken damage");
             _damagersId.Add(damagerId);
             _killerId = damagerId;
@@ -260,6 +263,7 @@ namespace Project
 
             if (_currentHealth <= 0)
             {
+                isDead = true;
                 PlayerDeath();
             }
         }
@@ -336,8 +340,8 @@ namespace Project
         }
 
         private void SpawnPlayerRandomly(ulong clientId)
-        {
-            GetComponent<PlayerMovementController>().Teleport(spawnPostions[UnityEngine.Random.Range(0, spawnPostions.Count)]);
+        {   
+            _playerMovementController.Teleport(spawnPostions[UnityEngine.Random.Range(0, spawnPostions.Count)]);
         }
 
         private void OnKillValueChange(int previousValue, int nextValue) => GameEvent.onPlayerGetAKillEvent.Invoke(this, true, OwnerClientId, nextValue); 
@@ -356,11 +360,11 @@ namespace Project
 
         void UpdateAlpha (float timer)
         {
-            if (timer < (_gameDuration * 2f / 3f)) return; 
-            _paintable ??= gameObject.GetComponentsInChildren<Paintable>();
-
-            if (IsOwner) return;
-            
+            if (timer < (_gameDuration * 2f / 3f) || IsOwner)
+            {
+                _playerMovementController.DisableSmoke(); return;
+            } 
+            _paintable ??= gameObject.GetComponentsInChildren<Paintable>(true);
             _paintable.ForEach(x => x.SetAlpha(GetAlphaValueToApply(_gameDuration - timer)));
         }
  
@@ -390,8 +394,17 @@ namespace Project
         
         public void KickLocalClient()
         {
-            NetworkManager.Singleton.Shutdown();
-            SceneManager.LoadSceneAsyncLocal(SceneManager.EScene.MenuScene);
+            NetworkManager.Singleton.SceneManager.OnLoadEventCompleted += (sceneName, mode, completed, @out) =>
+            {
+                VivoxManager.Instance.VivoxLogOut();
+                NetworkManager.Singleton.Shutdown();
+                Cursor.lockState = CursorLockMode.None;
+                Cursor.visible = true;
+                SoundManager2D.instance.PlayBackgroundMusic("Start Scene Background Music");
+                VivoxManager.Instance.SubscribeLobbyEvent();
+            };
+
+            SceneManager.LoadSceneNetwork("MenuScene");
         }
 
         public void SetKills(int killNumber) => kills = killNumber;

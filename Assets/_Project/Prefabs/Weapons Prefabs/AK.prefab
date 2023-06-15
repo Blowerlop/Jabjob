@@ -11,7 +11,6 @@ GameObject:
   - component: {fileID: 2730001161647584909}
   - component: {fileID: 3974842316111272140}
   - component: {fileID: 5808582809348465610}
-  - component: {fileID: 1014052137093429442}
   m_Layer: 0
   m_Name: Liquid
   m_TagString: Untagged
@@ -84,19 +83,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!114 &1014052137093429442
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1297083200920350951}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0c3ea44eef20b0b4396ebe666c9a6eeb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  extendsIslandOffset: 1
 --- !u!1 &4396829007452461331
 GameObject:
   m_ObjectHideFlags: 0

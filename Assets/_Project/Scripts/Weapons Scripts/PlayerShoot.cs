@@ -74,6 +74,8 @@ namespace Project
             _player = GetComponent<Player>();
             _weaponManager = GetComponent<WeaponManager>();
             _collider = GetComponent<Collider>();
+
+            InputManager.instance.isDashing = false;
         }
 
         private void Start()
@@ -86,7 +88,7 @@ namespace Project
             InputManager.instance.reload.AddListener(StartReload);
             GameEvent.onPlayerWeaponChangedLocalEvent.Subscribe(UpdateCurrentWeapon, this);
             GameEvent.onPlayerWeaponChangedServerEvent.Subscribe(UpdateCurrentWeapon, this);
-            if(_weaponData != null) ReloadTotalAmmo(_weaponData.totalAmmo);
+            ReloadTotalAmmoRespawn();
             LocalEquipKnife(true);
             EquipKnifeServerRpc(true);
             hasKnifeEquipped = false;
@@ -281,7 +283,7 @@ namespace Project
         {
             Paintable paintable = null;
             var a = Physics.OverlapSphere(hitPoint, 0.25f);
-            for (int i = 0; i < a.Length; i++)
+            for (int i = 0; i < a.Length; i++) 
             {
                 if (a[i].TryGetComponent(out paintable))
                 { 
@@ -446,6 +448,11 @@ namespace Project
             _canShoot = true;
         }
 
+        public async void ReloadTotalAmmoRespawn() //no Anim no nothing
+        {
+            while (!weaponInitialized()) await Task.Delay(25);
+            _weapon.totalAmmo = _weaponData.totalAmmo;
+        }
         public async void ReloadTotalAmmo(int amount)
         {
             while (!weaponInitialized()) await Task.Delay(25);
@@ -492,9 +499,8 @@ namespace Project
             paintColor = color;
             while (!weaponInitialized())  await Task.Delay(25);
             _fakeWeapon.clipLiquid.GetComponent<Renderer>().material.SetColor("_Color", color);
-            _weapon.clipTransform.GetComponent<Renderer>().material.SetColor("Color_863351f5ceea4c998ef51baab6dd758b", color);
-
-            _knife.transform.GetChild(0).GetComponent<MeshRenderer>().material.color = color;
+            _weapon.clipLiquid.GetComponent<Renderer>().material.SetColor("_Color", color);
+            _knife.transform.GetChild(0).GetComponent<MeshRenderer>().material.SetColor("Color_863351f5ceea4c998ef51baab6dd758b", color);
             _fakeKnife.transform.GetChild(0).GetComponent<MeshRenderer>().material.color = color;
         }
         
