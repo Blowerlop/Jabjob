@@ -129,7 +129,7 @@ using UnityEngine.UI;
 
         private void SetStartButtonVisible(bool visible)
         {
-            startGameButton.gameObject.SetActive(visible);
+            if(startGameButton.gameObject != null) startGameButton.gameObject.SetActive(visible);
         }
     }
 
