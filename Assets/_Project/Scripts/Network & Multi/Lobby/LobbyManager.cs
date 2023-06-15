@@ -109,10 +109,14 @@ public class LobbyManager : MonoBehaviour {
             RefreshLobbyList();
         };
         
-        try { await AuthenticationService.Instance.SignInAnonymouslyAsync();
+        try 
+        { 
+            await AuthenticationService.Instance.SignInAnonymouslyAsync();
             VivoxOnAuthenticate?.Invoke(playerName);
             await Task.WhenAny(Task.Delay(TimeSpan.FromSeconds(10)), checkVivox());
-            return VivoxManager.Instance.isConnected; }
+            HandleRefreshLobbyList();
+            return VivoxManager.Instance.isConnected;
+        }
         catch (Exception e)
         {
             Debug.LogError(e);
@@ -148,7 +152,6 @@ public class LobbyManager : MonoBehaviour {
             if (refreshLobbyListTimer < 0f) {
                 float refreshLobbyListTimerMax = 5f;
                 refreshLobbyListTimer = refreshLobbyListTimerMax;
-
                 RefreshLobbyList();
             }
         }

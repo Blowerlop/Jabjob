@@ -65,7 +65,7 @@ public class AuthenticateUI : MonoBehaviour {
         for (int i = 0; i < LoadingAnimGO.Count; i++) { LoadingAnimGO[i].SetActive(true); }
         try
         {
-            Debug.Log("Déjà connecté : " + AuthenticationService.Instance);
+            Debug.Log("Dï¿½jï¿½ connectï¿½ : " + AuthenticationService.Instance);
             bool AuthentifactionSucess = await LobbyManager.Instance.AuthenticateOnlyVivox(_playerName);
             for (int i = 0; i < LoadingAnimGO.Count; i++) { LoadingAnimGO[i].SetActive(false); }
             if (AuthentifactionSucess)
@@ -74,6 +74,7 @@ public class AuthenticateUI : MonoBehaviour {
                 LobbyList.SetActive(true);
                 gameObject.SetActive(false);
                 canTryToConnect = true;
+                LobbyManager.Instance.RefreshLobbyList();
             }
             else
             {
@@ -90,7 +91,7 @@ public class AuthenticateUI : MonoBehaviour {
         }
         catch (Exception e)
         {
-            Debug.Log("Pas encore connecté");
+            Debug.Log("Pas encore connectï¿½");
             bool AuthentifactionSucess = await LobbyManager.Instance.Authenticate(_playerName);
             for (int i = 0; i < LoadingAnimGO.Count; i++) { LoadingAnimGO[i].SetActive(false); }
             if (AuthentifactionSucess)
@@ -99,6 +100,7 @@ public class AuthenticateUI : MonoBehaviour {
                 LobbyList.SetActive(true);
                 gameObject.SetActive(false);
                 canTryToConnect = true;
+                LobbyManager.Instance.RefreshLobbyList();
             }
             else
             {
