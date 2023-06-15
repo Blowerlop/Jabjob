@@ -1765,6 +1765,7 @@ MonoBehaviour:
   _moveSpeed: 10
   _dashNumber: 3
   _dashCooldown: 3
+  _dashForce: 2
   _gravityEnabled: 1
   _gravityForce: -9.81
   _groundedVerticalVelocity: -2
@@ -1799,6 +1800,7 @@ MonoBehaviour:
   _DashVFX: {fileID: 7188909021366639815}
   _dashParticles: {fileID: 4117564791447792635}
   _smokeParticles: {fileID: 1393851736148558888}
+  _cameraRoot: {fileID: 8130439777759429579}
 --- !u!114 &2755970706688381933
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -15241,7 +15243,7 @@ PrefabInstance:
     - target: {fileID: 5770041453653872907, guid: 2885d7bc54cc9f641a200dac473470e9,
         type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 0
+      value: 284.5
       objectReference: {fileID: 0}
     - target: {fileID: 5770041453653872907, guid: 2885d7bc54cc9f641a200dac473470e9,
         type: 3}
