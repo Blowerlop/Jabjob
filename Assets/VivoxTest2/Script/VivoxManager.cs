@@ -72,15 +72,7 @@ public class VivoxManager : MonoBehaviour
         Login(playerName);
     }
 
-    //private async void Start()
-    //{
-    //    InitializationOptions options = new InitializationOptions();
-    //    options.SetProfile("Getet" + UnityEngine.Random.Range(0, 650));
-    //    await UnityServices.InitializeAsync(options);
-    //    await AuthenticationService.Instance.SignInAnonymouslyAsync();
-    //    VivoxService.Instance.Initialize();
-
-    //}
+   
 
 
     public void Login(string displayName)
