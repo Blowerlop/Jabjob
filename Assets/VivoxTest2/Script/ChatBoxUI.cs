@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 
 namespace Project
 {
@@ -74,6 +75,7 @@ namespace Project
                 if (_textField.text != string.Empty)
                 {
                     SendMessage();
+                    EventSystem.current.SetSelectedGameObject(null);
                     if (_chatGameplay)
                     {
                         ShowChatBox(false);
@@ -85,11 +87,10 @@ namespace Project
                 if (_textField.text == string.Empty && _canvasGroup.alpha == 1 && _chatGameplay)
                 {
                     ShowChatBox(false);
+                    EventSystem.current.SetSelectedGameObject(null);
 
                     return;
                 }
-
-
             }
         }
 
