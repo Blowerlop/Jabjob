@@ -44,6 +44,12 @@ namespace Project
 
             playerMeshRenderer.GetComponent<Paintable>().Initialize();  
         }
+        public void ResetCharacterModelMenu(SkinnedMeshRenderer playerMeshRenderer, TextMeshProUGUI modelNameTMPRO)
+        {
+            playerMeshRenderer.sharedMesh = meshDictionary["Hotdog"];
+            playerMeshRenderer.material = materialDictionary["Hotdog"];
+            modelNameTMPRO.text = "Hotdog";
+        }
         public void ChangeCharacterModelMenu(SkinnedMeshRenderer playerMeshRenderer, TextMeshProUGUI modelNameTMPRO, bool isNext) 
         {
             //Si isNext == on veut le prochain skin, sinon on veut le pr�c�dent

@@ -63,55 +63,37 @@ public class AuthenticateUI : MonoBehaviour {
         _playerNameInputField.DeactivateInputField();
         _playerNameInputField.interactable = false;
         for (int i = 0; i < LoadingAnimGO.Count; i++) { LoadingAnimGO[i].SetActive(true); }
+        bool AuthentifactionSucess;
         try
         {
-            Debug.Log("Déjà connecté : " + AuthenticationService.Instance);
-            bool AuthentifactionSucess = await LobbyManager.Instance.AuthenticateOnlyVivox(_playerName);
-            for (int i = 0; i < LoadingAnimGO.Count; i++) { LoadingAnimGO[i].SetActive(false); }
-            if (AuthentifactionSucess)
-            {
-                _playerNameText.text += _playerName;
-                LobbyList.SetActive(true);
-                gameObject.SetActive(false);
-                canTryToConnect = true;
-            }
-            else
-            {
-                MessagePopUpUI PopupGO = Instantiate(PopupPrefab).GetComponent<MessagePopUpUI>();
-                PopupGO.Closebutton.onClick.AddListener(() => {
-                    canTryToConnect = true;
-                    _playerNameInputField.ActivateInputField();
-                    _playerNameInputField.interactable = true;
-                    _playerNameInputField.Select();
-                    _playerNameInputField.caretPosition = _playerNameInputField.text.Length;
-                });
-                PopupGO.Message.text = "Authentification failed. Please check your internet connexion and retry.";
-            }
+            Debug.Log("Dï¿½jï¿½ connectï¿½ : " + AuthenticationService.Instance);
+            AuthentifactionSucess = await LobbyManager.Instance.AuthenticateOnlyVivox(_playerName);  
         }
         catch (Exception e)
         {
-            Debug.Log("Pas encore connecté");
-            bool AuthentifactionSucess = await LobbyManager.Instance.Authenticate(_playerName);
-            for (int i = 0; i < LoadingAnimGO.Count; i++) { LoadingAnimGO[i].SetActive(false); }
-            if (AuthentifactionSucess)
-            {
-                _playerNameText.text += _playerName;
-                LobbyList.SetActive(true);
-                gameObject.SetActive(false);
+            Debug.Log("Pas encore connectï¿½");
+            AuthentifactionSucess = await LobbyManager.Instance.Authenticate(_playerName);     
+        }
+        for (int i = 0; i < LoadingAnimGO.Count; i++) { LoadingAnimGO[i].SetActive(false); }
+        if (AuthentifactionSucess)
+        {
+            _playerNameText.text += _playerName;
+            LobbyList.SetActive(true);
+            gameObject.SetActive(false);
+            canTryToConnect = true;
+            LobbyManager.Instance.RefreshLobbyList();
+        }
+        else
+        {
+            MessagePopUpUI PopupGO = Instantiate(PopupPrefab).GetComponent<MessagePopUpUI>();
+            PopupGO.Closebutton.onClick.AddListener(() => {
                 canTryToConnect = true;
-            }
-            else
-            {
-                MessagePopUpUI PopupGO = Instantiate(PopupPrefab).GetComponent<MessagePopUpUI>();
-                PopupGO.Closebutton.onClick.AddListener(() => {
-                    canTryToConnect = true;
-                    _playerNameInputField.ActivateInputField();
-                    _playerNameInputField.interactable = true;
-                    _playerNameInputField.Select();
-                    _playerNameInputField.caretPosition = _playerNameInputField.text.Length;
-                });
-                PopupGO.Message.text = "Authentification failed. Please check your internet connexion and retry.";
-            }
+                _playerNameInputField.ActivateInputField();
+                _playerNameInputField.interactable = true;
+                _playerNameInputField.Select();
+                _playerNameInputField.caretPosition = _playerNameInputField.text.Length;
+            });
+            PopupGO.Message.text = "Authentification failed. Please check your internet connexion and retry.";
         }
     }
 }

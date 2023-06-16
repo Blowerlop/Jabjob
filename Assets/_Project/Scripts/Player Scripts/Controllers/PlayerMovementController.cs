@@ -22,6 +22,7 @@ public class PlayerMovementController : NetworkBehaviour
     [SerializeField] private float _dashCooldown = 3;
     private int currentDashNumber = 3;
     private Timer _timer = new Timer();
+    [SerializeField] private float _dashForce = 2.0f;
 
     [Header("Gravity")]
     [SerializeField] private bool _gravityEnabled = true;
@@ -63,6 +64,8 @@ public class PlayerMovementController : NetworkBehaviour
     [SerializeField] private ParticleSystem _dashParticles;
     [SerializeField] private ParticleSystem _smokeParticles;
     private Player _player ;
+    [SerializeField] private Transform _cameraRoot;
+
     #endregion
 
 
@@ -83,12 +86,13 @@ public class PlayerMovementController : NetworkBehaviour
         UpdateDashColor(_player.playerColor);
         if (IsOwner == false) { enabled = false; return; }
         InitializeDashVFX();
+        var smokePart = _smokeParticles.main;
+        smokePart.playOnAwake = false;
         _smokeParticles.Stop();
     }
 
     private void FixedUpdate()
     {
-
         CheckGrounded();
         PerformJumpAndGravity();
         PerformMovement();
@@ -248,7 +252,7 @@ public class PlayerMovementController : NetworkBehaviour
         {
             if (currentDashNumber > 0)
             {
-                AddForce(transform.forward * 2.0f);
+                AddForce(_cameraRoot.forward * _dashForce);
                 _animatorMain.SetTrigger("Dash");
                 PlaySound("Dash");
                 currentDashNumber -= 1;
@@ -364,6 +368,12 @@ public class PlayerMovementController : NetworkBehaviour
     public void EndOfDashVFX()
     {
         if (IsOwner) _DashVFX.gameObject.SetActive(false);
+    }
+    public void DisableSmoke()
+    {
+        var smokePart = _smokeParticles.main;
+        smokePart.playOnAwake = false;
+        _smokeParticles.Stop();
     }
     #endregion
 }

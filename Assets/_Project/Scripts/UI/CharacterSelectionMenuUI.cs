@@ -23,6 +23,10 @@ namespace Project
             _randomCharacterButton.onClick.AddListener(GetRandomCharacter);
         }
 
+        private void OnEnable()
+        {
+            PlayerModelsManager.instance.ResetCharacterModelMenu(_skinMeshRenderer, _modelNameText);
+        }
         void Update()
         {
             _refreshTimer -= Time.deltaTime; 

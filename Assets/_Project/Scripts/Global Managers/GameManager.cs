@@ -78,7 +78,7 @@ namespace Project
                 
                 NetworkManager.Singleton.OnClientDisconnectCallback += OnClientDisconnect;
                 
-                StartWarmup();
+                Timer.StartTimerWithCallbackRealTime(1.0f, StartWarmup);
 
                 // NetworkManager.Singleton.SceneManager.OnLoadEventCompleted += EndWarmUpBehaviour;
                 
@@ -177,6 +177,7 @@ namespace Project
                         Cursor.lockState = CursorLockMode.None;
                         Cursor.visible = true;
                         SoundManager2D.instance.PlayBackgroundMusic("Start Scene Background Music");
+                        VivoxManager.Instance.SubscribeLobbyEvent();
                     };
                         
                     SceneManager.LoadSceneNetwork("MenuScene");
@@ -282,6 +283,12 @@ namespace Project
 
         private void ALlPlayerJoinEventHandler(ulong playerId)
         {
+            if (LobbyManager.Instance.joinedLobby == null)
+            {
+                Debug.LogError($"{this}: JoinedLobby is null");
+                return;
+            }
+            
             if (_players.Keys.Count == LobbyManager.Instance.joinedLobby.Players.Count)
             {
                 GameEvent.onAllPlayersJoinEvent.Invoke(this);

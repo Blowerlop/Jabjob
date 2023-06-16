@@ -74,6 +74,7 @@ public class LobbyManager : MonoBehaviour {
     #region Event Vivox
 
     public Action<string> VivoxOnAuthenticate;
+    public Action<string> VivoxOnLoginOnly;
     public Action<string> VivoxOnCreateLobby;
     public Action<string> VivoxOnJoinLobby;
     public Action VivoxOnLeaveLobby;
@@ -93,7 +94,7 @@ public class LobbyManager : MonoBehaviour {
         HandleLobbyHeartbeat();
         HandleLobbyPolling();
         
-        if (Input.GetKey(KeyCode.I)) Debug.Log("Player id" + AuthenticationService.Instance.PlayerId);
+        //if (Input.GetKey(KeyCode.I)) Debug.Log("Player id" + AuthenticationService.Instance.PlayerId);
     }
 
     #region LobbyMethod
@@ -109,10 +110,14 @@ public class LobbyManager : MonoBehaviour {
             RefreshLobbyList();
         };
         
-        try { await AuthenticationService.Instance.SignInAnonymouslyAsync();
+        try 
+        { 
+            await AuthenticationService.Instance.SignInAnonymouslyAsync();
             VivoxOnAuthenticate?.Invoke(playerName);
             await Task.WhenAny(Task.Delay(TimeSpan.FromSeconds(10)), checkVivox());
-            return VivoxManager.Instance.isConnected; }
+            HandleRefreshLobbyList();
+            return VivoxManager.Instance.isConnected;
+        }
         catch (Exception e)
         {
             Debug.LogError(e);
@@ -125,9 +130,10 @@ public class LobbyManager : MonoBehaviour {
         this.playerName = playerName;
         try
         {
-            VivoxOnAuthenticate?.Invoke(playerName);
+            VivoxOnLoginOnly?.Invoke(playerName);
             await Task.WhenAny(Task.Delay(TimeSpan.FromSeconds(10)), checkVivox());
-            return VivoxManager.Instance.isConnected;
+            HandleRefreshLobbyList();
+            return VivoxManager.Instance.isConnected; 
         }
         catch (Exception e)
         {
@@ -148,7 +154,6 @@ public class LobbyManager : MonoBehaviour {
             if (refreshLobbyListTimer < 0f) {
                 float refreshLobbyListTimerMax = 5f;
                 refreshLobbyListTimer = refreshLobbyListTimerMax;
-
                 RefreshLobbyList();
             }
         }
@@ -194,7 +199,12 @@ public class LobbyManager : MonoBehaviour {
                         OnStartGame?.Invoke(this, EventArgs.Empty);
                     }
 
-                    Timer.StartTimerWithCallbackRealTime(10.0f, () => joinedLobby = null);
+                    // J'ai du enlevé le fait de rendre null le lobby
+                    // Si un joueur prenez plus de T seconds alors le server
+                    // qui avait besoins des infos lobby au moment de la connection avec une null ref ce qui poser des
+                    // soucis pour la suite du warmup
+                    
+                    // Timer.StartTimerWithCallbackRealTime(10.0f, () => joinedLobby = null);
 
                 }
             }

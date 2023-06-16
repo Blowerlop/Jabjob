@@ -50,7 +50,7 @@ namespace Project
 #if UNITY_EDITOR
         private void Update()
         {
-            if(Input.GetKeyDown(KeyCode.F10)) { Initialize(); }
+            if(Input.GetKeyDown(KeyCode.F10)) { GameEvent.onGameFinishedEvent.Invoke(this, false); }
         }
 #endif
         public void Initialize()

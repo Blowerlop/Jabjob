@@ -5501,7 +5501,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: HotDog
+  m_text: Hotdog
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: bffd0472b892d5346b22aaf610723f0b, type: 2}
   m_sharedMaterial: {fileID: -9137451837660197966, guid: bffd0472b892d5346b22aaf610723f0b,
@@ -7147,6 +7147,10 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: -0.5
       objectReference: {fileID: 0}
+    - target: {fileID: 210534730, guid: c9ea6a8382075cb489399c1cb4ee7313, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -0.50000095
+      objectReference: {fileID: 0}
     - target: {fileID: 261527556, guid: c9ea6a8382075cb489399c1cb4ee7313, type: 3}
       propertyPath: m_AnchorMax.y
       value: 1
@@ -7178,6 +7182,10 @@ PrefabInstance:
     - target: {fileID: 479588820, guid: c9ea6a8382075cb489399c1cb4ee7313, type: 3}
       propertyPath: m_AnchoredPosition.y
       value: -0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 479588820, guid: c9ea6a8382075cb489399c1cb4ee7313, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -0.50000095
       objectReference: {fileID: 0}
     - target: {fileID: 1243137582, guid: c9ea6a8382075cb489399c1cb4ee7313, type: 3}
       propertyPath: m_AnchorMax.y
@@ -7213,7 +7221,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1567615526, guid: c9ea6a8382075cb489399c1cb4ee7313, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -0.5
+      value: -0.50000095
       objectReference: {fileID: 0}
     - target: {fileID: 1712272231, guid: c9ea6a8382075cb489399c1cb4ee7313, type: 3}
       propertyPath: m_SizeDelta.x
@@ -7221,7 +7229,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1715661649, guid: c9ea6a8382075cb489399c1cb4ee7313, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -0.5
+      value: -0.50000095
       objectReference: {fileID: 0}
     - target: {fileID: 1803055444, guid: c9ea6a8382075cb489399c1cb4ee7313, type: 3}
       propertyPath: m_AnchorMax.x
@@ -16219,6 +16227,22 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
+  - eventID: 4
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 6914205973192390925}
+          m_TargetAssemblyTypeName: Project.ButtonHelperUI, Assembly-CSharp
+          m_MethodName: HideToolTip
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
 --- !u!222 &6914205973204802321
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -19408,6 +19432,7 @@ MonoBehaviour:
   leaveLobbyButton: {fileID: 6914205973192390922}
   startGameButton: {fileID: 6914205974041913815}
   gameMapsUI: {fileID: 401040610}
+  ColorButton: {fileID: 647075104}
 --- !u!224 &6914205974549129874
 RectTransform:
   m_ObjectHideFlags: 0
