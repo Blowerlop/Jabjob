@@ -134,6 +134,12 @@ public class InputManager : Singleton<InputManager>
 
     public string GetPlayerInputMap() => _playerInput.currentActionMap.name;
 
-
+    public void ResetPlayerInputBuffer()
+    {
+        isJumping = false;
+        isShooting = false;
+        move = Vector2.zero;
+        isDashing = false;
+    }
     #endregion
 }

@@ -452,6 +452,7 @@ namespace Project
         public async void ReloadTotalAmmoRespawn() //no Anim no nothing
         {
             while (!weaponInitialized()) await Task.Delay(25);
+            _weapon.ammo = _weaponData.maxAmmo; 
             _weapon.totalAmmo = _weaponData.totalAmmo;
         }
         public async void ReloadTotalAmmo(int amount)

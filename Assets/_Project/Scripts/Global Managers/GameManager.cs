@@ -188,7 +188,6 @@ namespace Project
                         CursorManager.instance.Revert();
                         
                         SoundManager2D.instance.PlayBackgroundMusic("Start Scene Background Music");
-                        //VivoxManager.Instance.SubscribeLobbyEvent();
                     };
                     
                     NetworkManager.Singleton.SceneManager.OnLoadEventCompleted += (sceneName, mode, completed, @out) =>
@@ -232,6 +231,7 @@ namespace Project
 
         PlayerMovementController therealone;
         PlayerCameraController therealoneother;
+        PlayerShoot therealoneshooter; 
         [ClientRpc]
         public void StartGameClientRpc()
         {
@@ -243,6 +243,9 @@ namespace Project
                     therealone.enabled = false;
                     therealoneother = value.GetComponent<PlayerCameraController>();
                     therealoneother.enabled = false;
+                    therealoneshooter = value.GetComponent<PlayerShoot>();
+                    therealoneshooter.enabled = false;
+                    therealoneshooter.ReloadTotalAmmoRespawn();
 
                     GameEvent.onPlayerSpawnEvent.Invoke(this, false, value.GetOwnerId());
                 }
@@ -289,6 +292,7 @@ namespace Project
 
             therealone.enabled = true;
             therealoneother.enabled = true;
+            therealoneshooter.enabled = true;
         }
         
         #endregion

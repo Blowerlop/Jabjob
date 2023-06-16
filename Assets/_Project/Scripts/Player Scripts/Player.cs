@@ -124,8 +124,9 @@ namespace Project
 
         private void OnEnable()
         {
+            InputManager.instance.ResetPlayerInputBuffer();
             SetHealth(_defaultHealth);
-            isDead = false; 
+            isDead = false;
             GameEvent.onPlayerSpawnEvent.Subscribe(SpawnPlayerRandomly, this);
         }
 
@@ -280,6 +281,7 @@ namespace Project
             _damagersId.CopyTo(_damagersIdArray);
             PlayerDeathFeedBackLocal(_killerId, OwnerClientId, _damagersIdArray);
             PlayerDeathBehaviourServerRpc(OwnerClientId);
+            _playerShoot.HideBarloadingAmmoBox();
             Debug.Log("You're dead");
         }
 
