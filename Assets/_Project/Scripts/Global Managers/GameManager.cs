@@ -41,6 +41,7 @@ namespace Project
 
         public override void OnDestroy()
         {
+            GetComponent<NetworkObject>().Despawn(true);
             base.OnDestroy();
             
             if (IsServer)
@@ -78,7 +79,7 @@ namespace Project
                 
                 NetworkManager.Singleton.OnClientDisconnectCallback += OnClientDisconnect;
                 
-                Timer.StartTimerWithCallbackRealTime(1.0f, StartWarmup);
+                Timer.StartTimerWithCallbackRealTime(5.0f, StartWarmup);
 
                 // NetworkManager.Singleton.SceneManager.OnLoadEventCompleted += EndWarmUpBehaviour;
                 
