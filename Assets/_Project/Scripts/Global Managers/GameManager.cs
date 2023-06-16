@@ -159,6 +159,10 @@ namespace Project
             _networkTimer.GetComponent<NetworkObject>().Spawn();
         }
 
+
+        [ServerRpc]
+        public void EndGameServerRpc() => EndGameClientRpc();
+        
         [ClientRpc]
         private void EndGameClientRpc()
         {
@@ -170,16 +174,22 @@ namespace Project
         {
             if (IsServer)
             {
-                Timer.StartTimerWithCallbackRealTime(20.0f, () =>
+                Timer.StartTimerWithCallbackRealTime(10.0f, () =>
                 {
-                    NetworkManager.Singleton.SceneManager.OnLoadEventCompleted += (sceneName, mode, completed, @out) =>
+                    NetworkManager.Singleton.SceneManager.OnLoadComplete += (id, sceneName, mode) =>
                     {
-                        NetworkManager.Singleton.Shutdown();
-                        Cursor.lockState = CursorLockMode.None;
+                        Cursor.lockState = CursorLockMode.Confined;
                         Cursor.visible = true;
                         SoundManager2D.instance.PlayBackgroundMusic("Start Scene Background Music");
                         VivoxManager.Instance.SubscribeLobbyEvent();
                     };
+                    
+                    NetworkManager.Singleton.SceneManager.OnLoadEventCompleted += (sceneName, mode, completed, @out) =>
+                    {
+                        NetworkManager.Singleton.Shutdown();
+                    };
+                    
+                    
                         
                     SceneManager.LoadSceneNetwork("MenuScene");
                 });
