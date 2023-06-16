@@ -53,7 +53,7 @@ public class VivoxManager : MonoBehaviour
 
     private void VivoxOnJoinLobby(string channelName)
     {
-        JoinChannel(channelName);
+        JoinChannel(channelName); 
     }
 
     private void VivoxOnCreateLobby(string channelName)
@@ -69,6 +69,7 @@ public class VivoxManager : MonoBehaviour
 
     private void LogInViVoxOnly(string playerName)
     {
+        if (!_client.Initialized) VivoxService.Instance.Initialize();
         Login(playerName);
     }
 
