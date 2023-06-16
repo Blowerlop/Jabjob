@@ -41,6 +41,7 @@ namespace Project
 
         public override void OnDestroy()
         {
+            GetComponent<NetworkObject>().Despawn(true);
             base.OnDestroy();
             
             if (IsServer)
@@ -78,7 +79,7 @@ namespace Project
                 
                 NetworkManager.Singleton.OnClientDisconnectCallback += OnClientDisconnect;
                 
-                StartWarmup();
+                Timer.StartTimerWithCallbackRealTime(5.0f, StartWarmup);
 
                 // NetworkManager.Singleton.SceneManager.OnLoadEventCompleted += EndWarmUpBehaviour;
                 
@@ -169,7 +170,7 @@ namespace Project
         {
             if (IsServer)
             {
-                Timer.StartTimerWithCallbackRealTime(30.0f, () =>
+                Timer.StartTimerWithCallbackRealTime(20.0f, () =>
                 {
                     NetworkManager.Singleton.SceneManager.OnLoadEventCompleted += (sceneName, mode, completed, @out) =>
                     {
@@ -177,6 +178,7 @@ namespace Project
                         Cursor.lockState = CursorLockMode.None;
                         Cursor.visible = true;
                         SoundManager2D.instance.PlayBackgroundMusic("Start Scene Background Music");
+                        VivoxManager.Instance.SubscribeLobbyEvent();
                     };
                         
                     SceneManager.LoadSceneNetwork("MenuScene");
@@ -282,6 +284,12 @@ namespace Project
 
         private void ALlPlayerJoinEventHandler(ulong playerId)
         {
+            if (LobbyManager.Instance.joinedLobby == null)
+            {
+                Debug.LogError($"{this}: JoinedLobby is null");
+                return;
+            }
+            
             if (_players.Keys.Count == LobbyManager.Instance.joinedLobby.Players.Count)
             {
                 GameEvent.onAllPlayersJoinEvent.Invoke(this);

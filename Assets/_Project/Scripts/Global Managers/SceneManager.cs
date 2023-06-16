@@ -61,7 +61,7 @@ namespace _Project.Scripts.Managers
         //         newScene.allowSceneActivation = true;
         //     }
         //}
-
+ 
 
         public static async void LoadSceneAsyncLocal(EScene sceneName, LoadSceneMode loadSceneMode = LoadSceneMode.Single)
         {

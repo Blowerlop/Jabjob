@@ -64,6 +64,15 @@ public partial class @PlayerInputAction : IInputActionCollection2, IDisposable
                     ""initialStateCheck"": false
                 },
                 {
+                    ""name"": ""Knife"",
+                    ""type"": ""Button"",
+                    ""id"": ""1232a017-b1a4-474f-a952-2b2400fc1a35"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
                     ""name"": ""UnFire"",
                     ""type"": ""Button"",
                     ""id"": ""ea66a339-d828-408e-aedc-24cae02c9ae6"",
@@ -411,6 +420,17 @@ public partial class @PlayerInputAction : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": ""Keyboard&Mouse"",
                     ""action"": ""Tabulation"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""199a864a-683d-4475-bb07-e227a255ba26"",
+                    ""path"": ""<Keyboard>/t"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard&Mouse"",
+                    ""action"": ""Knife"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -930,6 +950,7 @@ public partial class @PlayerInputAction : IInputActionCollection2, IDisposable
         m_Player_Look = m_Player.FindAction("Look", throwIfNotFound: true);
         m_Player_Fire = m_Player.FindAction("Fire", throwIfNotFound: true);
         m_Player_Jump = m_Player.FindAction("Jump", throwIfNotFound: true);
+        m_Player_Knife = m_Player.FindAction("Knife", throwIfNotFound: true);
         m_Player_UnFire = m_Player.FindAction("UnFire", throwIfNotFound: true);
         m_Player_Reload = m_Player.FindAction("Reload", throwIfNotFound: true);
         m_Player_Dash = m_Player.FindAction("Dash", throwIfNotFound: true);
@@ -1015,6 +1036,7 @@ public partial class @PlayerInputAction : IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_Look;
     private readonly InputAction m_Player_Fire;
     private readonly InputAction m_Player_Jump;
+    private readonly InputAction m_Player_Knife;
     private readonly InputAction m_Player_UnFire;
     private readonly InputAction m_Player_Reload;
     private readonly InputAction m_Player_Dash;
@@ -1030,6 +1052,7 @@ public partial class @PlayerInputAction : IInputActionCollection2, IDisposable
         public InputAction @Look => m_Wrapper.m_Player_Look;
         public InputAction @Fire => m_Wrapper.m_Player_Fire;
         public InputAction @Jump => m_Wrapper.m_Player_Jump;
+        public InputAction @Knife => m_Wrapper.m_Player_Knife;
         public InputAction @UnFire => m_Wrapper.m_Player_UnFire;
         public InputAction @Reload => m_Wrapper.m_Player_Reload;
         public InputAction @Dash => m_Wrapper.m_Player_Dash;
@@ -1058,6 +1081,9 @@ public partial class @PlayerInputAction : IInputActionCollection2, IDisposable
                 @Jump.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnJump;
                 @Jump.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnJump;
                 @Jump.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnJump;
+                @Knife.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnKnife;
+                @Knife.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnKnife;
+                @Knife.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnKnife;
                 @UnFire.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnUnFire;
                 @UnFire.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnUnFire;
                 @UnFire.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnUnFire;
@@ -1095,6 +1121,9 @@ public partial class @PlayerInputAction : IInputActionCollection2, IDisposable
                 @Jump.started += instance.OnJump;
                 @Jump.performed += instance.OnJump;
                 @Jump.canceled += instance.OnJump;
+                @Knife.started += instance.OnKnife;
+                @Knife.performed += instance.OnKnife;
+                @Knife.canceled += instance.OnKnife;
                 @UnFire.started += instance.OnUnFire;
                 @UnFire.performed += instance.OnUnFire;
                 @UnFire.canceled += instance.OnUnFire;
@@ -1273,6 +1302,7 @@ public partial class @PlayerInputAction : IInputActionCollection2, IDisposable
         void OnLook(InputAction.CallbackContext context);
         void OnFire(InputAction.CallbackContext context);
         void OnJump(InputAction.CallbackContext context);
+        void OnKnife(InputAction.CallbackContext context);
         void OnUnFire(InputAction.CallbackContext context);
         void OnReload(InputAction.CallbackContext context);
         void OnDash(InputAction.CallbackContext context);

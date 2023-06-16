@@ -56,7 +56,11 @@ public class Paintable : MonoBehaviour {
     public void SetAlpha(float alpha)
     {
         //Debug.Log(GetComponent<SkinnedMeshRenderer>().material.GetFloat(alphaID));
-        GetComponent<Renderer>().material.SetFloat(alphaID,alpha); 
+        Material[] materials = GetComponent<Renderer>().materials;
+        for(int i = 0; i < materials.Length; i++)
+        {
+            materials[i].SetFloat(alphaID, alpha);
+        }
         //Debug.Log(GetComponent<SkinnedMeshRenderer>().material.GetFloat(alphaID));
     }
 }

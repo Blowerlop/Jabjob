@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 6653122618740235664}
   - component: {fileID: 7780945070084051509}
   - component: {fileID: 5485260208919750399}
+  - component: {fileID: 8209600141316277492}
   m_Layer: 10
   m_Name: PaintBrush_Prefab
   m_TagString: Untagged
@@ -62,8 +63,8 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 5650376304965219397, guid: f510379cc5ba62340ba5814cd33adb2f, type: 3}
-  - {fileID: -4968544081446275399, guid: f510379cc5ba62340ba5814cd33adb2f, type: 3}
+  - {fileID: 2100000, guid: 092114862b8488343a060c898132f4d6, type: 2}
+  - {fileID: 2100000, guid: 245addaac29c7164883e59246ad65eb6, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -85,6 +86,19 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &8209600141316277492
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6277863301385848618}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0c3ea44eef20b0b4396ebe666c9a6eeb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  extendsIslandOffset: 1
 --- !u!1 &6880373870862972326
 GameObject:
   m_ObjectHideFlags: 0
@@ -96,6 +110,7 @@ GameObject:
   - component: {fileID: 2240513796417130132}
   - component: {fileID: 3595317770594604501}
   - component: {fileID: 2429224369406577215}
+  - component: {fileID: 3197879223735429549}
   m_Layer: 10
   m_Name: Rouleau
   m_TagString: Untagged
@@ -146,7 +161,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: -3853779528987548237, guid: 076d70a018f124a40afbc30828ded6d0, type: 3}
+  - {fileID: 2100000, guid: 36bdef899202687429b734968d5b8ca2, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -168,3 +183,16 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &3197879223735429549
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6880373870862972326}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0c3ea44eef20b0b4396ebe666c9a6eeb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  extendsIslandOffset: 1

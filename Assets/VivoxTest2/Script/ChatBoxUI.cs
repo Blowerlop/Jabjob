@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 
 namespace Project
 {
@@ -26,7 +27,7 @@ namespace Project
         private string _previousTextReceived;
         private bool _shrinkState = true;
         private PlayerInputAction _inputAction;
-
+        private InputManager _inputManager;
 
         private void Start()
         {
@@ -50,6 +51,8 @@ namespace Project
                 if (!_inputAction.UI.enabled)
                     _inputAction.UI.Enable();
                 _inputAction.UI.Enter.performed += Enter_performed;
+
+                _inputManager = FindObjectOfType<InputManager>();
             }
 
         }
@@ -58,48 +61,61 @@ namespace Project
         {
             if (_inputAction != null)
             {
-                
+
                 if (!_textField.isFocused)
                 {
                     _textField.Select();
-                    if(_chatGameplay)
+                    if (_chatGameplay)
                     {
-                        //Canvas group 1
-                        _canvasGroup.alpha = 1;
-
-                        //Color _textAreaPrefab a full
-                        Color color = _textAreaImage.color;
-                        color.a = .5f;
-                        _textAreaImage.color = color;
-
-                        //Color _extendsShrink
-
+                        ShowChatBox(true);
                     }
+                    return;
                 }
 
                 if (_textField.text != string.Empty)
                 {
                     SendMessage();
-                    _textField.Select();
-
-
-                    if(_chatGameplay)
+                    EventSystem.current.SetSelectedGameObject(null);
+                    if (_chatGameplay)
                     {
-                        //Canvas group 0
-                        _canvasGroup.alpha = 0;
-
-                        //Color _textAreaPrefab a empty
-                        Color color = _textAreaImage.color;
-                        color.a = 0;
-                        _textAreaImage.color = color;
-
-                        //Color _extendsShrink
-
+                        ShowChatBox(false);
                     }
+                    return;
                 }
 
+
+                if (_textField.text == string.Empty && _canvasGroup.alpha == 1 && _chatGameplay)
+                {
+                    ShowChatBox(false);
+                    EventSystem.current.SetSelectedGameObject(null);
+
+                    return;
+                }
             }
         }
+
+        private void ShowChatBox(bool state)
+        {
+            if(state)
+            {
+                _canvasGroup.alpha = 1;
+                Color color = _textAreaImage.color;
+                color.a = .5f;
+                _textAreaImage.color = color;
+
+                _inputManager.SwitchPlayerInputMap("UI");
+            }
+            else
+            {
+                _canvasGroup.alpha = 0;
+
+                Color color = _textAreaImage.color;
+                color.a = 0;
+                _textAreaImage.color = color;
+                _inputManager.SwitchPlayerInputMap("Player");
+            }
+        }
+        
 
         private void OnDestroy()
         {

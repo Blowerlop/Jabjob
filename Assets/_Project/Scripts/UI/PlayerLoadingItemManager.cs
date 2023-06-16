@@ -64,6 +64,8 @@ namespace Project
 
         private async void UpdateLoadingSLider(ulong clientId, string sceneName, LoadSceneMode loadSceneMode, AsyncOperation asyncOperation)
         {
+            if (asyncOperation == null) return;
+            
             asyncOperation.allowSceneActivation = false;
             do
             {

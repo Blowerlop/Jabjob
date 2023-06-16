@@ -61,6 +61,7 @@ public class RelayWithLobby : MonoBehaviour
     {
         try
         {
+            
             SceneManager.onSceneLoadEvent.Invoke(this, true, 0, "", LoadSceneMode.Additive, null);
 
             Debug.Log("Joining Relay with " + joinCode);
@@ -70,6 +71,7 @@ public class RelayWithLobby : MonoBehaviour
             NetworkManager.Singleton.GetComponent<UnityTransport>().SetRelayServerData(relayServerData);
 
             NetworkManager.Singleton.StartClient();
+            NetworkManager.Singleton.SceneManager.OnLoad += Blablabla;
             NetworkManager.Singleton.SceneManager.OnLoadComplete += InvokeOnSceneLoadComplete;
         }
         catch (RelayServiceException e)
@@ -79,16 +81,22 @@ public class RelayWithLobby : MonoBehaviour
 
 
     }
+
+    private void Blablabla(ulong id, string sceneName, LoadSceneMode mode, AsyncOperation operation)
+    {
+        SceneManager.onSceneLoadEvent.Invoke(this, true, id, sceneName, mode, operation);
+    }
+
     public void ReadStringInput(string s)
     {
         _inputText = s;
     }
-    
-    
+
     private void InvokeOnSceneLoadComplete(ulong clientId, string sceneName, LoadSceneMode loadSceneMode)
     {
         SceneManager.onSceneLoadCompleteEvent.Invoke(nameof(SceneManager), true, clientId, sceneName, loadSceneMode);
         NetworkManager.Singleton.SceneManager.OnLoadComplete -= InvokeOnSceneLoadComplete;
+        NetworkManager.Singleton.SceneManager.OnLoad -= Blablabla;
     }
     #endregion
 }

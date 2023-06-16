@@ -29,22 +29,27 @@ public class VivoxManager : MonoBehaviour
     private void Awake()
     {
         Instance = this;
+        SubscribeLobbyEvent();
+        GameEvent.onGameFinishedEvent.Subscribe(VivoxLogOut, this); 
+
+    }
+    public void SubscribeLobbyEvent()
+    {
         _lobbyManager = FindObjectOfType<LobbyManager>();
         if (_lobbyManager == null) return;
 
 
-        _lobbyManager.VivoxOnAuthenticate += InitAndLoginVivox;
+        _lobbyManager.VivoxOnAuthenticate += InitAndLoginVivox; 
         _lobbyManager.VivoxOnCreateLobby += VivoxOnCreateLobby;
         _lobbyManager.VivoxOnJoinLobby += VivoxOnJoinLobby;
         _lobbyManager.VivoxOnLeaveLobby += VivoxOnLobbyLeave;
-
+        _lobbyManager.VivoxOnLoginOnly += LogInViVoxOnly; 
     }
-
-
     private void VivoxOnLobbyLeave()
     {
         LeaveChannel();
     }
+
 
     private void VivoxOnJoinLobby(string channelName)
     {
@@ -62,6 +67,10 @@ public class VivoxManager : MonoBehaviour
         Login(playerName);
     }
 
+    private void LogInViVoxOnly(string playerName)
+    {
+        Login(playerName);
+    }
 
     //private async void Start()
     //{
@@ -76,6 +85,7 @@ public class VivoxManager : MonoBehaviour
 
     public void Login(string displayName)
     {
+        
         Account account = new Account(displayName);
         LoginSession = _client.GetLoginSession(account);
         LoginSession.PropertyChanged += LoginSession_PropertyChanged;
@@ -95,7 +105,12 @@ public class VivoxManager : MonoBehaviour
         });
 
     }
-
+    public void VivoxLogOut()
+    {
+        LeaveChannel();
+        LoginSession.Logout();
+        isConnected = false;
+    }
     private void LoginSession_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
     {
 
@@ -104,6 +119,7 @@ public class VivoxManager : MonoBehaviour
         {
             case LoginState.LoggedOut:
                 VivoxLog("Logged Out");
+                isConnected = false;
                 break;
             case LoginState.LoggedIn:
                 VivoxLog("Logged in");
@@ -112,7 +128,6 @@ public class VivoxManager : MonoBehaviour
                 break;
             case LoginState.LoggingIn:
                 VivoxLog("Loggin in");
-                Debug.Log("in");
                 break;
             case LoginState.LoggingOut:
                 break;
