@@ -7,6 +7,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using Unity.Services.Authentication;
 using System.Threading.Tasks;
+using Unity.Services.Vivox;
 
 public class AuthenticateUI : MonoBehaviour {
 
@@ -30,7 +31,7 @@ public class AuthenticateUI : MonoBehaviour {
     private void OnEnable()
     {
         canTryToConnect = true;
-        try { VivoxManager.Instance.VivoxLogOut(); }
+        try {  VivoxService.Instance.Client.Uninitialize(); Debug.Log("Vivox unintialize");}
         catch (Exception e)
         {
             Debug.Log(e);

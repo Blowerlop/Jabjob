@@ -29,7 +29,6 @@ public class VivoxManager : MonoBehaviour
     private void Awake()
     {
         Instance = this;
-        SubscribeLobbyEvent();
         GameEvent.onGameFinishedEvent.Subscribe(VivoxLogOut, this); 
 
     }
@@ -44,6 +43,15 @@ public class VivoxManager : MonoBehaviour
         _lobbyManager.VivoxOnJoinLobby += VivoxOnJoinLobby;
         _lobbyManager.VivoxOnLeaveLobby += VivoxOnLobbyLeave;
         _lobbyManager.VivoxOnLoginOnly += LogInViVoxOnly; 
+    }
+    public void UnsubscribeLobbyEvent()
+    {
+        if (_lobbyManager == null) return;
+        _lobbyManager.VivoxOnAuthenticate -= InitAndLoginVivox;
+        _lobbyManager.VivoxOnCreateLobby -= VivoxOnCreateLobby;
+        _lobbyManager.VivoxOnJoinLobby -= VivoxOnJoinLobby;
+        _lobbyManager.VivoxOnLeaveLobby -= VivoxOnLobbyLeave;
+        _lobbyManager.VivoxOnLoginOnly -= LogInViVoxOnly;
     }
     private void VivoxOnLobbyLeave()
     {
@@ -69,7 +77,7 @@ public class VivoxManager : MonoBehaviour
 
     private void LogInViVoxOnly(string playerName)
     {
-        if (!_client.Initialized) VivoxService.Instance.Initialize();
+        if (!_client.Initialized) { Debug.LogWarning("VIVOX CLIENT NOT INITIALIZED"); VivoxService.Instance.Initialize(); Debug.LogWarning("VIVOX CLIENT INITIALIZED"); } 
         Login(playerName);
     }
 
@@ -82,7 +90,8 @@ public class VivoxManager : MonoBehaviour
         Account account = new Account(displayName);
         LoginSession = _client.GetLoginSession(account);
         LoginSession.PropertyChanged += LoginSession_PropertyChanged;
-        this.displayName = displayName;
+        this.displayName = displayName; 
+        Debug.LogWarning("VIVOX IS CONNECTING");
         LoginSession.BeginLogin(LoginSession.GetLoginToken(), SubscriptionMode.Accept, null, null, null, ar =>
         {
             try
@@ -102,7 +111,6 @@ public class VivoxManager : MonoBehaviour
     {
         LeaveChannel();
         LoginSession.Logout();
-        isConnected = false;
     }
     private void LoginSession_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
     {
@@ -111,6 +119,7 @@ public class VivoxManager : MonoBehaviour
         switch (logginSession.State)
         {
             case LoginState.LoggedOut:
+                LoginSession.PropertyChanged -= LoginSession_PropertyChanged;
                 VivoxLog("Logged Out");
                 isConnected = false;
                 break;
