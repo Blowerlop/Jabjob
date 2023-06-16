@@ -44,6 +44,7 @@ public class InputManager : Singleton<InputManager>
     public Vector2 look;
     public bool isJumping, isShooting;
     public UnityEvent reload, openCommand;
+    public bool isWeaponSwapping;
     public bool isDashing;
     public bool isConsoleOpened;
     public bool isWeaponSelectionOpen;
@@ -71,7 +72,10 @@ public class InputManager : Singleton<InputManager>
     {
         isJumping = true;
     }
-
+    public void OnKnife()
+    {
+        isWeaponSwapping = true;
+    }
     public void OnFire()
     {
         isShooting = true;

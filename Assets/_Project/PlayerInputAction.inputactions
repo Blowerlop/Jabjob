@@ -42,6 +42,15 @@
                     "initialStateCheck": false
                 },
                 {
+                    "name": "Knife",
+                    "type": "Button",
+                    "id": "1232a017-b1a4-474f-a952-2b2400fc1a35",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
                     "name": "UnFire",
                     "type": "Button",
                     "id": "ea66a339-d828-408e-aedc-24cae02c9ae6",
@@ -389,6 +398,17 @@
                     "processors": "",
                     "groups": "Keyboard&Mouse",
                     "action": "Tabulation",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "199a864a-683d-4475-bb07-e227a255ba26",
+                    "path": "<Keyboard>/t",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard&Mouse",
+                    "action": "Knife",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
