@@ -556,5 +556,5 @@ static class UnityEngineObjectUtility
 
     /// <summary> Get object instance based on its instance ID. See also: <see cref="UnityEngine.Object.GetInstanceID"/> </summary>
     public static TObject FindObjectFromInstanceID<TObject>(int instanceId) where TObject : UnityEngine.Object
-        => findObjectFromInstanceId.Invoke(instanceId) as TObject;
+        => findObjectFromInstanceId.Invoke(instanceId) as TObject; 
 }
