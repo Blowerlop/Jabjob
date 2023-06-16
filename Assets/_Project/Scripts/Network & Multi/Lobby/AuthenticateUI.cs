@@ -30,6 +30,11 @@ public class AuthenticateUI : MonoBehaviour {
     private void OnEnable()
     {
         canTryToConnect = true;
+        try { VivoxManager.Instance.VivoxLogOut(); }
+        catch (Exception e)
+        {
+            Debug.Log(e);
+        }
         _playerNameInputField.onEndEdit.AddListener(UpdateInputName);
         _playerNameInputField.onDeselect.AddListener(UpdateInputName);
     }
