@@ -180,12 +180,13 @@ namespace Project
                 _canShoot = true;
             }    
             
-            if(Input.GetKeyDown(KeyCode.T))
+            if(InputManager.instance.isWeaponSwapping)
             {
                 PlayEquipKnifeSound(hasKnifeEquipped);
                 LocalEquipKnife(hasKnifeEquipped);
                 EquipKnifeServerRpc(hasKnifeEquipped);
                 hasKnifeEquipped = !hasKnifeEquipped;
+                InputManager.instance.isWeaponSwapping = false;
             } 
         }
         #endregion
