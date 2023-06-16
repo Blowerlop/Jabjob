@@ -47,7 +47,7 @@ namespace Project
         {
             if (playerKillerId != OwnerClientId || GameManager.instance.GetPlayer(playerKilledId).enabled == false) return;
             
-            _spectatedPlayerNameText.text = $"Spectating : {GameManager.instance.GetPlayer(playerKillerId).name}";
+            _spectatedPlayerNameText.text = $"Spectating : {GameManager.instance.GetPlayer(playerKillerId).playerName}";
             
             transform.GetChild(0).gameObject.SetActive(true);
             _cinemachineVirtualCamera.Priority = 3;
