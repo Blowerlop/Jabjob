@@ -76,8 +76,6 @@ namespace Project
 
         public override void OnNetworkSpawn()
         {
-            Cursor.lockState = CursorLockMode.Locked;
-            
             GameManager.instance.AddPlayerLocal(OwnerClientId, this);
             GameEvent.onPlayerJoinGameEvent.Invoke(this, true, OwnerClientId);
 
@@ -114,6 +112,9 @@ namespace Project
             _gameDuration = GameManager.instance.gameMode.gameDurationInSeconds;
 
             _playerMovementController.Teleport(new Vector3(OwnerClientId * 100, -500.0f, 0.0f));
+            
+            CursorManager.instance.ApplyNewCursor(new CusorState(CursorLockMode.Locked, "Player"));
+
         }
 
         private void Start()

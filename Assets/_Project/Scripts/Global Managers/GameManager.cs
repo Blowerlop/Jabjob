@@ -41,7 +41,11 @@ namespace Project
 
         public override void OnDestroy()
         {
-            GetComponent<NetworkObject>().Despawn(true);
+            if (GetComponent<NetworkObject>().IsSpawned)
+            {
+                GetComponent<NetworkObject>().Despawn(true);
+            }
+            
             base.OnDestroy();
             
             if (IsServer)
@@ -178,8 +182,11 @@ namespace Project
                 {
                     NetworkManager.Singleton.SceneManager.OnLoadComplete += (id, sceneName, mode) =>
                     {
-                        Cursor.lockState = CursorLockMode.Confined;
-                        Cursor.visible = true;
+                        // InputManager.instance.OnConsole();
+                        
+                        
+                        CursorManager.instance.Revert();
+                        
                         SoundManager2D.instance.PlayBackgroundMusic("Start Scene Background Music");
                         //VivoxManager.Instance.SubscribeLobbyEvent();
                     };
