@@ -27,7 +27,6 @@ namespace Project
 
         private void OnTriggerExit(Collider other)
         {
-
             PlayerShoot playerShoot = other.GetComponent<PlayerShoot>();
             if (playerShoot != null)
             {
