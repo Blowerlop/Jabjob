@@ -131,7 +131,9 @@ public class InputManager : Singleton<InputManager>
     {
         _playerInput.SwitchCurrentActionMap(actionMap);
     }
-    
+
+    public string GetPlayerInputMap() => _playerInput.currentActionMap.name;
+
 
     #endregion
 }

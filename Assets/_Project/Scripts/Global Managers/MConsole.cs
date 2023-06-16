@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Project;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -33,10 +34,22 @@ namespace Managers
 
         void OpenConsole()
         {
-            Cursor.lockState = actualConsole.activeSelf? CursorLockMode.Locked: CursorLockMode.None;
-            Cursor.visible = !actualConsole.activeSelf;
+            // Cursor.lockState = actualConsole.activeSelf? CursorLockMode.Locked: CursorLockMode.None;
+            // Cursor.visible = !actualConsole.activeSelf;
+
             actualConsole.SetActive(!actualConsole.activeSelf);
-            InputManager.instance.SwitchPlayerInputMap(actualConsole.activeSelf ? "UI" : "Player");
+            
+            if (actualConsole.activeSelf)
+            {
+                CursorManager.instance.ApplyNewCursor(new CusorState(CursorLockMode.Confined, "UI"));
+            }
+            else
+            {
+                CursorManager.instance.Revert();
+            }
+            
+            
+            
         }
         void OnApplicationQuit()
         {
