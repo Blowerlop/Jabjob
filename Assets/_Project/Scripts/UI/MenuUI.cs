@@ -20,7 +20,7 @@ public class MenuUI : MonoBehaviour
                 Cursor.lockState = CursorLockMode.None;
                 Cursor.visible = true;
                 SoundManager2D.instance.PlayBackgroundMusic("Start Scene Background Music");
-                VivoxManager.Instance.SubscribeLobbyEvent();
+                //VivoxManager.Instance.SubscribeLobbyEvent();
             };
 
             SceneManager.LoadSceneNetwork("MenuScene");
