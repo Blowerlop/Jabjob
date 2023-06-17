@@ -39,7 +39,7 @@ public class InputManager : Singleton<InputManager>
     // }
 
         #region Variables
-
+    
     public Vector2 move;
     public Vector2 look;
     public bool isJumping, isShooting;
@@ -65,6 +65,7 @@ public class InputManager : Singleton<InputManager>
     {
         look = inputValue.Get<Vector2>();
         look.y *= -1;
+        look *= MouseManager.instance.mouseSensitivity;
     }
 
     public void OnJump()
