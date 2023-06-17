@@ -92,6 +92,7 @@ namespace Project
             _networkDeaths.OnValueChanged += OnDeathValueChange;
             _networkScore.OnValueChanged += OnScoreValueChange;
             _networkDamageDealt.OnValueChanged += OnDamageDealtValueChange;
+
             GameEvent.onGameTimerUpdated.Subscribe(UpdateAlpha,this);
 
 #if UNITY_EDITOR
@@ -115,7 +116,6 @@ namespace Project
             _gameDuration = GameManager.instance.gameMode.gameDurationInSeconds;
 
             _playerMovementController.Teleport(new Vector3(OwnerClientId * 100, -500.0f, 0.0f));
-            
             CursorManager.instance.ApplyNewCursor(new CusorState(CursorLockMode.Locked, "Player"));
             
         }
@@ -404,14 +404,30 @@ namespace Project
 
         void UpdateAlpha (float timer)
         {
-            if (timer < (_gameDuration * 2f / 3f) || IsOwner)
+            if(IsOwner)
             {
-                _playerMovementController.DisableSmoke(); return;
+                _playerMovementController.DisableSmoke();
+                return;
+            }
+            if(!GameManager.instance.gameHasStarted)
+            {
+                _paintable ??= gameObject.GetComponentsInChildren<Paintable>(true);
+                _paintable.ForEach(x => x.SetAlpha(GetAlphaValueToApply(0)));
+                return;
+            }
+            else  
+            {
+                if (timer > (_gameDuration * 2f / 3f)){
+                    _paintable ??= gameObject.GetComponentsInChildren<Paintable>(true);
+                    _paintable.ForEach(x => x.SetAlpha(GetAlphaValueToApply(_gameDuration - timer)));
+                }
+                else
+                {
+                    _playerMovementController.DisableSmoke();
+                    GameEvent.onGameTimerUpdated.Unsubscribe(UpdateAlpha);
+                }
             } 
-            _paintable ??= gameObject.GetComponentsInChildren<Paintable>(true);
-            _paintable.ForEach(x => x.SetAlpha(GetAlphaValueToApply(_gameDuration - timer)));
         }
- 
         float GetAlphaValueToApply(float value) => _alphaCurve.Evaluate(value / (_gameDuration / 3));
 
         #endregion
