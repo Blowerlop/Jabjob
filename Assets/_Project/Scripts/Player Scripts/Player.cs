@@ -63,6 +63,8 @@ namespace Project
         [SerializeField] private float _invincibleDurationInSeconds = 1.5f;
         [SerializeField] [ReadOnlyField] private bool _isInvincible = false;
 
+        public delegate void PlayerDamagedEvent(Transform damager, Color color);
+        public event PlayerDamagedEvent onDamageTaken; 
         #endregion
 
 
@@ -262,6 +264,8 @@ namespace Project
             Debug.Log("You've taken damage");
              _killerId = damagerId;
             SetHealth(_currentHealth - damage);
+            Player damager = GameManager.instance.GetPlayer(damagerId);
+            if(onDamageTaken != null ) onDamageTaken.Invoke(damager.transform, damager.playerColor);
         }
 
         public void Heal(int heal)
