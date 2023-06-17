@@ -26,9 +26,10 @@ namespace Project
                 handsMaterialDictionary.Add(PlayerModelList[i].name, PlayerModelList[i].materialHands);
             }
         }
-        
+
         public void ChangeCharacterModelIg(SkinnedMeshRenderer playerMeshRenderer, SkinnedMeshRenderer playerHandsMeshRenderer, string modelName)
         {
+            if (!meshDictionary.ContainsKey(modelName)) { Debug.LogError("MAUVAIS MODEL NAME"); return; }
             if (meshDictionary.TryGetValue(modelName, out Mesh mesh))
             {
                 playerMeshRenderer.sharedMesh = mesh;

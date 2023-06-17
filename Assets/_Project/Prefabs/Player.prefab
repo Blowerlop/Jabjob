@@ -1725,6 +1725,8 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+  _invincibleDurationInSeconds: 1.5
+  _isInvincible: 0
 --- !u!114 &6322688210165290436
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -13311,6 +13313,11 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 10
       objectReference: {fileID: 0}
+    - target: {fileID: 6006815436922324904, guid: f95a7d5215e41ed4296d2eaeab511486,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 7322191167466877960, guid: f95a7d5215e41ed4296d2eaeab511486,
         type: 3}
       propertyPath: m_Layer
@@ -13379,6 +13386,11 @@ PrefabInstance:
     - target: {fileID: 9091084096938417082, guid: f95a7d5215e41ed4296d2eaeab511486,
         type: 3}
       propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 9091084096938417083, guid: f95a7d5215e41ed4296d2eaeab511486,
+        type: 3}
+      propertyPath: m_Enabled
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 9091084096938417087, guid: f95a7d5215e41ed4296d2eaeab511486,
@@ -15752,6 +15764,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Layer
       value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 1905817242295091871, guid: 7c9659c56e916714bbc909bf2d4a4d04,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1905817242482878955, guid: 7c9659c56e916714bbc909bf2d4a4d04,
         type: 3}

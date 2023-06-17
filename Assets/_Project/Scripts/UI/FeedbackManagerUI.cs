@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 
 namespace Project
 {
-    [RequireComponent(typeof(Canvas))]
     public class FeedbackManagerUI : MonoBehaviour
     {
 
@@ -16,7 +15,6 @@ namespace Project
         [SerializeField] Material materialBase;
         private void Awake()
         {
-            canvas = GetComponent<Canvas>();
             if (canvas.worldCamera == null) canvas.worldCamera = Camera.main;
             canvas.planeDistance = canvas.worldCamera.nearClipPlane + 0.01f; 
             for(int i = 0; i < feedbacks.Length; i++)
@@ -27,7 +25,7 @@ namespace Project
         }
 
 
-        public async void SendFeedback(ulong killerId, ulong killedId, ulong[] assistsPlayers)
+        public async void SendFeedback(ulong killerId, ulong killedId, ulong[] assistsPlayers, bool killedWithKnife)
         {
             FeedBackIgUI targetFeedback = feedbacks[nextFeedbackNumber % (feedbacks.Length)]; 
             Player killer = GameManager.instance.GetPlayer(killerId);
@@ -36,6 +34,7 @@ namespace Project
             targetFeedback.transform.SetAsLastSibling();
             targetFeedback.SetNames(killer.playerName, killed.playerName);
             targetFeedback.SetColors(killer.playerColor, killed.playerColor);
+            targetFeedback.SetWeapon(killedWithKnife);
 
             int nbAssists = 0; 
             foreach (ulong assistId in assistsPlayers)
@@ -47,7 +46,7 @@ namespace Project
             nextFeedbackNumber++;
             targetFeedback.FadeIn();
 
-            await Task.Delay(5000);
+            await Task.Delay(4500);
             targetFeedback.FadeOut();
         }
     }

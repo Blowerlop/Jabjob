@@ -19,7 +19,7 @@ namespace Project
         private void Start()
         {
             gunSelectionCamera = GameObject.FindGameObjectWithTag("GunSelectionCamera");
-            gunSelectionVirtualCamera = gunSelectionCamera.GetComponent<CinemachineVirtualCamera>();
+            //gunSelectionVirtualCamera = gunSelectionCamera.GetComponent<CinemachineVirtualCamera>();
 
             player = transform.root.gameObject;
         }

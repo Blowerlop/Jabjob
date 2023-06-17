@@ -9,9 +9,9 @@ using UnityEngine;
 namespace Project
 {
     public class Clamp_TMP_InputField : MonoBehaviour
-    { 
+    {
         private TMP_InputField _inputField;
-        
+
         [SerializeField] private Vector2 _clampRange = new Vector2(0.0f, 1.0f);
 
 

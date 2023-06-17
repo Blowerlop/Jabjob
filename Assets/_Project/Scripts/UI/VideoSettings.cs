@@ -146,8 +146,6 @@ namespace Project
 
         private void OnEnable()
         {
-            StartCoroutine(Start());
-            
             _screenSizeDropdown.onDropdownItemCreatedEvent.Subscribe(SetDropdownItemResolutionContainer, this);
             _screenSizeDropdown.onAfterDropdownShowEvent.Subscribe(SelectCurrentResolutionDropdownItem, this);
 
@@ -156,6 +154,8 @@ namespace Project
             
             _maxFrameRateInputField.onDeselect.AddListenerExtended(SetMaximumFrameRate);
             _maxFrameRateInputField.onEndEdit.AddListenerExtended(SetMaximumFrameRateSlider);
+            
+            StartCoroutine(Start());
         }
         
         private void OnDisable()
