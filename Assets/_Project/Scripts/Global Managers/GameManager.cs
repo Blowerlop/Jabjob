@@ -27,12 +27,14 @@ namespace Project
         [field: SerializeField] public NetworkTimer _networkTimer { get; private set; }
 
         [SerializeField] private TMP_Text _warmUp;
-            
+        public bool gameHasStarted = false;
+        [SerializeField] bool firstBlood;
+        [SerializeField] int announcerGameStep = 0; 
         #endregion
 
 
         #region Updates
- 
+
         private void Awake()
         {
             instance = this;
@@ -58,6 +60,7 @@ namespace Project
             }
             
             gameMode.OnDestroy();
+            GameEvent.onGameTimerUpdated.Unsubscribe(AnnouncerLinkedToTimer);
         }
 
         public override void OnNetworkSpawn()
@@ -227,8 +230,7 @@ namespace Project
         {
             Debug.Log("WarmUp starting up !");
             Debug.Log("Players in lobby : " + LobbyManager.Instance.joinedLobby.Players.Count);
-            UpdateWarmUpTextClientRpc(null); 
-            
+            UpdateWarmUpTextClientRpc(null);
             _networkTimer.StartTimerWithCallback(120.0f, () => Debug.Log("Time's up ! Not all the players had been able to join the server !"));
         }
         
@@ -238,7 +240,6 @@ namespace Project
             {
                 Debug.Log("WarmUp is finishing in 30 seconds !");
                 UpdateWarmUpTextClientRpc("All players has connected, be ready !");
-                
                 _networkTimer.StartTimerWithCallback(30.0f, () =>
                 {
                     StartGameClientRpc();
@@ -275,13 +276,13 @@ namespace Project
             
 
             _networkTimer.StopTimer();
-            
-            _networkTimer.StartTimerWithCallback(3.0f + 1.0f, () =>
+            SubscribeAnnouncerServerRpc();
+            _networkTimer.StartTimerWithCallback(3.0f + 0.2f, () =>
                 {
                     UpdateWarmUpTextClientRpc("Fight !");
+                    
                     _networkTimer.StartTimerWithCallback(gameMode.gameDurationInSeconds, EndGameClientRpc,
                         true);
-
                     gameMode.Start();
                     azdazdClientRpc();
 
@@ -312,6 +313,8 @@ namespace Project
             therealone.enabled = true;
             therealoneother.enabled = true;
             therealoneshooter.enabled = true;
+            gameHasStarted = true;
+            Debug.Log("gameHasStarted : " + gameHasStarted);
         }
         
         #endregion
@@ -333,6 +336,7 @@ namespace Project
             if (_players.Keys.Count == LobbyManager.Instance.joinedLobby.Players.Count)
             {
                 GameEvent.onAllPlayersJoinEvent.Invoke(this);
+                SimpeAnnouncerSoundServerRpc("Welcome");
             }
         }
 
@@ -343,6 +347,53 @@ namespace Project
         private void DisconnectClientServerRpc(ulong clientId)
         {
             NetworkManager.Singleton.DisconnectClient(clientId);
+        }
+
+        [ServerRpc]
+        private void SubscribeAnnouncerServerRpc()
+        {
+            SubscribeAnnouncerClientRpc();
+        }
+        [ClientRpc]
+        private void SubscribeAnnouncerClientRpc()
+        {
+            SoundManager2D.instance.PlayAnnouncerSound("Timer3s");
+            GameEvent.onGameTimerUpdated.Subscribe(AnnouncerLinkedToTimer, this);
+            GameEvent.onPlayerGetAKillEvent.Subscribe(AnnouncerFirstBlood, this);
+        }
+
+        private void AnnouncerFirstBlood(ulong cliendId, int killValue)
+        {
+            if (!firstBlood)
+            {
+                SoundManager2D.instance.PlayAnnouncerSound("FirstBlood");
+                firstBlood = true;
+                GameEvent.onPlayerGetAKillEvent.Unsubscribe(AnnouncerFirstBlood);
+            }
+        }
+        private void AnnouncerLinkedToTimer(float timer)
+        {
+            if (!gameHasStarted) return;
+            if (announcerGameStep == 0 && timer < 3f + (gameMode.gameDurationInSeconds * 2f / 3f))
+            {
+                SoundManager2D.instance.PlayAnnouncerSound("InvisibilityDisabled");
+                announcerGameStep++;
+            }
+            if(announcerGameStep == 1 && timer < 31f)
+            {
+                SoundManager2D.instance.PlayAnnouncerSound("30sLeft");
+                announcerGameStep++;
+            }
+        }
+        [ServerRpc]
+        private void SimpeAnnouncerSoundServerRpc(string name)
+        {
+            SimpeAnnouncerSoundClientRpc(name);
+        }
+        [ClientRpc]
+        private void SimpeAnnouncerSoundClientRpc(string name)
+        {
+            SoundManager2D.instance.PlayAnnouncerSound(name);
         }
     }
 }

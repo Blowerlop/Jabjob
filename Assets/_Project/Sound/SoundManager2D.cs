@@ -6,12 +6,15 @@ public class SoundManager2D : MonoBehaviour
 {
     public static SoundManager2D instance { get; private set; }
 
-    public AudioSource uiSound, backgroundMusic;
+    public AudioSource uiSound, backgroundMusic, announcer;
 
     public SoundList[] soundListBackground;
     public SoundList[] soundListUI;
+    public SoundList[] announcerListUI; 
+
     private Dictionary<string, AudioClip> _soundListDicoBackground = new Dictionary<string, AudioClip>();
     private Dictionary<string, AudioClip> _soundListDicoUI = new Dictionary<string, AudioClip>();
+    private Dictionary<string, AudioClip> _soundListDicoAnnouncer = new Dictionary<string, AudioClip>();
 
     private void Awake()
     {
@@ -24,8 +27,11 @@ public class SoundManager2D : MonoBehaviour
         {
             if (soundListUI[i].name != null && soundListUI[i].sound != null) _soundListDicoUI.Add(soundListUI[i].name, soundListUI[i].sound);
         }
+        for (int i = 0; i < announcerListUI.Length; i++)
+        {
+            if (announcerListUI[i].name != null && announcerListUI[i].sound != null) _soundListDicoAnnouncer.Add(announcerListUI[i].name, announcerListUI[i].sound);
+        }
     }
-
     private void Start()
     {
         PlayBackgroundMusic("Start Scene Background Music");
@@ -40,11 +46,21 @@ public class SoundManager2D : MonoBehaviour
             backgroundMusic.Play();
         }
     } 
-
     public void PlayUISound(string name)
     {
         if (!_soundListDicoUI.ContainsKey(name)) Debug.LogError("Mauvais string pour le son UI : " + name);
         else uiSound.PlayOneShot(_soundListDicoUI[name]);
     }
-
+    
+    
+    public void PlayAnnouncerSound(string name)
+    {
+        if (!_soundListDicoAnnouncer.ContainsKey(name)) Debug.LogError("Mauvais string pour l'annoncer : " + name);
+        else
+        {
+            announcer.Stop();
+            announcer.clip = _soundListDicoAnnouncer[name];
+            announcer.Play();
+        }
+    }
 }
