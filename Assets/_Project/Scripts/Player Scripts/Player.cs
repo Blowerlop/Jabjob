@@ -32,6 +32,7 @@ namespace Project
         [SerializeField] private NetworkVariable<int> _networkScore = new NetworkVariable<int>();
         [SerializeField] private NetworkVariable<int> _networkDamageDealt = new NetworkVariable<int>(writePerm: NetworkVariableWritePermission.Owner);
         [SerializeField] private NetworkVariable<bool> _networkIsHost = new NetworkVariable<bool>();
+        [SerializeField] private NetworkVariable<List<Vector3>> _networkSpawnPoint = new NetworkVariable<List<Vector3>>();
         [SerializeField] private Player _killer;
 
         [SerializeField] private List<Vector3> spawnPostions = new List<Vector3>();
@@ -76,6 +77,7 @@ namespace Project
             playerMesh = GetComponent<WeaponManager>().humanMesh;
             handsMesh = GetComponent<WeaponManager>().handsMesh;
             _feedbackManager = FindObjectOfType<FeedbackManagerUI>();
+            _networkSpawnPoint.Value = spawnPostions;
         }
 
         public override void OnNetworkSpawn()
@@ -384,8 +386,11 @@ namespace Project
         }
 
         private void SpawnPlayerRandomly(ulong clientId)
-        {   
-            _playerMovementController.Teleport(spawnPostions[UnityEngine.Random.Range(0, spawnPostions.Count)]);
+        {
+            if (_networkSpawnPoint.Value.Count <= 0) { _networkSpawnPoint.Value = spawnPostions; }
+            Vector3 choosenPosition = _networkSpawnPoint.Value[UnityEngine.Random.Range(0, spawnPostions.Count)];
+            _networkSpawnPoint.Value.Remove(choosenPosition);
+            _playerMovementController.Teleport(choosenPosition);
         }
 
         private void OnKillValueChange(int previousValue, int nextValue) => GameEvent.onPlayerGetAKillEvent.Invoke(this, true, OwnerClientId, nextValue); 
