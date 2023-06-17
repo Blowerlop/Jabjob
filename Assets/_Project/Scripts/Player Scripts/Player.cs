@@ -48,8 +48,9 @@ namespace Project
         public int damageDealt { get => _networkDamageDealt.Value; set => _networkDamageDealt.Value = value; }
         public bool isHost { get => _networkIsHost.Value; private set => _networkIsHost.Value = value; }
 
+        bool killerHasKnife { get => GameManager.instance.GetPlayer(_killerId).GetComponent<PlayerShoot>().hasKnife; }
         bool isDead = false;
-        private HashSet<ulong> _damagersId = new HashSet<ulong>();
+        public  HashSet<ulong> damagersId = new HashSet<ulong>();
 
         private PlayerMovementController _playerMovementController; 
         private PlayerShoot _playerShoot;
@@ -236,6 +237,7 @@ namespace Project
         {
             ulong ownerId = OwnerClientId;
             DamageClientRpc(damage, damagerId, NetworkUtilities.GetNewClientRpcSenderParams(new List<ulong> { ownerId }));
+            AddDamagersIdClientRpc(damagerId);
         }
 
         [ClientRpc]
@@ -243,13 +245,20 @@ namespace Project
         {
             DamageLocalClient(damage, damagerId);
         }
-
+        [ClientRpc]
+        public void AddDamagersIdClientRpc(ulong damagerId)
+        {
+            AddDamagersIdLocal(damagerId);
+        }
+        public void AddDamagersIdLocal(ulong damagerId)
+        {
+            damagersId.Add(damagerId);
+        }
         public void DamageLocalClient(int damage, ulong damagerId)
         {
             if (isDead) return;
             Debug.Log("You've taken damage");
-            _damagersId.Add(damagerId);
-            _killerId = damagerId;
+             _killerId = damagerId;
             SetHealth(_currentHealth - damage);
         }
 
@@ -277,9 +286,9 @@ namespace Project
         private void PlayerDeath()
         {
             PlayerDeathBehaviourLocal();
-            ulong[] _damagersIdArray = new ulong[_damagersId.Count];
-            _damagersId.CopyTo(_damagersIdArray);
-            PlayerDeathFeedBackLocal(_killerId, OwnerClientId, _damagersIdArray);
+            ulong[] _damagersIdArray = new ulong[damagersId.Count];
+            damagersId.CopyTo(_damagersIdArray);
+            PlayerDeathFeedBackLocal(_killerId, OwnerClientId, _damagersIdArray, killerHasKnife);
             PlayerDeathBehaviourServerRpc(OwnerClientId);
             _playerShoot.HideBarloadingAmmoBox();
             Debug.Log("You're dead");
@@ -291,7 +300,7 @@ namespace Project
             deaths++;
             Player killer = GameManager.instance.GetPlayer(_killerId);
             killer.kills++;
-            foreach (ulong assistId in _damagersId)
+            foreach (ulong assistId in damagersId)
             {
                 if (assistId == _killerId) continue;
                 Player assistPlayer = GameManager.instance.GetPlayer(assistId);
@@ -301,11 +310,9 @@ namespace Project
             PlayerDeathBehaviourClientRpc();
             Timer.StartTimerWithCallbackRealTime(GameManager.instance.gameMode.respawnDurationInSeconds, (() => PlayerRespawnClientRpc(clientId)));
 
-            ulong[] _damagersIdArray = new ulong[_damagersId.Count];
-            _damagersId.CopyTo(_damagersIdArray);
-            PlayerDeathFeedbackClientRpc(_killerId, clientId, _damagersIdArray); 
-            _damagersId.Clear();
-
+            ulong[] _damagersIdArray = new ulong[damagersId.Count];
+            damagersId.CopyTo(_damagersIdArray);
+            PlayerDeathFeedbackClientRpc(_killerId, clientId, _damagersIdArray, killerHasKnife); 
             killer.UpdateScore();
             UpdateScore();
         }
@@ -316,13 +323,13 @@ namespace Project
             if (IsOwner == false) PlayerDeathBehaviourLocal();
         }
         [ClientRpc]
-        private void PlayerDeathFeedbackClientRpc(ulong killerId, ulong killedId, ulong[] assistPlayers)
+        private void PlayerDeathFeedbackClientRpc(ulong killerId, ulong killedId, ulong[] assistPlayers, bool killedWithKnife)
         {
-            if (IsOwner == false) PlayerDeathFeedBackLocal(killerId, killedId, assistPlayers);
+            if (IsOwner == false) PlayerDeathFeedBackLocal(killerId, killedId, assistPlayers, killedWithKnife);
         }
-        private void PlayerDeathFeedBackLocal(ulong killerId, ulong killedId, ulong[] assistPlayers)
+        private void PlayerDeathFeedBackLocal(ulong killerId, ulong killedId, ulong[] assistPlayers, bool killedWithKnife)
         {
-            _feedbackManager.SendFeedback(killerId, killedId, assistPlayers);
+            _feedbackManager.SendFeedback(killerId, killedId, assistPlayers, killedWithKnife);
         }
         private void PlayerDeathBehaviourLocal()
         {
@@ -339,6 +346,7 @@ namespace Project
             Player player = GameManager.instance.GetPlayer(clientId);
             SpawnPlayerRandomly(clientId);
             player.gameObject.SetActive(true);
+            player.damagersId.Clear();
             GameEvent.onPlayerRespawnedEvent.Invoke(this, true, clientId);
         }
 

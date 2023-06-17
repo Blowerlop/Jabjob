@@ -1681,6 +1681,12 @@ MonoBehaviour:
     m_InternalValue: 0
   _networkDamageDealt:
     m_InternalValue: 0
+  _networkAssist1Id:
+    m_InternalValue: 99
+  _networkAssist2Id:
+    m_InternalValue: 99
+  _networkAssist3Id:
+    m_InternalValue: 99
   _networkIsHost:
     m_InternalValue: 0
   _killer: {fileID: 0}
@@ -1699,6 +1705,7 @@ MonoBehaviour:
   - {x: 9.82, y: -59.66201, z: 5.15}
   - {x: 0.41, y: -59.66201, z: 12.13}
   - {x: -6.71, y: -59.66201, z: -2.42}
+  damageList: 
   playerMesh: {fileID: 0}
   handsMesh: {fileID: 0}
   _alphaCurve:
@@ -13311,6 +13318,11 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 10
       objectReference: {fileID: 0}
+    - target: {fileID: 6006815436922324904, guid: f95a7d5215e41ed4296d2eaeab511486,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 7322191167466877960, guid: f95a7d5215e41ed4296d2eaeab511486,
         type: 3}
       propertyPath: m_Layer
@@ -13379,6 +13391,11 @@ PrefabInstance:
     - target: {fileID: 9091084096938417082, guid: f95a7d5215e41ed4296d2eaeab511486,
         type: 3}
       propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 9091084096938417083, guid: f95a7d5215e41ed4296d2eaeab511486,
+        type: 3}
+      propertyPath: m_Enabled
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 9091084096938417087, guid: f95a7d5215e41ed4296d2eaeab511486,
@@ -15237,7 +15254,7 @@ PrefabInstance:
     - target: {fileID: 5770041453653872907, guid: 2885d7bc54cc9f641a200dac473470e9,
         type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 284.5
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5770041453653872907, guid: 2885d7bc54cc9f641a200dac473470e9,
         type: 3}

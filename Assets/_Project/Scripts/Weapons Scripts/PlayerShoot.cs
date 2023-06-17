@@ -28,6 +28,7 @@ namespace Project
         private bool _canShoot = true;
         //[SerializeField] private LayerMask _layerToAim;
         bool hasKnifeEquipped = false;
+        public bool hasKnife { get  => _knife.activeSelf;  }
         public float ammoBoxReloadTimer = 0f;
         [Header("Other References")]
         private Player _player;
@@ -88,10 +89,10 @@ namespace Project
             InputManager.instance.reload.AddListener(StartReload);
             GameEvent.onPlayerWeaponChangedLocalEvent.Subscribe(UpdateCurrentWeapon, this);
             GameEvent.onPlayerWeaponChangedServerEvent.Subscribe(UpdateCurrentWeapon, this);
-            ReloadTotalAmmoRespawn();
             LocalEquipKnife(true);
             EquipKnifeServerRpc(true);
             hasKnifeEquipped = false;
+            ReloadTotalAmmoRespawn();
         }
 
         public void OnDisable()
@@ -364,6 +365,7 @@ namespace Project
         }
         public void PerformKnifeCalculation()
         {
+            if (!IsOwner) return; 
             Vector3 weaponHolderPosition = _weaponHolder.position;
             Vector3 rootCameraPosition = _rootCamera.position;
             if (Physics.Raycast(_rootCamera.position, _rootCamera.forward, out RaycastHit hit,
@@ -451,11 +453,13 @@ namespace Project
 
         public async void ReloadTotalAmmoRespawn() //no Anim no nothing
         {
-            while (!weaponInitialized()) await Task.Delay(25);
-            _weapon.ammo = _weaponData.maxAmmo; 
+            while (!weaponInitialized()) await Task.Delay(25); 
+            _weapon.ammo = _weaponData.maxAmmo;
             _weapon.totalAmmo = _weaponData.totalAmmo;
+            GameEvent.onPlayerWeaponAmmoChangedEvent.Invoke(this, true, _weapon.ammo);
+            GameEvent.onPlayerWeaponTotalAmmoChangedEvent.Invoke(this, false, _weapon.totalAmmo);
         }
-        public async void ReloadTotalAmmo(int amount)
+            public async void ReloadTotalAmmo(int amount)
         {
             while (!weaponInitialized()) await Task.Delay(25);
             if (_weapon.totalAmmo + amount > _weaponData.totalAmmo) 
@@ -474,12 +478,14 @@ namespace Project
         public bool isMaxAmmo => _weapon.totalAmmo == _weaponData.totalAmmo;
         public void ShowBarLoadingAmmoBox(float percentage)
         {
+            if (!IsOwner) return;
             reloadSlider.gameObject.SetActive(true);
             reloadText.text = "Reloading total ammo..";
             reloadSlider.value = percentage;
         }
         public void HideBarloadingAmmoBox()
         {
+            if (!IsOwner) return;
             reloadSlider.gameObject.SetActive(false);
         }
         private void UpdateCurrentWeapon(Weapon weapon)

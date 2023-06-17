@@ -13,8 +13,9 @@ namespace Project
         [SerializeField] Image image, imageGradient;
         [SerializeField] TextMeshProUGUI killerName, killedName;
         [SerializeField] Image assist1_Image, assist2_Image, assist3_Image;
+        [SerializeField] Image weaponImage;
 
-
+        public Sprite gunSprite, knifeSprite; 
         public void SetNames(string killer, string killed)
         {
             killerName.text = killer;
@@ -26,8 +27,12 @@ namespace Project
             Material material = imageGradient.material;
             material.SetColor("_startColor", color1);
             material.SetColor("_endColor", color2);
-            killerName.color = color1 == Color.black ? Color.white : Color.black;
-            killedName.color = color2 == Color.black ? Color.white : Color.black;
+            //killerName.color = color1 == Color.black ? Color.white : Color.black;
+            //killedName.color = color2 == Color.black ? Color.white : Color.black;
+        }
+        public void SetWeapon(bool hasKnife)
+        {
+            weaponImage.sprite = hasKnife ? knifeSprite : gunSprite; 
         }
         public void SetMaterial(Material material)
         {

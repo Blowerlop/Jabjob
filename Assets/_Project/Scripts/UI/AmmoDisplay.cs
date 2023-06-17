@@ -24,21 +24,23 @@ public class AmmoDisplay : MonoBehaviour, IGameEventListener
     private void Start()
     {
         gradient = ColorHelpersUtilities.GetGradient(Color.white, Color.red);
-        isBlinking = false; 
+        isBlinking = false;
+        GameEvent.onPlayerWeaponAmmoChangedEvent.Subscribe(UpdateAmmoDisplayText, this);
+        GameEvent.onPlayerWeaponTotalAmmoChangedEvent.Subscribe(UpdateTotalAmmoDisplayText, this);
     }
     public void OnEnable()
     {
         _lowAmmoColor = _lowAmmoImage.color; 
-        GameEvent.onPlayerWeaponAmmoChangedEvent.Subscribe(UpdateAmmoDisplayText, this);
-        GameEvent.onPlayerWeaponTotalAmmoChangedEvent.Subscribe(UpdateTotalAmmoDisplayText, this);
     }
-
     public void OnDisable()
+    {
+        
+    }
+    public void OnDestroy()
     {
         GameEvent.onPlayerWeaponAmmoChangedEvent.Unsubscribe(UpdateAmmoDisplayText);
         GameEvent.onPlayerWeaponTotalAmmoChangedEvent.Unsubscribe(UpdateTotalAmmoDisplayText);
     }
-
     private void Update()
     {
         if (_ammoDisplay.text != "0")
