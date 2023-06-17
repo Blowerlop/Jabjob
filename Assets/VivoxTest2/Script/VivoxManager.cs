@@ -24,6 +24,8 @@ public class VivoxManager : MonoBehaviour
 
     public event Action OnUserLoggedIn;
     public Action<string, IChannelTextMessage, string> OnTextMessageLogReceived;
+    public Action<string> OnParticipanJoinChannel;
+    public Action<string> OnParticipanLeaveChannel;
     public static VivoxManager Instance { get; private set; }
 
     private void Awake()
@@ -175,7 +177,12 @@ public class VivoxManager : MonoBehaviour
             Channel channel = new Channel(channelName);
 
             _currentChannelSession = LoginSession.GetChannelSession(channel);
+
             _currentChannelSession.MessageLog.AfterItemAdded += OnMessageLogReceive;
+            
+            //Event participants
+            _currentChannelSession.Participants.AfterKeyAdded += Participants_AfterKeyAdded;
+            _currentChannelSession.Participants.BeforeKeyRemoved += Participants_BeforeKeyRemoved;
 
             _currentChannelSession.BeginConnect(false, true, true, _currentChannelSession.GetConnectToken(), ar =>
             {
@@ -193,10 +200,42 @@ public class VivoxManager : MonoBehaviour
         }
     }
 
+    private void Participants_BeforeKeyRemoved(object sender, KeyEventArg<string> e)
+    {
+        ValidateArgs(new object[] { sender, e });
+        var source = (VivoxUnity.IReadOnlyDictionary<string, IParticipant>)sender;
+        IParticipant participant = source[e.Key];
+        var username = participant.Account.DisplayName;
+
+        OnParticipanLeaveChannel?.Invoke(username);
+    }
+
+    private void Participants_AfterKeyAdded(object sender, KeyEventArg<string> e)
+    {
+        ValidateArgs(new object[] { sender, e });
+        var source = (VivoxUnity.IReadOnlyDictionary<string, IParticipant>)sender;
+        IParticipant participant = source[e.Key];
+        var username = participant.Account.DisplayName;
+
+        OnParticipanJoinChannel?.Invoke(username);
+    }
+
+    private static void ValidateArgs(object[] objs)
+    {
+        foreach (var obj in objs)
+        {
+            if (obj == null)
+                throw new ArgumentNullException(obj.GetType().ToString(), "Specify a non-null/non-empty argument.");
+        }
+    }
+
     public void LeaveChannel()
     {
         if (_currentChannelSession == null)
             return;
+
+        _currentChannelSession.Participants.AfterKeyAdded -= Participants_AfterKeyAdded;
+        _currentChannelSession.Participants.BeforeKeyRemoved -= Participants_BeforeKeyRemoved;
 
         _currentChannelSession.Disconnect();
         _currentChannelSession = null;

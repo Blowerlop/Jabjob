@@ -4,6 +4,7 @@ using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
+using System;
 
 namespace Project
 {
@@ -41,6 +42,8 @@ namespace Project
                 _vivoxManager = FindObjectOfType<VivoxManager>();
                 _vivoxManager.OnTextMessageLogReceived = null;
                 _vivoxManager.OnTextMessageLogReceived += OnMessageReceive;
+                _vivoxManager.OnParticipanJoinChannel += OnParticipantJoin;
+                _vivoxManager.OnParticipanLeaveChannel += OnParticipantLeave;
 
                 _sendBTN.onClick.AddListener(() => SendMessage());
                 ShrinkTextArea(true);
@@ -58,6 +61,33 @@ namespace Project
                 _inputAction.UI.Enter.performed += Enter_performed;
 
                 _inputManager = FindObjectOfType<InputManager>();
+            }
+
+        }
+
+        private void OnParticipantLeave(string obj)
+        {
+            TextMeshProUGUI TMP = Instantiate(_textPrefab, _textPoint);
+            TMP.text = $"{obj} quit the channel";
+            _messages.Add(TMP);
+            if (_chatGameplay)
+            {
+                _textCanvasGroup.alpha = 1;
+                _currentTextTimer = _showTextTimer;
+
+            }
+        }
+
+        private void OnParticipantJoin(string obj)
+        {
+            TextMeshProUGUI TMP = Instantiate(_textPrefab, _textPoint);
+            TMP.text = $"{obj} joined the channel";
+            _messages.Add(TMP);
+            if (_chatGameplay)
+            {
+                _textCanvasGroup.alpha = 1;
+                _currentTextTimer = _showTextTimer;
+
             }
 
         }
