@@ -60,24 +60,17 @@ namespace Project
             gameMode.OnDestroy();
         }
 
-        private void OnEnable()
-        {
-            GameEvent.onGameFinishedEvent.Subscribe(EndGameBehaviour, this);
-        }
-        
-        private void OnDisable()
-        {
-            GameEvent.onGameFinishedEvent.Unsubscribe(EndGameBehaviour);
-        }
-        
         public override void OnNetworkSpawn()
         {
+            GameEvent.onGameFinishedEvent.Subscribe(EndGameBehaviour, this);
+
             if (IsServer)
             {
                 SpawnNetworkTimerServerRpc();
                 
                 GameEvent.onPlayerJoinGameEvent.Subscribe(ALlPlayerJoinEventHandler, this);
                 GameEvent.onAllPlayersJoinEvent.Subscribe(EndWarmUpBehaviour, this);
+
                 
                 NetworkManager.Singleton.SceneManager.OnLoadComplete += SpawnClientServerRpc;
                 
@@ -93,10 +86,13 @@ namespace Project
 
         public override void OnNetworkDespawn()
         {
+            GameEvent.onGameFinishedEvent.Unsubscribe(EndGameBehaviour);
+
             if (IsServer)
             {
                 GameEvent.onPlayerJoinGameEvent.Unsubscribe(ALlPlayerJoinEventHandler);
-                GameEvent.onAllPlayersJoinEvent.Unsubscribe(EndWarmUpBehaviour);
+                GameEvent.onAllPlayersJoinEvent.Unsubscribe(EndWarmUpBehaviour);            
+
                 
                 NetworkManager.Singleton.SceneManager.OnLoadComplete -= SpawnClientServerRpc;
                 
@@ -176,34 +172,57 @@ namespace Project
         
         private void EndGameBehaviour()
         {
-            if (IsServer)
+            Debug.Log("OnLoadComplete end game");
+            
+            Timer.StartTimerWithCallbackRealTime(10.0f, () =>
             {
-                Timer.StartTimerWithCallbackRealTime(10.0f, () =>
+                if (IsServer)
                 {
-                    NetworkManager.Singleton.SceneManager.OnLoadComplete += (id, sceneName, mode) =>
+                    SceneManager.LoadSceneNetwork("MenuScene");
+                }
+                
+                NetworkManager.Singleton.SceneManager.OnLoadComplete += (id, sceneName, mode) =>
+                {
+                    if (IsServer)
+                    {           
+                        // This will let you know when a load is completed
+                        // Server Side: receives this notification for both itself and all clients
+                        if (id == NetworkManager.Singleton.LocalClientId)
+                        {
+                            SoundManager2D.instance.PlayBackgroundMusic("Start Scene Background Music");
+                            CursorManager.instance.Revert();
+                        }
+                        else
+                        {
+                            // Handle client LoadComplete **server-side** notifications here
+                        }
+                    }
+                    else // Clients generate this notification locally
                     {
-                        // InputManager.instance.OnConsole();
-                        
-                        
-                        CursorManager.instance.Revert();
-                        
                         SoundManager2D.instance.PlayBackgroundMusic("Start Scene Background Music");
-                    };
+                        CursorManager.instance.Revert();
+                    }
                     
-                    NetworkManager.Singleton.SceneManager.OnLoadEventCompleted += (sceneName, mode, completed, @out) =>
+                    Debug.Log("EndGameBehaviour OnLoadComplete");
+
+                };
+                    
+                NetworkManager.Singleton.SceneManager.OnLoadEventCompleted += (sceneName, mode, completed, @out) =>
+                {
+                    // SoundManager2D.instance.PlayBackgroundMusic("Start Scene Background Music");
+                    // CursorManager.instance.Revert();
+                    // RevertPlayerCursorStateServerRpc();
+                    //
+                    // Debug.Log("OnLoadComplete end game");
+
+                    if (IsServer)
                     {
                         NetworkManager.Singleton.Shutdown();
-                    };
-                    
-                    
-                        
-                    SceneManager.LoadSceneNetwork("MenuScene");
-                });
-            }
-
-            
+                    }
+                };
+            });
         }
-        
+
         private void StartWarmup()
         {
             Debug.Log("WarmUp starting up !");

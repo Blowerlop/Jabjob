@@ -409,8 +409,7 @@ namespace Project
             {
                 VivoxManager.Instance.VivoxLogOut();
                 NetworkManager.Singleton.Shutdown();
-                Cursor.lockState = CursorLockMode.None;
-                Cursor.visible = true;
+                CursorManager.instance.Revert();
                 SoundManager2D.instance.PlayBackgroundMusic("Start Scene Background Music");
                 //VivoxManager.Instance.SubscribeLobbyEvent();
             };
