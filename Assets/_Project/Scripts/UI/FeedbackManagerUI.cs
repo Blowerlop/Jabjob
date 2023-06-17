@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 
 namespace Project
 {
-    [RequireComponent(typeof(Canvas))]
     public class FeedbackManagerUI : MonoBehaviour
     {
 
@@ -16,7 +15,6 @@ namespace Project
         [SerializeField] Material materialBase;
         private void Awake()
         {
-            canvas = GetComponent<Canvas>();
             if (canvas.worldCamera == null) canvas.worldCamera = Camera.main;
             canvas.planeDistance = canvas.worldCamera.nearClipPlane + 0.01f; 
             for(int i = 0; i < feedbacks.Length; i++)

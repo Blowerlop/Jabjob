@@ -43,13 +43,12 @@ public class InputManager : Singleton<InputManager>
     public Vector2 move;
     public Vector2 look;
     public bool isJumping, isShooting;
-    public UnityEvent reload, openCommand;
+    public UnityEvent reload, openCommand, pressTab;
     public bool isWeaponSwapping;
     public bool isDashing;
     public bool isConsoleOpened;
     public bool isWeaponSelectionOpen;
     public Event onEscapePressed = new Event(nameof(onEscapePressed));
-    public bool TabPressed;
     public PlayerInput _playerInput;
     
     #endregion
@@ -97,7 +96,7 @@ public class InputManager : Singleton<InputManager>
     }
     public void OnTabulation()
     {
-        TabPressed = true;
+        pressTab.Invoke();
     }
     public void OnConsole()
     {

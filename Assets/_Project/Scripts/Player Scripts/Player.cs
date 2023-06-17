@@ -79,7 +79,6 @@ namespace Project
         {
             GameManager.instance.AddPlayerLocal(OwnerClientId, this);
             GameEvent.onPlayerJoinGameEvent.Invoke(this, true, OwnerClientId);
-
             
             
             _networkName.OnValueChanged += OnNameValueChange;
@@ -115,7 +114,7 @@ namespace Project
             _playerMovementController.Teleport(new Vector3(OwnerClientId * 100, -500.0f, 0.0f));
             
             CursorManager.instance.ApplyNewCursor(new CusorState(CursorLockMode.Locked, "Player"));
-
+            
         }
 
         private void Start()
@@ -402,7 +401,7 @@ namespace Project
         {
             KickLocalClient();
         }
-        
+
         public void KickLocalClient()
         {
             NetworkManager.Singleton.SceneManager.OnLoadEventCompleted += (sceneName, mode, completed, @out) =>
@@ -411,7 +410,6 @@ namespace Project
                 NetworkManager.Singleton.Shutdown();
                 CursorManager.instance.Revert();
                 SoundManager2D.instance.PlayBackgroundMusic("Start Scene Background Music");
-                //VivoxManager.Instance.SubscribeLobbyEvent();
             };
 
             SceneManager.LoadSceneNetwork("MenuScene");
