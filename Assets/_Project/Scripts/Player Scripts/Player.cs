@@ -60,6 +60,9 @@ namespace Project
         private Paintable[] _paintable;
         private float _gameDuration = 300;
         [SerializeField]private AnimationCurve _alphaCurve;
+        [SerializeField] private float _invincibleDurationInSeconds = 1.5f;
+        [SerializeField] [ReadOnlyField] private bool _isInvincible = false;
+
         #endregion
 
 
@@ -347,6 +350,37 @@ namespace Project
             player.gameObject.SetActive(true);
             player.damagersId.Clear();
             GameEvent.onPlayerRespawnedEvent.Invoke(this, true, clientId);
+
+            StartCoroutine(SetInvincibleCoroutine(_invincibleDurationInSeconds));
+        }
+
+        private void SetInvincible(bool state)
+        {
+            if (state)
+            {
+                GetComponentsInChildren<Collider>().ForEach(col =>
+                {
+                    col.enabled = false;
+                });
+
+                _isInvincible = true;
+            }
+            else
+            {
+                GetComponentsInChildren<Collider>().ForEach(col =>
+                {
+                    col.enabled = true;
+                });
+
+                _isInvincible = false;
+            }
+        }
+        
+        private IEnumerator SetInvincibleCoroutine(float duration)
+        {
+            SetInvincible(true);
+            yield return new WaitForSeconds(duration);
+            SetInvincible(false);
         }
 
         private void SpawnPlayerRandomly(ulong clientId)
