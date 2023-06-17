@@ -21,34 +21,31 @@ namespace Project
         [Header("Music Volume")]
         [SerializeField] private TMP_InputField _gameSoundsInputField;
         [SerializeField] private Slider _gameSoundsVolumeSlider;
-
-
-        private void Start()
-        {
-            SetMasterVolumeSliderValue((AudioManager.instance.ConvertVolumeToValue01(AudioManager.instance.GetMasterVolume) * _masterVolumeSlider.maxValue).ToString(CultureInfo.InvariantCulture));
-            SetMusicVolumeSliderValue((AudioManager.instance.ConvertVolumeToValue01(AudioManager.instance.GetMusicVolume) * _musicVolumeSlider.maxValue).ToString(CultureInfo.InvariantCulture));
-            SetGameSoundsVolumeSliderValue((AudioManager.instance.ConvertVolumeToValue01(AudioManager.instance.GetGameSoundsVolume) * _gameSoundsVolumeSlider.maxValue).ToString(CultureInfo.InvariantCulture));
-            
-            // SetMasterVolumeSliderValue((AudioManager.instance.ConvertVolumeToValue01(AudioManager.instance.GetMasterVolume) * _masterVolumeSlider.maxValue).ToString(CultureInfo.InvariantCulture));
-
-            // _masterVolumeSlider.SetValueWithoutNotify();
-            // _musicVolumeSlider.SetValueWithoutNotify(AudioManager.instance.GetMusicVolume);
-            // _gameSoundsVolumeSlider.SetValueWithoutNotify(AudioManager.instance.GetGameSoundsVolume);
-        }
-
-
+        
         private void OnEnable()
         {
-            Start();
-            
             _masterVolumeSlider.onValueChanged.AddListenerExtended(SetMasterVolume);
-            _masterVolumeInputField.onEndEdit.AddListenerExtended(SetMasterVolumeSliderValue);
+            _masterVolumeInputField.onValueChanged.AddListenerExtended(SetMasterVolumeSliderValue);
             
             _musicVolumeSlider.onValueChanged.AddListenerExtended(SeMusicVolume);
-            _musicVolumeInputField.onEndEdit.AddListenerExtended(SetMusicVolumeSliderValue);
+            _musicVolumeInputField.onValueChanged.AddListenerExtended(SetMusicVolumeSliderValue);
             
             _gameSoundsVolumeSlider.onValueChanged.AddListenerExtended(SetGameSoundsVolume);
-            _gameSoundsInputField.onEndEdit.AddListenerExtended(SetGameSoundsVolumeSliderValue);
+            _gameSoundsInputField.onValueChanged.AddListenerExtended(SetGameSoundsVolumeSliderValue);
+
+
+            StartCoroutine(UtilitiesClass.WaitForEndOfFrameAndDoActionCoroutine(() =>
+            {
+                SetMasterVolumeSliderValue(
+                    (AudioManager.instance.ConvertVolumeToValue01(AudioManager.instance.GetMasterVolume) *
+                     _masterVolumeSlider.maxValue).ToString(CultureInfo.InvariantCulture));
+                SetMusicVolumeSliderValue(
+                    (AudioManager.instance.ConvertVolumeToValue01(AudioManager.instance.GetMusicVolume) *
+                     _musicVolumeSlider.maxValue).ToString(CultureInfo.InvariantCulture));
+                SetGameSoundsVolumeSliderValue(
+                    (AudioManager.instance.ConvertVolumeToValue01(AudioManager.instance.GetGameSoundsVolume) *
+                     _gameSoundsVolumeSlider.maxValue).ToString(CultureInfo.InvariantCulture));
+            }));
         }
 
         private void OnDisable()
@@ -67,16 +64,19 @@ namespace Project
         private void SetMasterVolumeSliderValue(string text)
         {
             _masterVolumeSlider.value = int.Parse(text.ExtractNumber());
+            // SetMasterVolume(float.Parse(text.ExtractNumber()));
         }
         
         private void SetMusicVolumeSliderValue(string text)
         {
             _musicVolumeSlider.value = int.Parse(text.ExtractNumber());
+            // SeMusicVolume(float.Parse(text.ExtractNumber()));
         }
         
         private void SetGameSoundsVolumeSliderValue(string text)
         {
             _gameSoundsVolumeSlider.value = int.Parse(text.ExtractNumber());
+            // SetGameSoundsVolume(float.Parse(text.ExtractNumber()));
         }
         
         

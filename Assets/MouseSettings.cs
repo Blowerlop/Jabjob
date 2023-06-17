@@ -17,7 +17,11 @@ namespace Project
         {
             _mouseSensitivityInputField.onEndEdit.AddListenerExtended(SetSensitivity);
 
-            SetSensitivity(MouseManager.instance.mouseSensitivity.ToString(CultureInfo.InvariantCulture));
+            StartCoroutine(UtilitiesClass.WaitForEndOfFrameAndDoActionCoroutine(() =>
+            {
+                SetSensitivity(MouseManager.instance.mouseSensitivity.ToString(CultureInfo.InvariantCulture));
+
+            }));
         }
 
         private void OnDisable()
