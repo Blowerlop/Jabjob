@@ -32,10 +32,9 @@ namespace Project
         [SerializeField] private NetworkVariable<int> _networkScore = new NetworkVariable<int>();
         [SerializeField] private NetworkVariable<int> _networkDamageDealt = new NetworkVariable<int>(writePerm: NetworkVariableWritePermission.Owner);
         [SerializeField] private NetworkVariable<bool> _networkIsHost = new NetworkVariable<bool>();
-        [SerializeField] private NetworkVariable<List<Vector3>> _networkSpawnPoint = new NetworkVariable<List<Vector3>>();
         [SerializeField] private Player _killer;
 
-        [SerializeField] private List<Vector3> spawnPostions = new List<Vector3>();
+        public List<Vector3> spawnPostions = new List<Vector3>();
 
         public string playerName { get => _networkName.Value.value; private set => _networkName.Value = new StringNetwork() { value = value }; }
         public Color playerColor { get => _networkColor.Value; private set => _networkColor.Value = value; }
@@ -77,7 +76,6 @@ namespace Project
             playerMesh = GetComponent<WeaponManager>().humanMesh;
             handsMesh = GetComponent<WeaponManager>().handsMesh;
             _feedbackManager = FindObjectOfType<FeedbackManagerUI>();
-            _networkSpawnPoint.Value = spawnPostions;
         }
 
         public override void OnNetworkSpawn()
@@ -387,9 +385,9 @@ namespace Project
 
         private void SpawnPlayerRandomly(ulong clientId)
         {
-            if (_networkSpawnPoint.Value.Count <= 0) { _networkSpawnPoint.Value = spawnPostions; }
-            Vector3 choosenPosition = _networkSpawnPoint.Value[UnityEngine.Random.Range(0, spawnPostions.Count)];
-            _networkSpawnPoint.Value.Remove(choosenPosition);
+            if (GameManager.instance.possibleSpawnPositions.Count <= 0) { GameManager.instance.possibleSpawnPositions = spawnPostions; }
+            Vector3 choosenPosition = GameManager.instance.possibleSpawnPositions[UnityEngine.Random.Range(0, spawnPostions.Count)];
+            GameManager.instance.possibleSpawnPositions.Remove(choosenPosition);
             _playerMovementController.Teleport(choosenPosition);
         }
 
