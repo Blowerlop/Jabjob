@@ -12,18 +12,33 @@ public class MenuUI : MonoBehaviour
     {
         if (NetworkManager.Singleton.IsClient || NetworkManager.Singleton.IsHost || NetworkManager.Singleton.IsServer)
         {
-            GameManager.instance.AskToBeDisconnected(NetworkManager.Singleton.LocalClientId);
-            NetworkManager.Singleton.SceneManager.OnLoadEventCompleted += (sceneName, mode, completed, @out) =>
+            if (NetworkManager.Singleton.IsServer)
             {
+                SceneManager.LoadSceneNetwork("MenuScene");
+                NetworkManager.Singleton.SceneManager.OnLoadEventCompleted += (sceneName, mode, completed, @out) =>
+                {
+                    VivoxManager.Instance.VivoxLogOut();
+                    NetworkManager.Singleton.Shutdown();
+                    Cursor.lockState = CursorLockMode.None;
+                    Cursor.visible = true;
+                    SoundManager2D.instance.PlayBackgroundMusic("Start Scene Background Music");
+                    //VivoxManager.Instance.SubscribeLobbyEvent();
+                };
+            }
+            else
+            {
+                GameManager.instance.AskToBeDisconnected(NetworkManager.Singleton.LocalClientId);
                 VivoxManager.Instance.VivoxLogOut();
-                NetworkManager.Singleton.Shutdown();
                 Cursor.lockState = CursorLockMode.None;
                 Cursor.visible = true;
                 SoundManager2D.instance.PlayBackgroundMusic("Start Scene Background Music");
+                SceneManager.LoadSceneAsyncLocal("MenuScene");
                 //VivoxManager.Instance.SubscribeLobbyEvent();
-            };
+            }
+            
+            
 
-            SceneManager.LoadSceneNetwork("MenuScene");
+            
             //SceneManager.LoadSceneAsyncLocal("MenuScene", LoadSceneMode.Single);
             Debug.Log("Leave Game");
         }

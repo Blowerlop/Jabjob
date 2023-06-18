@@ -63,7 +63,10 @@ public class ScoreBoard : MonoBehaviour
         GameEvent.onPlayerDiedEvent.Unsubscribe(UpdateDeathText);
         GameEvent.onPlayerScoreEvent.Unsubscribe(UpdateScoreText);
 
-        InputManager.instance.pressTab.RemoveListener(OpenScoreBoard);
+        if (InputManager.IsInstanceAlive)
+        {
+            InputManager.instance.pressTab.RemoveListener(OpenScoreBoard);
+        }
     }
 
     private void OpenScoreBoard()

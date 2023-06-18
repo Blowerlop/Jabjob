@@ -117,8 +117,8 @@ namespace Project
 
             _gameDuration = GameManager.instance.gameMode.gameDurationInSeconds;
 
-            _playerMovementController.Teleport(new Vector3(OwnerClientId * 100, -500.0f, 0.0f));
-            CursorManager.instance.ApplyNewCursor(new CusorState(CursorLockMode.Locked, "Player"));
+            _playerMovementController.Teleport(new Vector3((GameManager.instance.GetPlayers().Length - 1) * 100, -500.0f, 0.0f));
+            CursorManager.instance.ApplyNewCursor(new CursorState(CursorLockMode.Locked, "Player"));
             
         }
 
@@ -160,6 +160,14 @@ namespace Project
 
 
         #region Methods
+
+        private void Update()
+        {
+            if (CursorManager.instance.cursorStates.Count == 0)
+            {
+                CursorManager.instance.ApplyNewCursor(new CursorState(CursorLockMode.Locked, "Player"));
+            }
+        }
 
         #region Network
 

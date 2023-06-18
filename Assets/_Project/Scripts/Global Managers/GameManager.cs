@@ -360,7 +360,7 @@ namespace Project
 
         public void AskToBeDisconnected(ulong clientId) => DisconnectClientServerRpc(clientId);
 
-        [ServerRpc]
+        [ServerRpc(RequireOwnership = false)]
         private void DisconnectClientServerRpc(ulong clientId)
         {
             NetworkManager.Singleton.DisconnectClient(clientId);

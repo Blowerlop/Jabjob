@@ -76,10 +76,12 @@ namespace _Project.Scripts.Managers
             }
             else
             {
-                UnityEngine.SceneManagement.SceneManager.LoadSceneAsync(EScene.LoadingScene.ToString());
+                
 
                 AsyncOperation newScene =
                     UnityEngine.SceneManagement.SceneManager.LoadSceneAsync(sceneName.ToString(), loadSceneMode);
+
+                InvokeOnSceneLoad(0, sceneName.ToString(), loadSceneMode, newScene); 
 
                 newScene.allowSceneActivation = false;
                 do
@@ -91,6 +93,7 @@ namespace _Project.Scripts.Managers
 
                 await Task.Delay(100);
                 newScene.allowSceneActivation = true;
+                InvokeOnSceneLoadComplete(0, sceneName.ToString(), loadSceneMode); 
             }
         }
 
@@ -212,14 +215,22 @@ namespace _Project.Scripts.Managers
         private static void InvokeOnSceneLoad(ulong clientId, string sceneName, LoadSceneMode loadSceneMode, AsyncOperation asyncOperation)
         {
             onSceneLoadEvent.Invoke(nameof(SceneManager), true, clientId, sceneName, loadSceneMode, asyncOperation);
-            NetworkManager.Singleton.SceneManager.OnLoad -= InvokeOnSceneLoad;
+
+            if (NetworkManager.Singleton != null && NetworkManager.Singleton.SceneManager != null)
+            {
+                NetworkManager.Singleton.SceneManager.OnLoad -= InvokeOnSceneLoad;
+            }
         }
         
         
         private static void InvokeOnSceneLoadComplete(ulong clientId, string sceneName, LoadSceneMode loadSceneMode)
         {
             onSceneLoadCompleteEvent.Invoke(nameof(SceneManager), true, clientId, sceneName, loadSceneMode);
-            NetworkManager.Singleton.SceneManager.OnLoadComplete -= InvokeOnSceneLoadComplete;
+
+            if (NetworkManager.Singleton != null && NetworkManager.Singleton.SceneManager != null)
+            {
+                NetworkManager.Singleton.SceneManager.OnLoadComplete -= InvokeOnSceneLoadComplete;
+            }
         }
         #endregion
     }

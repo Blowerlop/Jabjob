@@ -612,7 +612,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 94815490}
-  - component: {fileID: 94815491}
   m_Layer: 5
   m_Name: Lobby
   m_TagString: Untagged
@@ -647,30 +646,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &94815491
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 94815489}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6aea3bef3d714b5488d9f7fba25a346e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _target: {fileID: 94815489}
-  _overrideButton: 0
-  _dontUseButton: 1
-  _button: {fileID: 0}
-  <stateToDo>k__BackingField: 1
-  onOpenUIEvent:
-    m_PersistentCalls:
-      m_Calls: []
-  onCloseUIEvent:
-    m_PersistentCalls:
-      m_Calls: []
-  _openOrCloseWithKey: 1
 --- !u!1 &123163527
 GameObject:
   m_ObjectHideFlags: 0
@@ -2791,8 +2766,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -507, y: -49}
-  m_SizeDelta: {x: 580, y: 80}
+  m_AnchoredPosition: {x: -550.9332, y: -49}
+  m_SizeDelta: {x: 492.1335, y: 80}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &595411684
 MonoBehaviour:
@@ -4253,8 +4228,20 @@ MonoBehaviour:
       m_Calls: []
   onCloseUIEvent:
     m_PersistentCalls:
-      m_Calls: []
-  _openOrCloseWithKey: 0
+      m_Calls:
+      - m_Target: {fileID: 1438985301}
+        m_TargetAssemblyTypeName: Project.OpenCloseUI, Assembly-CSharp
+        m_MethodName: UnRegister
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  _openOrCloseWithKey: 1
 --- !u!1 &889557480
 GameObject:
   m_ObjectHideFlags: 0
@@ -5123,8 +5110,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -507, y: -162}
-  m_SizeDelta: {x: 580, y: 80}
+  m_AnchoredPosition: {x: -667.19574, y: -162}
+  m_SizeDelta: {x: 259.6086, y: 80}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1116026429
 MonoBehaviour:
@@ -8175,13 +8162,58 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7175790370677119758, guid: c9ea6a8382075cb489399c1cb4ee7313,
         type: 3}
+      propertyPath: _openOrCloseWithKey
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7175790370677119758, guid: c9ea6a8382075cb489399c1cb4ee7313,
+        type: 3}
       propertyPath: <stateToDo>k__BackingField
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7175790370677119758, guid: c9ea6a8382075cb489399c1cb4ee7313,
+        type: 3}
+      propertyPath: onCloseUIEvent.m_PersistentCalls.m_Calls.Array.size
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7175790370791860440, guid: c9ea6a8382075cb489399c1cb4ee7313,
         type: 3}
       propertyPath: <stateToDo>k__BackingField
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7175790370791860440, guid: c9ea6a8382075cb489399c1cb4ee7313,
+        type: 3}
+      propertyPath: onCloseUIEvent.m_PersistentCalls.m_Calls.Array.size
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7175790370791860440, guid: c9ea6a8382075cb489399c1cb4ee7313,
+        type: 3}
+      propertyPath: onCloseUIEvent.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7175790370791860440, guid: c9ea6a8382075cb489399c1cb4ee7313,
+        type: 3}
+      propertyPath: onCloseUIEvent.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 1438985301}
+    - target: {fileID: 7175790370791860440, guid: c9ea6a8382075cb489399c1cb4ee7313,
+        type: 3}
+      propertyPath: onCloseUIEvent.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 7175790370791860440, guid: c9ea6a8382075cb489399c1cb4ee7313,
+        type: 3}
+      propertyPath: onCloseUIEvent.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: UnRegister
+      objectReference: {fileID: 0}
+    - target: {fileID: 7175790370791860440, guid: c9ea6a8382075cb489399c1cb4ee7313,
+        type: 3}
+      propertyPath: onCloseUIEvent.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: Project.OpenCloseUI, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 7175790370791860440, guid: c9ea6a8382075cb489399c1cb4ee7313,
+        type: 3}
+      propertyPath: onCloseUIEvent.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
       objectReference: {fileID: 0}
     - target: {fileID: 7175790371365473394, guid: c9ea6a8382075cb489399c1cb4ee7313,
         type: 3}
@@ -8512,9 +8544,9 @@ RectTransform:
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -507, y: 76}
-  m_SizeDelta: {x: 580, y: 80}
+  m_AnchorMax: {x: 1, y: 0.5}
+  m_AnchoredPosition: {x: -661.30225, y: 76}
+  m_SizeDelta: {x: 271.3955, y: 80}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1438985298
 MonoBehaviour:
@@ -11779,8 +11811,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 40.9211, y: 0}
-  m_SizeDelta: {x: 81.8421, y: 0}
+  m_AnchoredPosition: {x: -0.07888794, y: 0}
+  m_SizeDelta: {x: -0.15789795, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2014440678
 MonoBehaviour:

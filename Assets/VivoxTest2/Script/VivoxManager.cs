@@ -110,7 +110,14 @@ public class VivoxManager : MonoBehaviour
     public void VivoxLogOut()
     {
         LeaveChannel();
-        LoginSession.Logout();
+        if (LoginSession != null)
+        {
+            LoginSession.Logout();
+        }
+        else
+        {
+            Debug.LogError("LogginSession is null !");
+        }
     }
     private void LoginSession_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
     {
