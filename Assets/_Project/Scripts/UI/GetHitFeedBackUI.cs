@@ -17,7 +17,7 @@ namespace Project
         public float visibleTime;
         float timer;
         [SerializeField]Player player;
-
+        int playerWoundedLoop, playerHitByBulletLoop;
         private void Awake()
         {
             player.onDamageTaken += StartFadeOut; 
@@ -36,10 +36,9 @@ namespace Project
             
             feedBackRectTransform.localEulerAngles = newRotation; 
         }
-
-        private void OnDisable()
+        private void OnEnable()
         {
-            timer = -1;
+            if (player.health == 100) { timer = -1; this.gameObject.SetActive(false); }
         }
         private void OnDestroy()
         {
@@ -59,7 +58,16 @@ namespace Project
             damagerTransform = damager;
             image.color = color; 
             feedBackRectTransform.gameObject.SetActive(true);
-            timer = visibleTime; 
+            timer = visibleTime;
+            SoundManager2D.instance.PlayInGameSound("PlayerHitByBullet" + playerHitByBulletLoop);
+            playerHitByBulletLoop = (playerHitByBulletLoop + 1) % 6; 
+            if(player.health < 60)
+            {
+                if(player.isMale)  {   SoundManager2D.instance.PlayInGameSound("PlayerWoundMale" + playerWoundedLoop);    }
+                else   { SoundManager2D.instance.PlayInGameSound("PlayerWound" + playerWoundedLoop); }
+                playerWoundedLoop = (playerWoundedLoop + 1) % 6;
+            }
+
         }
 
         private void OnDrawGizmos()

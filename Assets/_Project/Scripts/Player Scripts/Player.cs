@@ -20,6 +20,7 @@ namespace Project
         [SerializeField] private int _defaultHealth = 100;
         public int maxHealth { get => _defaultHealth; private set => _defaultHealth = value; }
         [SerializeField] [ReadOnlyField] private int _currentHealth = 100;
+        public int health { get => _currentHealth; } 
         private NetworkObject _networkObject;
 
         [SerializeField] private NetworkVariable<StringNetwork> _networkName = new NetworkVariable<StringNetwork>(new StringNetwork() { value = "" });
@@ -48,6 +49,7 @@ namespace Project
         public int damageDealt { get => _networkDamageDealt.Value; set => _networkDamageDealt.Value = value; }
         public bool isHost { get => _networkIsHost.Value; private set => _networkIsHost.Value = value; }
 
+        public bool isMale; 
         bool killerHasKnife { get => GameManager.instance.GetPlayer(_killerId).GetComponent<PlayerShoot>().hasKnife; }
         bool isDead = false;
         public  HashSet<ulong> damagersId = new HashSet<ulong>();
@@ -226,7 +228,7 @@ namespace Project
 
         private void OnNameValueChange(StringNetwork previousValue, StringNetwork nextValue) => GameEvent.onPlayerUpdateNameEvent.Invoke(this, true, OwnerClientId, nextValue);
         private void OnColorValueChange(Color previousValue, Color nextValue) { GameEvent.onPlayerUpdateColorEvent.Invoke(this, true, OwnerClientId, nextValue); _playerShoot.UpdatePlayerShootColor(nextValue); _playerMovementController.UpdateDashColor(nextValue); }
-        private void OnModelValueChange(StringNetwork previousValue, StringNetwork nextValue) { GameEvent.onPlayerUpdateModelEvent.Invoke(this, true, OwnerClientId, nextValue); PlayerModelsManager.instance.ChangeCharacterModelIg(playerMesh, handsMesh, nextValue.value); }
+        private void OnModelValueChange(StringNetwork previousValue, StringNetwork nextValue) { GameEvent.onPlayerUpdateModelEvent.Invoke(this, true, OwnerClientId, nextValue); PlayerModelsManager.instance.ChangeCharacterModelIg(playerMesh, handsMesh, nextValue.value); isMale = PlayerModelsManager.instance.isModelMale(nextValue.value); }
         #endregion
 
         #region  Health Relative

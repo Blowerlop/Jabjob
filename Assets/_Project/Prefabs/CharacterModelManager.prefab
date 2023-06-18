@@ -53,6 +53,7 @@ MonoBehaviour:
       type: 3}
     materialHands: {fileID: 2100000, guid: d4adf6fce40d90349be70504591a76fb, type: 2}
     portrait: {fileID: 21300000, guid: a8f0ed354e96f0349b7ffaecaf4539af, type: 3}
+    isMale: 1
   - name: FastFoodGuy
     meshModel: {fileID: 6852751771675082760, guid: 030d93698012ac745a98790420c75e05,
       type: 3}
@@ -61,6 +62,7 @@ MonoBehaviour:
       type: 3}
     materialHands: {fileID: 2100000, guid: c6f95fea99269e14581f2307a0ca92ba, type: 2}
     portrait: {fileID: 21300000, guid: 21b9a6befd8a04049af4334cb1db0c08, type: 3}
+    isMale: 1
   - name: FireFighter
     meshModel: {fileID: -6212482449116844686, guid: 030d93698012ac745a98790420c75e05,
       type: 3}
@@ -69,6 +71,7 @@ MonoBehaviour:
       type: 3}
     materialHands: {fileID: 2100000, guid: 728f22fe7eba9f4499ee1123315afe1c, type: 2}
     portrait: {fileID: 21300000, guid: cbbccb0286341e547adf4d879e1f595e, type: 3}
+    isMale: 1
   - name: Jock
     meshModel: {fileID: 4049222652203261206, guid: 030d93698012ac745a98790420c75e05,
       type: 3}
@@ -77,6 +80,7 @@ MonoBehaviour:
       type: 3}
     materialHands: {fileID: 2100000, guid: 9fe1f3f091bcee342a72b469c4d86134, type: 2}
     portrait: {fileID: 21300000, guid: d11affc0deea3524fa7a84484c30f119, type: 3}
+    isMale: 1
   - name: GamerGirl
     meshModel: {fileID: 6914426601777049266, guid: 030d93698012ac745a98790420c75e05,
       type: 3}
@@ -85,6 +89,7 @@ MonoBehaviour:
       type: 3}
     materialHands: {fileID: 2100000, guid: e4e1cda78ebbee640bee199cdffc038c, type: 2}
     portrait: {fileID: 21300000, guid: d7605b7bc80a9ed49acbd56a5fc7cc6f, type: 3}
+    isMale: 0
   - name: Gangster
     meshModel: {fileID: 7981062433941728970, guid: 030d93698012ac745a98790420c75e05,
       type: 3}
@@ -93,6 +98,7 @@ MonoBehaviour:
       type: 3}
     materialHands: {fileID: 2100000, guid: 4398121cdeaf4e44189ba04a8906ef21, type: 2}
     portrait: {fileID: 21300000, guid: 25a2932dedeccb344a4c1475cb797112, type: 3}
+    isMale: 1
   - name: Grandma
     meshModel: {fileID: -967011025527509772, guid: 030d93698012ac745a98790420c75e05,
       type: 3}
@@ -101,6 +107,7 @@ MonoBehaviour:
       type: 3}
     materialHands: {fileID: 2100000, guid: 9ed24df882349a749ad1c9e7f932029e, type: 2}
     portrait: {fileID: 21300000, guid: 09017fb29fd76224796501f3763560cd, type: 3}
+    isMale: 0
   - name: Grandpa
     meshModel: {fileID: -225379923895947003, guid: 030d93698012ac745a98790420c75e05,
       type: 3}
@@ -109,6 +116,7 @@ MonoBehaviour:
       type: 3}
     materialHands: {fileID: 2100000, guid: b426ffdb2c2992c499c8bfe4973985cb, type: 2}
     portrait: {fileID: 21300000, guid: 3f663fc9867601c44947e07fc579488c, type: 3}
+    isMale: 1
   - name: HipsterGirl
     meshModel: {fileID: -2877506998500238315, guid: 030d93698012ac745a98790420c75e05,
       type: 3}
@@ -117,6 +125,7 @@ MonoBehaviour:
       type: 3}
     materialHands: {fileID: 2100000, guid: 561b2287c2d96e74685cfc6b7546ecc5, type: 2}
     portrait: {fileID: 21300000, guid: c80c6a7043ecfca4c8ca4a78e9114383, type: 3}
+    isMale: 0
   - name: Hobo
     meshModel: {fileID: -4523804487674514686, guid: 030d93698012ac745a98790420c75e05,
       type: 3}
@@ -125,6 +134,7 @@ MonoBehaviour:
       type: 3}
     materialHands: {fileID: 2100000, guid: 07accd8fea00cb24ca9a7440a6cf0328, type: 2}
     portrait: {fileID: 21300000, guid: d32a8d95306f0c449b2f843f33141d50, type: 3}
+    isMale: 1
   - name: Hotdog
     meshModel: {fileID: 2477700657399205020, guid: 030d93698012ac745a98790420c75e05,
       type: 3}
@@ -133,6 +143,7 @@ MonoBehaviour:
       type: 3}
     materialHands: {fileID: 2100000, guid: 87f186b0af124784a9cffd6933f62378, type: 2}
     portrait: {fileID: 21300000, guid: 350d7a08df9365c459ad1da4cff521e0, type: 3}
+    isMale: 1
   - name: Ben Cloud
     meshModel: {fileID: 5858047145942760246, guid: 17a3a149d88ef5f40bfc6b7f12427023,
       type: 3}
@@ -141,6 +152,7 @@ MonoBehaviour:
       type: 3}
     materialHands: {fileID: 2100000, guid: 45294e7d90fc4bb4bbe9ed97770c11c9, type: 2}
     portrait: {fileID: 21300000, guid: 755facf6015a74c4faed97abb89b2e13, type: 3}
+    isMale: 1
   - name: Al Myst
     meshModel: {fileID: 7023849456343454091, guid: 4c91ffae6d850c443b0ca10d0abca951,
       type: 3}
@@ -149,6 +161,7 @@ MonoBehaviour:
       type: 3}
     materialHands: {fileID: 2100000, guid: 5dc424c77ec276449afbf3d0938c171b, type: 2}
     portrait: {fileID: 21300000, guid: 7fe60d9d6d372924881b58871e0b0b08, type: 3}
+    isMale: 1
   - name: Mat Debble
     meshModel: {fileID: 4049222652203261206, guid: 030d93698012ac745a98790420c75e05,
       type: 3}
@@ -157,6 +170,7 @@ MonoBehaviour:
       type: 3}
     materialHands: {fileID: 2100000, guid: fdf430d06e2c81e42bba600e8b8f5a4b, type: 2}
     portrait: {fileID: 21300000, guid: abea2bdd39bc7da4a8328f64bf298d61, type: 3}
+    isMale: 1
   - name: Paramedic
     meshModel: {fileID: -2516412516682282444, guid: 030d93698012ac745a98790420c75e05,
       type: 3}
@@ -165,6 +179,7 @@ MonoBehaviour:
       type: 3}
     materialHands: {fileID: 2100000, guid: c6f95fea99269e14581f2307a0ca92ba, type: 2}
     portrait: {fileID: 21300000, guid: 029a7ab3ff6b68441b4804b92cf48b17, type: 3}
+    isMale: 0
   - name: PunkGirl
     meshModel: {fileID: -1382503702657818287, guid: 030d93698012ac745a98790420c75e05,
       type: 3}
@@ -173,6 +188,7 @@ MonoBehaviour:
       type: 3}
     materialHands: {fileID: 2100000, guid: c8150e54b4558aa4c9ffc87344360655, type: 2}
     portrait: {fileID: 21300000, guid: deac0f271b468f84a9fb29a2da8047bc, type: 3}
+    isMale: 0
   - name: PunkGuy
     meshModel: {fileID: -3261998520281798832, guid: 030d93698012ac745a98790420c75e05,
       type: 3}
@@ -181,6 +197,7 @@ MonoBehaviour:
       type: 3}
     materialHands: {fileID: 2100000, guid: 505e7ed2e6e78e146a0fb6c16cbc936b, type: 2}
     portrait: {fileID: 21300000, guid: 3a2630e05d142b749a6cfdd12165a883, type: 3}
+    isMale: 1
   - name: Roadworker
     meshModel: {fileID: 1425761413970608179, guid: 030d93698012ac745a98790420c75e05,
       type: 3}
@@ -189,6 +206,7 @@ MonoBehaviour:
       type: 3}
     materialHands: {fileID: 2100000, guid: a2dc39905c9761a47a320e6ed2e008c4, type: 2}
     portrait: {fileID: 21300000, guid: b8ae5d4c97cc2ad47925b7ebabbf200f, type: 3}
+    isMale: 1
   - name: ShopKeeper
     meshModel: {fileID: 1175187529548585758, guid: 030d93698012ac745a98790420c75e05,
       type: 3}
@@ -197,6 +215,7 @@ MonoBehaviour:
       type: 3}
     materialHands: {fileID: 2100000, guid: c6f95fea99269e14581f2307a0ca92ba, type: 2}
     portrait: {fileID: 21300000, guid: 9692d1d8175c0514980065e9f55c8c36, type: 3}
+    isMale: 0
   - name: SummerGirl
     meshModel: {fileID: 5212314323783555890, guid: 030d93698012ac745a98790420c75e05,
       type: 3}
@@ -205,6 +224,7 @@ MonoBehaviour:
       type: 3}
     materialHands: {fileID: 2100000, guid: bb70dc1fbe22ff641867d53b4dda587a, type: 2}
     portrait: {fileID: 21300000, guid: cd5afa8734a10a6468cbb2bb5c6ef2ce, type: 3}
+    isMale: 0
   - name: Tourist
     meshModel: {fileID: -4846338404436356200, guid: 030d93698012ac745a98790420c75e05,
       type: 3}
@@ -213,6 +233,7 @@ MonoBehaviour:
       type: 3}
     materialHands: {fileID: 2100000, guid: c6f95fea99269e14581f2307a0ca92ba, type: 2}
     portrait: {fileID: 21300000, guid: f2d1f9be59b7cdc4eab890395dd6eef4, type: 3}
+    isMale: 1
   - name: HipsterGuy
     meshModel: {fileID: -2616718158206625959, guid: 030d93698012ac745a98790420c75e05,
       type: 3}
@@ -221,3 +242,4 @@ MonoBehaviour:
       type: 3}
     materialHands: {fileID: 2100000, guid: 9f55aaf54ae3c8f46aa7e3105031ca15, type: 2}
     portrait: {fileID: 21300000, guid: bd8bbd4542721bb449b0ecae30ecfcd9, type: 3}
+    isMale: 1
