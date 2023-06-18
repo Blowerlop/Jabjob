@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using UnityEngine;
 using UnityEngine.Events;
 using Object = UnityEngine.Object;
@@ -163,17 +164,11 @@ namespace Project.Utilities
 
             public static string ExtractNumber(this string text)
             {
-                StringBuilder textWithDigitsOnly = new StringBuilder();
-                
-                for (int i = 0; i < text.Length; i++)
-                {
-                    if (char.IsDigit(text[i]))
-                    {
-                        textWithDigitsOnly.Append(text[i]);
-                    }
-                }
+                var match = Regex.Match(text, @"([-+]?[0-9]*\.?[0-9]+)");
+                if (match.Success)
+                    return (match.Groups[1].Value);
 
-                return textWithDigitsOnly.ToString();
+                return "";
             }
 
             public static bool IsNullOrEmpty(this string @string) => string.IsNullOrEmpty(@string);

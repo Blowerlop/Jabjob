@@ -24654,6 +24654,7 @@ GameObject:
   - component: {fileID: 6517103206974892997}
   - component: {fileID: 1472286264068784881}
   - component: {fileID: 5771155944798181381}
+  - component: {fileID: 8808905354135458108}
   m_Layer: 5
   m_Name: InputField (TMP)
   m_TagString: Untagged
@@ -24781,7 +24782,19 @@ MonoBehaviour:
   m_CharacterLimit: 4
   m_OnEndEdit:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 8808905354135458108}
+        m_TargetAssemblyTypeName: Project.Clamp_TMP_InputField, Assembly-CSharp
+        m_MethodName: ClampValueAndSetText
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   m_OnSubmit:
     m_PersistentCalls:
       m_Calls: []
@@ -24818,6 +24831,19 @@ MonoBehaviour:
   m_isRichTextEditingAllowed: 0
   m_LineLimit: 0
   m_InputValidator: {fileID: 0}
+--- !u!114 &8808905354135458108
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 121967123317600524}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ade04d88c10658e4291409b663d17f6c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _clampRange: {x: 0, y: 8}
 --- !u!1 &335032872278262789
 GameObject:
   m_ObjectHideFlags: 0
@@ -34251,6 +34277,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _mouseSensitivityInputField: {fileID: 5771155944798181381}
   _addLessOrMoveSensitivityBearing: 0.25
+  _clampTMPInputField: {fileID: 8808905354135458108}
 --- !u!1 &6948291398845834165
 GameObject:
   m_ObjectHideFlags: 0

@@ -85,7 +85,7 @@ namespace Project
                 
                 NetworkManager.Singleton.OnClientDisconnectCallback += OnClientDisconnect;
                 
-                Timer.StartTimerWithCallbackRealTime(5.0f, StartWarmup);
+                Timer.StartTimerWithCallbackRealTime(2.0f, StartWarmup);
 
                 // NetworkManager.Singleton.SceneManager.OnLoadEventCompleted += EndWarmUpBehaviour;
                 
