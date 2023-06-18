@@ -34,9 +34,7 @@ namespace Project
         [SerializeField] private NetworkVariable<int> _networkDamageDealt = new NetworkVariable<int>(writePerm: NetworkVariableWritePermission.Owner);
         [SerializeField] private NetworkVariable<bool> _networkIsHost = new NetworkVariable<bool>();
         [SerializeField] private Player _killer;
-
-        public List<Vector3> spawnPostions = new List<Vector3>();
-
+        
         public string playerName { get => _networkName.Value.value; private set => _networkName.Value = new StringNetwork() { value = value }; }
         public Color playerColor { get => _networkColor.Value; private set => _networkColor.Value = value; }
         public string modelName { get => _networkModel.Value.value; private set => _networkModel.Value = new StringNetwork() { value = value }; }
@@ -391,9 +389,11 @@ namespace Project
 
         private void SpawnPlayerRandomly(ulong clientId)
         {
-            if (GameManager.instance.possibleSpawnPositions.Count <= 0) { GameManager.instance.possibleSpawnPositions = spawnPostions; }
-            Vector3 choosenPosition = GameManager.instance.possibleSpawnPositions[UnityEngine.Random.Range(0, spawnPostions.Count)];
-            GameManager.instance.possibleSpawnPositions.Remove(choosenPosition);
+            // if (GameManager.instance.possibleSpawnPositions.Count <= 0) { GameManager.instance.possibleSpawnPositions = spawnPostions; }
+            Vector3 choosenPosition = GameManager.instance.possibleSpawnPositions[UnityEngine.Random.Range(0, GameManager.instance.possibleSpawnPositions.Count)];
+            GameManager.instance.RemoveSpawnPointServerRpc(choosenPosition);
+            Timer.StartTimerWithCallbackScaledTime(2.0f,
+                () => GameManager.instance.AddSpawnPointServerRpc(choosenPosition));
             _playerMovementController.Teleport(choosenPosition);
         }
 
