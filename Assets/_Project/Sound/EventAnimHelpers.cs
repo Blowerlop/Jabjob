@@ -82,6 +82,12 @@ namespace Project
             _playerMovement.EndOfDashTrail();
         }
 
+        //JUMp
+
+        public void NoMoreInAir()
+        {
+            _playerMovement.NoMoreInAir();
+        }
         // RELOAD
         public void StartOfReload()
         {

@@ -284,6 +284,10 @@ MonoBehaviour:
     sound: {fileID: 8300000, guid: 46b41eecaf058ce4c8fed2b35a44a62f, type: 3}
   - name: Step2
     sound: {fileID: 8300000, guid: 831029d101a369f45b95d4e6a12d99cb, type: 3}
+  - name: Jump
+    sound: {fileID: 8300000, guid: 21afde5f2fc40b44e974a5b6b606d13c, type: 3}
+  - name: StepLanding
+    sound: {fileID: 8300000, guid: 1bcc4320c2f207049bef0be8c4b60a8e, type: 3}
   fuckingRigWeight: 1
   _playerShoot: {fileID: -2871981651348838108}
   _playerMovement: {fileID: 2755970706688381934}
@@ -1684,21 +1688,6 @@ MonoBehaviour:
   _networkIsHost:
     m_InternalValue: 0
   _killer: {fileID: 0}
-  spawnPostions:
-  - {x: 28.013, y: -68.49262, z: 26.301}
-  - {x: -15.96, y: -68.49262, z: 30.82}
-  - {x: -34.08, y: -68.49262, z: 15.83}
-  - {x: -32.95, y: -68.49262, z: -12.97}
-  - {x: -20.51, y: -68.49262, z: -40.17}
-  - {x: -7.24, y: -68.49262, z: -35.04}
-  - {x: -7.83, y: -68.49262, z: -19.28}
-  - {x: 26.82, y: -68.49262, z: -38.61}
-  - {x: 33.85, y: -68.49262, z: -9.57}
-  - {x: 8.621084, y: -68.39479, z: -4.725148}
-  - {x: -10.73, y: -68.39479, z: 5.99}
-  - {x: 9.82, y: -59.66201, z: 5.15}
-  - {x: 0.41, y: -59.66201, z: 12.13}
-  - {x: -6.71, y: -59.66201, z: -2.42}
   isMale: 0
   playerMesh: {fileID: 0}
   handsMesh: {fileID: 0}
@@ -15347,12 +15336,12 @@ PrefabInstance:
     - target: {fileID: 5770041453653872907, guid: 2885d7bc54cc9f641a200dac473470e9,
         type: 3}
       propertyPath: m_AnchorMax.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5770041453653872907, guid: 2885d7bc54cc9f641a200dac473470e9,
         type: 3}
       propertyPath: m_AnchorMin.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5770041453653872907, guid: 2885d7bc54cc9f641a200dac473470e9,
         type: 3}
@@ -15372,7 +15361,7 @@ PrefabInstance:
     - target: {fileID: 5770041453653872907, guid: 2885d7bc54cc9f641a200dac473470e9,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -152
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5770041453957250738, guid: 2885d7bc54cc9f641a200dac473470e9,
         type: 3}
