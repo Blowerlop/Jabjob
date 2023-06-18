@@ -24,6 +24,7 @@ namespace Project
         [SerializeField] private UnityEvent onCloseUIEvent;
 
         [SerializeField] private bool _openOrCloseWithKey = false;
+        private bool _hasBeenActivated = false;
         
         private void Awake()
         {
@@ -35,23 +36,23 @@ namespace Project
             switch (stateToDo)
             {
                 case EOpenClose.Open:
-                    if (_dontUseButton == false) _button.onClick.AddListener(OpenUI);  
+                    if (_dontUseButton == false) _button.onClick.AddListener(OpenUIWithNoKey);  
                     
                     if (_openOrCloseWithKey)
                         // InputManager.instance.onEscapePressed.Subscribe(OpenUI, this);
                     OpenCloseManager.instance.Register(this);
                     
-                    _stateToDoMethod = OpenUI;
+                    _stateToDoMethod = OpenUIWithNoKey;
                     break;
                 
                 case EOpenClose.Close:
-                    if (_dontUseButton == false) _button.onClick.AddListener(CloseUI);
+                    if (_dontUseButton == false) _button.onClick.AddListener(CloseUIWithNoKey);
                     
                     if (_openOrCloseWithKey)
                         // InputManager.instance.onEscapePressed.Subscribe(CloseUI, this);
                         OpenCloseManager.instance.Register(this);
 
-                    _stateToDoMethod = CloseUI;
+                    _stateToDoMethod = CloseUIWithNoKey;
                     break;
             }
         }
@@ -78,21 +79,48 @@ namespace Project
                     }
                     break;
             }
-            
-            if (_dontUseButton == false) _button.onClick.RemoveAllListeners();
+
+            if (_hasBeenActivated == false)
+            {
+                CloseUIWithNoKey();
+            }
+
+            if (_dontUseButton == false)
+            {
+                if (stateToDo == EOpenClose.Open) _button.onClick.RemoveListener(OpenUIWithNoKey);
+                else _button.onClick.RemoveListener(CloseUIWithNoKey);
+            }
         }
 
 
         public void OpenUI()
-        {
+        {           
+            _hasBeenActivated = true;
             onOpenUIEvent?.Invoke();
             _target.SetActive(true);
         }
         
+        private void OpenUIWithNoKey()
+        {
+            _hasBeenActivated = true;
+            onOpenUIEvent?.Invoke();
+            _target.SetActive(true);
+            CursorManager.instance.ApplyNewCursor(new CusorState(CursorLockMode.Confined, "UI"));
+        }
+        
         public void CloseUI()
         {
+            _hasBeenActivated = true;
             onCloseUIEvent?.Invoke();
             _target.SetActive(false);
+        }
+        
+        private void CloseUIWithNoKey()
+        {
+            _hasBeenActivated = true;
+            onCloseUIEvent?.Invoke();
+            _target.SetActive(false);
+            CursorManager.instance.Revert();
         }
 
         private void OpenOrCloseUI()
