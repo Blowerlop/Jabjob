@@ -4775,6 +4775,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 947518283}
   m_CullTransparentMesh: 1
+--- !u!114 &956223548 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3022121168225502879, guid: c9ea6a8382075cb489399c1cb4ee7313,
+    type: 3}
+  m_PrefabInstance: {fileID: 1388436479}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a492d15ead090a14ca03a2233c800be1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &961046446
 GameObject:
   m_ObjectHideFlags: 0
@@ -5998,6 +6010,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1214415470}
   m_CullTransparentMesh: 1
+--- !u!114 &1226832091 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 8808905354135458108, guid: c9ea6a8382075cb489399c1cb4ee7313,
+    type: 3}
+  m_PrefabInstance: {fileID: 1388436479}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ade04d88c10658e4291409b663d17f6c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1242285324
 GameObject:
   m_ObjectHideFlags: 0
@@ -7153,11 +7177,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 210534730, guid: c9ea6a8382075cb489399c1cb4ee7313, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: -7.5000076
+      value: -7.5
       objectReference: {fileID: 0}
     - target: {fileID: 210534730, guid: c9ea6a8382075cb489399c1cb4ee7313, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -0.50000095
+      value: -0.5
       objectReference: {fileID: 0}
     - target: {fileID: 261527556, guid: c9ea6a8382075cb489399c1cb4ee7313, type: 3}
       propertyPath: m_AnchorMax.y
@@ -7185,11 +7209,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 479588820, guid: c9ea6a8382075cb489399c1cb4ee7313, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: -7.5000076
+      value: -7.5
       objectReference: {fileID: 0}
     - target: {fileID: 479588820, guid: c9ea6a8382075cb489399c1cb4ee7313, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -0.50000095
+      value: -0.5
       objectReference: {fileID: 0}
     - target: {fileID: 1243137582, guid: c9ea6a8382075cb489399c1cb4ee7313, type: 3}
       propertyPath: m_AnchorMax.y
@@ -7225,7 +7249,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1567615526, guid: c9ea6a8382075cb489399c1cb4ee7313, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -0.50000095
+      value: -0.5
       objectReference: {fileID: 0}
     - target: {fileID: 1712272231, guid: c9ea6a8382075cb489399c1cb4ee7313, type: 3}
       propertyPath: m_SizeDelta.x
@@ -7233,7 +7257,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1715661649, guid: c9ea6a8382075cb489399c1cb4ee7313, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -0.50000095
+      value: -0.5
       objectReference: {fileID: 0}
     - target: {fileID: 1803055444, guid: c9ea6a8382075cb489399c1cb4ee7313, type: 3}
       propertyPath: m_AnchorMax.x
@@ -7264,6 +7288,11 @@ PrefabInstance:
       propertyPath: <stateToDo>k__BackingField
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 3022121168225502879, guid: c9ea6a8382075cb489399c1cb4ee7313,
+        type: 3}
+      propertyPath: _clampTMPInputField
+      value: 
+      objectReference: {fileID: 1226832091}
     - target: {fileID: 3952904532060305085, guid: c9ea6a8382075cb489399c1cb4ee7313,
         type: 3}
       propertyPath: m_AnchorMax.y
@@ -7822,6 +7851,41 @@ PrefabInstance:
     - target: {fileID: 5444758058562764841, guid: c9ea6a8382075cb489399c1cb4ee7313,
         type: 3}
       propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[1].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
+    - target: {fileID: 5771155944798181381, guid: c9ea6a8382075cb489399c1cb4ee7313,
+        type: 3}
+      propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.size
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5771155944798181381, guid: c9ea6a8382075cb489399c1cb4ee7313,
+        type: 3}
+      propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5771155944798181381, guid: c9ea6a8382075cb489399c1cb4ee7313,
+        type: 3}
+      propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 956223548}
+    - target: {fileID: 5771155944798181381, guid: c9ea6a8382075cb489399c1cb4ee7313,
+        type: 3}
+      propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 5771155944798181381, guid: c9ea6a8382075cb489399c1cb4ee7313,
+        type: 3}
+      propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: SetSensitivity
+      objectReference: {fileID: 0}
+    - target: {fileID: 5771155944798181381, guid: c9ea6a8382075cb489399c1cb4ee7313,
+        type: 3}
+      propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: Project.MouseSettings, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 5771155944798181381, guid: c9ea6a8382075cb489399c1cb4ee7313,
+        type: 3}
+      propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
       value: UnityEngine.Object, UnityEngine
       objectReference: {fileID: 0}
     - target: {fileID: 7046861878953146097, guid: c9ea6a8382075cb489399c1cb4ee7313,

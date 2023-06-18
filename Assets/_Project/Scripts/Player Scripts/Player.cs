@@ -34,7 +34,7 @@ namespace Project
         [SerializeField] private NetworkVariable<bool> _networkIsHost = new NetworkVariable<bool>();
         [SerializeField] private Player _killer;
 
-        [SerializeField] private List<Vector3> spawnPostions = new List<Vector3>();
+        public List<Vector3> spawnPostions = new List<Vector3>();
 
         public string playerName { get => _networkName.Value.value; private set => _networkName.Value = new StringNetwork() { value = value }; }
         public Color playerColor { get => _networkColor.Value; private set => _networkColor.Value = value; }
@@ -63,6 +63,8 @@ namespace Project
         [SerializeField] private float _invincibleDurationInSeconds = 1.5f;
         [SerializeField] [ReadOnlyField] private bool _isInvincible = false;
 
+        public delegate void PlayerDamagedEvent(Transform damager, Color color);
+        public event PlayerDamagedEvent onDamageTaken; 
         #endregion
 
 
@@ -262,6 +264,8 @@ namespace Project
             Debug.Log("You've taken damage");
              _killerId = damagerId;
             SetHealth(_currentHealth - damage);
+            Player damager = GameManager.instance.GetPlayer(damagerId);
+            if(onDamageTaken != null ) onDamageTaken.Invoke(damager.transform, damager.playerColor);
         }
 
         public void Heal(int heal)
@@ -384,8 +388,11 @@ namespace Project
         }
 
         private void SpawnPlayerRandomly(ulong clientId)
-        {   
-            _playerMovementController.Teleport(spawnPostions[UnityEngine.Random.Range(0, spawnPostions.Count)]);
+        {
+            if (GameManager.instance.possibleSpawnPositions.Count <= 0) { GameManager.instance.possibleSpawnPositions = spawnPostions; }
+            Vector3 choosenPosition = GameManager.instance.possibleSpawnPositions[UnityEngine.Random.Range(0, spawnPostions.Count)];
+            GameManager.instance.possibleSpawnPositions.Remove(choosenPosition);
+            _playerMovementController.Teleport(choosenPosition);
         }
 
         private void OnKillValueChange(int previousValue, int nextValue) => GameEvent.onPlayerGetAKillEvent.Invoke(this, true, OwnerClientId, nextValue); 

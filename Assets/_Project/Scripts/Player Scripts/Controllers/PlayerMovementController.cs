@@ -252,7 +252,25 @@ public class PlayerMovementController : NetworkBehaviour
         {
             if (currentDashNumber > 0)
             {
-                AddForce(_cameraRoot.forward * _dashForce);
+                // Dash physics
+                Vector3 currentVelocity = _characterController.velocity;
+                if (currentVelocity == Vector3.zero)
+                {
+                    InputManager.instance.isDashing = false;
+                    return;
+                }
+                
+                if (Vector3.Dot(_characterController.velocity, transform.forward) < 0)
+                {
+                    AddForce(-transform.forward * _dashForce);
+                }
+                else
+                {
+                    float viewAngle = Mathf.Clamp(_cameraRoot.localRotation.eulerAngles.x, 0.0f, 60.0f);
+                    Vector3 direction = _cameraRoot.forward * (_dashForce + ((2.5f * viewAngle) / 60));
+                    AddForce(direction);
+                }
+                //
                 _animatorMain.SetTrigger("Dash");
                 PlaySound("Dash");
                 currentDashNumber -= 1;

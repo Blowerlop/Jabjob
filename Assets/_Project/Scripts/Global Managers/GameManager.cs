@@ -25,12 +25,18 @@ namespace Project
         // [SerializeField] private SOGameSettings _gameSettings --> Preview changement futur
         [field: SerializeField] public GameMode gameMode { get; private set; }
         [field: SerializeField] public NetworkTimer _networkTimer { get; private set; }
+        public List<Vector3> possibleSpawnPositions = new List<Vector3>();
 
         [SerializeField] private TMP_Text _warmUp;
         public bool gameHasStarted = false;
         [SerializeField] bool firstBlood;
-        [SerializeField] int announcerGameStep = 0; 
+        [SerializeField] int announcerGameStep = 0;
         #endregion
+
+        private void Start()
+        {
+            possibleSpawnPositions = _playerPrefab.GetComponent<Player>().spawnPostions;
+        }
 
 
         #region Updates
@@ -79,7 +85,7 @@ namespace Project
                 
                 NetworkManager.Singleton.OnClientDisconnectCallback += OnClientDisconnect;
                 
-                Timer.StartTimerWithCallbackRealTime(5.0f, StartWarmup);
+                Timer.StartTimerWithCallbackRealTime(2.0f, StartWarmup);
 
                 // NetworkManager.Singleton.SceneManager.OnLoadEventCompleted += EndWarmUpBehaviour;
                 
