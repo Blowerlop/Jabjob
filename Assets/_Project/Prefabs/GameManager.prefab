@@ -45,12 +45,29 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e2124440dc7a96c4085b4d2f5014b856, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _respawnDuration: 2
-  <_gameDuration>k__BackingField: 30
-  _playerPrefab: {fileID: 693733510563446535, guid: a3a7faea929700b449c9423131c78557,
-    type: 3}
+  _playerPrefab: {fileID: 0}
+  <gameMode>k__BackingField: {fileID: 0}
   <_networkTimer>k__BackingField: {fileID: 4376454655348879996, guid: 17861a2ad4990fe45860f8f2f3875c5f,
     type: 3}
+  playerSpawnPositions:
+  - {x: 28.013, y: -68.49262, z: 26.301}
+  - {x: -15.96, y: -68.49262, z: 30.82}
+  - {x: -34.08, y: -68.49262, z: 15.83}
+  - {x: -32.95, y: -68.49262, z: -12.97}
+  - {x: -20.51, y: -68.49262, z: -40.17}
+  - {x: -7.24, y: -68.49262, z: -35.04}
+  - {x: -7.83, y: -68.49262, z: -19.28}
+  - {x: 26.82, y: -68.49262, z: -38.61}
+  - {x: 33.85, y: -68.49262, z: -9.57}
+  - {x: 8.621084, y: -68.39479, z: -4.725148}
+  - {x: -10.73, y: -68.39479, z: 5.99}
+  - {x: 9.82, y: -59.66201, z: 5.15}
+  - {x: 0.41, y: -59.66201, z: 12.13}
+  - {x: -6.71, y: -59.66201, z: -2.42}
+  _warmUp: {fileID: 0}
+  gameHasStarted: 0
+  firstBlood: 0
+  announcerGameStep: 0
 --- !u!114 &716294172085830961
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -25,26 +25,32 @@ namespace Project
         // [SerializeField] private SOGameSettings _gameSettings --> Preview changement futur
         [field: SerializeField] public GameMode gameMode { get; private set; }
         [field: SerializeField] public NetworkTimer _networkTimer { get; private set; }
-        public List<Vector3> possibleSpawnPositions = new List<Vector3>();
 
+        public NetworkList<Vector3> possibleSpawnPositions;
+        public List<Vector3> playerSpawnPositions = new List<Vector3>();
+ 
         [SerializeField] private TMP_Text _warmUp;
         public bool gameHasStarted = false;
         [SerializeField] bool firstBlood;
         [SerializeField] int announcerGameStep = 0;
         #endregion
-
-        private void Start()
-        {
-            possibleSpawnPositions = _playerPrefab.GetComponent<Player>().spawnPostions;
-        }
-
+        
 
         #region Updates
 
         private void Awake()
         {
             instance = this;
+
+            possibleSpawnPositions = new NetworkList<Vector3>(writePerm: NetworkVariableWritePermission.Server, readPerm: NetworkVariableReadPermission.Everyone);
+
         }
+        
+
+        [ServerRpc(RequireOwnership = false)]
+        public void RemoveSpawnPointServerRpc(Vector3 spawnPoint) => possibleSpawnPositions.Remove(spawnPoint);
+        [ServerRpc(RequireOwnership = false)]
+        public void AddSpawnPointServerRpc(Vector3 spawnPoint) => possibleSpawnPositions.Add(spawnPoint);
         
 
         public override void OnDestroy()
@@ -75,6 +81,11 @@ namespace Project
 
             if (IsServer)
             {
+                playerSpawnPositions.ForEach(x =>
+                {
+                    possibleSpawnPositions.Add(x);
+                });
+                
                 SpawnNetworkTimerServerRpc();
                 
                 GameEvent.onPlayerJoinGameEvent.Subscribe(ALlPlayerJoinEventHandler, this);
@@ -349,7 +360,7 @@ namespace Project
 
         public void AskToBeDisconnected(ulong clientId) => DisconnectClientServerRpc(clientId);
 
-        [ServerRpc]
+        [ServerRpc(RequireOwnership = false)]
         private void DisconnectClientServerRpc(ulong clientId)
         {
             NetworkManager.Singleton.DisconnectClient(clientId);

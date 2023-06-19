@@ -41,7 +41,7 @@ namespace Managers
             
             if (actualConsole.activeSelf)
             {
-                CursorManager.instance.ApplyNewCursor(new CusorState(CursorLockMode.Confined, "UI"));
+                CursorManager.instance.ApplyNewCursor(new CursorState(CursorLockMode.Confined, "UI"));
             }
             else
             {

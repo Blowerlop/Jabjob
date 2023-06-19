@@ -1,18 +1,19 @@
-using System.Collections;
+ using System;
+ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 namespace Project
 {
     [System.Serializable]
-    public sealed class CusorState
+    public sealed class CursorState
     {
         public CursorLockMode previousCursorLockMode;
         public CursorLockMode currentCursorLockMode;
         public string previousActionMap;
         public string currentActionMap;
         
-        public CusorState(CursorLockMode cursorLockMode, string actionMap)
+        public CursorState(CursorLockMode cursorLockMode, string actionMap)
         {
             previousCursorLockMode = Cursor.lockState;
             currentCursorLockMode = cursorLockMode;
@@ -24,8 +25,8 @@ namespace Project
     
     public class CursorManager : Singleton<CursorManager>
     {
-        private Stack<CusorState> _list = new Stack<CusorState>();
-        [SerializeField] private List<CusorState> aa = new List<CusorState>();
+        public Stack<CursorState> cursorStates = new Stack<CursorState>();
+        [SerializeField] private List<CursorState> aa = new List<CursorState>();
 
         protected override void Awake()
         {
@@ -34,18 +35,18 @@ namespace Project
         }
 
 
-        public void ApplyNewCursor(CusorState cusorState)
+        public void ApplyNewCursor(CursorState cursorState)
         {
-            _list.Push(cusorState);
-            aa.Add(cusorState);
+            cursorStates.Push(cursorState);
+            aa.Add(cursorState);
             
-            Cursor.lockState = cusorState.currentCursorLockMode;
-            InputManager.instance.SwitchPlayerInputMap(cusorState.currentActionMap);
+            Cursor.lockState = cursorState.currentCursorLockMode;
+            InputManager.instance.SwitchPlayerInputMap(cursorState.currentActionMap);
         }
 
         public void Revert()
         {
-            if (_list.TryPop(out CusorState result))
+            if (cursorStates.TryPop(out CursorState result))
             {
                 Cursor.lockState = result.previousCursorLockMode;
                 InputManager.instance.SwitchPlayerInputMap(result.previousActionMap);

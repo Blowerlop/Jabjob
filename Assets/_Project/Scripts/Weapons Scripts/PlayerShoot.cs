@@ -365,7 +365,7 @@ namespace Project
         }
         public void PerformKnifeCalculation()
         {
-            if (!IsOwner) return; 
+            if (!IsOwner) return;  
             Vector3 weaponHolderPosition = _weaponHolder.position;
             Vector3 rootCameraPosition = _rootCamera.position;
             if (Physics.Raycast(_rootCamera.position, _rootCamera.forward, out RaycastHit hit,
@@ -384,6 +384,8 @@ namespace Project
                     _player.damageDealt += knifeDamage;
                     healthManagement2.Damage(knifeDamage, OwnerClientId);
                 }
+                int randomHitSound = UnityEngine.Random.Range(0, 10);
+                ArmsAnimHelper.PlayOneShotSound("KnifeHit"+randomHitSound);
             }
         }
         public void StartReload()

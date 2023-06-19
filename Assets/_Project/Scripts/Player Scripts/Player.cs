@@ -20,6 +20,7 @@ namespace Project
         [SerializeField] private int _defaultHealth = 100;
         public int maxHealth { get => _defaultHealth; private set => _defaultHealth = value; }
         [SerializeField] [ReadOnlyField] private int _currentHealth = 100;
+        public int health { get => _currentHealth; } 
         private NetworkObject _networkObject;
 
         [SerializeField] private NetworkVariable<StringNetwork> _networkName = new NetworkVariable<StringNetwork>(new StringNetwork() { value = "" });
@@ -33,9 +34,7 @@ namespace Project
         [SerializeField] private NetworkVariable<int> _networkDamageDealt = new NetworkVariable<int>(writePerm: NetworkVariableWritePermission.Owner);
         [SerializeField] private NetworkVariable<bool> _networkIsHost = new NetworkVariable<bool>();
         [SerializeField] private Player _killer;
-
-        public List<Vector3> spawnPostions = new List<Vector3>();
-
+        
         public string playerName { get => _networkName.Value.value; private set => _networkName.Value = new StringNetwork() { value = value }; }
         public Color playerColor { get => _networkColor.Value; private set => _networkColor.Value = value; }
         public string modelName { get => _networkModel.Value.value; private set => _networkModel.Value = new StringNetwork() { value = value }; }
@@ -48,6 +47,7 @@ namespace Project
         public int damageDealt { get => _networkDamageDealt.Value; set => _networkDamageDealt.Value = value; }
         public bool isHost { get => _networkIsHost.Value; private set => _networkIsHost.Value = value; }
 
+        public bool isMale; 
         bool killerHasKnife { get => GameManager.instance.GetPlayer(_killerId).GetComponent<PlayerShoot>().hasKnife; }
         bool isDead = false;
         public  HashSet<ulong> damagersId = new HashSet<ulong>();
@@ -117,8 +117,8 @@ namespace Project
 
             _gameDuration = GameManager.instance.gameMode.gameDurationInSeconds;
 
-            _playerMovementController.Teleport(new Vector3(OwnerClientId * 100, -500.0f, 0.0f));
-            CursorManager.instance.ApplyNewCursor(new CusorState(CursorLockMode.Locked, "Player"));
+            _playerMovementController.Teleport(new Vector3((GameManager.instance.GetPlayers().Length - 1) * 100, -500.0f, 0.0f));
+            CursorManager.instance.ApplyNewCursor(new CursorState(CursorLockMode.Locked, "Player"));
             
         }
 
@@ -160,6 +160,14 @@ namespace Project
 
 
         #region Methods
+
+        private void Update()
+        {
+            if (CursorManager.instance.cursorStates.Count == 0)
+            {
+                CursorManager.instance.ApplyNewCursor(new CursorState(CursorLockMode.Locked, "Player"));
+            }
+        }
 
         #region Network
 
@@ -226,7 +234,7 @@ namespace Project
 
         private void OnNameValueChange(StringNetwork previousValue, StringNetwork nextValue) => GameEvent.onPlayerUpdateNameEvent.Invoke(this, true, OwnerClientId, nextValue);
         private void OnColorValueChange(Color previousValue, Color nextValue) { GameEvent.onPlayerUpdateColorEvent.Invoke(this, true, OwnerClientId, nextValue); _playerShoot.UpdatePlayerShootColor(nextValue); _playerMovementController.UpdateDashColor(nextValue); }
-        private void OnModelValueChange(StringNetwork previousValue, StringNetwork nextValue) { GameEvent.onPlayerUpdateModelEvent.Invoke(this, true, OwnerClientId, nextValue); PlayerModelsManager.instance.ChangeCharacterModelIg(playerMesh, handsMesh, nextValue.value); }
+        private void OnModelValueChange(StringNetwork previousValue, StringNetwork nextValue) { GameEvent.onPlayerUpdateModelEvent.Invoke(this, true, OwnerClientId, nextValue); PlayerModelsManager.instance.ChangeCharacterModelIg(playerMesh, handsMesh, nextValue.value); isMale = PlayerModelsManager.instance.isModelMale(nextValue.value); }
         #endregion
 
         #region  Health Relative
@@ -389,9 +397,11 @@ namespace Project
 
         private void SpawnPlayerRandomly(ulong clientId)
         {
-            if (GameManager.instance.possibleSpawnPositions.Count <= 0) { GameManager.instance.possibleSpawnPositions = spawnPostions; }
-            Vector3 choosenPosition = GameManager.instance.possibleSpawnPositions[UnityEngine.Random.Range(0, spawnPostions.Count)];
-            GameManager.instance.possibleSpawnPositions.Remove(choosenPosition);
+            // if (GameManager.instance.possibleSpawnPositions.Count <= 0) { GameManager.instance.possibleSpawnPositions = spawnPostions; }
+            Vector3 choosenPosition = GameManager.instance.possibleSpawnPositions[UnityEngine.Random.Range(0, GameManager.instance.possibleSpawnPositions.Count)];
+            GameManager.instance.RemoveSpawnPointServerRpc(choosenPosition);
+            Timer.StartTimerWithCallbackScaledTime(2.0f,
+                () => GameManager.instance.AddSpawnPointServerRpc(choosenPosition));
             _playerMovementController.Teleport(choosenPosition);
         }
 

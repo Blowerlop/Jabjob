@@ -78,6 +78,10 @@ namespace Project
             }
             return -1;
         }  
+        public bool isModelMale(string modelName)
+        {
+            return PlayerModelList[GetCurrentIndexInList(modelName)].isMale;
+        }
         public void UpdateAllPlayers()
         {
             Player[] players = GameManager.instance.GetPlayers();

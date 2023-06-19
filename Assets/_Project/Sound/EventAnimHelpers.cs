@@ -82,6 +82,22 @@ namespace Project
             _playerMovement.EndOfDashTrail();
         }
 
+        //STEP 
+
+        public void PlaySoundStep(string name)
+        {
+            _playerMovement.PlaySoundStep(name);
+        }
+        //JUMp
+
+        public void PlayJumpSound()
+        {
+            _playerMovement.PlayJumpSound();
+        }
+        public void NoMoreInAir()
+        {
+            _playerMovement.NoMoreInAir();
+        }
         // RELOAD
         public void StartOfReload()
         {

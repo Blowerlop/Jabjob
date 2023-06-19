@@ -37,13 +37,11 @@ public class PlayerMovementController : NetworkBehaviour
     [SerializeField] [ReadOnlyField] private int _jumpCount = 0;
     [SerializeField] [ReadOnlyField] private bool _canJump = true;
     [SerializeField] private float _jumpThreshold = 0.2f;
-
+    float timerInAir = 0f; 
     [Header("Player Grounded")] 
     [SerializeField] [ReadOnlyField] private bool _isGrounded;
-    private bool _isSoonGrounded;
     [SerializeField] private float _groundedOffset = -0.14f;
     [SerializeField] private float _groundedRadius = 0.28f;
-    [SerializeField] [ReadOnlyField] private float _soonGroundedRadius = 1f;
     [SerializeField] private LayerMask _groundLayerMask;
     
     [Header("References")]
@@ -54,6 +52,7 @@ public class PlayerMovementController : NetworkBehaviour
 
     [Header("Sound")]
     public AudioSource bodySourceSound;
+    public AudioSource bodySourceSound2;
     public SoundList[] soundList;
     private Dictionary<string, AudioClip> _soundListDico = new Dictionary<string, AudioClip>();
 
@@ -109,7 +108,11 @@ public class PlayerMovementController : NetworkBehaviour
         Vector3 spherePosition = new Vector3(position.x, position.y - _groundedOffset, position.z);
         _isGrounded = Physics.CheckSphere(spherePosition, _groundedRadius, _groundLayerMask, QueryTriggerInteraction.Ignore);
         _animatorMain.SetBool("isGrounded", _isGrounded);
-        _isSoonGrounded = Physics.CheckSphere(spherePosition, _soonGroundedRadius, _groundLayerMask, QueryTriggerInteraction.Ignore);
+        if (!_isGrounded)
+        {
+            timerInAir += Time.fixedDeltaTime;
+            if(timerInAir > 0.6f) _animatorMain.SetBool("inAir", true);
+        }
     }
 
     private void PerformJumpAndGravity()
@@ -125,13 +128,10 @@ public class PlayerMovementController : NetworkBehaviour
             if (_jumpCount != 0)
             {
                 ResetJump();
-                _animatorMain.SetBool("JumpingDown", false);
-                PlaySound("StepLanding");
             }
         }
         else
         {
-            if (_isSoonGrounded && _verticalVelocity < 0f) _animatorMain.SetBool("JumpingDown", true);
             if (_verticalVelocity > _maximumVerticalVelocity)
             {
                 _verticalVelocity += _gravityForce * Time.fixedDeltaTime;
@@ -272,7 +272,7 @@ public class PlayerMovementController : NetworkBehaviour
                 }
                 //
                 _animatorMain.SetTrigger("Dash");
-                PlaySound("Dash");
+                PlaySoundBody2("Dash");
                 currentDashNumber -= 1;
                 GameEvent.onPlayerDashEvent.Invoke(this, false, _dashCooldown);
                 _timer.StartTimerWithCallbackScaledTime(_dashCooldown+0.05f, ReloadDash);
@@ -297,7 +297,6 @@ public class PlayerMovementController : NetworkBehaviour
         if (_jumpCount < _maxJumpNumber)
         {
             _verticalVelocity = Mathf.Sqrt(-2.0f * _gravityForce * _jumpHeight);
-            PlaySound("Jump");
             _animatorMain.SetTrigger("Jumped");
             _jumpCount++;
         }
@@ -311,7 +310,11 @@ public class PlayerMovementController : NetworkBehaviour
         StopCoroutine(Jump());
         _canJump = true;
     }
-
+    public void NoMoreInAir()
+    {
+        _animatorMain.SetBool("inAir",false);
+        timerInAir = 0f;  
+    }
     public void NoMainRunningAnimBool()
     {
         foreach (AnimatorControllerParameter parameter in _animatorMain.parameters)
@@ -320,7 +323,10 @@ public class PlayerMovementController : NetworkBehaviour
                 _animatorMain.SetBool(parameter.name, false);
         }
     }
-
+    public void PlaySoundStep(string name)
+    {
+        if (_isGrounded) PlaySound(name);
+    }
 
     private void ReloadDash()
     {
@@ -356,7 +362,16 @@ public class PlayerMovementController : NetworkBehaviour
         if (!_soundListDico.ContainsKey(name)) Debug.LogError("Mauvais string pour le son : " + name);
         else bodySourceSound.PlayOneShot(_soundListDico[name]);
     }
+    public void PlaySoundBody2(string name)
+    {
+        if (!_soundListDico.ContainsKey(name)) Debug.LogError("Mauvais string pour le son : " + name);
+        else bodySourceSound2.PlayOneShot(_soundListDico[name]);
+    }
 
+    public void PlayJumpSound()
+    {
+        PlaySoundBody2("Jump");
+    }
     private void InitializeDashVFX()
     {
         _DashVFX.SetParent(Camera.main.transform);
@@ -375,7 +390,7 @@ public class PlayerMovementController : NetworkBehaviour
     }
     public void DashEffectStart()
     {
-        PlaySound("Dash");
+        PlaySoundBody2("Dash");
         if(IsOwner) _DashVFX.gameObject.SetActive(true); 
         _dashParticles.Play();
     }
