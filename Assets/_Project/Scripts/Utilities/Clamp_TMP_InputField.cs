@@ -42,9 +42,9 @@ namespace Project
 
         public void ClampValueAndSetText(string text)
         {
-            if (float.TryParse(text.ExtractNumber(), out float value))
+            if (float.TryParse(text, NumberStyles.Float, CultureInfo.CurrentCulture, out float value))
             {
-                text = Mathf.Clamp(value, _clampRange.x, _clampRange.y).ToString(CultureInfo.InvariantCulture);
+                text = Mathf.Clamp(value, _clampRange.x, _clampRange.y).ToString(CultureInfo.CurrentCulture);
                 Debug.Log($"Clamped text : {text}");
             }
             else
