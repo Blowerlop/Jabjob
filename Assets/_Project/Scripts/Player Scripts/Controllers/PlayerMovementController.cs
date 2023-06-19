@@ -52,6 +52,7 @@ public class PlayerMovementController : NetworkBehaviour
 
     [Header("Sound")]
     public AudioSource bodySourceSound;
+    public AudioSource bodySourceSound2;
     public SoundList[] soundList;
     private Dictionary<string, AudioClip> _soundListDico = new Dictionary<string, AudioClip>();
 
@@ -271,7 +272,7 @@ public class PlayerMovementController : NetworkBehaviour
                 }
                 //
                 _animatorMain.SetTrigger("Dash");
-                PlaySound("Dash");
+                PlaySoundBody2("Dash");
                 currentDashNumber -= 1;
                 GameEvent.onPlayerDashEvent.Invoke(this, false, _dashCooldown);
                 _timer.StartTimerWithCallbackScaledTime(_dashCooldown+0.05f, ReloadDash);
@@ -322,7 +323,10 @@ public class PlayerMovementController : NetworkBehaviour
                 _animatorMain.SetBool(parameter.name, false);
         }
     }
-
+    public void PlaySoundStep(string name)
+    {
+        if (_isGrounded) PlaySound(name);
+    }
 
     private void ReloadDash()
     {
@@ -358,7 +362,16 @@ public class PlayerMovementController : NetworkBehaviour
         if (!_soundListDico.ContainsKey(name)) Debug.LogError("Mauvais string pour le son : " + name);
         else bodySourceSound.PlayOneShot(_soundListDico[name]);
     }
+    public void PlaySoundBody2(string name)
+    {
+        if (!_soundListDico.ContainsKey(name)) Debug.LogError("Mauvais string pour le son : " + name);
+        else bodySourceSound2.PlayOneShot(_soundListDico[name]);
+    }
 
+    public void PlayJumpSound()
+    {
+        PlaySoundBody2("Jump");
+    }
     private void InitializeDashVFX()
     {
         _DashVFX.SetParent(Camera.main.transform);
@@ -377,7 +390,7 @@ public class PlayerMovementController : NetworkBehaviour
     }
     public void DashEffectStart()
     {
-        PlaySound("Dash");
+        PlaySoundBody2("Dash");
         if(IsOwner) _DashVFX.gameObject.SetActive(true); 
         _dashParticles.Play();
     }
