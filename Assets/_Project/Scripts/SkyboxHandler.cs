@@ -71,10 +71,10 @@ namespace Project
             SkyboxHandler script = (SkyboxHandler)target;
             DrawDefaultInspector();
             GUILayoutOption[] GUIDOptionsShort = { GUILayout.Width(60) };
-            if (GUILayout.Button("Test rotation skybox"))
-            {
-                script.UpdateSkyBox();
-            }
+            //if (GUILayout.Button("Test rotation skybox"))
+            //{
+            //    script.UpdateSkyBox();
+            //}
 
         }
     }
