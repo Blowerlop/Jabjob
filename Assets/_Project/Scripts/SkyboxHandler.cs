@@ -57,6 +57,12 @@ namespace Project
             increasingBlend = !isIncreasing;
         }
 
+        public void UpdateSkybox(float blendValue)
+        {
+            skyboxMaterial = RenderSettings.skybox;
+            skyboxMaterial.SetFloat("_Blend", BlendValue);
+        }
+
     }
 
 
@@ -71,10 +77,10 @@ namespace Project
             SkyboxHandler script = (SkyboxHandler)target;
             DrawDefaultInspector();
             GUILayoutOption[] GUIDOptionsShort = { GUILayout.Width(60) };
-            //if (GUILayout.Button("Test rotation skybox"))
-            //{
-            //    script.UpdateSkyBox();
-            //}
+            if (GUILayout.Button("Update Blend"))
+            {
+                script.UpdateSkybox(script.BlendValue);
+            }
 
         }
     }
