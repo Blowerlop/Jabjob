@@ -13,8 +13,8 @@ namespace Project
     {
         [SerializeField] private GameObject _target;
         [Tooltip("The button is by default the one that is in the same GameObject as the script")] [SerializeField] private bool _overrideButton = false;
-        [SerializeField] private bool _dontUseButton = false;
-        [SerializeField] private Button _button;
+        [SerializeField] public bool _dontUseButton = false;
+        [SerializeField] public Button _button;
         
         public enum EOpenClose{Open, Close}
         [field: SerializeField] public EOpenClose stateToDo { get; private set; } = EOpenClose.Open;
@@ -23,8 +23,8 @@ namespace Project
         [SerializeField] private UnityEvent onOpenUIEvent;
         [SerializeField] private UnityEvent onCloseUIEvent;
 
-        [SerializeField] private bool _openOrCloseWithKey = false;
-        
+        [SerializeField] public bool _openOrCloseWithKey = false;
+
         private void Awake()
         {
             if (_overrideButton == false && _dontUseButton == false) _button = GetComponent<Button>();
@@ -32,69 +32,42 @@ namespace Project
 
         private void OnEnable()
         {
-            switch (stateToDo)
-            {
-                case EOpenClose.Open:
-                    if (_dontUseButton == false) _button.onClick.AddListener(OpenUI);  
-                    
-                    if (_openOrCloseWithKey)
-                        // InputManager.instance.onEscapePressed.Subscribe(OpenUI, this);
-                    OpenCloseManager.instance.Register(this);
-                    
-                    _stateToDoMethod = OpenUI;
-                    break;
-                
-                case EOpenClose.Close:
-                    if (_dontUseButton == false) _button.onClick.AddListener(CloseUI);
-                    
-                    if (_openOrCloseWithKey)
-                        // InputManager.instance.onEscapePressed.Subscribe(CloseUI, this);
-                        OpenCloseManager.instance.Register(this);
-
-                    _stateToDoMethod = CloseUI;
-                    break;
-            }
+            OpenCloseManager.instance.Register(this);
         }
 
         private void OnDisable()
         {
-            switch (stateToDo)
+            if (OpenCloseManager.IsInstanceAlive)
             {
-                case EOpenClose.Open:
-                    if (OpenCloseManager.IsInstanceAlive && _openOrCloseWithKey)
-                    {
-                        // InputManager.instance.onEscapePressed.Unsubscribe(OpenUI);
-                        OpenCloseManager.instance.Unregister(this);
+                OpenCloseManager.instance.Unregister(this);
 
-                    }
-                    break;
-                
-                case EOpenClose.Close:
-                    if (OpenCloseManager.IsInstanceAlive && _openOrCloseWithKey)
-                    {
-                        // InputManager.instance.onEscapePressed.Unsubscribe(CloseUI);
-                        OpenCloseManager.instance.Unregister(this);
-
-                    }
-                    break;
             }
-            
-            if (_dontUseButton == false) _button.onClick.RemoveAllListeners();
         }
 
 
-        public void OpenUI()
+        public void UnRegister()
         {
-            onOpenUIEvent?.Invoke();
+            OpenCloseManager.instance._openCloseUIStack.Remove(this);
+        }
+
+        public void OpenUI(bool notify = true)
+        {
+            if (notify)
+            {
+                onOpenUIEvent?.Invoke();
+            }
             _target.SetActive(true);
         }
-        
-        public void CloseUI()
+
+        public void CloseUI(bool notify = true)
         {
-            onCloseUIEvent?.Invoke();
+            if (notify)
+            {
+                onCloseUIEvent?.Invoke();
+            }
             _target.SetActive(false);
         }
-
+        
         private void OpenOrCloseUI()
         {
             if (_target.activeSelf) 

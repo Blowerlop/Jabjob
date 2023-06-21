@@ -46,10 +46,10 @@ public class Paintable : MonoBehaviour {
     }
 
     void OnDisable(){
-        maskRenderTexture.Release();
-        uvIslandsRenderTexture.Release();
-        extendIslandsRenderTexture.Release();
-        supportTexture.Release();
+        if (maskRenderTexture != null) maskRenderTexture.Release();
+        if (uvIslandsRenderTexture != null) uvIslandsRenderTexture.Release();
+        if (extendIslandsRenderTexture != null) extendIslandsRenderTexture.Release();
+        if (supportTexture != null) supportTexture.Release();
     }
     
 

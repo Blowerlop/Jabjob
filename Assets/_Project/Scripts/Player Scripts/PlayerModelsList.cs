@@ -12,6 +12,7 @@ namespace Project
         public Material materialModel;
         public Mesh meshHands;
         public Material materialHands;
-        public Sprite portrait; 
+        public Sprite portrait;
+        public bool isMale;
     }
 }

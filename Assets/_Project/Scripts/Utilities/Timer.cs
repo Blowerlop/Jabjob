@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using TMPro;
 using UnityEngine;
 using UtilitiesClass = Project.Utilities.UtilitiesClass;
 
@@ -11,20 +12,20 @@ namespace Project.Utilities
     public class Timer
     {
         [field: SerializeField] public float timer { get; set; }
-        private bool _hasATimerStarted = false;
+        public bool hasATimerStarted => _coroutine != null;
         private Coroutine _coroutine;
 
         public void StartSimpleTimer(float timeInSeconds, bool forceStart = false)
         {
-            if (_hasATimerStarted && forceStart == false)
+            if (hasATimerStarted && forceStart == false)
             {
                 Debug.Log("A timer is already in progress");
                 return;
             }
 
-            if (_hasATimerStarted)
+            if (hasATimerStarted)
             {
-                UtilitiesClass.instance.StopCoroutine(_coroutine);
+                StopTimer();
             }
 
             _coroutine = UtilitiesClass.instance.StartCoroutine(SimpleTimer(timeInSeconds));
@@ -32,15 +33,15 @@ namespace Project.Utilities
 
         public void StartTimerWithCallbackScaledTime(float timeInSeconds, Action callback, bool forceStart = false)
         {
-            if (_hasATimerStarted && forceStart == false)
+            if (hasATimerStarted && forceStart == false)
             {
                 Debug.Log("A timer is already in progress");
                 return;
             }
 
-            if (_hasATimerStarted)
+            if (hasATimerStarted)
             {
-                UtilitiesClass.instance.StopCoroutine(_coroutine);
+                StopTimer();
             }
 
             _coroutine = UtilitiesClass.instance.StartCoroutine(TimerWithCallback(timeInSeconds, callback));
@@ -49,7 +50,6 @@ namespace Project.Utilities
 
         private IEnumerator SimpleTimer(float timeInSeconds)
         {
-            _hasATimerStarted = true;
             timer = timeInSeconds;
             while (timer > 0.0f)
             {
@@ -57,12 +57,11 @@ namespace Project.Utilities
                 yield return null;
             }
 
-            _hasATimerStarted = false;
+            _coroutine = null;
         }
 
         private IEnumerator TimerWithCallback(float timeInSeconds, Action callback)
         {
-            _hasATimerStarted = true;
             timer = timeInSeconds;
             while (timer > 0.0f)
             {
@@ -71,7 +70,13 @@ namespace Project.Utilities
             }
 
             callback?.Invoke();
-            _hasATimerStarted = false;
+            _coroutine = null;
+        }
+
+        private void StopTimer()
+        {
+            UtilitiesClass.instance.StopCoroutine(_coroutine);
+            _coroutine = null;
         }
 
         public float GetTimeRemaining() => timer;

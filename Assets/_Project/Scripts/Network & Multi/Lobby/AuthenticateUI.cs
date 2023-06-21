@@ -7,6 +7,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using Unity.Services.Authentication;
 using System.Threading.Tasks;
+using Unity.Services.Vivox;
 
 public class AuthenticateUI : MonoBehaviour {
 
@@ -30,6 +31,11 @@ public class AuthenticateUI : MonoBehaviour {
     private void OnEnable()
     {
         canTryToConnect = true;
+        try {  VivoxService.Instance.Client.Uninitialize(); Debug.Log("Vivox unintialize");} 
+        catch (Exception e)
+        {
+            Debug.Log(e);
+        }
         _playerNameInputField.onEndEdit.AddListener(UpdateInputName);
         _playerNameInputField.onDeselect.AddListener(UpdateInputName);
     }

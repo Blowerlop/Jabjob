@@ -26,22 +26,40 @@ namespace Project
         [field: SerializeField] public GameMode gameMode { get; private set; }
         [field: SerializeField] public NetworkTimer _networkTimer { get; private set; }
 
+        public NetworkList<Vector3> possibleSpawnPositions;
+        public List<Vector3> playerSpawnPositions = new List<Vector3>();
+        public Transform MapCenter; 
         [SerializeField] private TMP_Text _warmUp;
-            
+        public bool gameHasStarted = false;
+        [SerializeField] bool firstBlood;
+        [SerializeField] int announcerGameStep = 0;
         #endregion
-
+        
 
         #region Updates
- 
+
         private void Awake()
         {
             instance = this;
+
+            possibleSpawnPositions = new NetworkList<Vector3>(writePerm: NetworkVariableWritePermission.Server, readPerm: NetworkVariableReadPermission.Everyone);
+
         }
+        
+
+        [ServerRpc(RequireOwnership = false)]
+        public void RemoveSpawnPointServerRpc(Vector3 spawnPoint) => possibleSpawnPositions.Remove(spawnPoint);
+        [ServerRpc(RequireOwnership = false)]
+        public void AddSpawnPointServerRpc(Vector3 spawnPoint) => possibleSpawnPositions.Add(spawnPoint);
         
 
         public override void OnDestroy()
         {
-            GetComponent<NetworkObject>().Despawn(true);
+            if (GetComponent<NetworkObject>().IsSpawned)
+            {
+                GetComponent<NetworkObject>().Despawn(true);
+            }
+            
             base.OnDestroy();
             
             if (IsServer)
@@ -54,32 +72,31 @@ namespace Project
             }
             
             gameMode.OnDestroy();
+            GameEvent.onGameTimerUpdated.Unsubscribe(AnnouncerLinkedToTimer);
         }
 
-        private void OnEnable()
-        {
-            GameEvent.onGameFinishedEvent.Subscribe(EndGameBehaviour, this);
-        }
-        
-        private void OnDisable()
-        {
-            GameEvent.onGameFinishedEvent.Unsubscribe(EndGameBehaviour);
-        }
-        
         public override void OnNetworkSpawn()
         {
+            GameEvent.onGameFinishedEvent.Subscribe(EndGameBehaviour, this);
+
             if (IsServer)
             {
+                playerSpawnPositions.ForEach(x =>
+                {
+                    possibleSpawnPositions.Add(x);
+                });
+                
                 SpawnNetworkTimerServerRpc();
                 
                 GameEvent.onPlayerJoinGameEvent.Subscribe(ALlPlayerJoinEventHandler, this);
                 GameEvent.onAllPlayersJoinEvent.Subscribe(EndWarmUpBehaviour, this);
+
                 
                 NetworkManager.Singleton.SceneManager.OnLoadComplete += SpawnClientServerRpc;
                 
                 NetworkManager.Singleton.OnClientDisconnectCallback += OnClientDisconnect;
                 
-                Timer.StartTimerWithCallbackRealTime(5.0f, StartWarmup);
+                Timer.StartTimerWithCallbackRealTime(2.0f, StartWarmup);
 
                 // NetworkManager.Singleton.SceneManager.OnLoadEventCompleted += EndWarmUpBehaviour;
                 
@@ -89,10 +106,13 @@ namespace Project
 
         public override void OnNetworkDespawn()
         {
+            GameEvent.onGameFinishedEvent.Unsubscribe(EndGameBehaviour);
+
             if (IsServer)
             {
                 GameEvent.onPlayerJoinGameEvent.Unsubscribe(ALlPlayerJoinEventHandler);
-                GameEvent.onAllPlayersJoinEvent.Unsubscribe(EndWarmUpBehaviour);
+                GameEvent.onAllPlayersJoinEvent.Unsubscribe(EndWarmUpBehaviour);            
+
                 
                 NetworkManager.Singleton.SceneManager.OnLoadComplete -= SpawnClientServerRpc;
                 
@@ -159,6 +179,10 @@ namespace Project
             _networkTimer.GetComponent<NetworkObject>().Spawn();
         }
 
+
+        [ServerRpc]
+        public void EndGameServerRpc() => EndGameClientRpc();
+        
         [ClientRpc]
         private void EndGameClientRpc()
         {
@@ -168,32 +192,62 @@ namespace Project
         
         private void EndGameBehaviour()
         {
-            if (IsServer)
+            Debug.Log("OnLoadComplete end game");
+            
+            Timer.StartTimerWithCallbackRealTime(10.0f, () =>
             {
-                Timer.StartTimerWithCallbackRealTime(20.0f, () =>
+                if (IsServer)
                 {
-                    NetworkManager.Singleton.SceneManager.OnLoadEventCompleted += (sceneName, mode, completed, @out) =>
+                    SceneManager.LoadSceneNetwork("MenuScene");
+                }
+                
+                NetworkManager.Singleton.SceneManager.OnLoadComplete += (id, sceneName, mode) =>
+                {
+                    if (IsServer)
+                    {           
+                        // This will let you know when a load is completed
+                        // Server Side: receives this notification for both itself and all clients
+                        if (id == NetworkManager.Singleton.LocalClientId)
+                        {
+                            SoundManager2D.instance.PlayBackgroundMusic("Start Scene Background Music");
+                            CursorManager.instance.Revert();
+                        }
+                        else
+                        {
+                            // Handle client LoadComplete **server-side** notifications here
+                        }
+                    }
+                    else // Clients generate this notification locally
+                    {
+                        SoundManager2D.instance.PlayBackgroundMusic("Start Scene Background Music");
+                        CursorManager.instance.Revert();
+                    }
+                    
+                    Debug.Log("EndGameBehaviour OnLoadComplete");
+
+                };
+                    
+                NetworkManager.Singleton.SceneManager.OnLoadEventCompleted += (sceneName, mode, completed, @out) =>
+                {
+                    // SoundManager2D.instance.PlayBackgroundMusic("Start Scene Background Music");
+                    // CursorManager.instance.Revert();
+                    // RevertPlayerCursorStateServerRpc();
+                    //
+                    // Debug.Log("OnLoadComplete end game");
+
+                    if (IsServer)
                     {
                         NetworkManager.Singleton.Shutdown();
-                        Cursor.lockState = CursorLockMode.None;
-                        Cursor.visible = true;
-                        SoundManager2D.instance.PlayBackgroundMusic("Start Scene Background Music");
-                        VivoxManager.Instance.SubscribeLobbyEvent();
-                    };
-                        
-                    SceneManager.LoadSceneNetwork("MenuScene");
-                });
-            }
-
-            
+                    }
+                };
+            });
         }
-        
+
         private void StartWarmup()
         {
             Debug.Log("WarmUp starting up !");
             Debug.Log("Players in lobby : " + LobbyManager.Instance.joinedLobby.Players.Count);
-            UpdateWarmUpTextClientRpc(null); 
-            
+            UpdateWarmUpTextClientRpc(null);
             _networkTimer.StartTimerWithCallback(120.0f, () => Debug.Log("Time's up ! Not all the players had been able to join the server !"));
         }
         
@@ -203,7 +257,6 @@ namespace Project
             {
                 Debug.Log("WarmUp is finishing in 30 seconds !");
                 UpdateWarmUpTextClientRpc("All players has connected, be ready !");
-                
                 _networkTimer.StartTimerWithCallback(30.0f, () =>
                 {
                     StartGameClientRpc();
@@ -215,6 +268,7 @@ namespace Project
 
         PlayerMovementController therealone;
         PlayerCameraController therealoneother;
+        PlayerShoot therealoneshooter; 
         [ClientRpc]
         public void StartGameClientRpc()
         {
@@ -226,6 +280,9 @@ namespace Project
                     therealone.enabled = false;
                     therealoneother = value.GetComponent<PlayerCameraController>();
                     therealoneother.enabled = false;
+                    therealoneshooter = value.GetComponent<PlayerShoot>();
+                    therealoneshooter.enabled = false;
+                    therealoneshooter.ReloadTotalAmmoRespawn();
 
                     GameEvent.onPlayerSpawnEvent.Invoke(this, false, value.GetOwnerId());
                 }
@@ -236,13 +293,13 @@ namespace Project
             
 
             _networkTimer.StopTimer();
-            
-            _networkTimer.StartTimerWithCallback(3.0f + 1.0f, () =>
+            SubscribeAnnouncerServerRpc();
+            _networkTimer.StartTimerWithCallback(3.0f + 0.2f, () =>
                 {
                     UpdateWarmUpTextClientRpc("Fight !");
+                    
                     _networkTimer.StartTimerWithCallback(gameMode.gameDurationInSeconds, EndGameClientRpc,
                         true);
-
                     gameMode.Start();
                     azdazdClientRpc();
 
@@ -272,6 +329,9 @@ namespace Project
 
             therealone.enabled = true;
             therealoneother.enabled = true;
+            therealoneshooter.enabled = true;
+            gameHasStarted = true;
+            Debug.Log("gameHasStarted : " + gameHasStarted);
         }
         
         #endregion
@@ -293,16 +353,64 @@ namespace Project
             if (_players.Keys.Count == LobbyManager.Instance.joinedLobby.Players.Count)
             {
                 GameEvent.onAllPlayersJoinEvent.Invoke(this);
+                SimpeAnnouncerSoundServerRpc("Welcome");
             }
         }
 
 
         public void AskToBeDisconnected(ulong clientId) => DisconnectClientServerRpc(clientId);
 
-        [ServerRpc]
+        [ServerRpc(RequireOwnership = false)]
         private void DisconnectClientServerRpc(ulong clientId)
         {
             NetworkManager.Singleton.DisconnectClient(clientId);
+        }
+
+        [ServerRpc]
+        private void SubscribeAnnouncerServerRpc()
+        {
+            SubscribeAnnouncerClientRpc();
+        }
+        [ClientRpc]
+        private void SubscribeAnnouncerClientRpc()
+        {
+            SoundManager2D.instance.PlayAnnouncerSound("Timer3s");
+            GameEvent.onGameTimerUpdated.Subscribe(AnnouncerLinkedToTimer, this);
+            GameEvent.onPlayerGetAKillEvent.Subscribe(AnnouncerFirstBlood, this);
+        }
+
+        private void AnnouncerFirstBlood(ulong cliendId, int killValue)
+        {
+            if (!firstBlood)
+            {
+                SoundManager2D.instance.PlayAnnouncerSound("FirstBlood");
+                firstBlood = true;
+                GameEvent.onPlayerGetAKillEvent.Unsubscribe(AnnouncerFirstBlood);
+            }
+        }
+        private void AnnouncerLinkedToTimer(float timer)
+        {
+            if (!gameHasStarted) return;
+            if (announcerGameStep == 0 && timer < 3f + (gameMode.gameDurationInSeconds * 2f / 3f))
+            {
+                SoundManager2D.instance.PlayAnnouncerSound("InvisibilityDisabled");
+                announcerGameStep++;
+            }
+            if(announcerGameStep == 1 && timer < 31f)
+            {
+                SoundManager2D.instance.PlayAnnouncerSound("30sLeft");
+                announcerGameStep++;
+            }
+        }
+        [ServerRpc]
+        private void SimpeAnnouncerSoundServerRpc(string name)
+        {
+            SimpeAnnouncerSoundClientRpc(name);
+        }
+        [ClientRpc]
+        private void SimpeAnnouncerSoundClientRpc(string name)
+        {
+            SoundManager2D.instance.PlayAnnouncerSound(name);
         }
     }
 }

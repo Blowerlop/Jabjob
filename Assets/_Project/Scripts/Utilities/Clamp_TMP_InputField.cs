@@ -9,11 +9,11 @@ using UnityEngine;
 namespace Project
 {
     public class Clamp_TMP_InputField : MonoBehaviour
-    { 
+    {
         private TMP_InputField _inputField;
-        
-        [SerializeField] private Vector2 _clampRange = new Vector2(0.0f, 1.0f);
 
+        [SerializeField] private Vector2 _clampRange = new Vector2(0.0f, 1.0f);
+        public Event<string> onValueClampedEvent = new Event<string>(nameof(onValueClampedEvent));
 
         private void Awake()
         {
@@ -22,9 +22,9 @@ namespace Project
 
         private void Start()
         {
-            if (_inputField.contentType != TMP_InputField.ContentType.Alphanumeric)
+            if (((_inputField.contentType == TMP_InputField.ContentType.Alphanumeric) || (_inputField.contentType == TMP_InputField.ContentType.DecimalNumber)) == false )
             {
-                Debug.LogError("Trying to clamp a non Alphanumeric inputFiled... Destroying the script !");
+                Debug.LogError("Trying to clamp a non Alphanumeric or non DecimalNumber inputFiled... Destroying the script !");
                 Destroy(this);
             }
         }
@@ -42,16 +42,19 @@ namespace Project
 
         public void ClampValueAndSetText(string text)
         {
-            if (int.TryParse(text.ExtractNumber(), out int value))
+            if (float.TryParse(text, NumberStyles.Float, CultureInfo.CurrentCulture, out float value))
             {
-                text = Mathf.Clamp(value, _clampRange.x, _clampRange.y).ToString(CultureInfo.InvariantCulture);
+                text = Mathf.Clamp(value, _clampRange.x, _clampRange.y).ToString(CultureInfo.CurrentCulture);
+                Debug.Log($"Clamped text : {text}");
             }
             else
             {
-                Debug.LogError($"Error : TryParse false --> Is there a number ? Text : {text}");
+                Debug.LogError($"Error : TryParse false --> Is there a number ? Original Text : {text} / Output : {text.ExtractNumber()}");
             }
 
+            Debug.Log(text.ExtractNumber());
             _inputField.text = text;
+            onValueClampedEvent.Invoke(this, false, text);
         }
     }
 }

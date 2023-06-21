@@ -26,7 +26,7 @@ namespace Project
             if (killNumber >= killToWin)
             {
                 Debug.Log($"The winner is : {GameManager.instance.GetPlayer(player).name}");
-                GameEvent.onGameFinishedEvent.Invoke(this, true);
+                GameManager.instance.EndGameServerRpc();
             }
         }
     }

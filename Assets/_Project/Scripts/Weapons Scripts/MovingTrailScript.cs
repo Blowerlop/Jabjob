@@ -37,7 +37,7 @@ namespace Project
             timer = 0;
             startingPos = transform.position;
             movingVector = hitpoint - startingPos;
-            timeToReach = Mathf.Clamp(Vector3.Distance(startingPos, movingVector) / 500f, 0.15f, 2.5f);  // la vitesse est arbitraire
+            timeToReach = Mathf.Clamp(Vector3.Distance(startingPos, movingVector) / 600f, 0.05f, 2.5f);  // la vitesse est arbitraire
             //timeToReach = 5f; 
             isInitialized = true;
 

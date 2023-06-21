@@ -82,13 +82,19 @@ public class LobbyManager : MonoBehaviour {
 
     private void Awake() {
         Instance = this; 
+        
     }
 
     private void Start()
     {
         OnJoinedLobby += (sender, args) =>         Debug.Log("Player id in lobby : " + AuthenticationService.Instance.PlayerId);
+        VivoxManager.Instance.SubscribeLobbyEvent();
     }
-    
+
+    private void OnDestroy()
+    {
+        VivoxManager.Instance.UnsubscribeLobbyEvent();
+    }
     private void Update() {
         //HandleRefreshLobbyList(); // Disabled Auto Refresh for testing with multiple builds
         HandleLobbyHeartbeat();

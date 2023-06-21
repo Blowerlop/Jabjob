@@ -20,6 +20,7 @@ namespace Project
         [SerializeField] private int _defaultHealth = 100;
         public int maxHealth { get => _defaultHealth; private set => _defaultHealth = value; }
         [SerializeField] [ReadOnlyField] private int _currentHealth = 100;
+        public int health { get => _currentHealth; } 
         private NetworkObject _networkObject;
 
         [SerializeField] private NetworkVariable<StringNetwork> _networkName = new NetworkVariable<StringNetwork>(new StringNetwork() { value = "" });
@@ -33,9 +34,7 @@ namespace Project
         [SerializeField] private NetworkVariable<int> _networkDamageDealt = new NetworkVariable<int>(writePerm: NetworkVariableWritePermission.Owner);
         [SerializeField] private NetworkVariable<bool> _networkIsHost = new NetworkVariable<bool>();
         [SerializeField] private Player _killer;
-
-        [SerializeField] private List<Vector3> spawnPostions = new List<Vector3>();
-
+        
         public string playerName { get => _networkName.Value.value; private set => _networkName.Value = new StringNetwork() { value = value }; }
         public Color playerColor { get => _networkColor.Value; private set => _networkColor.Value = value; }
         public string modelName { get => _networkModel.Value.value; private set => _networkModel.Value = new StringNetwork() { value = value }; }
@@ -48,8 +47,10 @@ namespace Project
         public int damageDealt { get => _networkDamageDealt.Value; set => _networkDamageDealt.Value = value; }
         public bool isHost { get => _networkIsHost.Value; private set => _networkIsHost.Value = value; }
 
+        public bool isMale; 
+        bool killerHasKnife { get => GameManager.instance.GetPlayer(_killerId).GetComponent<PlayerShoot>().hasKnife; }
         bool isDead = false;
-        private HashSet<ulong> _damagersId = new HashSet<ulong>();
+        public  HashSet<ulong> damagersId = new HashSet<ulong>();
 
         private PlayerMovementController _playerMovementController; 
         private PlayerShoot _playerShoot;
@@ -59,6 +60,11 @@ namespace Project
         private Paintable[] _paintable;
         private float _gameDuration = 300;
         [SerializeField]private AnimationCurve _alphaCurve;
+        [SerializeField] private float _invincibleDurationInSeconds = 1.5f;
+        [SerializeField] [ReadOnlyField] private bool _isInvincible = false;
+
+        public delegate void PlayerDamagedEvent(Transform damager, Color color);
+        public event PlayerDamagedEvent onDamageTaken; 
         #endregion
 
 
@@ -76,11 +82,8 @@ namespace Project
 
         public override void OnNetworkSpawn()
         {
-            Cursor.lockState = CursorLockMode.Locked;
-            
             GameManager.instance.AddPlayerLocal(OwnerClientId, this);
             GameEvent.onPlayerJoinGameEvent.Invoke(this, true, OwnerClientId);
-
             
             
             _networkName.OnValueChanged += OnNameValueChange;
@@ -91,6 +94,7 @@ namespace Project
             _networkDeaths.OnValueChanged += OnDeathValueChange;
             _networkScore.OnValueChanged += OnScoreValueChange;
             _networkDamageDealt.OnValueChanged += OnDamageDealtValueChange;
+
             GameEvent.onGameTimerUpdated.Subscribe(UpdateAlpha,this);
 
 #if UNITY_EDITOR
@@ -113,7 +117,9 @@ namespace Project
 
             _gameDuration = GameManager.instance.gameMode.gameDurationInSeconds;
 
-            _playerMovementController.Teleport(new Vector3(OwnerClientId * 100, -500.0f, 0.0f));
+            _playerMovementController.Teleport(new Vector3((GameManager.instance.GetPlayers().Length - 1) * 100, -500.0f, 0.0f));
+            CursorManager.instance.ApplyNewCursor(new CursorState(CursorLockMode.Locked, "Player"));
+            
         }
 
         private void Start()
@@ -123,8 +129,9 @@ namespace Project
 
         private void OnEnable()
         {
+            InputManager.instance.ResetPlayerInputBuffer();
             SetHealth(_defaultHealth);
-            isDead = false; 
+            isDead = false;
             GameEvent.onPlayerSpawnEvent.Subscribe(SpawnPlayerRandomly, this);
         }
 
@@ -153,6 +160,14 @@ namespace Project
 
 
         #region Methods
+
+        private void Update()
+        {
+            if (CursorManager.instance.cursorStates.Count == 0)
+            {
+                CursorManager.instance.ApplyNewCursor(new CursorState(CursorLockMode.Locked, "Player"));
+            }
+        }
 
         #region Network
 
@@ -219,7 +234,7 @@ namespace Project
 
         private void OnNameValueChange(StringNetwork previousValue, StringNetwork nextValue) => GameEvent.onPlayerUpdateNameEvent.Invoke(this, true, OwnerClientId, nextValue);
         private void OnColorValueChange(Color previousValue, Color nextValue) { GameEvent.onPlayerUpdateColorEvent.Invoke(this, true, OwnerClientId, nextValue); _playerShoot.UpdatePlayerShootColor(nextValue); _playerMovementController.UpdateDashColor(nextValue); }
-        private void OnModelValueChange(StringNetwork previousValue, StringNetwork nextValue) { GameEvent.onPlayerUpdateModelEvent.Invoke(this, true, OwnerClientId, nextValue); PlayerModelsManager.instance.ChangeCharacterModelIg(playerMesh, handsMesh, nextValue.value); }
+        private void OnModelValueChange(StringNetwork previousValue, StringNetwork nextValue) { GameEvent.onPlayerUpdateModelEvent.Invoke(this, true, OwnerClientId, nextValue); PlayerModelsManager.instance.ChangeCharacterModelIg(playerMesh, handsMesh, nextValue.value); isMale = PlayerModelsManager.instance.isModelMale(nextValue.value); }
         #endregion
 
         #region  Health Relative
@@ -234,6 +249,7 @@ namespace Project
         {
             ulong ownerId = OwnerClientId;
             DamageClientRpc(damage, damagerId, NetworkUtilities.GetNewClientRpcSenderParams(new List<ulong> { ownerId }));
+            AddDamagersIdClientRpc(damagerId);
         }
 
         [ClientRpc]
@@ -241,14 +257,23 @@ namespace Project
         {
             DamageLocalClient(damage, damagerId);
         }
-
+        [ClientRpc]
+        public void AddDamagersIdClientRpc(ulong damagerId)
+        {
+            AddDamagersIdLocal(damagerId);
+        }
+        public void AddDamagersIdLocal(ulong damagerId)
+        {
+            damagersId.Add(damagerId);
+        }
         public void DamageLocalClient(int damage, ulong damagerId)
         {
             if (isDead) return;
             Debug.Log("You've taken damage");
-            _damagersId.Add(damagerId);
-            _killerId = damagerId;
+             _killerId = damagerId;
             SetHealth(_currentHealth - damage);
+            Player damager = GameManager.instance.GetPlayer(damagerId);
+            if(onDamageTaken != null ) onDamageTaken.Invoke(damager.transform, damager.playerColor);
         }
 
         public void Heal(int heal)
@@ -275,10 +300,11 @@ namespace Project
         private void PlayerDeath()
         {
             PlayerDeathBehaviourLocal();
-            ulong[] _damagersIdArray = new ulong[_damagersId.Count];
-            _damagersId.CopyTo(_damagersIdArray);
-            PlayerDeathFeedBackLocal(_killerId, OwnerClientId, _damagersIdArray);
+            ulong[] _damagersIdArray = new ulong[damagersId.Count];
+            damagersId.CopyTo(_damagersIdArray);
+            PlayerDeathFeedBackLocal(_killerId, OwnerClientId, _damagersIdArray, killerHasKnife);
             PlayerDeathBehaviourServerRpc(OwnerClientId);
+            _playerShoot.HideBarloadingAmmoBox();
             Debug.Log("You're dead");
         }
 
@@ -288,7 +314,7 @@ namespace Project
             deaths++;
             Player killer = GameManager.instance.GetPlayer(_killerId);
             killer.kills++;
-            foreach (ulong assistId in _damagersId)
+            foreach (ulong assistId in damagersId)
             {
                 if (assistId == _killerId) continue;
                 Player assistPlayer = GameManager.instance.GetPlayer(assistId);
@@ -298,11 +324,9 @@ namespace Project
             PlayerDeathBehaviourClientRpc();
             Timer.StartTimerWithCallbackRealTime(GameManager.instance.gameMode.respawnDurationInSeconds, (() => PlayerRespawnClientRpc(clientId)));
 
-            ulong[] _damagersIdArray = new ulong[_damagersId.Count];
-            _damagersId.CopyTo(_damagersIdArray);
-            PlayerDeathFeedbackClientRpc(_killerId, clientId, _damagersIdArray); 
-            _damagersId.Clear();
-
+            ulong[] _damagersIdArray = new ulong[damagersId.Count];
+            damagersId.CopyTo(_damagersIdArray);
+            PlayerDeathFeedbackClientRpc(_killerId, clientId, _damagersIdArray, killerHasKnife); 
             killer.UpdateScore();
             UpdateScore();
         }
@@ -313,13 +337,13 @@ namespace Project
             if (IsOwner == false) PlayerDeathBehaviourLocal();
         }
         [ClientRpc]
-        private void PlayerDeathFeedbackClientRpc(ulong killerId, ulong killedId, ulong[] assistPlayers)
+        private void PlayerDeathFeedbackClientRpc(ulong killerId, ulong killedId, ulong[] assistPlayers, bool killedWithKnife)
         {
-            if (IsOwner == false) PlayerDeathFeedBackLocal(killerId, killedId, assistPlayers);
+            if (IsOwner == false) PlayerDeathFeedBackLocal(killerId, killedId, assistPlayers, killedWithKnife);
         }
-        private void PlayerDeathFeedBackLocal(ulong killerId, ulong killedId, ulong[] assistPlayers)
+        private void PlayerDeathFeedBackLocal(ulong killerId, ulong killedId, ulong[] assistPlayers, bool killedWithKnife)
         {
-            _feedbackManager.SendFeedback(killerId, killedId, assistPlayers);
+            _feedbackManager.SendFeedback(killerId, killedId, assistPlayers, killedWithKnife);
         }
         private void PlayerDeathBehaviourLocal()
         {
@@ -336,12 +360,51 @@ namespace Project
             Player player = GameManager.instance.GetPlayer(clientId);
             SpawnPlayerRandomly(clientId);
             player.gameObject.SetActive(true);
+            player.damagersId.Clear();
             GameEvent.onPlayerRespawnedEvent.Invoke(this, true, clientId);
+
+            StartCoroutine(SetInvincibleCoroutine(_invincibleDurationInSeconds));
+        }
+
+        private void SetInvincible(bool state)
+        {
+            if (state)
+            {
+                GetComponentsInChildren<Collider>().ForEach(col =>
+                {
+                    col.enabled = false;
+                });
+
+                _isInvincible = true;
+            }
+            else
+            {
+                GetComponentsInChildren<Collider>().ForEach(col =>
+                {
+                    col.enabled = true;
+                });
+
+                _isInvincible = false;
+            }
+        }
+        
+        private IEnumerator SetInvincibleCoroutine(float duration)
+        {
+            SetInvincible(true);
+            yield return new WaitForSeconds(duration);
+            SetInvincible(false);
         }
 
         private void SpawnPlayerRandomly(ulong clientId)
-        {   
-            _playerMovementController.Teleport(spawnPostions[UnityEngine.Random.Range(0, spawnPostions.Count)]);
+        {
+            // if (GameManager.instance.possibleSpawnPositions.Count <= 0) { GameManager.instance.possibleSpawnPositions = spawnPostions; }
+            Vector3 choosenPosition = GameManager.instance.possibleSpawnPositions[UnityEngine.Random.Range(0, GameManager.instance.possibleSpawnPositions.Count)];
+            GameManager.instance.RemoveSpawnPointServerRpc(choosenPosition);
+            Timer.StartTimerWithCallbackScaledTime(2.0f,
+                () => GameManager.instance.AddSpawnPointServerRpc(choosenPosition));
+            _playerMovementController.Teleport(choosenPosition);
+            _playerShoot.HideBarloadingAmmoBox();
+            transform.LookAt(GameManager.instance.MapCenter);
         }
 
         private void OnKillValueChange(int previousValue, int nextValue) => GameEvent.onPlayerGetAKillEvent.Invoke(this, true, OwnerClientId, nextValue); 
@@ -360,14 +423,30 @@ namespace Project
 
         void UpdateAlpha (float timer)
         {
-            if (timer < (_gameDuration * 2f / 3f) || IsOwner)
+            if(IsOwner)
             {
-                _playerMovementController.DisableSmoke(); return;
+                _playerMovementController.DisableSmoke();
+                return;
+            }
+            if(!GameManager.instance.gameHasStarted)
+            {
+                _paintable ??= gameObject.GetComponentsInChildren<Paintable>(true);
+                _paintable.ForEach(x => x.SetAlpha(GetAlphaValueToApply(0)));
+                return;
+            }
+            else  
+            {
+                if (timer > (_gameDuration * 2f / 3f)){
+                    _paintable ??= gameObject.GetComponentsInChildren<Paintable>(true);
+                    _paintable.ForEach(x => x.SetAlpha(GetAlphaValueToApply(_gameDuration - timer)));
+                }
+                else
+                {
+                    _playerMovementController.DisableSmoke();
+                    GameEvent.onGameTimerUpdated.Unsubscribe(UpdateAlpha);
+                }
             } 
-            _paintable ??= gameObject.GetComponentsInChildren<Paintable>(true);
-            _paintable.ForEach(x => x.SetAlpha(GetAlphaValueToApply(_gameDuration - timer)));
         }
- 
         float GetAlphaValueToApply(float value) => _alphaCurve.Evaluate(value / (_gameDuration / 3));
 
         #endregion
@@ -391,17 +470,15 @@ namespace Project
         {
             KickLocalClient();
         }
-        
+
         public void KickLocalClient()
         {
             NetworkManager.Singleton.SceneManager.OnLoadEventCompleted += (sceneName, mode, completed, @out) =>
             {
                 VivoxManager.Instance.VivoxLogOut();
                 NetworkManager.Singleton.Shutdown();
-                Cursor.lockState = CursorLockMode.None;
-                Cursor.visible = true;
+                CursorManager.instance.Revert();
                 SoundManager2D.instance.PlayBackgroundMusic("Start Scene Background Music");
-                VivoxManager.Instance.SubscribeLobbyEvent();
             };
 
             SceneManager.LoadSceneNetwork("MenuScene");

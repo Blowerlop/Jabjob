@@ -26,29 +26,6 @@ public class ScoreBoard : MonoBehaviour
     [SerializeField] private GameObject scoreboard;
     bool isOpen; 
 
-    // private void OnEnable()
-    // {
-    //     _name.text = _playerStats.name;
-    //     _kill.text = _playerStats.kill.ToString();
-    //     _death.text = _playerStats.death.ToString();
-    //     _score.text = _playerStats.score.ToString();
-    //     _health.text = _playerStats.health.ToString();
-    //     _ping.text = _playerStats.ping.ToString();
-    //
-    // }
-    // private void Awake()
-    // {
-    //     //Instantiation
-    //     _playerStats = transform.root.GetComponent<PlayerStats>();
-    //
-    //     _name = gameObject.transform.GetChild(0).GetComponent<TextMeshProUGUI>();
-    //     _kill = gameObject.transform.GetChild(1).GetComponent<TextMeshProUGUI>();
-    //     _death = gameObject.transform.GetChild(2).GetComponent<TextMeshProUGUI>();
-    //     _score = gameObject.transform.GetChild(3).GetComponent<TextMeshProUGUI>();
-    //     _health = gameObject.transform.GetChild(4).GetComponent<TextMeshProUGUI>();
-    //     _ping = gameObject.transform.GetChild(5).GetComponent<TextMeshProUGUI>();   
-    // }
-
     private void Awake()
     {
         GameEvent.onPlayerJoinGameEvent.Subscribe(AddPlayerToTheScoreboard, this);
@@ -59,7 +36,6 @@ public class ScoreBoard : MonoBehaviour
         GameEvent.onPlayerGetAssistEvent.Subscribe(UpdateAssistText, this);
         GameEvent.onPlayerDiedEvent.Subscribe(UpdateDeathText, this);
         GameEvent.onPlayerScoreEvent.Subscribe(UpdateScoreText, this);
-
         Player[] players = GameManager.instance.GetPlayers();
         for (int i = 0; i < players.Length; i++)
         {
@@ -71,8 +47,9 @@ public class ScoreBoard : MonoBehaviour
             UpdateAssistText(playerId, player.assists);
             UpdateDeathText(playerId, player._killerId, player.deaths);
             UpdateColorImage(playerId, player.playerColor);
-            UpdateScoreText(playerId, player.score); 
+            UpdateScoreText(playerId, player.score);
         }
+        InputManager.instance.pressTab.AddListener(OpenScoreBoard);
     }
 
     private void OnDestroy()
@@ -85,16 +62,18 @@ public class ScoreBoard : MonoBehaviour
         GameEvent.onPlayerGetAssistEvent.Unsubscribe(UpdateAssistText);
         GameEvent.onPlayerDiedEvent.Unsubscribe(UpdateDeathText);
         GameEvent.onPlayerScoreEvent.Unsubscribe(UpdateScoreText);
+
+        if (InputManager.IsInstanceAlive)
+        {
+            InputManager.instance.pressTab.RemoveListener(OpenScoreBoard);
+        }
     }
 
-    private void Update()
+    private void OpenScoreBoard()
     {
-        if (InputManager.instance.TabPressed)
-        {
-            scoreboard.SetActive(!isOpen);
-            isOpen = !isOpen;
-            InputManager.instance.TabPressed = false;
-        }
+        scoreboard.SetActive(!isOpen);
+        UpdateAll();
+        isOpen = !isOpen;
     }
     public void AddPlayerToTheScoreboard(ulong playerId)
     {
@@ -111,6 +90,21 @@ public class ScoreBoard : MonoBehaviour
         playerScoreboard.Remove(playerId);
     }
 
+    private void UpdateAll()
+    {
+        Player[] players = GameManager.instance.GetPlayers();
+        for (int i = 0; i < players.Length; i++)
+        {
+            Player player = players[i];
+            ulong playerId = player.OwnerClientId;
+            UpdateNameText(playerId, player.playerName);
+            UpdateKillText(playerId, player.kills);
+            UpdateAssistText(playerId, player.assists);
+            UpdateDeathText(playerId, player._killerId, player.deaths);
+            UpdateColorImage(playerId, player.playerColor);
+            UpdateScoreText(playerId, player.score);
+        }
+    }
     private void UpdateNameText(ulong playerId, StringNetwork newValue)
     {
         Debug.Log("UpdateNameText playerId : " + playerId);
