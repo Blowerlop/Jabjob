@@ -20,15 +20,15 @@ public class PlayerMovementController : NetworkBehaviour
     [Header("Dash")]
     [SerializeField] private int _dashNumber = 3;
     [SerializeField] private float _dashCooldown = 3;
-    private int currentDashNumber = 3;
-    private Timer _timer = new Timer();
+    [SerializeField] [ReadOnlyField] int currentDashNumber = 3;
+    private float dashTimer = 0;
     [SerializeField] private float _dashForce = 2.0f;
 
     [Header("Gravity")]
     [SerializeField] private bool _gravityEnabled = true;
     [SerializeField] private float _gravityForce = -9.81f;
     [SerializeField] private float _groundedVerticalVelocity = -2.0f;
-    [SerializeField] private float _maximumVerticalVelocity = -40.0f;
+    [SerializeField] private float _maximumVerticalVelocity = -40.0f; 
     private float _verticalVelocity;
 
     [Header("Jump")]
@@ -275,14 +275,18 @@ public class PlayerMovementController : NetworkBehaviour
                 PlaySoundBody2("Dash");
                 currentDashNumber -= 1;
                 GameEvent.onPlayerDashEvent.Invoke(this, false, _dashCooldown);
-                _timer.StartTimerWithCallbackScaledTime(_dashCooldown+0.05f, ReloadDash);
             }
             InputManager.instance.isDashing = false;
         }
 
         if (currentDashNumber < _dashNumber)
         {
-            _timer.StartTimerWithCallbackScaledTime(_dashCooldown+0.05f, ReloadDash);
+            dashTimer += Time.fixedDeltaTime; 
+            if(dashTimer >= _dashCooldown)
+            {
+                currentDashNumber += 1;
+                dashTimer = 0; 
+            }
         }
     }
 
@@ -327,12 +331,6 @@ public class PlayerMovementController : NetworkBehaviour
     {
         if (_isGrounded) PlaySound(name);
     }
-
-    private void ReloadDash()
-    {
-        currentDashNumber += 1;
-    }
-
     private void OnDrawGizmos()
     {
         if (Application.isPlaying == false) return;

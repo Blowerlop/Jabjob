@@ -31,7 +31,7 @@ public class AuthenticateUI : MonoBehaviour {
     private void OnEnable()
     {
         canTryToConnect = true;
-        try {  VivoxService.Instance.Client.Uninitialize(); Debug.Log("Vivox unintialize");}
+        try {  VivoxService.Instance.Client.Uninitialize(); Debug.Log("Vivox unintialize");} 
         catch (Exception e)
         {
             Debug.Log(e);
