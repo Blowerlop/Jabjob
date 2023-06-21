@@ -403,6 +403,8 @@ namespace Project
             Timer.StartTimerWithCallbackScaledTime(2.0f,
                 () => GameManager.instance.AddSpawnPointServerRpc(choosenPosition));
             _playerMovementController.Teleport(choosenPosition);
+            _playerShoot.HideBarloadingAmmoBox();
+            transform.LookAt(GameManager.instance.MapCenter);
         }
 
         private void OnKillValueChange(int previousValue, int nextValue) => GameEvent.onPlayerGetAKillEvent.Invoke(this, true, OwnerClientId, nextValue); 

@@ -28,7 +28,7 @@ namespace Project
 
         public NetworkList<Vector3> possibleSpawnPositions;
         public List<Vector3> playerSpawnPositions = new List<Vector3>();
- 
+        public Transform MapCenter; 
         [SerializeField] private TMP_Text _warmUp;
         public bool gameHasStarted = false;
         [SerializeField] bool firstBlood;
