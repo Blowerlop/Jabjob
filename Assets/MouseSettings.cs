@@ -24,9 +24,9 @@ namespace Project
 
             StartCoroutine(UtilitiesClass.WaitForEndOfFrameAndDoActionCoroutine(() =>
             {
-                SetSensitivity(MouseManager.instance.mouseSensitivity.ToString(CultureInfo.InvariantCulture));
+                SetSensitivity(MouseManager.instance.mouseSensitivity.ToString(CultureInfo.CurrentCulture));
                 ConvertToToFloatPrecision(
-                    MouseManager.instance.mouseSensitivity.ToString(CultureInfo.InvariantCulture));
+                    MouseManager.instance.mouseSensitivity.ToString(CultureInfo.CurrentCulture));
             }));
         }
 
@@ -40,20 +40,27 @@ namespace Project
         public void AddMoreSensitivity()
         {
             float sensitivityToAdd = MouseManager.instance.mouseSensitivity + _addLessOrMoveSensitivityBearing;
-            SetSensitivity(sensitivityToAdd.ToString(CultureInfo.InvariantCulture));
-            _mouseSensitivityInputField.onEndEdit.Invoke(sensitivityToAdd.ToString(CultureInfo.InvariantCulture));
+            SetSensitivity(sensitivityToAdd.ToString(CultureInfo.CurrentCulture));
+            _mouseSensitivityInputField.onEndEdit.Invoke(sensitivityToAdd.ToString(CultureInfo.CurrentCulture));
         } 
         
         public void AddLessSensitivity()
         {
             float sensitivityToAdd = MouseManager.instance.mouseSensitivity - _addLessOrMoveSensitivityBearing;
-            SetSensitivity(sensitivityToAdd.ToString(CultureInfo.InvariantCulture));
-            _mouseSensitivityInputField.onEndEdit.Invoke(sensitivityToAdd.ToString(CultureInfo.InvariantCulture));
+            SetSensitivity(sensitivityToAdd.ToString(CultureInfo.CurrentCulture));
+            _mouseSensitivityInputField.onEndEdit.Invoke(sensitivityToAdd.ToString(CultureInfo.CurrentCulture));
         } 
 
         public void SetSensitivity(string sensitivity)
         {
-            MouseManager.instance.SetMouseSensitivity(float.Parse(sensitivity));
+            if(float.TryParse(sensitivity, NumberStyles.Float, CultureInfo.CurrentCulture, out float value))
+            {
+                MouseManager.instance.SetMouseSensitivity(float.Parse(sensitivity));
+            }
+            else
+            {
+                Debug.LogError("Nathan est une salope");
+            }
         } 
 
         private void ConvertToToFloatPrecision(string sensitivity) => _mouseSensitivityInputField.text = $"{float.Parse(sensitivity):F2}";
