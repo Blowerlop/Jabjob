@@ -25,6 +25,7 @@ namespace Project
         [SerializeField] private CanvasGroup _canvasGroup;
         [SerializeField] private CanvasGroup _textCanvasGroup;
         [SerializeField] private Image _textAreaImage;
+        [SerializeField] private RectTransform _shrinkRectImg;
         private List<TextMeshProUGUI> _messages = new List<TextMeshProUGUI>();
         private string _previousTextReceived;
         private bool _shrinkState = true;
@@ -229,10 +230,16 @@ namespace Project
             if (shrink)
             {
                 _textAreaRectTF.sizeDelta = new Vector2(_textAreaRectTF.rect.width, baseTextAreaHeight);
+                if (_shrinkRectImg)
+                    _shrinkRectImg.rotation = Quaternion.Euler(Vector3.zero);
+                
             }
             else
             {
                 _textAreaRectTF.sizeDelta = new Vector2(_textAreaRectTF.rect.width, baseTextAreaHeight * 2.2f);
+                if (_shrinkRectImg)
+                    _shrinkRectImg.rotation = Quaternion.Euler(new Vector3(0,0,180));
+                
             }
         }
     }
