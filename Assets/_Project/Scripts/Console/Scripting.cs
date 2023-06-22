@@ -50,7 +50,9 @@ namespace Utils
             RegisterCommand(ChangeLevel, "change_level");
             RegisterCommand(StartGame, "startGame");
             RegisterCommand(ShowUI, "show_ui");
+            RegisterCommand(Spectate, "spectate");
         }
+        
 
         void RegisterCommand(Action<string[]> newCommandAction, string commandName)
         {
@@ -219,6 +221,29 @@ namespace Utils
                         uiToToggle.ForEach(x => x.gameObject.SetActive(true));
                     }
                 }
+            }
+            catch (Exception e)
+            {
+                Debug.LogError(e.Message);
+            }
+        };
+        
+        private static readonly Action<string[]> Spectate = (args) =>
+        {
+            try
+            {
+                if (int.TryParse(args[1], out int result))
+                {
+                    if (result == 0)
+                    {
+                        FindObjectOfType<LookPlayer>(true).enabled = false;
+                    }
+                    else if (result == 1)
+                    {
+                        FindObjectOfType<LookPlayer>(true).enabled = true;
+                    }
+                }
+                
             }
             catch (Exception e)
             {
