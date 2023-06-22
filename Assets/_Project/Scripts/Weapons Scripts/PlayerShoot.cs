@@ -386,14 +386,17 @@ namespace Project
                 {
                     _player.damageDealt += knifeDamage; 
                     healthManagement.Damage(knifeDamage, OwnerClientId); 
+                    _audioSource.PlayOneShot(hitMarkerSound[0], hitMarkerSoundScale);
                 }
                 else if(hit.transform.root.TryGetComponent(out IHealthManagement healthManagement2)) 
                 {
                     _player.damageDealt += knifeDamage;
                     healthManagement2.Damage(knifeDamage, OwnerClientId);
+                    _audioSource.PlayOneShot(hitMarkerSound[0], hitMarkerSoundScale);
                 }
                 int randomHitSound = UnityEngine.Random.Range(0, 10);
                 ArmsAnimHelper.PlayOneShotSound("KnifeHit"+randomHitSound);
+                
             }
         }
         public void StartReload()
