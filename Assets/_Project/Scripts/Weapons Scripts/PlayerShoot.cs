@@ -7,7 +7,8 @@ using UnityEngine;
 using UnityEngine.Animations.Rigging;
 using Object = UnityEngine.Object;
 using UnityEngine.UI;
-using TMPro; 
+using TMPro;
+using UnityEngine.InputSystem;
 
 namespace Project
 {
@@ -62,7 +63,9 @@ namespace Project
         public AudioClip[] knifeEquipSounds;
         public AudioClip[] gunEquipSounds;
         private int knifeLoop = 0;
-        private int gunLoop = 0; 
+        private int gunLoop = 0;
+        public AudioClip[] hitMarkerSound;
+        public float hitMarkerSoundScale;
 
         
         #endregion
@@ -134,17 +137,22 @@ namespace Project
                                 var id = hit.colliderInstanceID;
                                 LocalShoot(true, weaponHolderPosition, rootCameraPosition, hit.point, true);
                                 ShootServerRpc(weaponHolderPosition, rootCameraPosition, hit.point, true);
+
+                                Vector3 mousePosition = Input.mousePosition;
                                 if (hit.transform.TryGetComponent(out IHealthManagement healthManagement))
                                 {
                                     Debug.Log("Hit");
                                     _player.damageDealt += _weaponData.damage; 
                                     healthManagement.Damage(_weaponData.damage, OwnerClientId);
+                                    _audioSource.PlayOneShot(hitMarkerSound[0], hitMarkerSoundScale);
                                 }
                                 else if (hit.transform.root.TryGetComponent(out IHealthManagement healthManagement2))
                                 {
                                     Debug.Log("Hit");
                                     _player.damageDealt += _weaponData.damage;
                                     healthManagement2.Damage(_weaponData.damage, OwnerClientId);
+                                    _audioSource.PlayOneShot(hitMarkerSound[0], hitMarkerSoundScale);
+                                    
                                 }
                             }
                         }
