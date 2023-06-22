@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.0815436, g: 0.09403648, b: 0.03439693, a: 1}
+  m_IndirectSpecularColor: {r: 0.15766153, g: 0.070657745, b: 0.013432168, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -1030,6 +1030,12 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 6254745b0879f17408535240d748de68, type: 3}
+--- !u!1 &614623477 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5613422241004789078, guid: 6254745b0879f17408535240d748de68,
+    type: 3}
+  m_PrefabInstance: {fileID: 614623476}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &628269366
 GameObject:
   m_ObjectHideFlags: 0
@@ -1432,7 +1438,7 @@ GameObject:
   - component: {fileID: 953929678}
   - component: {fileID: 953929677}
   - component: {fileID: 953929676}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Wall
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1762,7 +1768,7 @@ GameObject:
   - component: {fileID: 1182804326}
   - component: {fileID: 1182804325}
   - component: {fileID: 1182804324}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Wall
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2150,7 +2156,7 @@ GameObject:
   - component: {fileID: 1326398969}
   - component: {fileID: 1326398968}
   - component: {fileID: 1326398967}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Wall
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2652,7 +2658,7 @@ GameObject:
   - component: {fileID: 1475397206}
   - component: {fileID: 1475397205}
   - component: {fileID: 1475397204}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Wall
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3765,7 +3771,7 @@ GameObject:
   - component: {fileID: 1813493540}
   - component: {fileID: 1813493539}
   - component: {fileID: 1813493538}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Wall
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3961,7 +3967,7 @@ GameObject:
   - component: {fileID: 1955441683}
   - component: {fileID: 1955441682}
   - component: {fileID: 1955441681}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Wall
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4073,7 +4079,7 @@ GameObject:
   - component: {fileID: 1993892051}
   - component: {fileID: 1993892050}
   - component: {fileID: 1993892049}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Wall
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4336,6 +4342,11 @@ PrefabInstance:
       propertyPath: MapCenter
       value: 
       objectReference: {fileID: 1576510825}
+    - target: {fileID: 716294172085830960, guid: b1d916fbdbcdc5446935c50aead18e36,
+        type: 3}
+      propertyPath: _warmUpRooms
+      value: 
+      objectReference: {fileID: 614623477}
     - target: {fileID: 716294172085830960, guid: b1d916fbdbcdc5446935c50aead18e36,
         type: 3}
       propertyPath: _gameSettings
@@ -4748,7 +4759,7 @@ GameObject:
   - component: {fileID: 2456753562447532603}
   - component: {fileID: 1977577285177861123}
   - component: {fileID: 1715888100362508122}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Wall
   m_TagString: Untagged
   m_Icon: {fileID: 0}

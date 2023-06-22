@@ -1690,6 +1690,7 @@ MonoBehaviour:
     m_InternalValue: 0
   _killer: {fileID: 0}
   isMale: 0
+  isDead: 0
   playerMesh: {fileID: 0}
   handsMesh: {fileID: 0}
   _alphaCurve:
@@ -15016,6 +15017,11 @@ PrefabInstance:
       propertyPath: m_TagString
       value: Untagged
       objectReference: {fileID: 0}
+    - target: {fileID: 4679728461175732649, guid: 2544dfa939e412547aeb25d3c71fee15,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4679728461175732653, guid: 2544dfa939e412547aeb25d3c71fee15,
         type: 3}
       propertyPath: m_Pivot.x
@@ -15163,24 +15169,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 2544dfa939e412547aeb25d3c71fee15, type: 3}
---- !u!1 &1209944996751146270 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 4679728461175732626, guid: 2544dfa939e412547aeb25d3c71fee15,
-    type: 3}
-  m_PrefabInstance: {fileID: 5781261472880837772}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &363260955079593961
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1209944996751146270}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 99effe11479fb3541ae3f5e822449efb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!224 &1209944996751146273 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 4679728461175732653, guid: 2544dfa939e412547aeb25d3c71fee15,
