@@ -13,6 +13,7 @@ namespace Project
         private ulong _currentPlayerIndex;
         private CinemachineVirtualCamera _currentCinemachineVirtualCamera;
         private float _speed = 1.0f;
+        private Vector3 _originalPosition;
 
         public void Awake()
         {
@@ -29,6 +30,7 @@ namespace Project
             if (_currentCinemachineVirtualCamera != null)
             {
                 _currentCinemachineVirtualCamera.Priority = -1;
+                _currentCinemachineVirtualCamera.transform.position = _originalPosition;
             }
             GameManager.instance.GetPlayer(NetworkManager.Singleton.LocalClientId).gameObject.SetActive(true);
         } 
@@ -40,6 +42,7 @@ namespace Project
                 if (_currentCinemachineVirtualCamera != null)
                 {
                     _currentCinemachineVirtualCamera.Priority = -1;
+                    _currentCinemachineVirtualCamera.transform.position = _originalPosition;
                 }
                 
                 _currentPlayerIndex++;
@@ -56,6 +59,7 @@ namespace Project
                         {
                             _currentCinemachineVirtualCamera = x;
                             _currentCinemachineVirtualCamera.Priority = 1;
+                            _originalPosition = _currentCinemachineVirtualCamera.transform.position;
                         }
                     });
                 
