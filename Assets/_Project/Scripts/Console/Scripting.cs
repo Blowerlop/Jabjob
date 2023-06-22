@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Project;
+using Project.Utilities;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.Events;
@@ -15,6 +16,7 @@ namespace Utils
     {
         public static Scripting instance;
         Dictionary<string, Action<string[]>> commands = new();
+
 
         public enum SceneType
         {
@@ -47,6 +49,7 @@ namespace Utils
             RegisterCommand(SetKills, "set_kills");
             RegisterCommand(ChangeLevel, "change_level");
             RegisterCommand(StartGame, "startGame");
+            RegisterCommand(ShowUI, "show_ui");
         }
 
         void RegisterCommand(Action<string[]> newCommandAction, string commandName)
@@ -192,6 +195,30 @@ namespace Utils
             try
             {
                 GameManager.instance.StartGameClientRpc();
+            }
+            catch (Exception e)
+            {
+                Debug.LogError(e.Message);
+            }
+        };
+        
+        private static readonly Action<string[]> ShowUI = (args) =>
+        {
+            try
+            {
+                if (int.TryParse(args[1], out int result))
+                {
+                    var uiToToggle = GameObject.FindObjectsOfType<UIToggle>(true);
+                    
+                    if (result == 0)
+                    {
+                        uiToToggle.ForEach(x => x.gameObject.SetActive(false));
+                    }
+                    else if (result == 1)
+                    {
+                        uiToToggle.ForEach(x => x.gameObject.SetActive(true));
+                    }
+                }
             }
             catch (Exception e)
             {

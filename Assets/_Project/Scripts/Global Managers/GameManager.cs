@@ -33,6 +33,7 @@ namespace Project
         public bool gameHasStarted = false;
         [SerializeField] bool firstBlood;
         [SerializeField] int announcerGameStep = 0;
+        [SerializeField] private GameObject _warmUpRooms;
         #endregion
         
 
@@ -287,6 +288,8 @@ namespace Project
                     GameEvent.onPlayerSpawnEvent.Invoke(this, false, value.GetOwnerId());
                 }
             });
+            
+            Destroy(_warmUpRooms, 1.0f);
 
 
             if (IsServer == false) return;

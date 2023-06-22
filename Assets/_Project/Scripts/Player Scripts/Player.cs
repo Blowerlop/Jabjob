@@ -404,7 +404,14 @@ namespace Project
                 () => GameManager.instance.AddSpawnPointServerRpc(choosenPosition));
             _playerMovementController.Teleport(choosenPosition);
             _playerShoot.HideBarloadingAmmoBox();
-            transform.LookAt(GameManager.instance.MapCenter);
+            // transform.LookAt(GameManager.instance.MapCenter, Vector3.up);
+            Vector3 direction = GameManager.instance.MapCenter.position - transform.position;
+            direction.y = 0;
+            direction = direction.normalized;
+            
+            transform.rotation =
+                Quaternion.LookRotation(direction,
+                    Vector3.up);
         }
 
         private void OnKillValueChange(int previousValue, int nextValue) => GameEvent.onPlayerGetAKillEvent.Invoke(this, true, OwnerClientId, nextValue); 
