@@ -49,7 +49,7 @@ namespace Project
 
         public bool isMale; 
         bool killerHasKnife { get => GameManager.instance.GetPlayer(_killerId).GetComponent<PlayerShoot>().hasKnife; }
-        bool isDead = false;
+        public bool isDead = false;
         public  HashSet<ulong> damagersId = new HashSet<ulong>();
 
         private PlayerMovementController _playerMovementController; 
@@ -110,6 +110,7 @@ namespace Project
 
             IsPlayerHostServerRpc();
 
+            
             UpdatePlayerCharacterServerRpc(LobbyManager.Instance.GetPlayerModel());
             UpdatePlayerColorServerRpc(LobbyManager.Instance.GetPlayerColor());
             UpdatePlayerNameServerRpc(LobbyManager.Instance.GetPlayerName());
@@ -121,7 +122,8 @@ namespace Project
             CursorManager.instance.ApplyNewCursor(new CursorState(CursorLockMode.Locked, "Player"));
             
         }
-
+        
+        
         private void Start()
         {
             _currentHealth = _defaultHealth;
@@ -357,6 +359,8 @@ namespace Project
 
         private void PlayerRespawnLocal(ulong clientId)
         {
+            if (GameManager.instance.gameHasFinished) return;
+            
             Player player = GameManager.instance.GetPlayer(clientId);
             SpawnPlayerRandomly(clientId);
             player.gameObject.SetActive(true);
@@ -395,7 +399,7 @@ namespace Project
             SetInvincible(false);
         }
 
-        private void SpawnPlayerRandomly(ulong clientId)
+        public void SpawnPlayerRandomly(ulong clientId)
         {
             // if (GameManager.instance.possibleSpawnPositions.Count <= 0) { GameManager.instance.possibleSpawnPositions = spawnPostions; }
             Vector3 choosenPosition = GameManager.instance.possibleSpawnPositions[UnityEngine.Random.Range(0, GameManager.instance.possibleSpawnPositions.Count)];
