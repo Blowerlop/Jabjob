@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using TMPro;
 using UnityEngine;
 using UtilitiesClass = Project.Utilities.UtilitiesClass;
 
@@ -24,7 +25,7 @@ namespace Project.Utilities
 
             if (hasATimerStarted)
             {
-                UtilitiesClass.instance.StopCoroutine(_coroutine);
+                StopTimer();
             }
 
             _coroutine = UtilitiesClass.instance.StartCoroutine(SimpleTimer(timeInSeconds));
@@ -56,6 +57,7 @@ namespace Project.Utilities
                 yield return null;
             }
 
+            _coroutine = null;
         }
 
         private IEnumerator TimerWithCallback(float timeInSeconds, Action callback)
@@ -68,6 +70,7 @@ namespace Project.Utilities
             }
 
             callback?.Invoke();
+            _coroutine = null;
         }
 
         private void StopTimer()

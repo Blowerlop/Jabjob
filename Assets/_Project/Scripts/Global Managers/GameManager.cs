@@ -28,11 +28,13 @@ namespace Project
 
         public NetworkList<Vector3> possibleSpawnPositions;
         public List<Vector3> playerSpawnPositions = new List<Vector3>();
- 
+        public Transform MapCenter; 
         [SerializeField] private TMP_Text _warmUp;
         public bool gameHasStarted = false;
         [SerializeField] bool firstBlood;
         [SerializeField] int announcerGameStep = 0;
+        [SerializeField] private GameObject _warmUpRooms;
+        public bool gameHasFinished = false;
         #endregion
         
 
@@ -77,6 +79,7 @@ namespace Project
 
         public override void OnNetworkSpawn()
         {
+            
             GameEvent.onGameFinishedEvent.Subscribe(EndGameBehaviour, this);
 
             if (IsServer)
@@ -106,6 +109,7 @@ namespace Project
 
         public override void OnNetworkDespawn()
         {
+            
             GameEvent.onGameFinishedEvent.Unsubscribe(EndGameBehaviour);
 
             if (IsServer)
@@ -154,6 +158,20 @@ namespace Project
             return players;
         }
 
+        public ulong GetPlayerId(Player player)
+        {
+            foreach (KeyValuePair<ulong, Player> kvp in _players)
+            {
+                if (kvp.Value == player)
+                {
+                    return kvp.Key;
+                }
+            }
+
+            Debug.Log("No playerId for this player");
+            return ulong.MaxValue;
+        }
+
         public ulong GetPlayerId(string playerName)
         {
             foreach (var kvp in _players)
@@ -169,8 +187,33 @@ namespace Project
         }
         
         #endregion
-        
-        
+
+        [ClientRpc]
+        private void RespawnEveryOneClientRpc()
+        {
+            Debug.Log("lalalalala");
+            GetPlayers().ForEach(player =>
+            {
+                Debug.Log("Respawn Player before endGame");
+                // if (player.isDead == false) return;
+                //
+                // player.SpawnPlayerRandomly(GetPlayerId(player));
+                player.gameObject.SetActive(true);
+            
+                // if (player.IsOwner)
+                // {
+                //     if (player.TryGetComponent(out PlayerEndScreenUI playerEndScreenUI))
+                //     {
+                //         playerEndScreenUI.Initialize();
+                //     }
+                //     else
+                //     {
+                //         Debug.Log($"{nameof(PlayerEndScreenUI)} is null");
+                //     }
+                // }
+            });
+
+        }
         
         [ServerRpc]
         private void SpawnNetworkTimerServerRpc()
@@ -181,11 +224,27 @@ namespace Project
 
 
         [ServerRpc]
-        public void EndGameServerRpc() => EndGameClientRpc();
+        public void EndGameServerRpc()
+        {
+            Debug.Log("lalalalala");
+            RespawnEveryOneClientRpc();
+            EndGameClientRpc();
+        }
         
         [ClientRpc]
         private void EndGameClientRpc()
         {
+            gameHasFinished = true;
+            
+            GetPlayers().ForEach(player =>
+            {
+                Debug.Log("Respawn Player before endGame");
+
+                player.gameObject.SetActive(true);
+            
+
+            });
+            
             GameEvent.onGameFinishedEvent.Invoke(this, true);
         }
 
@@ -287,6 +346,11 @@ namespace Project
                     GameEvent.onPlayerSpawnEvent.Invoke(this, false, value.GetOwnerId());
                 }
             });
+
+            if (_warmUpRooms != null)
+            {
+                Destroy(_warmUpRooms, 1.0f);
+            }
 
 
             if (IsServer == false) return;

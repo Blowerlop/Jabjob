@@ -49,7 +49,7 @@ namespace Project
 
         public bool isMale; 
         bool killerHasKnife { get => GameManager.instance.GetPlayer(_killerId).GetComponent<PlayerShoot>().hasKnife; }
-        bool isDead = false;
+        public bool isDead = false;
         public  HashSet<ulong> damagersId = new HashSet<ulong>();
 
         private PlayerMovementController _playerMovementController; 
@@ -110,6 +110,7 @@ namespace Project
 
             IsPlayerHostServerRpc();
 
+            
             UpdatePlayerCharacterServerRpc(LobbyManager.Instance.GetPlayerModel());
             UpdatePlayerColorServerRpc(LobbyManager.Instance.GetPlayerColor());
             UpdatePlayerNameServerRpc(LobbyManager.Instance.GetPlayerName());
@@ -121,7 +122,8 @@ namespace Project
             CursorManager.instance.ApplyNewCursor(new CursorState(CursorLockMode.Locked, "Player"));
             
         }
-
+        
+        
         private void Start()
         {
             _currentHealth = _defaultHealth;
@@ -357,6 +359,8 @@ namespace Project
 
         private void PlayerRespawnLocal(ulong clientId)
         {
+            if (GameManager.instance.gameHasFinished) return;
+            
             Player player = GameManager.instance.GetPlayer(clientId);
             SpawnPlayerRandomly(clientId);
             player.gameObject.SetActive(true);
@@ -395,7 +399,7 @@ namespace Project
             SetInvincible(false);
         }
 
-        private void SpawnPlayerRandomly(ulong clientId)
+        public void SpawnPlayerRandomly(ulong clientId)
         {
             // if (GameManager.instance.possibleSpawnPositions.Count <= 0) { GameManager.instance.possibleSpawnPositions = spawnPostions; }
             Vector3 choosenPosition = GameManager.instance.possibleSpawnPositions[UnityEngine.Random.Range(0, GameManager.instance.possibleSpawnPositions.Count)];
@@ -403,6 +407,15 @@ namespace Project
             Timer.StartTimerWithCallbackScaledTime(2.0f,
                 () => GameManager.instance.AddSpawnPointServerRpc(choosenPosition));
             _playerMovementController.Teleport(choosenPosition);
+            _playerShoot.HideBarloadingAmmoBox();
+            // transform.LookAt(GameManager.instance.MapCenter, Vector3.up);
+            Vector3 direction = GameManager.instance.MapCenter.position - transform.position;
+            direction.y = 0;
+            direction = direction.normalized;
+            
+            transform.rotation =
+                Quaternion.LookRotation(direction,
+                    Vector3.up);
         }
 
         private void OnKillValueChange(int previousValue, int nextValue) => GameEvent.onPlayerGetAKillEvent.Invoke(this, true, OwnerClientId, nextValue); 
