@@ -50,7 +50,7 @@ public class VivoxManager : MonoBehaviour
     public void UnsubscribeLobbyEvent()
     {
         if (_lobbyManager == null) return;
-        VivoxOnLobbyLeave();
+        //VivoxOnLobbyLeave();
         _lobbyManager.VivoxOnAuthenticate -= InitAndLoginVivox;
         _lobbyManager.VivoxOnCreateLobby -= VivoxOnCreateLobby;
         _lobbyManager.VivoxOnJoinLobby -= VivoxOnJoinLobby;
