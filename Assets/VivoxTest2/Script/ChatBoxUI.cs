@@ -45,7 +45,7 @@ namespace Project
                 _vivoxManager.OnTextMessageLogReceived += OnMessageReceive;
                 _vivoxManager.OnParticipanJoinChannel += OnParticipantJoin;
                 _vivoxManager.OnParticipanLeaveChannel += OnParticipantLeave;
-
+                _vivoxManager.OnLobbyLeave += OnLobbyLeave;
                 _sendBTN.onClick.AddListener(() => SendMessage());
                 ShrinkTextArea(true);
 
@@ -197,6 +197,8 @@ namespace Project
             }
         }
 
+
+
         private void SendMessage(bool sendWithEnter = false)
         {
             _vivoxManager.SendMessageVivox(_textField.text);
@@ -223,6 +225,16 @@ namespace Project
                     
             }
 
+        }
+
+        private void OnLobbyLeave()
+        {
+            for (int i = 0; i < _messages.Count; i++)
+            {
+                Destroy(_messages[i]);
+            }
+            _messages.Clear();
+            ShrinkTextArea(true);
         }
 
         private void ShrinkTextArea(bool shrink)

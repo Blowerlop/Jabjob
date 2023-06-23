@@ -26,6 +26,7 @@ public class VivoxManager : MonoBehaviour
     public Action<string, IChannelTextMessage, string> OnTextMessageLogReceived;
     public Action<string> OnParticipanJoinChannel;
     public Action<string> OnParticipanLeaveChannel;
+    public event Action OnLobbyLeave;
     public static VivoxManager Instance { get; private set; }
 
     private void Awake()
@@ -49,6 +50,7 @@ public class VivoxManager : MonoBehaviour
     public void UnsubscribeLobbyEvent()
     {
         if (_lobbyManager == null) return;
+        VivoxOnLobbyLeave();
         _lobbyManager.VivoxOnAuthenticate -= InitAndLoginVivox;
         _lobbyManager.VivoxOnCreateLobby -= VivoxOnCreateLobby;
         _lobbyManager.VivoxOnJoinLobby -= VivoxOnJoinLobby;
@@ -246,6 +248,7 @@ public class VivoxManager : MonoBehaviour
 
         _currentChannelSession.Disconnect();
         _currentChannelSession = null;
+        OnLobbyLeave?.Invoke();
         VivoxLog("Channel quit");
     }
 
