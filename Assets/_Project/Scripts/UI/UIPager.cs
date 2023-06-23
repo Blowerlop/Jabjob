@@ -13,7 +13,7 @@ namespace Project
     {
         [ReadOnlyField] public string gameObjectName;
         [ReadOnlyField] public CanvasGroup canvasGroup;
-        public int pageIndex;
+        public int pageIndex; 
         public UnityEvent onPageSelectedEvent = new UnityEvent();
 
         public Page(string gameObjectName, CanvasGroup canvasGroup, int pageIndex)
