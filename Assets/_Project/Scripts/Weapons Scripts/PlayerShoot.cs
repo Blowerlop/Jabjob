@@ -93,7 +93,7 @@ namespace Project
             GameEvent.onPlayerWeaponChangedLocalEvent.Subscribe(UpdateCurrentWeapon, this);
             GameEvent.onPlayerWeaponChangedServerEvent.Subscribe(UpdateCurrentWeapon, this);
             LocalEquipKnife(true);
-            EquipKnifeServerRpc(true);
+            if(IsOwner) EquipKnifeServerRpc(true);
             hasKnifeEquipped = false;
             ReloadTotalAmmoRespawn();
         }
