@@ -4,6 +4,7 @@ using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
+using System;
 
 namespace Project
 {
@@ -22,6 +23,7 @@ namespace Project
         [SerializeField] private TMP_InputField _textField;
         [SerializeField] private Button _extendShrinkBTN;
         [SerializeField] private CanvasGroup _canvasGroup;
+        [SerializeField] private CanvasGroup _textCanvasGroup;
         [SerializeField] private Image _textAreaImage;
         [SerializeField] private RectTransform _shrinkRectImg;
         private List<TextMeshProUGUI> _messages = new List<TextMeshProUGUI>();
@@ -30,6 +32,10 @@ namespace Project
         private PlayerInputAction _inputAction;
         private InputManager _inputManager;
 
+        private float _showTextTimer = 5f;
+        private float _currentTextTimer;
+        private bool _textAreaShown;
+
         private void Start()
         {
             if (!_vivoxManager)
@@ -37,7 +43,9 @@ namespace Project
                 _vivoxManager = FindObjectOfType<VivoxManager>();
                 _vivoxManager.OnTextMessageLogReceived = null;
                 _vivoxManager.OnTextMessageLogReceived += OnMessageReceive;
-
+                _vivoxManager.OnParticipanJoinChannel += OnParticipantJoin;
+                _vivoxManager.OnParticipanLeaveChannel += OnParticipantLeave;
+                _vivoxManager.OnLobbyLeave += OnLobbyLeave;
                 _sendBTN.onClick.AddListener(() => SendMessage());
                 ShrinkTextArea(true);
 
@@ -56,6 +64,52 @@ namespace Project
                 _inputManager = FindObjectOfType<InputManager>();
             }
 
+        }
+
+        private void OnParticipantLeave(string obj)
+        {
+            TextMeshProUGUI TMP = Instantiate(_textPrefab, _textPoint);
+            TMP.text = $"{obj} quit the channel";
+            _messages.Add(TMP);
+            if (_chatGameplay)
+            {
+                _textCanvasGroup.alpha = 1;
+                _currentTextTimer = _showTextTimer;
+
+            }
+        }
+
+        private void OnParticipantJoin(string obj)
+        {
+            TextMeshProUGUI TMP = Instantiate(_textPrefab, _textPoint);
+            TMP.text = $"{obj} joined the channel";
+            _messages.Add(TMP);
+            if (_chatGameplay)
+            {
+                _textCanvasGroup.alpha = 1;
+                _currentTextTimer = _showTextTimer;
+
+            }
+
+        }
+
+        private void Update()
+        {
+
+            if (!_chatGameplay)
+                return;
+
+            if(_currentTextTimer > 0 && !_textAreaShown)
+            {
+                _currentTextTimer -= Time.deltaTime;
+                return;
+            }
+
+            if(_currentTextTimer <= 0 && _textCanvasGroup.alpha == 1 && !_textAreaShown)
+            {
+                _textCanvasGroup.alpha = 0;
+            }
+            
         }
 
         private void Enter_performed(UnityEngine.InputSystem.InputAction.CallbackContext obj)
@@ -103,8 +157,10 @@ namespace Project
                 Color color = _textAreaImage.color;
                 color.a = .5f;
                 _textAreaImage.color = color;
-
                 _inputManager.SwitchPlayerInputMap("UI");
+
+                _textCanvasGroup.alpha = 1;
+                _currentTextTimer = _showTextTimer;
             }
             else
             {
@@ -114,7 +170,12 @@ namespace Project
                 color.a = 0;
                 _textAreaImage.color = color;
                 _inputManager.SwitchPlayerInputMap("Player");
+
+                _currentTextTimer = _showTextTimer;
+
             }
+
+            _textAreaShown = state;
         }
         
 
@@ -136,6 +197,8 @@ namespace Project
             }
         }
 
+
+
         private void SendMessage(bool sendWithEnter = false)
         {
             _vivoxManager.SendMessageVivox(_textField.text);
@@ -155,7 +218,23 @@ namespace Project
             TMP.text = value;
             _previousTextReceived = value;
             _messages.Add(TMP);
+            if (_chatGameplay)
+            {
+                _textCanvasGroup.alpha = 1;
+                _currentTextTimer = _showTextTimer;
+                    
+            }
 
+        }
+
+        private void OnLobbyLeave()
+        {
+            for (int i = 0; i < _messages.Count; i++)
+            {
+                Destroy(_messages[i]);
+            }
+            _messages.Clear();
+            ShrinkTextArea(true);
         }
 
         private void ShrinkTextArea(bool shrink)
