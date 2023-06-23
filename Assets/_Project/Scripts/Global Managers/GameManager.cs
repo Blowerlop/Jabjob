@@ -26,10 +26,32 @@ namespace Project
                 if (_instance != null) return _instance;
                 else
                 {
+                    Player[] players;
+                    
                     _instance = FindObjectOfType<GameManager>();
-                    if (_instance != null) return _instance;
+                    if (_instance != null)
+                    {
+                        _instance._playerPrefab = Resources.Load("Player") as Transform;
+                        
+                        players = FindObjectsOfType<Player>();
+                        players.ForEach(x =>
+                        {
+                            _instance._players.Add(x.OwnerClientId, x);
+                        });
+
+                        return _instance;
+                    }
                     
                     _instance = new GameObject().AddComponent<GameManager>();
+                    
+                    _instance._playerPrefab = Resources.Load("Player") as Transform;
+                        
+                    players = FindObjectsOfType<Player>();
+                    players.ForEach(x =>
+                    {
+                        _instance._players.Add(x.OwnerClientId, x);
+                    });
+                    
                     _instance.gameMode = ScriptableObject.CreateInstance<GameMode_FreeForAll>();
                     _instance._networkTimer = FindObjectOfType<NetworkTimer>();
                     if (UnityEngine.SceneManagement.SceneManager.GetActiveScene().name == "Multi_Lobby")
