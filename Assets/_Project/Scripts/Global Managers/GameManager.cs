@@ -17,7 +17,74 @@ namespace Project
     {
         #region Variables
 
-        public static GameManager instance;
+        private static GameManager _instance;
+
+        public static GameManager instance
+        {
+            get
+            {
+                if (_instance != null) return _instance;
+                else
+                {
+                    _instance = FindObjectOfType<GameManager>();
+                    if (_instance != null) return _instance;
+                    
+                    _instance = new GameObject().AddComponent<GameManager>();
+                    _instance.gameMode = ScriptableObject.CreateInstance<GameMode_FreeForAll>();
+                    _instance._networkTimer = FindObjectOfType<NetworkTimer>();
+                    if (UnityEngine.SceneManagement.SceneManager.GetActiveScene().name == "Multi_Lobby")
+                    {
+                        _instance.playerSpawnPositions.Add(new Vector3(28.013f, -68.49262f, 26.301f));
+                        _instance.playerSpawnPositions.Add(new Vector3(-15.96f,-68.4926224f,30.8199997f));
+                        _instance.playerSpawnPositions.Add(new Vector3(-34.0800018f,-68.4926224f,15.8299999f));
+                        _instance.playerSpawnPositions.Add(new Vector3(-32.9500008f,-68.4926224f,-12.9700003f));
+                        _instance.playerSpawnPositions.Add(new Vector3(-20.5100002f,-68.4926224f,-40.1699982f));
+                        _instance.playerSpawnPositions.Add(new Vector3(-7.23999977f,-68.4926224f,-35.0400009f));
+                        _instance.playerSpawnPositions.Add(new Vector3(-7.82999992f,-68.4926224f,-19.2800007f));
+                        _instance.playerSpawnPositions.Add(new Vector3(26.8199997f,-68.4926224f,-38.6100006f));
+                        _instance.playerSpawnPositions.Add(new Vector3(33.8499985f,-68.4926224f,-9.56999969f));
+                        _instance.playerSpawnPositions.Add(new Vector3(8.62108421f,-68.3947906f,-4.7251482f));
+                        _instance.playerSpawnPositions.Add(new Vector3(-10.7299995f,-68.3947906f,5.98999977f));
+                        _instance.playerSpawnPositions.Add(new Vector3(9.81999969f,-59.6620102f,5.1500001f));
+                        _instance.playerSpawnPositions.Add(new Vector3(0.409999996f,-59.6620102f,12.1300001f));
+                        _instance.playerSpawnPositions.Add(new Vector3(-6.71000004f,-59.6620102f,-2.42000008f));
+                        
+                        _instance.MapCenter = new GameObject().transform;
+                        _instance.MapCenter.position = new Vector3(-0.333679199f, -66.5100021f, 4.06815529f);
+                    }
+                    else if (UnityEngine.SceneManagement.SceneManager.GetActiveScene().name == "Multi_Lobby_Map2")
+                    {
+                        _instance.playerSpawnPositions.Add(new Vector3(-48.2299995f,-67.6900024f,47.3149986f));
+                        _instance.playerSpawnPositions.Add(new Vector3(-48.2299995f,-67.6900024f,33.5999985f));
+                        _instance.playerSpawnPositions.Add(new Vector3(-48.2299995f,-67.6900024f,33.5999985f));
+                        _instance.playerSpawnPositions.Add(new Vector3(-48.2299995f,-67.6900024f,-9.89999962f));
+                        _instance.playerSpawnPositions.Add(new Vector3(-48.2299995f,-67.6900024f,-29.7000008f));
+                        _instance.playerSpawnPositions.Add(new Vector3(-48.2299995f,-67.6900024f,-47.5999985f));
+                        _instance.playerSpawnPositions.Add(new Vector3(-25.6000004f,-67.6900024f,-47.5999985f));
+                        _instance.playerSpawnPositions.Add(new Vector3(-5.19999981f,-67.6900024f,-47.5999985f));
+                        _instance.playerSpawnPositions.Add(new Vector3(17.3999996f,-67.6900024f,-47.5999985f));
+                        _instance.playerSpawnPositions.Add(new Vector3(44.4000015f,-67.6900024f,-47.5999985f));
+                        _instance.playerSpawnPositions.Add(new Vector3(44.4000015f,-67.6900024f,-26.7999992f));
+                        _instance.playerSpawnPositions.Add(new Vector3(44.4000015f,-67.6900024f,-5.5f));
+                        _instance.playerSpawnPositions.Add(new Vector3(44.4000015f,-67.6900024f,18.3999996f));
+                        _instance.playerSpawnPositions.Add(new Vector3(44.4000015f,-67.6900024f,46.5f));
+                        _instance.playerSpawnPositions.Add(new Vector3(-20.5100002f,-68.4926224f,-40.1699982f));
+                        _instance.playerSpawnPositions.Add(new Vector3(21.6000004f,-67.6900024f,46.5f));
+                        _instance.playerSpawnPositions.Add(new Vector3(-4.5f,-67.6900024f,46.5f));
+                        _instance.playerSpawnPositions.Add(new Vector3(-27.2000008f,-67.6900024f,46.5f));
+                        
+                        _instance.MapCenter = new GameObject().transform;
+                        _instance.MapCenter.position = new Vector3(-0.649999976f, -66.262764f, 0.129999995f);
+                    }
+                    
+                    _instance._warmUp = new GameObject().AddComponent<TMP_Text>();
+                    _instance.gameHasStarted = false;
+                    _instance._warmUpRooms = GameObject.Find("WarmUp-EntireGroup");
+                    return _instance;
+                }
+            }
+        }
+        
         [SerializeField] private Transform _playerPrefab;
         [ReadOnlyField] private readonly Dictionary<ulong, Player> _players = new Dictionary<ulong, Player>();
 
@@ -42,12 +109,12 @@ namespace Project
 
         private void Awake()
         {
-            instance = this;
+            _instance = this;
 
             possibleSpawnPositions = new NetworkList<Vector3>(writePerm: NetworkVariableWritePermission.Server, readPerm: NetworkVariableReadPermission.Everyone);
-
         }
         
+
 
         [ServerRpc(RequireOwnership = false)]
         public void RemoveSpawnPointServerRpc(Vector3 spawnPoint) => possibleSpawnPositions.Remove(spawnPoint);
@@ -79,7 +146,6 @@ namespace Project
 
         public override void OnNetworkSpawn()
         {
-            
             GameEvent.onGameFinishedEvent.Subscribe(EndGameBehaviour, this);
 
             if (IsServer)
