@@ -61,9 +61,20 @@ namespace Project
 
         private void HideAssists()
         {
-            assist1_Image.enabled = false;
-            assist2_Image.enabled = false;
-            assist3_Image.enabled = false;
+            if (assist1_Image != null)
+            {
+                assist1_Image.enabled = false;
+            }
+            
+            if (assist2_Image != null)
+            {
+                assist2_Image.enabled = false;
+            }
+            
+            if (assist3_Image != null)
+            {
+                assist3_Image.enabled = false;
+            }
         }
         public void FadeIn()
         {

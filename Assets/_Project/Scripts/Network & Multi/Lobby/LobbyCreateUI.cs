@@ -91,7 +91,7 @@ public class LobbyCreateUI : MonoBehaviour {
         gameObject.SetActive(true);
         lobbyName = "Lobby" ;
         isPrivate = false;
-        gameMode = LobbyManager.GameMode.GameMode1;
+        gameMode = LobbyManager.GameMode.FreeForAll ;
 
         UpdateText();
     }

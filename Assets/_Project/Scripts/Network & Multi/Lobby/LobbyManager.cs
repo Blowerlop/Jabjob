@@ -50,9 +50,7 @@ public class LobbyManager : MonoBehaviour {
 
 
     public enum GameMode {
-        GameMode1,
-        GameMode2,
-        GameMode3 
+        FreeForAll
     }
 
 
