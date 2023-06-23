@@ -225,6 +225,7 @@ namespace Project
                     }
                 }
                 CreateBulletTrail(currentWeapon.bulletStartPoint, _fakeWeapon.bulletStartPoint, hitPoint);
+                Debug.Log("Position " + transform.position + "\n Current weapon" + _fakeWeapon.bulletStartPoint.position + " \n hitpoin " + hitPoint); 
                 if (paintable == null) goto AnimationAndSound;
                 
                 if (_weaponData.spray)
