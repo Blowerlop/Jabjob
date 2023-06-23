@@ -240,7 +240,10 @@ namespace Project
             {
                 Debug.Log("Respawn Player before endGame");
 
-                player.gameObject.SetActive(true);
+                if (player != null)
+                {
+                    player.gameObject.SetActive(true);
+                }
             
 
             });
