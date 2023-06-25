@@ -7,8 +7,8 @@ A game made for the first year of Cnam-Enjmin bachelor degree in video games. Th
 
 ## Installation
 
-You can either pull :
-- our project main branch and build it after deploying all necessary packages
+You can either :
+- pull our project main branch and build it after deploying all necessary packages
 - download our first release here : [Google Drive Link](https://drive.google.com/file/d/1bGXqikzusnMTzXKzQNcWbStefJZsARBS/view?usp=sharing)
 
 Click on the executable with a rooster logo to start the game.
