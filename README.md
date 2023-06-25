@@ -28,7 +28,7 @@ Locate, aim, shoot, dodge, think on your strategies to emerge victorious from th
 
 ### Keyboard
 
-- Directional arrows ←↑→↓/ ZQSD for moving around
+- Directional arrows ←↑→↓/ WASD for moving around
 - Shift key to dash
 - R key to reload
 - T key to switch between melee and range weapons
