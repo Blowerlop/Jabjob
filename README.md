@@ -82,11 +82,11 @@ Summary of statistics and ranking of each player.
 
 ## Developpers
 
-- [Quoc-Bao Nguyen](https://github.com/Baokebab)
+- [Quoc-Bao NGUYEN](https://github.com/Baokebab)
 
 - [Nathan GIROD](https://github.com/Blowerlop)
 
-- [Théo Excille](https://github.com/Excille)
+- [Théo EXCILLE](https://github.com/Excille)
 
 - [Ewen RIALLAN](https://github.com/Miit0s)
 
